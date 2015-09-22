@@ -1,8 +1,11 @@
 package com.zkjinshi.superservice.common;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.view.Window;
+import android.widget.Button;
 
 import com.zkjinshi.superservice.R;
 
@@ -15,6 +18,7 @@ import com.zkjinshi.superservice.R;
 public class ShopRegisterActivity extends Activity{
 
     private final static String TAG = ShopRegisterActivity.class.getSimpleName();
+    private Button registerBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,7 +32,7 @@ public class ShopRegisterActivity extends Activity{
     }
 
     private void initView() {
-
+        registerBtn  = (Button)findViewById(R.id.btn_register);
     }
 
     private void initData() {
@@ -36,6 +40,13 @@ public class ShopRegisterActivity extends Activity{
     }
 
     private void initListener() {
-
+        registerBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(ShopRegisterActivity.this,ShopMoreActivity.class));
+                finish();
+                overridePendingTransition(R.anim.activity_new, R.anim.activity_out);
+            }
+        });
     }
 }

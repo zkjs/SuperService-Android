@@ -1,7 +1,9 @@
 package com.zkjinshi.superservice.common;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.view.Window;
 
 import com.zkjinshi.superservice.R;
@@ -36,6 +38,22 @@ public class MoreActivity extends Activity {
     }
 
     private void initListener() {
+        findViewById(R.id.back_btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MoreActivity.this, LoginActivity.class));
+                finish();
+                overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
+            }
+        });
 
+        findViewById(R.id.go_btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MoreActivity.this,ZoneActivity.class));
+                finish();
+                overridePendingTransition(R.anim.activity_new, R.anim.activity_out);
+            }
+        });
     }
 }

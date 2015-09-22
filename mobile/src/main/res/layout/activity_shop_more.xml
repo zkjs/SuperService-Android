@@ -29,11 +29,12 @@
             android:scaleType="center"
             android:clickable="true"
             android:background="@drawable/img_hotel_zhanwei"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="20dp"
             android:id="@+id/avatar">
         </com.zkjinshi.superservice.view.CircleImageView>
 
         <TextView
+            android:layout_marginTop="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="18sp"
@@ -47,31 +48,35 @@
             android:paddingLeft="30dp"
             android:paddingRight="30dp">
 
+            <Spinner
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:id="@+id/spinner"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="20dp"
+                style="@android:style/Widget.DeviceDefault.Light.DropDownItem.Spinner"/>
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                style="@style/inputStyle"
+                android:hint="商户名称(全称)"
+                android:layout_marginTop="20dp"/>
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                style="@style/inputStyle"
+                android:hint="商户名称(简写)"
+                android:layout_marginTop="20dp"/>
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                style="@style/inputStyle"
+                android:hint="密码"
+                android:layout_marginTop="20dp"/>
 
         </LinearLayout>
-
     </LinearLayout>
 
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_alignParentBottom="true"
-        android:orientation="horizontal">
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="后退"
-            android:textSize="16sp"
-            android:background="#dddddd"/>
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="前进"
-            android:textColor="#ffffff"
-            android:textSize="16sp"
-            android:background="@android:color/holo_blue_light"/>
-    </LinearLayout>
+    <include layout="@layout/register_bottom" />
 </RelativeLayout>
