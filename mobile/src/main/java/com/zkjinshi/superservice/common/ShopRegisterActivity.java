@@ -15,7 +15,7 @@ import com.zkjinshi.superservice.R;
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class ShopRegisterActivity extends Activity{
+public class ShopRegisterActivity extends Activity  implements VerifyPhoneControler.SuccessCallBack{
 
     private final static String TAG = ShopRegisterActivity.class.getSimpleName();
     private Button registerBtn;
@@ -36,10 +36,11 @@ public class ShopRegisterActivity extends Activity{
     }
 
     private void initData() {
+        //VerifyPhoneControler.getInstance().init(this);
+        //VerifyPhoneControler.getInstance().setSuccessCallBack(this);
 
-    }
-
-    private void initListener() {
+        //测试跳转用的
+        registerBtn.setEnabled(true);
         registerBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -48,5 +49,14 @@ public class ShopRegisterActivity extends Activity{
                 overridePendingTransition(R.anim.activity_new, R.anim.activity_out);
             }
         });
+    }
+
+    private void initListener() {
+
+    }
+
+    @Override
+    public void verrifySuccess() {
+
     }
 }
