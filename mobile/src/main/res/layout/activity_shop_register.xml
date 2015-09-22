@@ -25,21 +25,6 @@
         android:layout_marginTop="50dp"
         android:paddingLeft="30dp"
         android:paddingRight="30dp">
-        <EditText
-            style="@style/inputStyle"
-            android:hint="手机号"/>
-
-        <EditText
-            style="@style/inputStyle"
-            android:hint="验证码"
-            android:layout_marginTop="20dp"/>
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginTop="40dp"
-            android:text="发送验证码"
-            style="@style/blueButton"
-            android:id="@+id/btn_register" />
+        <include layout="@layout/verify_phone" />
     </LinearLayout>
 </LinearLayout>

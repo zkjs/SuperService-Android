@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+        <EditText
+            android:id="@+id/et_input_phone"
+            style="@style/inputStyle"
+            android:hint="手机号"
+            android:inputType="number"
+            android:maxLength="11"
+            android:singleLine="true"
+             />
+        <ImageView
+            android:id="@+id/iv_phone_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|right"
+            android:background="@mipmap/img_input_right"
+            android:visibility="gone"
+            android:layout_marginRight="20dp"/>
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp">
+        <EditText
+            android:id="@+id/et_verify_code"
+            android:focusable="false"
+            style="@style/inputStyle"
+            android:hint="验证码"
+            android:inputType="phone"
+            android:maxLength="6"
+            android:singleLine="true"/>
+        <ImageView
+            android:id="@+id/iv_verify_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|right"
+            android:background="@mipmap/img_input_warning"
+            android:visibility="gone"
+            android:layout_marginRight="20dp"/>
+    </FrameLayout>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="40dp"
+        android:text="发送验证码"
+        style="@style/blueButton"
+        android:id="@+id/btn_send"
+        android:enabled="false"/>
+</LinearLayout>

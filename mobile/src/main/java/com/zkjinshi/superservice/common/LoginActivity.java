@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.zkjinshi.superservice.R;
 
@@ -15,7 +16,7 @@ import com.zkjinshi.superservice.R;
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class LoginActivity extends Activity{
+public class LoginActivity extends Activity implements VerifyPhoneControler.SuccessCallBack{
 
     private final static String TAG = LoginActivity.class.getSimpleName();
 
@@ -33,15 +34,16 @@ public class LoginActivity extends Activity{
     }
 
     private void initView() {
-        loginBtn = (Button)findViewById(R.id.login_btn);
+        loginBtn = (Button)findViewById(R.id.btn_send);
+
     }
 
     private void initData() {
+        //VerifyPhoneControler.getInstance().init(this);
+        //VerifyPhoneControler.getInstance().setSuccessCallBack(this);
 
-    }
-
-    private void initListener() {
-        //登录按钮
+        //测试跳转用的
+        loginBtn.setEnabled(true);
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -50,6 +52,9 @@ public class LoginActivity extends Activity{
                 overridePendingTransition(R.anim.activity_new, R.anim.activity_out);
             }
         });
+    }
+
+    private void initListener() {
 
         findViewById(R.id.shop_register_tv).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,5 +67,10 @@ public class LoginActivity extends Activity{
 
 
 
+    }
+
+    @Override
+    public void verrifySuccess() {
+        Toast.makeText(this,"public void verrifySuccess() ",Toast.LENGTH_LONG).show();
     }
 }

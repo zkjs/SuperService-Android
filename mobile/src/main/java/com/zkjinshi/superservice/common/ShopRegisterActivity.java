@@ -32,7 +32,7 @@ public class ShopRegisterActivity extends Activity{
     }
 
     private void initView() {
-        registerBtn  = (Button)findViewById(R.id.btn_register);
+        registerBtn  = (Button)findViewById(R.id.btn_send);
     }
 
     private void initData() {
