@@ -1,6 +1,7 @@
 package com.zkjinshi.superservice;
 
 import android.app.Application;
+import android.content.Context;
 
 /**
  * 超级服务入口
@@ -11,8 +12,17 @@ import android.app.Application;
  */
 public class ServiceApplication extends Application{
 
+    private static Context mContext;
+
     @Override
     public void onCreate() {
         super.onCreate();
+
+        mContext = this.getApplicationContext();
+
+    }
+
+    public static Context getContext(){
+        return mContext;
     }
 }

@@ -128,11 +128,9 @@ public class AvatarChooseController extends BaseUiController{
                 case Constants.FLAG_CHOOSE_IMG:// 选择本地图片
                     if (data != null) {
                         List<String> pathList = data.getStringArrayListExtra(MultiImageSelectorActivity.EXTRA_RESULT);
-                        Intent intent = new Intent(context,
-                                CutActivity.class);
+                        Intent intent = new Intent(context, CutActivity.class);
                         intent.putExtra("path", pathList.get(0));
-                        ((Activity)context).startActivityForResult(intent,
-                                Constants.FLAG_MODIFY_FINISH);
+                        ((Activity)context).startActivityForResult(intent, Constants.FLAG_MODIFY_FINISH);
                     }
                     break;
 
