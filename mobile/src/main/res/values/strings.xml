@@ -1,6 +1,13 @@
 <resources>
-    <string name="app_name">SuperService</string>
+    <string name="app_name">超级服务</string>
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+
+    <!--模块名称-->
+    <string name="coming_notice">到店通知</string>
+    <string name="message_notice">消息通知</string>
+    <string name="deal_with_order">订单处理</string>
+    <string name="info_set">信息设置</string>
+
 </resources>
