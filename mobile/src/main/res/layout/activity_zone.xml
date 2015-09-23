@@ -36,10 +36,12 @@
         <ListView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginBottom="50dp"
             android:fadingEdge="none"
             android:divider="#f0edf0"
             android:dividerHeight="1dp"
-            android:fadeScrollbars="true">
+            android:fadeScrollbars="true"
+            android:id="@+id/zone_listview">
         </ListView>
     </LinearLayout>
 
