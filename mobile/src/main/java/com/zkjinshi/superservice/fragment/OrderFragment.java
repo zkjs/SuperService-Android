@@ -7,6 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.zkjinshi.superservice.R;
+
 /**
  * 订单处理Fragment页面
  * 开发者：JimmyZhang
@@ -15,10 +17,17 @@ import android.view.ViewGroup;
  * 版权所有
  */
 public class OrderFragment extends Fragment{
+    private void initView(View view){
+
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return super.onCreateView(inflater, container, savedInstanceState);
+        View view = inflater.inflate(R.layout.fragment_order, container,
+                false);
+        initView(view);
+        return view;
     }
 
     @Override

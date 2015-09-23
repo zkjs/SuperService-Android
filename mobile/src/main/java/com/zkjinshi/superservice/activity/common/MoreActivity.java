@@ -10,7 +10,9 @@ import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 
+import com.zkjinshi.base.util.ImageUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.view.CircleImageView;
 
@@ -21,6 +23,7 @@ import me.nereo.multi_image_selector.MultiImageSelectorActivity;
 import me.nereo.multi_image_selector.MultiImageSelectorFragment;
 
 /**
+ * 客服注册完善信息页面
  * 开发者：dujiande
  * 日期：2015/9/21
  * Copyright (C) 2015 深圳中科金石科技有限公司
@@ -37,6 +40,7 @@ public class MoreActivity extends FragmentActivity implements MultiImageSelector
     @Override
     public void onSingleImageSelected(String path) {
         // 当选择模式设定为 单选/MODE_SINGLE, 这个方法就会接受到Fragment返回的数据
+        setAvatar(path);
     }
 
     @Override
@@ -52,12 +56,17 @@ public class MoreActivity extends FragmentActivity implements MultiImageSelector
     @Override
     public void onCameraShot(File imageFile) {
         // 当设置了使用摄像头，用户拍照后会返回照片文件
+        if(imageFile != null) {
+           setAvatar(imageFile.getAbsolutePath());
+        }
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
+        //屏蔽输入法自动弹出
+        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         setContentView(R.layout.activity_more);
         initFragment();
         initView();
@@ -127,14 +136,21 @@ public class MoreActivity extends FragmentActivity implements MultiImageSelector
                 Log.e(TAG,path.toString());
 
                 String photoFilePath = path.get(0);
-                Bitmap displayBitmap = BitmapFactory.decodeFile(photoFilePath);
-                if (displayBitmap != null) {
-                    //displayBitmap = ImageUtil.cropThumbBitmap(displayBitmap);
-                    //displayBitmap = ImageUtil.loadThumbBitmap(MoreActivity.this, displayBitmap);
-                    avatarCiv.setImageBitmap(displayBitmap);
-                }
-               // CacheUtil.getInstance().savePicPath(photoFilePath);
+                setAvatar(photoFilePath);
+
             }
         }
     }
+
+    private void setAvatar(String photoFilePath){
+        Bitmap displayBitmap = BitmapFactory.decodeFile(photoFilePath);
+        if (displayBitmap != null) {
+            displayBitmap = ImageUtil.cropThumbBitmap(displayBitmap);
+            displayBitmap = ImageUtil.loadThumbBitmap(MoreActivity.this, displayBitmap);
+            avatarCiv.setImageBitmap(displayBitmap);
+        }
+        // CacheUtil.getInstance().savePicPath(photoFilePath);
+    }
+
+
 }
