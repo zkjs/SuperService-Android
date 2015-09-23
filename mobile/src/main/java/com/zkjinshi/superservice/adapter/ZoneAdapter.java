@@ -28,7 +28,7 @@ import java.util.Map;
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class ZoneAdapter extends BaseAdapter {
+public class ZoneAdapter extends BaseAdapter implements CompoundButton.OnCheckedChangeListener {
     private final static String TAG = ZoneAdapter.class.getSimpleName();
 
     private LayoutInflater mInflater;//得到一个LayoutInfalter对象用来导入布局
@@ -110,20 +110,23 @@ public class ZoneAdapter extends BaseAdapter {
             holder = (ViewHolder)convertView.getTag();//取出ViewHolder对象
         }
         holder.name.setText(zoneList.get(position).getName());
-        holder.check.setTag(new Integer(zoneList.get(position).getId()));
-        holder.check.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                Integer key = (Integer)compoundButton.getTag();
-                if(b){
-                    checkedHashmap.put(key,new Integer(1));
-                }else{
-                    checkedHashmap.put(key,new Integer(0));
-                }
-                Log.d(TAG,"checkedids = "+getCheckedIds());
-            }
-        });
+
+        int id = zoneList.get(position).getId();
+        boolean c = ischecked(id);
+        holder.check.setTag(new Integer(id));
+        holder.check.setOnCheckedChangeListener(this);
+        holder.check.setChecked(c);
         return convertView;
+    }
+
+    public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+        Integer key = (Integer)compoundButton.getTag();
+        if(isChecked){
+            checkedHashmap.put(key, new Integer(1));
+        }else{
+            checkedHashmap.put(key, new Integer(0));
+        }
+        Log.d(TAG, "checkedids = " + getCheckedIds());
     }
 
 
