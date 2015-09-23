@@ -49,5 +49,12 @@ public class SlidingMenuManager {
         slidingMenu.setSecondaryShadowDrawable(R.drawable.shadow);
     }
 
+    public void toggleMenu(){
+        slidingMenu.toggle();
+    }
+
+    public void showMenu(){
+        slidingMenu.showMenu();
+    }
 
 }

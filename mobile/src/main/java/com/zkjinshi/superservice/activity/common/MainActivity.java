@@ -21,7 +21,8 @@ public class MainActivity extends FragmentActivity {
     }
 
     private void initData(){
-
+        //初始化抽屉按钮
+        SlidingMenuManager.getInstance().initMenu(this);
     }
 
     private void initListeners(){
