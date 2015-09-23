@@ -1,4 +1,4 @@
-package com.zkjinshi.superservice.common;
+package com.zkjinshi.superservice.activity.common;
 
 import android.app.Activity;
 import android.content.Context;
