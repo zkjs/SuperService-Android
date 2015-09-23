@@ -29,7 +29,7 @@
             android:scaleType="center"
             android:clickable="true"
             android:background="@drawable/img_hotel_zhanwei"
-            android:layout_margin="30dp"
+            android:layout_margin="20dp"
             android:id="@+id/avatar">
         </com.zkjinshi.superservice.view.CircleImageView>
         <LinearLayout
@@ -44,7 +44,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="20sp"
+                    android:textSize="16sp"
                     android:textColor="#000000"
                     android:hint="黄小洋"
                     android:layout_alignParentLeft="true"
@@ -58,14 +58,16 @@
             </RelativeLayout>
             <EditText
                 style="@style/inputStyle"
-                android:layout_marginTop="20dp"
+                android:layout_height="45dp"
+                android:layout_marginTop="10dp"
                 android:hint="获取个新昵称" />
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/image_grid"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_marginTop="10dp">
         </LinearLayout>
     </LinearLayout>
 
