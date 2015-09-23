@@ -1,11 +1,11 @@
-package com.zkjinshi.superservice.activity.common;
+package com.zkjinshi.superservice.activity.common.main;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 
 
 import com.zkjinshi.superservice.R;
+import com.zkjinshi.superservice.activity.common.main.SlidingMenuManager;
 
 /**
  * 主页面
