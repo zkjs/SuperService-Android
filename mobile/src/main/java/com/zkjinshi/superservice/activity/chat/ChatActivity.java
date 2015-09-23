@@ -6,6 +6,7 @@ import android.os.Bundle;
 import com.zkjinshi.superservice.R;
 
 /**
+ * 聊天主页面
  * 开发者：JimmyZhang
  * 日期：2015/9/23
  * Copyright (C) 2015 深圳中科金石科技有限公司

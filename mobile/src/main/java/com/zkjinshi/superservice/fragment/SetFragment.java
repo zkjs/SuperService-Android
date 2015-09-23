@@ -8,13 +8,13 @@ import android.view.View;
 import android.view.ViewGroup;
 
 /**
- * 到店通知Fragment页面
+ * 设置Fragment页面
  * 开发者：JimmyZhang
  * 日期：2015/9/23
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class NoticeFragment extends Fragment {
+public class SetFragment extends Fragment {
 
     @Nullable
     @Override
@@ -41,4 +41,5 @@ public class NoticeFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
     }
+
 }

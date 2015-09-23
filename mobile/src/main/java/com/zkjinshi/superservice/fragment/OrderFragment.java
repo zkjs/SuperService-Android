@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 /**
- * 订单处理
+ * 订单处理Fragment页面
  * 开发者：JimmyZhang
  * 日期：2015/9/23
  * Copyright (C) 2015 深圳中科金石科技有限公司
