@@ -1,2 +1,2 @@
-include ':mobile', ':wear', ':ZKJinShiBaseClass', ':multi-image-selector'
+include ':mobile', ':wear', ':ZKJinShiBaseClass', ':multi-image-selector', ':SlidingMenu'
 
