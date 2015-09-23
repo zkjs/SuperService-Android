@@ -97,7 +97,7 @@ public class MoreActivity extends FragmentActivity implements MultiImageSelector
         findViewById(R.id.go_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(MoreActivity.this,ZoneActivity.class));
+                startActivity(new Intent(MoreActivity.this, ClientAddActivity.class));
                 finish();
                 overridePendingTransition(R.anim.activity_new, R.anim.activity_out);
             }

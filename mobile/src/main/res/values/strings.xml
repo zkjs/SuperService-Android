@@ -3,4 +3,16 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+
+    <!-- 新增客户界面 -->
+    <string name="name">姓名</string>
+    <string name="phone">电话</string>
+    <string name="company">公司</string>
+    <string name="position">职位</string>
+    <string name="member_on_account">挂账会员</string>
+    <string name="confirm">确定</string>
+    <string name="not_input_yet"> 尚未输入</string>
+    <string name="finish">完成</string>
+    <string name="choose">选取</string>
+
 </resources>
