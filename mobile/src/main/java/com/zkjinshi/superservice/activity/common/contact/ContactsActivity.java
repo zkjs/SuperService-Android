@@ -82,23 +82,27 @@ public class ContactsActivity extends Activity{
         mSideBar.setTextView(mTvDialog);
         characterParser  = CharacterParser.getInstance();
 
-        //TODO: 服务器获得当前服务员关联的客户列表
-        List<ClientVo> clientVos = ClientDBUtil.getInstance().queryAll();
-        DialogUtil.getInstance().showToast(this, "clientVos 的条数："+clientVos.size());
-
-        if(!clientVos.isEmpty()){
-//            SortModelFactory.getInstance().convertClients2SortModels();
-        }
-
         mAllContactsList = new ArrayList<>();
         pinyinComparator = new PinyinComparator();
         Collections.sort(mAllContactsList, pinyinComparator);// 根据a-z进行排序源数据
         mContactsAdapter = new ContactsSortAdapter(this, mAllContactsList);
         mLvContacts.setAdapter(mContactsAdapter);
+
+        //TODO: 1.服务器获得当前服务员关联的客户列表
+        List<ClientVo> clientVos       = ClientDBUtil.getInstance().queryAll();
+        if(!clientVos.isEmpty()){
+            List<SortModel> sortModels = SortModelFactory.getInstance().convertClients2SortModels(clientVos);
+            mAllContactsList = new ArrayList<>();
+            mAllContactsList.addAll(sortModels);
+
+            //TODO:2.获得服务器最近联系人列表， 进入排序
+            List<SortModel> latestSortModels = SortModelFactory.getInstance().getLatestSortModel(clientVos);
+            mAllContactsList.addAll(latestSortModels);
+        }
+
     }
 
     private void initListener() {
-
         /** 后退界面 */
         mIbtnBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -128,12 +132,10 @@ public class ContactsActivity extends Activity{
 
             @Override
             public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
-
             }
 
             @Override
             public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
-
             }
 
             @Override
@@ -169,7 +171,11 @@ public class ContactsActivity extends Activity{
         mLvContacts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long arg3) {
-                ContactsSortAdapter.ViewHolder viewHolder = (ContactsSortAdapter.ViewHolder) view.getTag();
+                if(mAllContactsList.get(position).getContactType() == ContactType.LOCAL){
+                    ContactsSortAdapter.LocalViewHolder  localHolder  = (ContactsSortAdapter.LocalViewHolder) view.getTag();
+                } else {
+                    ContactsSortAdapter.ServerViewHolder serverHolder = (ContactsSortAdapter.ServerViewHolder) view.getTag();
+                }
             }
         });
     }
@@ -200,26 +206,32 @@ public class ContactsActivity extends Activity{
                     int PHONES_DISPLAY_NAME_INDEX = phoneCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
                     int SORT_KEY_INDEX            = phoneCursor.getColumnIndex("sort_key");
                     if (phoneCursor.getCount() > 0) {
-                        mAllContactsList = new ArrayList<>();
+                        if(null == mAllContactsList){
+                            mAllContactsList = new ArrayList<>();
+                        }
                         while (phoneCursor.moveToNext()) {
                             String phoneNumber = phoneCursor.getString(PHONES_NUMBER_INDEX);
                             if (TextUtils.isEmpty(phoneNumber))
                                 continue;
                             long   contactID   = phoneCursor.getLong(PHONES_CONTEACT_ID_INDEX);
-                            System.out.println("contactID:" + contactID);
                             String contactName = phoneCursor.getString(PHONES_DISPLAY_NAME_INDEX);
                             String sortKey     = phoneCursor.getString(SORT_KEY_INDEX);
                             System.out.println(sortKey);
-                            SortModel sortModel = new SortModel(contactID, contactName, phoneNumber, sortKey);
+
+                            SortModel sortModel = new SortModel();
+                            sortModel.setContactType(ContactType.LOCAL);//本地联系人类型
+                            sortModel.setContactID(contactID);
+                            sortModel.setName(contactName);
+                            sortModel.setNumber(phoneNumber);
+                            sortModel.setSortKey(sortKey);
 
                             //优先使用系统sortkey取, 取不到再使用工具取
-                            String sortLetters = getSortLetterBySortKey(sortKey);
-//                            System.out.println("sortLetters:" + sortLetters);
+                            String sortLetters = SortKeyUtil.getSortLetterBySortKey(sortKey, characterParser);
                             if (sortLetters == null) {
-                                sortLetters = getSortLetter(contactName);
+                                sortLetters = SortKeyUtil.getSortLetter(contactName, characterParser);
                             }
-                            sortModel.sortLetters = sortLetters;
-                            sortModel.sortToken   = parseSortKey(sortKey);
+                            sortModel.setSortLetters(sortLetters);
+                            sortModel.setSortToken(SortKeyUtil.parseSortKey(sortKey));
                             mAllContactsList.add(sortModel);
                         }
                     }
@@ -238,72 +250,11 @@ public class ContactsActivity extends Activity{
     }
 
     /**
-     * 名字转拼音,取首字母
-     * @param name
-     * @return
-     */
-    private String getSortLetter(String name) {
-        String letter = "#";
-        if (name == null) {
-            return letter;
-        }
-
-        //汉字转换成拼音
-        String pinyin     = characterParser.getSelling(name);
-        String sortString = pinyin.substring(0, 1).toUpperCase(Locale.CHINESE);
-
-        // 正则表达式，判断首字母是否是英文字母
-        if (sortString.matches("[A-Z]")) {
-            letter = sortString.toUpperCase(Locale.CHINESE);
-        }
-        return letter;
-    }
-
-    /**
-     * 取sort_key的首字母
-     * @param sortKey
-     * @return
-     */
-    private String getSortLetterBySortKey(String sortKey) {
-        if (sortKey == null || "".equals(sortKey.trim())) {
-            return null;
-        }
-
-        String letter = "#";
-        //汉字转换成拼音
-        String sortString = sortKey.trim().substring(0, 1).toUpperCase(Locale.CHINESE);
-        System.out.print("sortString:"+ sortString);
-        if (sortString.length() > 0 && isChinese(sortString)) {
-            letter = characterParser.getSelling(sortString).trim().substring(0, 1).toUpperCase(Locale.CHINA);
-            System.out.print("letter:"+ letter);
-        } else if (sortString.matches("[A-Z]")) {
-            // 正则表达式，判断首字母是否是英文字母
-            letter = sortString.toUpperCase(Locale.CHINESE);
-        }
-        return letter;
-    }
-
-    /**
-     * 判断字符串是否为中文
-     * @param str
-     * @return
-     */
-    private boolean isChinese(String str) {
-        String regEx = "[\u4e00-\u9fa5]";
-        Pattern p = Pattern.compile(regEx);
-        Matcher m = p.matcher(str);
-        while (m.find()) {
-            return true;
-        }
-        return false;
-    }
-
-    /**
      * 模糊查询
      * @param str
      * @return
      */
-    private List<SortModel> search(String str) {
+    public List<SortModel> search(String str) {
         List<SortModel> filterList = new ArrayList<SortModel>();// 过滤后的list
         //if (str.matches("^([0-9]|[/+])*$")) {// 正则表达式 匹配号码
         if (str.matches("^([0-9]|[/+]).*")) {// 正则表达式 匹配以数字或者加号开头的字符串(包括了带空格及-分割的号码)
@@ -323,8 +274,8 @@ public class ContactsActivity extends Activity{
                     //姓名全匹配,姓名首字母简拼匹配,姓名全字母匹配
                     if (contact.getName().toLowerCase(Locale.CHINESE).contains(str.toLowerCase(Locale.CHINESE))
                             || contact.getSortKey().toLowerCase(Locale.CHINESE).replace(" ", "").contains(str.toLowerCase(Locale.CHINESE))
-                            || contact.sortToken.simpleSpell.toLowerCase(Locale.CHINESE).contains(str.toLowerCase(Locale.CHINESE))
-                            || contact.sortToken.wholeSpell.toLowerCase(Locale.CHINESE).contains(str.toLowerCase(Locale.CHINESE))) {
+                            || contact.getSortToken().simpleSpell.toLowerCase(Locale.CHINESE).contains(str.toLowerCase(Locale.CHINESE))
+                            || contact.getSortToken().wholeSpell.toLowerCase(Locale.CHINESE).contains(str.toLowerCase(Locale.CHINESE))) {
                         if (!filterList.contains(contact)) {
                             filterList.add(contact);
                         }
@@ -333,29 +284,6 @@ public class ContactsActivity extends Activity{
             }
         }
         return filterList;
-    }
-
-    String chReg = "[\\u4E00-\\u9FA5]+";//中文字符串匹配
-    //String chReg="[^\\u4E00-\\u9FA5]";//除中文外的字符匹配
-    /**
-     * 解析sort_key,封装简拼,全拼
-     * @param sortKey
-     * @return
-     */
-    public SortToken parseSortKey(String sortKey) {
-        SortToken token = new SortToken();
-        if (sortKey != null && sortKey.length() > 0) {
-            //其中包含的中文字符
-            String[] enStrs = sortKey.replace(" ", "").split(chReg);
-            for (int i = 0, length = enStrs.length; i < length; i++) {
-                if (enStrs[i].length() > 0) {
-                    //拼接简拼
-                    token.simpleSpell += enStrs[i].charAt(0);
-                    token.wholeSpell += enStrs[i];
-                }
-            }
-        }
-        return token;
     }
 
 }

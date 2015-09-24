@@ -4,8 +4,12 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.text.TextUtils;
 
+import com.zkjinshi.superservice.activity.common.contact.SortModel;
 import com.zkjinshi.superservice.vo.ClientVo;
 import com.zkjinshi.superservice.vo.OnAccountStatus;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 开发者：vincent
@@ -96,5 +100,6 @@ public class ClientFactory {
             return OnAccountStatus.NOTONACCOUNT;
         }
     }
+
 
 }

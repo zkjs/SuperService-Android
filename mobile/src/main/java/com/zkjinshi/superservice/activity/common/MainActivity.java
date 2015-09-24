@@ -4,38 +4,22 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.view.ViewPager;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
-
-
-import com.gordonwong.materialsheetfab.MaterialSheetFab;
-import com.gordonwong.materialsheetfab.MaterialSheetFabEventListener;
 import com.zkjinshi.base.util.DeviceUtils;
 import com.zkjinshi.base.util.ImageUtil;
 import com.zkjinshi.superservice.R;
-import com.zkjinshi.superservice.adapter.ViewPagerAdapter;
-import com.zkjinshi.superservice.view.Fab;
-
-import org.apache.log4j.chainsaw.Main;
+import com.zkjinshi.superservice.activity.common.contact.ContactsActivity;
 
 import java.util.List;
 
@@ -102,7 +86,8 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.client_tv).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent myClient = new Intent(MainActivity.this, ContactsActivity.class);
+                MainActivity.this.startActivity(myClient);
             }
         });
 
