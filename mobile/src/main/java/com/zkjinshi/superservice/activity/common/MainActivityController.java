@@ -57,24 +57,8 @@ public class MainActivityController implements View.OnClickListener{
         }
     }
 
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = activity.getMenuInflater();
-        inflater.inflate(R.menu.menu_main, menu);
-        return activity.onCreateOptionsMenu(menu);
-    }
-
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                toggleDrawer();
-                return true;
-            default:
-                return activity.onOptionsItemSelected(item);
-        }
-    }
-
     /**
-     * Sets up the action bar.
+     * 设置action bar
      */
     private void setupActionBar() {
         activity.setSupportActionBar((Toolbar) activity.findViewById(R.id.toolbar));
@@ -160,9 +144,8 @@ public class MainActivityController implements View.OnClickListener{
     }
 
     /**
-     * Called when the selected page changes.
-     *
-     * @param selectedPage selected page
+     * 更新当前页数据
+     * @param selectedPage
      */
     private void updatePage(int selectedPage) {
         updateFab(selectedPage);
@@ -170,9 +153,8 @@ public class MainActivityController implements View.OnClickListener{
     }
 
     /**
-     * Updates the FAB based on the selected page
-     *
-     * @param selectedPage selected page
+     * 更新当Fab悬浮按钮数据
+     * @param selectedPage
      */
     private void updateFab(int selectedPage) {
         switch (selectedPage) {
@@ -191,9 +173,8 @@ public class MainActivityController implements View.OnClickListener{
     }
 
     /**
-     * Updates the snackbar based on the selected page
-     *
-     * @param selectedPage selected page
+     * 更新当Snackbar按钮数据
+     * @param selectedPage
      */
     private void updateSnackbar(int selectedPage) {
         View snackbar = activity.findViewById(R.id.snackbar);
@@ -210,7 +191,7 @@ public class MainActivityController implements View.OnClickListener{
     }
 
     /**
-     * Toggles opening/closing the drawer.
+     * 切换侧滑栏
      */
     public void toggleDrawer() {
         if (drawerLayout.isDrawerVisible(GravityCompat.START)) {
@@ -220,6 +201,10 @@ public class MainActivityController implements View.OnClickListener{
         }
     }
 
+    /**
+     * 获取状态栏颜色
+     * @return
+     */
     private int getStatusBarColor() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             return activity.getWindow().getStatusBarColor();
@@ -227,6 +212,10 @@ public class MainActivityController implements View.OnClickListener{
         return 0;
     }
 
+    /**
+     * 设置状态栏颜色
+     * @param color
+     */
     private void setStatusBarColor(int color) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             activity.getWindow().setStatusBarColor(color);
