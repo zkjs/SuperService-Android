@@ -1,6 +1,7 @@
 package com.zkjinshi.superservice.factory;
 
 import android.content.ContentValues;
+import android.database.Cursor;
 import android.text.TextUtils;
 
 import com.zkjinshi.superservice.vo.ClientVo;
@@ -30,8 +31,7 @@ public class ClientFactory {
      * @param clientVo
      * @return
      */
-    public ContentValues
-    buildAddContentValues(ClientVo clientVo) {
+    public ContentValues buildAddContentValues(ClientVo clientVo) {
 
         ContentValues values = new ContentValues();
         String clientID = clientVo.getClientID();
@@ -64,6 +64,37 @@ public class ClientFactory {
             values.put("client_position", clientPosition);
         }
         return values;
+    }
+
+    /**
+     * 根据游标构建客户对象
+     * @param cursor
+     * @return
+     */
+    public ClientVo buildClientVo(Cursor cursor) {
+        ClientVo clientVo = new ClientVo();
+        clientVo.setClientID(cursor.getString(0));
+        clientVo.setClientName(cursor.getString(1));
+        clientVo.setClientPhone(cursor.getString(2));
+        clientVo.setAvatarName(cursor.getString(3));
+        clientVo.setAvatarUrl(cursor.getString(4));
+        clientVo.setClientCompany(cursor.getString(5));
+        clientVo.setClientPosition(cursor.getString(6));
+        clientVo.setOnAccount(getOnAccountStatus(cursor.getInt(6)));
+        return  clientVo;
+    }
+
+    /**
+     * 获得是否挂账会员状态
+     * @param onAccount
+     * @return
+     */
+    private OnAccountStatus getOnAccountStatus(int onAccount){
+        if(onAccount == OnAccountStatus.ISONACCOUNT.getValue()){
+            return OnAccountStatus.ISONACCOUNT;
+        } else {
+            return OnAccountStatus.NOTONACCOUNT;
+        }
     }
 
 }

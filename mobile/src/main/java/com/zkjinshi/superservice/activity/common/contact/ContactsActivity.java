@@ -2,6 +2,7 @@ package com.zkjinshi.superservice.activity.common.contact;
 
 import android.app.Activity;
 import android.content.ContentResolver;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -12,12 +13,17 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
+import com.zkjinshi.superservice.activity.common.ClientAddActivity;
+import com.zkjinshi.superservice.sqlite.ClientDBUtil;
+import com.zkjinshi.superservice.vo.ClientVo;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,11 +41,15 @@ import java.util.regex.Pattern;
  */
 public class ContactsActivity extends Activity{
 
+    private final static String TAG = ContactsActivity.class.getSimpleName();
+
     private SideBar   mSideBar;
     private TextView  mTvDialog;
     private ImageView mIvClearText;
     private EditText  mEtSearch;
     private ListView  mLvContacts;
+    private ImageButton mIbtnBack;
+    private ImageButton mIbtnAdd;
 
     private CharacterParser      characterParser;
     private List<SortModel>      mAllContactsList;
@@ -63,12 +73,23 @@ public class ContactsActivity extends Activity{
         mIvClearText = (ImageView) findViewById(R.id.iv_cleartext);
         mEtSearch    = (EditText)  findViewById(R.id.et_search);
         mLvContacts  = (ListView)  findViewById(R.id.lv_contacts);
+        mIbtnBack    = (ImageButton)  findViewById(R.id.ibtn_back);
+        mIbtnAdd     = (ImageButton)  findViewById(R.id.ibtn_add);
     }
 
     private void initData() {
         /** 给ListView设置adapter **/
         mSideBar.setTextView(mTvDialog);
         characterParser  = CharacterParser.getInstance();
+
+        //TODO: 服务器获得当前服务员关联的客户列表
+        List<ClientVo> clientVos = ClientDBUtil.getInstance().queryAll();
+        DialogUtil.getInstance().showToast(this, "clientVos 的条数："+clientVos.size());
+
+        if(!clientVos.isEmpty()){
+//            SortModelFactory.getInstance().convertClients2SortModels();
+        }
+
         mAllContactsList = new ArrayList<>();
         pinyinComparator = new PinyinComparator();
         Collections.sort(mAllContactsList, pinyinComparator);// 根据a-z进行排序源数据
@@ -77,6 +98,24 @@ public class ContactsActivity extends Activity{
     }
 
     private void initListener() {
+
+        /** 后退界面 */
+        mIbtnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ContactsActivity.this.finish();
+            }
+        });
+
+        /** 进入新增客户界面 */
+        mIbtnAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent goAddClient = new Intent(ContactsActivity.this, ClientAddActivity.class);
+                ContactsActivity.this.startActivity(goAddClient);
+            }
+        });
+
         /**清除输入字符**/
         mIvClearText.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -131,8 +170,6 @@ public class ContactsActivity extends Activity{
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long arg3) {
                 ContactsSortAdapter.ViewHolder viewHolder = (ContactsSortAdapter.ViewHolder) view.getTag();
-                viewHolder.cbChecked.performClick();
-                mContactsAdapter.toggleChecked(position);
             }
         });
     }
@@ -168,7 +205,8 @@ public class ContactsActivity extends Activity{
                             String phoneNumber = phoneCursor.getString(PHONES_NUMBER_INDEX);
                             if (TextUtils.isEmpty(phoneNumber))
                                 continue;
-                            String contactID   = phoneCursor.getString(PHONES_CONTEACT_ID_INDEX);
+                            long   contactID   = phoneCursor.getLong(PHONES_CONTEACT_ID_INDEX);
+                            System.out.println("contactID:" + contactID);
                             String contactName = phoneCursor.getString(PHONES_DISPLAY_NAME_INDEX);
                             String sortKey     = phoneCursor.getString(SORT_KEY_INDEX);
                             System.out.println(sortKey);
@@ -271,8 +309,8 @@ public class ContactsActivity extends Activity{
         if (str.matches("^([0-9]|[/+]).*")) {// 正则表达式 匹配以数字或者加号开头的字符串(包括了带空格及-分割的号码)
             String simpleStr = str.replaceAll("\\-|\\s", "");
             for (SortModel contact : mAllContactsList) {
-                if (contact.number != null && contact.name != null) {
-                    if (contact.simpleNumber.contains(simpleStr) || contact.name.contains(str)) {
+                if (contact.getNumber() != null && contact.getName() != null) {
+                    if (contact.getSimpleNumber().contains(simpleStr) || contact.getName().contains(str)) {
                         if (!filterList.contains(contact)) {
                             filterList.add(contact);
                         }
@@ -281,10 +319,10 @@ public class ContactsActivity extends Activity{
             }
         }else {
             for (SortModel contact : mAllContactsList) {
-                if (contact.number != null && contact.name != null) {
+                if (contact.getNumber() != null && contact.getName() != null) {
                     //姓名全匹配,姓名首字母简拼匹配,姓名全字母匹配
-                    if (contact.name.toLowerCase(Locale.CHINESE).contains(str.toLowerCase(Locale.CHINESE))
-                            || contact.sortKey.toLowerCase(Locale.CHINESE).replace(" ", "").contains(str.toLowerCase(Locale.CHINESE))
+                    if (contact.getName().toLowerCase(Locale.CHINESE).contains(str.toLowerCase(Locale.CHINESE))
+                            || contact.getSortKey().toLowerCase(Locale.CHINESE).replace(" ", "").contains(str.toLowerCase(Locale.CHINESE))
                             || contact.sortToken.simpleSpell.toLowerCase(Locale.CHINESE).contains(str.toLowerCase(Locale.CHINESE))
                             || contact.sortToken.wholeSpell.toLowerCase(Locale.CHINESE).contains(str.toLowerCase(Locale.CHINESE))) {
                         if (!filterList.contains(contact)) {

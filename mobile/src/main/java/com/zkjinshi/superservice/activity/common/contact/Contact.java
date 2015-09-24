@@ -9,15 +9,15 @@ package com.zkjinshi.superservice.activity.common.contact;
  */
 public class Contact {
 
-	public String contactID;
-	public String name;
-	public String number;
-	public String simpleNumber;
-	public String sortKey;
+	private long   contactID;
+	private String name;
+	private String number;
+	private String simpleNumber;
+	private String sortKey;
 
 	public Contact() {}
 
-	public Contact(String contactID, String name, String number, String sortKey) {
+	public Contact(long contactID, String name, String number, String sortKey) {
 		this.contactID = contactID;
 		this.name		= name;
 		this.number  	= number;
@@ -27,11 +27,50 @@ public class Contact {
 		}
 	}
 
+	public long getContactID() {
+		return contactID;
+	}
+
+	public void setContactID(long contactID) {
+		this.contactID = contactID;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getNumber() {
+		return number;
+	}
+
+	public void setNumber(String number) {
+		this.number = number;
+	}
+
+	public String getSimpleNumber() {
+		return simpleNumber;
+	}
+
+	public void setSimpleNumber(String simpleNumber) {
+		this.simpleNumber = simpleNumber;
+	}
+
+	public String getSortKey() {
+		return sortKey;
+	}
+
+	public void setSortKey(String sortKey) {
+		this.sortKey = sortKey;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((contactID == null) ? 0 : contactID.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		result = prime * result + ((number == null) ? 0 : number.hashCode());
 		result = prime * result + ((sortKey == null) ? 0 : sortKey.hashCode());
@@ -49,11 +88,6 @@ public class Contact {
 			return false;
 
 		Contact other = (Contact) obj;
-		if (contactID == null) {
-			if (other.contactID != null)
-				return false;
-		} else if (!contactID.equals(other.contactID))
-			return false;
 
 		if (name == null) {
 			if (other.name != null)

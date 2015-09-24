@@ -2,6 +2,7 @@ package com.zkjinshi.superservice.sqlite;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.zkjinshi.base.log.LogLevel;
@@ -9,6 +10,9 @@ import com.zkjinshi.base.log.LogUtil;
 import com.zkjinshi.superservice.ServiceApplication;
 import com.zkjinshi.superservice.factory.ClientFactory;
 import com.zkjinshi.superservice.vo.ClientVo;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 开发者：vincent
@@ -56,5 +60,38 @@ public class ClientDBUtil {
                 db.close();
         }
         return addResult;
+    }
+
+    /**
+     * 获取当前所有
+     */
+    public List<ClientVo> queryAll() {
+        List<ClientVo> clientVos = new ArrayList<>();
+        ClientVo clientVo = null;
+        SQLiteDatabase db = null;
+        Cursor cursor = null;
+        if (null != helper) {
+            try {
+                db = helper.getReadableDatabase();
+                cursor = db.query(DBOpenHelper.CLIENT_TBL, null, null, null, null, null, null);
+                if (cursor != null && cursor.getCount() > 0) {
+                    while (cursor.moveToNext()) {
+                        clientVo = ClientFactory.getInstance().buildClientVo(cursor);
+                        clientVos.add(clientVo);
+                    }
+                }
+            } catch (Exception e) {
+                LogUtil.getInstance().info(LogLevel.ERROR, TAG+".queryAll->"+e.getMessage());
+                e.printStackTrace();
+            } finally {
+                if (null != cursor) {
+                    cursor.close();
+                }
+                if (null != db) {
+                    db.close();
+                }
+            }
+        }
+        return  clientVos;
     }
 }

@@ -9,7 +9,7 @@ package com.zkjinshi.superservice.activity.common.contact;
  */
 public class SortModel extends Contact {
 
-	public SortModel(String contactID, String name, String number, String sortKey) {
+	public SortModel(long contactID, String name, String number, String sortKey) {
 		super(contactID, name, number, sortKey);
 	}
 
