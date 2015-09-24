@@ -89,6 +89,7 @@ public class MainActivityController implements View.OnClickListener{
         drawerToggle = new ActionBarDrawerToggle(activity, drawerLayout, R.string.opendrawer,
                 R.string.closedrawer);
         drawerLayout.setDrawerListener(drawerToggle);
+
     }
 
     /**

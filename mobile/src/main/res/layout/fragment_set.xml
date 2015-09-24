@@ -6,6 +6,7 @@
     android:background="#ffffff">
 
     <RelativeLayout
+        android:id="@+id/avatar_rlt"
         android:layout_width="270dp"
         android:layout_height="190dp">
 
@@ -13,7 +14,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="#11000000"
-            android:scaleType="centerInside"
+            android:scaleType="centerCrop"
             android:src="@drawable/img_hotel_zhanwei"
             android:id="@+id/avatar_iv" />
 
@@ -35,7 +36,7 @@
             android:paddingLeft="20dp"
             android:paddingRight="20dp"
             android:background="#00000000">
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
@@ -53,20 +54,27 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@drawable/cbx_online"
+                    android:button="@null"
                     android:layout_marginLeft="10dp"
                     android:checked="false"
-                    android:id="@+id/online_cbx" />
-            </LinearLayout>
+                    android:id="@+id/online_cbx"
+                    android:layout_alignParentRight="true"/>
+            </RelativeLayout>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="left"
                 android:textSize="14sp"
                 android:textColor="#ffffff"
                 android:layout_marginTop="5dp"
                 style="@style/shadowText"
                 android:text="长沙芙蓉国温德姆豪庭至尊大酒店"
-                android:id="@+id/shop_name_tv" />
+                android:id="@+id/shop_name_tv"
+                android:singleLine="true"
+                android:ellipsize="marquee"
+                android:focusable="true"
+                android:focusableInTouchMode="true"/>
 
         </LinearLayout>
     </RelativeLayout>
