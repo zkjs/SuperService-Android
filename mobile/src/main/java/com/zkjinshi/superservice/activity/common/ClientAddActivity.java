@@ -3,6 +3,8 @@ package com.zkjinshi.superservice.activity.common;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -29,6 +31,8 @@ public class ClientAddActivity extends Activity {
 
     private final static String TAG = ClientAddActivity.class.getSimpleName();
 
+    private final static int CLIENT_ADD_RESULT = 0x00;
+
     private CircleImageView mCivClientAvatar;
     private EditText        mEtClientName;
     private EditText        mEtClientPhone;
@@ -38,6 +42,24 @@ public class ClientAddActivity extends Activity {
     private Button          mBtnConfirm;
 
     private ClientVo        mClientVo;
+
+    private Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case CLIENT_ADD_RESULT:
+                    Bundle bundle = msg.getData();
+                    long addResult = bundle.getLong("add_result");
+                    if(addResult > 0){
+                        DialogUtil.getInstance().showToast(ClientAddActivity.this, "添加新客户成功!");
+                    } else {
+                        DialogUtil.getInstance().showToast(ClientAddActivity.this, "添加失败! 请重新添加");
+                    }
+                    break ;
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,11 +119,12 @@ public class ClientAddActivity extends Activity {
                 //TODO 2. add the client into the db by http request
                 //TODO 3.add to local db
                 long addResult = ClientDBUtil.getInstance().addClient(mClientVo);
-                if (addResult > 0) {
-                    Log.v(TAG, "addClient成功: addResult=" + addResult);
-                } else {
-                    Log.v(TAG, "addClient失败: addResult=" + addResult);
-                }
+                Message msg = Message.obtain();
+                msg.what = CLIENT_ADD_RESULT;
+                Bundle bundle = new Bundle();
+                bundle.putLong("add_result", addResult);
+                msg.setData(bundle);
+                handler.sendMessage(msg);
             }
         });
     }

@@ -17,7 +17,7 @@ public class TableOpenHelper {
                     + " client_phone    text, " //客户手机
                     + " avatar_name     text, " //图片名称
                     + " avatar_url      text，" //图片url
-                    + " client_company  text, " //客户所在公司
+                    +" client_company   text, " //客户所在公司
                     + " client_position text, " //客户职位
                     + " on_account      integer "   //是否挂账会员 0:挂账会员 1 非挂账会员
                     + " ) ";

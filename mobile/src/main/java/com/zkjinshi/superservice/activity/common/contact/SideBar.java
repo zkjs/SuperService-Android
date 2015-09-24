@@ -111,7 +111,12 @@ public class SideBar extends View {
 						listener.onTouchingLetterChanged(b[c]);
 					}
 					if (mTextDialog != null) {
-						mTextDialog.setText(b[c]);
+						//显示最近联系人
+						if(c == 0){
+							mTextDialog.setText("最近");
+						} else {
+							mTextDialog.setText(b[c]);
+						}
 						mTextDialog.setVisibility(View.VISIBLE);
 					}
 

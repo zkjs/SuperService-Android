@@ -17,20 +17,23 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="44dp"
+        android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:paddingLeft="8dp" >
 
-        <CheckBox
-            android:id="@+id/cbChecked"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:background="@drawable/selector_checkbox_contact"
-            android:button="@null"
-            android:clickable="false"
-            android:focusable="false"
-            android:visibility="visible" />
+        <RelativeLayout
+            android:padding="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <com.zkjinshi.superservice.view.CircleImageView
+                android:id="@+id/civ_contact_avatar"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_gravity="center_vertical"/>
+
+        </RelativeLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -40,20 +43,21 @@
             android:paddingLeft="8dp" >
 
             <TextView
-                android:id="@+id/title"
+                android:id="@+id/tv_contact_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:singleLine="true"
                 android:textColor="#000"
-                android:textSize="14sp" />
+                android:textSize="18sp" />
 
             <TextView
-                android:id="@+id/number"
+                android:id="@+id/tv_contact_phone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:singleLine="true"
                 android:textColor="#333"
-                android:textSize="10sp" />
+                android:textSize="16sp" />
+
         </LinearLayout>
     </LinearLayout>
 
