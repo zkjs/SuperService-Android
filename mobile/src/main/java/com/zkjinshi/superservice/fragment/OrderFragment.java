@@ -17,6 +17,11 @@ import com.zkjinshi.superservice.R;
  * 版权所有
  */
 public class OrderFragment extends Fragment{
+
+    public static OrderFragment newInstance() {
+        return new OrderFragment();
+    }
+
     private void initView(View view){
 
     }

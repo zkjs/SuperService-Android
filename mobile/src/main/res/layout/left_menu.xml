@@ -19,7 +19,7 @@
        <ImageButton
            android:layout_width="50dp"
            android:layout_height="50dp"
-           android:src="@drawable/ic_pen"
+           android:src="@drawable/ic_add_grey600_24dp"
            android:scaleType="centerInside"
            android:background="#00000000"
            android:layout_alignParentRight="true"

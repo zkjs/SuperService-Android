@@ -8,7 +8,6 @@ import android.view.Window;
 import android.widget.ListView;
 
 import com.zkjinshi.superservice.R;
-import com.zkjinshi.superservice.activity.common.main.MainActivity;
 import com.zkjinshi.superservice.adapter.ZoneAdapter;
 import com.zkjinshi.superservice.test.ZoneBiz;
 

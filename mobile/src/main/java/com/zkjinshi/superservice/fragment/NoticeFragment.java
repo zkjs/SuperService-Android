@@ -18,6 +18,10 @@ import com.zkjinshi.superservice.R;
  */
 public class NoticeFragment extends Fragment {
 
+    public static NoticeFragment newInstance() {
+        return new NoticeFragment();
+    }
+
     private void initView(View view){
 
     }

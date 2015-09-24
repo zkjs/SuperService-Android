@@ -18,6 +18,10 @@ import com.zkjinshi.superservice.R;
  */
 public class MessageFragment extends Fragment{
 
+    public static MessageFragment newInstance() {
+        return new MessageFragment();
+    }
+
     private void initView(View view){
 
     }

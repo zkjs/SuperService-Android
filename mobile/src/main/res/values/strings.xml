@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">SuperService</string>
+    <string name="app_name">超级服务</string>
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
@@ -21,5 +21,16 @@
     <string name="finish">完成</string>
     <string name="choose">选取</string>
     <string name="my_clients">我的客户</string>
+
+    <string name="snackbar_shared_msg">Gordon Wong shared a note with you.</string>
+    <string name="view">View</string>
+    <string name="opendrawer">Open drawer</string>
+    <string name="closedrawer">Close drawer</string>
+    <string name="sheet_item_pressed">Item pressed</string>
+    <string name="recording">Recording</string>
+    <string name="reminder">Reminder</string>
+    <string name="photo">Photo</string>
+    <string name="createnote">Create note</string>
+    <string name="search">Search</string>
 
 </resources>

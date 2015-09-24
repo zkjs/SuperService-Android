@@ -56,7 +56,7 @@ public class HoverImageView extends ImageView {
 			TypedArray typedArray = getContext().obtainStyledAttributes(attrs, R.styleable.RoundImageView);
 			borderColor = typedArray.getColor(R.styleable.RoundImageView_borderColor, borderColor);
 			hoverColor = typedArray.getColor(R.styleable.RoundImageView_hoverColor, hoverColor);
-			borderWidth = typedArray.getDimension(R.styleable.RoundImageView_borderWidth, borderWidth);
+			borderWidth = typedArray.getDimension(R.styleable.RoundImageView_borderwidth, borderWidth);
 			typedArray.recycle();
 		}
 
