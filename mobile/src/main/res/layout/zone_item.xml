@@ -22,10 +22,12 @@
         android:id="@+id/zone_name_tv" />
 
     <CheckBox
+        android:id="@+id/zone_cbx"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginRight="20dp"
         android:checked="false"
-        android:id="@+id/zone_cbx" />
+        android:background="@drawable/cbx_zone"
+        android:button="@null"/>
 
 </LinearLayout>
