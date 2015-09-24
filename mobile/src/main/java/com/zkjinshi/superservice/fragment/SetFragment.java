@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.zkjinshi.base.util.ImageUtil;
@@ -39,6 +40,7 @@ public class SetFragment extends Fragment {
     private TextView usernameTv;
     private TextView shopnameTv;
     private CheckBox onlineCbx;
+    private RelativeLayout avatarLayout;
 
 
     private void initView(View view){
@@ -46,6 +48,7 @@ public class SetFragment extends Fragment {
         usernameTv = (TextView)view.findViewById(R.id.username_tv);
         shopnameTv = (TextView)view.findViewById(R.id.shop_name_tv);
         onlineCbx = (CheckBox)view.findViewById(R.id.online_cbx);
+        avatarLayout = (RelativeLayout)view.findViewById(R.id.avatar_rlt);
 
         //设置在线或离线
         onlineCbx.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -126,8 +129,11 @@ public class SetFragment extends Fragment {
     private void setAvatar(String photoFilePath){
         Bitmap displayBitmap = BitmapFactory.decodeFile(photoFilePath);
         if (displayBitmap != null) {
-            displayBitmap = ImageUtil.cropThumbBitmap(displayBitmap);
-            displayBitmap = ImageUtil.loadThumbBitmap(getActivity(), displayBitmap);
+            ViewGroup.LayoutParams para = avatarLayout.getLayoutParams();
+            Log.d(TAG, "layout height0: " + para.height);
+            Log.d(TAG, "layout width0: " + para.width);
+            displayBitmap = ImageUtil.cropBitmap(displayBitmap, para.width, para.height);
+            //displayBitmap = ImageUtil.loadThumbBitmap(getActivity(), displayBitmap);
             avatarIv.setImageBitmap(displayBitmap);
         }
         // CacheUtil.getInstance().savePicPath(photoFilePath);
