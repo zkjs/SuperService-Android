@@ -38,7 +38,7 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case ALL_POS:
-                return SharedFragment.newInstance();
+                return NoticeFragment.newInstance();
             case SHARED_POS:
                 return MessageFragment.newInstance();
             case FAVORITES_POS:
