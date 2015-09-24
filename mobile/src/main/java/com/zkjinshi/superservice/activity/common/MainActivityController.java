@@ -49,12 +49,12 @@ public class MainActivityController implements View.OnClickListener{
         drawerToggle.syncState();
     }
 
-    public void onBackPressed() {
+    public boolean onBackPressed() {
         if (materialSheetFab.isSheetVisible()) {
             materialSheetFab.hideSheet();
-        } else {
-            activity.onBackPressed();
+            return false;
         }
+        return true;
     }
 
     /**
@@ -138,8 +138,6 @@ public class MainActivityController implements View.OnClickListener{
         // Set material sheet item click listeners
         activity.findViewById(R.id.fab_sheet_item_recording).setOnClickListener(this);
         activity.findViewById(R.id.fab_sheet_item_reminder).setOnClickListener(this);
-        activity.findViewById(R.id.fab_sheet_item_photo).setOnClickListener(this);
-        activity.findViewById(R.id.fab_sheet_item_note).setOnClickListener(this);
     }
 
     /**

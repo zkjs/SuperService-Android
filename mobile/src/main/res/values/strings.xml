@@ -27,10 +27,10 @@
     <string name="opendrawer">Open drawer</string>
     <string name="closedrawer">Close drawer</string>
     <string name="sheet_item_pressed">Item pressed</string>
-    <string name="recording">Recording</string>
-    <string name="reminder">Reminder</string>
-    <string name="photo">Photo</string>
-    <string name="createnote">Create note</string>
     <string name="search">Search</string>
+
+    <!--到店通知-->
+    <string name="talk_with_team">与团队对话</string>
+    <string name="talk_with_client">与客户对话</string>
 
 </resources>

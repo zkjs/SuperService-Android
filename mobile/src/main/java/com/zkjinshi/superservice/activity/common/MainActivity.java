@@ -50,7 +50,9 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        mainActivityController.onBackPressed();
+        if(mainActivityController.onBackPressed()){
+            super.onBackPressed();
+        }
     }
 
     @Override
