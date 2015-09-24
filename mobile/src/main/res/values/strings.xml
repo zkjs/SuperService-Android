@@ -20,5 +20,6 @@
     <string name="not_input_yet"> 尚未输入</string>
     <string name="finish">完成</string>
     <string name="choose">选取</string>
+    <string name="my_clients">我的客户</string>
 
 </resources>
