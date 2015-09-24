@@ -13,10 +13,14 @@
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#11000000"
             android:scaleType="centerCrop"
-            android:src="@drawable/img_hotel_zhanwei"
+            android:src="@drawable/img_morentu"
             android:id="@+id/avatar_iv" />
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#48000000"/>
 
         <ImageButton
             android:layout_width="50dp"
