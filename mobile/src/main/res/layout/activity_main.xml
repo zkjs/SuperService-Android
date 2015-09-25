@@ -102,20 +102,6 @@
 
         </io.codetail.widget.RevealLinearLayout>
 
-        <!-- Snackbar -->
-        <LinearLayout
-            android:id="@+id/snackbar"
-            style="@style/Widget.MaterialSheetFab.Snackbar"
-            android:layout_alignParentBottom="true">
-
-            <TextView
-                style="@style/TextAppearance.MaterialSheetFab.Snackbar.Message"
-                android:text="@string/snackbar_shared_msg" />
-
-            <TextView
-                style="@style/TextAppearance.MaterialSheetFab.Snackbar.Action"
-                android:text="@string/view" />
-        </LinearLayout>
     </RelativeLayout>
 
     <android.support.design.widget.NavigationView

@@ -144,7 +144,6 @@ public class MainActivityController implements View.OnClickListener{
      */
     private void updatePage(int selectedPage) {
         updateFab(selectedPage);
-        updateSnackbar(selectedPage);
     }
 
     /**
@@ -154,34 +153,15 @@ public class MainActivityController implements View.OnClickListener{
     private void updateFab(int selectedPage) {
         switch (selectedPage) {
             case ViewPagerAdapter.ALL_POS:
-                materialSheetFab.showFab();
-                break;
-            case ViewPagerAdapter.SHARED_POS:
-                materialSheetFab.showFab(0,
-                        -activity.getResources().getDimensionPixelSize(R.dimen.snackbar_height));
-                break;
-            case ViewPagerAdapter.FAVORITES_POS:
-            default:
                 materialSheetFab.hideSheetThenFab();
                 break;
-        }
-    }
-
-    /**
-     * 更新当Snackbar按钮数据
-     * @param selectedPage
-     */
-    private void updateSnackbar(int selectedPage) {
-        View snackbar = activity.findViewById(R.id.snackbar);
-        switch (selectedPage) {
             case ViewPagerAdapter.SHARED_POS:
-                snackbar.setVisibility(View.VISIBLE);
+                materialSheetFab.showFab();
                 break;
-            case ViewPagerAdapter.ALL_POS:
             case ViewPagerAdapter.FAVORITES_POS:
-            default:
-                snackbar.setVisibility(View.GONE);
+                materialSheetFab.hideSheetThenFab();
                 break;
+            default:
         }
     }
 
