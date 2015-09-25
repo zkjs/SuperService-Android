@@ -9,11 +9,48 @@ package com.zkjinshi.superservice.activity.common.contact;
  */
 public class SortModel extends Contact {
 
-	public SortModel(long contactID, String name, String number, String sortKey) {
-		super(contactID, name, number, sortKey);
+	private ContactType contactType;
+	private String      avatarUrl;
+	private String 		 sortLetters; //显示数据拼音的首字母
+	private SortToken   sortToken;
+
+	public SortModel() {
 	}
 
-	public String sortLetters; //显示数据拼音的首字母
+	public ContactType getContactType() {
+		return contactType;
+	}
 
-	public SortToken sortToken = new SortToken();
+	public void setContactType(ContactType contactType) {
+		this.contactType = contactType;
+	}
+
+	public String getAvatarUrl() {
+		return avatarUrl;
+	}
+
+	public void setAvatarUrl(String avatarUrl) {
+		this.avatarUrl = avatarUrl;
+	}
+
+	public String getSortLetters() {
+		return sortLetters;
+	}
+
+	public void setSortLetters(String sortLetters) {
+		this.sortLetters = sortLetters;
+	}
+
+	public SortToken getSortToken() {
+		if(null == sortToken){
+			sortToken = new SortToken();
+		}
+		return sortToken;
+	}
+
+	public void setSortToken(SortToken sortToken) {
+		this.sortToken = sortToken;
+	}
+
+
 }

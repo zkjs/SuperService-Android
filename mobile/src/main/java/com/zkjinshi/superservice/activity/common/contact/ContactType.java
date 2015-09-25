@@ -10,7 +10,7 @@ package com.zkjinshi.superservice.activity.common.contact;
 public enum ContactType {
 
     LOCAL(0),//本地电话本联系人
-    SERVER_CLIENT(1);//服务器所有的联系人
+    SERVER(1);//服务器上获取到联系人
 
     private ContactType(int value){
         this.value = value;

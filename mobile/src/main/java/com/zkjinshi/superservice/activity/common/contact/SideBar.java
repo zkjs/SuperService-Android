@@ -1,9 +1,12 @@
 package com.zkjinshi.superservice.activity.common.contact;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.util.AttributeSet;
@@ -27,12 +30,13 @@ public class SideBar extends View {
 	private OnTouchingLetterChangedListener onTouchingLetterChangedListener;
 
 	// 右侧选择字母
-	public static String[] b = { "?",
+	public static String[] b = {
+                                  "?","#",
 			                      "A", "B", "C", "D", "E", "F", "G",
 							      "H", "I", "J", "K", "L", "M", "N",
 								  "O", "P", "Q", "R", "S", "T",
-								  "U", "V", "W", "X", "Y", "Z",
-								  "#" };
+								  "U", "V", "W", "X", "Y", "Z"
+                                };
 
 	private int   choose  = -1;// 选中
 	private Paint  paint  = new Paint();
@@ -64,7 +68,7 @@ public class SideBar extends View {
 		int width  = getWidth(); // 获取对应宽度
 
 		float singleHeight = (height * 1f) / b.length;// 获取每一个字母的高度
-		singleHeight = (height * 1f - singleHeight/2) / b.length;
+        singleHeight = (height * 1f - singleHeight/2) / b.length;
 		for (int i = 0; i < b.length; i++) {
 			//设置字体显示颜色
 			paint.setColor(Color.parseColor("#808080"));
@@ -77,10 +81,24 @@ public class SideBar extends View {
 				paint.setColor(Color.parseColor("#c60000"));
 				paint.setFakeBoldText(true);
 			}
-			// x坐标等于中间-字符串宽度的一半.
-			float xPos = width / 2 - paint.measureText(b[i]) / 2;
-			float yPos = singleHeight * i + singleHeight;
-			canvas.drawText(b[i], xPos, yPos, paint);
+
+            if(i == 0){
+                //确定圆形
+                float xPoint = width / 2;
+                float yPoint = singleHeight / 2;
+                float radius = xPoint / 2;
+                //开始画圆形
+                paint.setStyle(Paint.Style.STROKE);
+                paint.setStrokeWidth(radius * 0.1f);
+                canvas.drawCircle(xPoint, yPoint, radius, paint);
+                canvas.drawLine(xPoint, yPoint, xPoint +  (radius * 0.8f), yPoint, paint);
+                canvas.drawLine(xPoint, yPoint, xPoint, yPoint - (radius * 0.7f), paint);
+            } else {
+                // x坐标等于中间-字符串宽度的一半.
+                float xPos = width / 2 - paint.measureText(b[i]) / 2;
+                float yPos = singleHeight * i + singleHeight;
+                canvas.drawText(b[i], xPos, yPos, paint);
+            }
 			paint.reset();// 重置画笔
 		}
 	}

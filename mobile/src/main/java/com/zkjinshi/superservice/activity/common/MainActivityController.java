@@ -116,27 +116,24 @@ public class MainActivityController implements View.OnClickListener{
         int sheetColor = activity.getResources().getColor(R.color.background_card);
         int fabColor = activity.getResources().getColor(R.color.theme_accent);
 
-        // Create material sheet FAB
+        //初始化悬浮按钮
         materialSheetFab = new MaterialSheetFab<>(fab, sheetView, overlay, sheetColor, fabColor);
 
-        // Set material sheet event listener
+        //悬浮按钮设置事件监听
         materialSheetFab.setEventListener(new MaterialSheetFabEventListener() {
             @Override
             public void onShowSheet() {
-                // Save current status bar color
                 statusBarColor = getStatusBarColor();
-                // Set darker status bar color to match the dim overlay
                 setStatusBarColor(activity.getResources().getColor(R.color.theme_primary_dark2));
             }
 
             @Override
             public void onHideSheet() {
-                // Restore status bar color
                 setStatusBarColor(statusBarColor);
             }
         });
 
-        // Set material sheet item click listeners
+        // 悬浮item栏设置事件监听
         activity.findViewById(R.id.fab_sheet_item_recording).setOnClickListener(this);
         activity.findViewById(R.id.fab_sheet_item_reminder).setOnClickListener(this);
     }
