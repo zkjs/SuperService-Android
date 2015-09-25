@@ -1,4 +1,6 @@
-package com.zkjinshi.superservice.activity.common.contact;
+package com.zkjinshi.superservice.utils;
+
+import com.zkjinshi.superservice.vo.SortToken;
 
 import java.util.Locale;
 import java.util.regex.Matcher;

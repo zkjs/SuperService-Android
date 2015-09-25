@@ -1,4 +1,4 @@
-package com.zkjinshi.superservice.activity.common.contact;
+package com.zkjinshi.superservice.activity.common;
 
 import android.app.Activity;
 import android.content.ContentResolver;
@@ -19,9 +19,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.zkjinshi.superservice.R;
-import com.zkjinshi.superservice.activity.common.ClientAddActivity;
+import com.zkjinshi.superservice.adapter.ContactsSortAdapter;
+import com.zkjinshi.superservice.factory.SortModelFactory;
 import com.zkjinshi.superservice.sqlite.ClientDBUtil;
+import com.zkjinshi.superservice.utils.CharacterParser;
+import com.zkjinshi.superservice.utils.PinyinComparator;
+import com.zkjinshi.superservice.utils.SortKeyUtil;
+import com.zkjinshi.superservice.view.SideBar;
 import com.zkjinshi.superservice.vo.ClientVo;
+import com.zkjinshi.superservice.vo.ContactType;
+import com.zkjinshi.superservice.vo.SortModel;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -39,7 +46,7 @@ public class ContactsActivity extends Activity{
 
     private final static String TAG = ContactsActivity.class.getSimpleName();
 
-    private SideBar      mSideBar;
+    private SideBar mSideBar;
     private TextView     mTvDialog;
     private ImageView    mIvClearText;
     private EditText     mEtSearch;
@@ -48,10 +55,10 @@ public class ContactsActivity extends Activity{
     private RecyclerView        mRcvContacts;
     private LinearLayoutManager mLayoutManager;
 
-    private CharacterParser      characterParser;
+    private CharacterParser characterParser;
     private List<SortModel>      mAllContactsList;
-    private PinyinComparator     pinyinComparator;
-    private ContactsSortAdapter  mContactsAdapter;
+    private PinyinComparator pinyinComparator;
+    private ContactsSortAdapter mContactsAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

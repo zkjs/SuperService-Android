@@ -1,4 +1,4 @@
-package com.zkjinshi.superservice.activity.common.contact;
+package com.zkjinshi.superservice.vo;
 
 /**
  * 开发者：vincent

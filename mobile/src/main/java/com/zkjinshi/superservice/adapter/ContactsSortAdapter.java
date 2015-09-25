@@ -1,4 +1,4 @@
-package com.zkjinshi.superservice.activity.common.contact;
+package com.zkjinshi.superservice.adapter;
 
 import android.content.ContentUris;
 import android.content.Context;
@@ -11,7 +11,6 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.RelativeLayout;
 import android.widget.SectionIndexer;
 import android.widget.TextView;
@@ -19,9 +18,9 @@ import android.widget.TextView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.zkjinshi.superservice.R;
+import com.zkjinshi.superservice.vo.ContactType;
+import com.zkjinshi.superservice.vo.SortModel;
 import com.zkjinshi.superservice.view.CircleImageView;
-
-import org.w3c.dom.Text;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -136,9 +135,8 @@ public class ContactsSortAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
             //根据url显示图片
             String avatarUrl = sortModel.getAvatarUrl();
-            if(!TextUtils.isEmpty(avatarUrl)){
-                ImageLoader.getInstance().displayImage(avatarUrl, ((ServerViewHolder)holder).civContactAvatar, options);
-            }
+            ImageLoader.getInstance().displayImage(avatarUrl, ((ServerViewHolder)holder).civContactAvatar, options);
+
             //显示客户名称
             String clientName = sortModel.getName();
             if(!TextUtils.isEmpty(clientName)){
@@ -240,6 +238,5 @@ public class ContactsSortAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         }
         return -1;
     }
-
 
 }

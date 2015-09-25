@@ -1,4 +1,4 @@
-package com.zkjinshi.superservice.activity.common.contact;
+package com.zkjinshi.superservice.vo;
 
 /**
  * 客户联系人的类别

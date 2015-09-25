@@ -1,4 +1,6 @@
-package com.zkjinshi.superservice.activity.common.contact;
+package com.zkjinshi.superservice.utils;
+
+import com.zkjinshi.superservice.vo.SortModel;
 
 import java.util.Comparator;
 /**

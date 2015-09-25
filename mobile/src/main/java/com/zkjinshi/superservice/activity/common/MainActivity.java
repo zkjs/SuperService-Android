@@ -19,7 +19,6 @@ import android.widget.TextView;
 import com.zkjinshi.base.util.DeviceUtils;
 import com.zkjinshi.base.util.ImageUtil;
 import com.zkjinshi.superservice.R;
-import com.zkjinshi.superservice.activity.common.contact.ContactsActivity;
 
 import java.util.List;
 

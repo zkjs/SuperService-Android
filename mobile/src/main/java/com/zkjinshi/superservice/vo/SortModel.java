@@ -1,4 +1,4 @@
-package com.zkjinshi.superservice.activity.common.contact;
+package com.zkjinshi.superservice.vo;
 
 /**
  * 排序对象
@@ -7,7 +7,7 @@ package com.zkjinshi.superservice.activity.common.contact;
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class SortModel extends Contact {
+public class SortModel extends ContactVo {
 
 	private ContactType contactType;
 	private String      avatarUrl;

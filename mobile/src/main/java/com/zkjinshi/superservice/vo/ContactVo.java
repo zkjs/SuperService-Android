@@ -1,4 +1,4 @@
-package com.zkjinshi.superservice.activity.common.contact;
+package com.zkjinshi.superservice.vo;
 
 /**
  * 联系人实体类
@@ -7,7 +7,7 @@ package com.zkjinshi.superservice.activity.common.contact;
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class Contact {
+public class ContactVo {
 
 	private long   contactID;
 	private String name;
@@ -15,9 +15,9 @@ public class Contact {
 	private String simpleNumber;
 	private String sortKey;
 
-	public Contact() {}
+	public ContactVo() {}
 
-	public Contact(long contactID, String name, String number, String sortKey) {
+	public ContactVo(long contactID, String name, String number, String sortKey) {
 		this.contactID = contactID;
 		this.name		= name;
 		this.number  	= number;
@@ -87,7 +87,7 @@ public class Contact {
 		if (getClass() != obj.getClass())
 			return false;
 
-		Contact other = (Contact) obj;
+		ContactVo other = (ContactVo) obj;
 
 		if (name == null) {
 			if (other.name != null)

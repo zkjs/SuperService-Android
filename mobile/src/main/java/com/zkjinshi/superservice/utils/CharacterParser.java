@@ -1,4 +1,4 @@
-package com.zkjinshi.superservice.activity.common.contact;
+package com.zkjinshi.superservice.utils;
 
 /**
  * Java汉字转换为拼音

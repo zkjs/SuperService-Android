@@ -1,5 +1,9 @@
-package com.zkjinshi.superservice.activity.common.contact;
+package com.zkjinshi.superservice.factory;
 
+import com.zkjinshi.superservice.vo.ContactType;
+import com.zkjinshi.superservice.vo.SortModel;
+import com.zkjinshi.superservice.utils.CharacterParser;
+import com.zkjinshi.superservice.utils.SortKeyUtil;
 import com.zkjinshi.superservice.vo.ClientVo;
 
 import java.util.ArrayList;
