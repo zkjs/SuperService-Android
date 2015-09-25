@@ -34,4 +34,6 @@
     <string name="talk_with_client">与客户对话</string>
     <string name="latest_contact">最近联系</string>
 
+    <string name="no_data">暂无数据</string>
+
 </resources>
