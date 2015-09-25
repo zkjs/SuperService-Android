@@ -8,6 +8,69 @@ package com.zkjinshi.superservice.sqlite;
  */
 public class TableOpenHelper {
 
+    /**
+     * 创建messagetbl表sql语句
+     */
+    public static String MESSAGE_TBL_SQL =
+            "create table if not exists "
+                    + DBOpenHelper.MESSAGE_TBL
+                    + "("
+                    + " message_id text primary key , "
+                    + " session_id text , "//聊天室唯一标识
+                    + " shop_id text , "//聊点指定商家ID
+                    + " contact_id text , "//发送者ID
+                    + " contact_name text , "//发送者名称
+                    + " content text , "//消息内容
+                    + " send_time long , "//发送时间
+                    + " title text , "//聊天室名称
+                    + " voice_time text , "//语音时间
+                    + " mime_type integer , "//消息类别
+                    + " send_status integer ,  "//发送状态
+                    + " is_read integer , "//是否已读
+                    + " attach_id text , "//附件id
+                    + " temp_id text , "//临时消息id
+                    + " rule_type text , "//消息规则类型
+                    + " file_name text , "//文件名称
+                    + " file_path text , "//文件路径
+                    + " url text , "//URl
+                    + " scale_url text "//缩略图URL
+                    + ")";
+
+    /**
+     * 创建chatroomtbl表sql语句
+     */
+    public static String CHAT_ROOM_TBL_SQL =
+            "create table if not exists "
+                    + DBOpenHelper.CHAT_ROOM_TBL
+                    + "("
+                    + " shop_id text primary key, "
+                    + " shop_name text, "//聊天室名称
+                    + " session_id text, "
+                    + " remark text, "//备注
+                    + " created long, "//创建时间
+                    + " end_time long, "//会话结束时间
+                    + " end_user_id text, "//会话结束人
+                    + " client_id text, "//会话创建人
+                    + " client_name text , "//会话创建姓名
+                    + " is_visible integer"//是否显示此聊天室 //0:隐藏 //1:显示
+                    + " )";
+
+    /**
+     * 创建membertbl表sql语句
+     */
+    public static String MEMBER_TBL_SQL =
+            "create table if not exists "
+                    + DBOpenHelper.MEMBER_TBL
+                    + "("
+                    + " session_id text , "
+                    + " userid text, "//用户ID
+                    + " logintype integer, "//用户类型 0:app用户  1:商家员工 默认为:0
+                    + " shopid text, "//商家ID
+                    + " empid text, "//员工ID
+                    + " roleid text, "//角色ID
+                    + " created long "//创建时间
+                    + " )";
+
     public final static String CLIENT_TBL_SQL =
             " create table if not exists "
                     + DBOpenHelper.CLIENT_TBL
@@ -28,7 +91,11 @@ public class TableOpenHelper {
      */
     public static String[] getTableNames(){
         return new String[]{
-                DBOpenHelper.CLIENT_TBL,     //客户信息表
+                DBOpenHelper.MESSAGE_TBL,//消息表
+                DBOpenHelper.CHAT_ROOM_TBL,//聊天室表
+                DBOpenHelper.MEMBER_TBL,//成员表
+                DBOpenHelper.CLIENT_TBL,//客户表
         };
     }
+
 }

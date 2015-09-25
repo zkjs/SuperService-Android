@@ -17,6 +17,9 @@ public class ORMOpenHelper {
      * @param db
      */
     public static void createTables(SQLiteDatabase db) {
+        db.execSQL(TableOpenHelper.MESSAGE_TBL_SQL);
+        db.execSQL(TableOpenHelper.CHAT_ROOM_TBL_SQL);
+        db.execSQL(TableOpenHelper.MEMBER_TBL_SQL);
         db.execSQL(TableOpenHelper.CLIENT_TBL_SQL);
     }
 
