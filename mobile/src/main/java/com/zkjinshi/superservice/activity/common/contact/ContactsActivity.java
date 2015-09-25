@@ -6,20 +6,18 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.common.ClientAddActivity;
 import com.zkjinshi.superservice.sqlite.ClientDBUtil;
@@ -29,8 +27,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * 联系人列表显示， 提供字母快速进入和查找联系人功能
@@ -43,13 +39,14 @@ public class ContactsActivity extends Activity{
 
     private final static String TAG = ContactsActivity.class.getSimpleName();
 
-    private SideBar   mSideBar;
-    private TextView  mTvDialog;
-    private ImageView mIvClearText;
-    private EditText  mEtSearch;
-    private ListView  mLvContacts;
-    private ImageButton mIbtnBack;
-    private ImageButton mIbtnAdd;
+    private SideBar      mSideBar;
+    private TextView     mTvDialog;
+    private ImageView    mIvClearText;
+    private EditText     mEtSearch;
+    private ImageButton  mIbtnBack;
+    private ImageButton  mIbtnAdd;
+    private RecyclerView        mRcvContacts;
+    private LinearLayoutManager mLayoutManager;
 
     private CharacterParser      characterParser;
     private List<SortModel>      mAllContactsList;
@@ -68,11 +65,11 @@ public class ContactsActivity extends Activity{
     }
 
     private void initView() {
-        mSideBar     = (SideBar) findViewById(R.id.sb_sidebar);
-        mTvDialog    = (TextView) findViewById(R.id.tv_dialog);
-        mIvClearText = (ImageView) findViewById(R.id.iv_cleartext);
-        mEtSearch    = (EditText)  findViewById(R.id.et_search);
-        mLvContacts  = (ListView)  findViewById(R.id.lv_contacts);
+        mSideBar     = (SideBar)    findViewById(R.id.sb_sidebar);
+        mTvDialog    = (TextView)   findViewById(R.id.tv_dialog);
+        mIvClearText = (ImageView)  findViewById(R.id.iv_cleartext);
+        mEtSearch    = (EditText)   findViewById(R.id.et_search);
+        mRcvContacts = (RecyclerView) findViewById(R.id.rcv_contacts);
         mIbtnBack    = (ImageButton)  findViewById(R.id.ibtn_back);
         mIbtnAdd     = (ImageButton)  findViewById(R.id.ibtn_add);
     }
@@ -86,7 +83,11 @@ public class ContactsActivity extends Activity{
         pinyinComparator = new PinyinComparator();
         Collections.sort(mAllContactsList, pinyinComparator);// 根据a-z进行排序源数据
         mContactsAdapter = new ContactsSortAdapter(this, mAllContactsList);
-        mLvContacts.setAdapter(mContactsAdapter);
+        mRcvContacts.setHasFixedSize(true);
+        mLayoutManager = new LinearLayoutManager(this);
+        mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        mRcvContacts.setLayoutManager(mLayoutManager);
+        mRcvContacts.setAdapter(mContactsAdapter);
 
         //TODO: 1.服务器获得当前服务员关联的客户列表
         List<ClientVo> clientVos       = ClientDBUtil.getInstance().queryAll();
@@ -99,10 +100,10 @@ public class ContactsActivity extends Activity{
             List<SortModel> latestSortModels = SortModelFactory.getInstance().getLatestSortModel(clientVos);
             mAllContactsList.addAll(latestSortModels);
         }
-
     }
 
     private void initListener() {
+
         /** 后退界面 */
         mIbtnBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -153,7 +154,7 @@ public class ContactsActivity extends Activity{
                 } else {
                     mContactsAdapter.updateListView(mAllContactsList);
                 }
-                mLvContacts.setSelection(0);
+                mRcvContacts.scrollToPosition(0);
             }
         });
 
@@ -163,19 +164,16 @@ public class ContactsActivity extends Activity{
             public void onTouchingLetterChanged(String s) {
                 int position = mContactsAdapter.getPositionForSection(s.charAt(0));
                 if (position != -1) {
-                    mLvContacts.setSelection(position);
+                    mRcvContacts.scrollToPosition(position);
                 }
             }
         });
 
-        mLvContacts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        /** 我的客人条目点击事件 */
+        mContactsAdapter.setOnItemClickListener(new ContactsSortAdapter.OnContactItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long arg3) {
-                if(mAllContactsList.get(position).getContactType() == ContactType.LOCAL){
-                    ContactsSortAdapter.LocalViewHolder  localHolder  = (ContactsSortAdapter.LocalViewHolder) view.getTag();
-                } else {
-                    ContactsSortAdapter.ServerViewHolder serverHolder = (ContactsSortAdapter.ServerViewHolder) view.getTag();
-                }
+            public void onItemClick(View view, SortModel sortModel) {
+                Log.v(TAG, "sortModel:" + sortModel.getSortLetters());
             }
         });
     }

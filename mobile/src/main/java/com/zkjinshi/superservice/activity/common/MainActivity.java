@@ -148,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTitle(R.string.app_name);
-        setContentView(R.layout.activity_main);
+         setContentView(R.layout.activity_main);
         mainActivityController = new MainActivityController(this);
         mainActivityController.onCreate();
         initView();
