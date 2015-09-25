@@ -457,4 +457,8 @@
         <item>#FD7044</item>
     </array>
 
+    <drawable name="pressed_color">#48000000</drawable>
+    <drawable name="focused_color">#48000000</drawable>
+    <drawable name="normal_color">#ffffffff</drawable>
+
 </resources>
