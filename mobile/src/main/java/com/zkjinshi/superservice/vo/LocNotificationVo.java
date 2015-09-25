@@ -1,5 +1,7 @@
 package com.zkjinshi.superservice.vo;
 
+import java.io.Serializable;
+
 /**
  * 用户到店通知数据数据对象
  * 开发者：vincent
@@ -7,7 +9,7 @@ package com.zkjinshi.superservice.vo;
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class LocNotificationVo {
+public class LocNotificationVo implements Serializable {
 
     private long   timestamp;//当前时间
     private String  shopid;//商店id

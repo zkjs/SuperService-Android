@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:background="@color/white"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    
+    <FrameLayout
+        android:layout_marginLeft="5dp"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent">
+
+        <View
+            android:layout_gravity="center"
+            android:layout_width="1dp"
+            android:background="@color/gray"
+            android:layout_height="match_parent">
+        </View>
+        
+        <com.zkjinshi.superservice.view.CircleImageView
+            android:id="@+id/civ_order_status"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center"/>
+
+    </FrameLayout>
+
+    <LinearLayout
+        android:padding="10dp"
+        android:background="@color/ivory"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <RelativeLayout
+                android:padding="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <com.zkjinshi.superservice.view.CircleImageView
+                    android:id="@+id/civ_client_avatar"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:padding="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/tv_vip"
+                    android:textColor="@color/black"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:id="@+id/tv_client_name"
+                    android:layout_toRightOf="@+id/tv_vip"
+                    android:layout_marginLeft="10dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:id="@+id/tv_location_info"
+                    android:layout_toRightOf="@+id/tv_client_name"
+                    android:layout_marginLeft="10dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:id="@+id/tv_client_notice"
+                    android:layout_toRightOf="@+id/tv_location_info"
+                    android:layout_marginLeft="10dp"
+                    android:textColor="@color/black"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:id="@+id/tv_to_do"
+                    android:layout_marginTop="5dp"
+                    android:layout_below="@+id/tv_vip"
+                    android:layout_width="wrap_content"
+                    android:textColor="@color/black"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:id="@+id/tv_order_info"
+                    android:padding="10dp"
+                    android:background="@color/khaki"
+                    android:layout_marginTop="5dp"
+                    android:layout_below="@+id/tv_to_do"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:padding="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/iv_clock"
+                android:layout_alignParentLeft="true"
+                android:layout_width="19dp"
+                android:layout_height="19dp"
+                android:layout_centerVertical="true"
+                android:background="@drawable/ic_clock"
+                />
+
+            <TextView
+                android:id="@+id/tv_time_info"
+                android:layout_marginLeft="10dp"
+                android:layout_toRightOf="@+id/iv_clock"
+                android:layout_width="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_height="wrap_content" />
+
+            <ImageView
+                android:id="@+id/iv_fenxiang"
+                android:layout_alignParentRight="true"
+                android:layout_width="20dp"
+                android:layout_height="18dp"
+                android:layout_centerVertical="true"
+                android:background="@drawable/ic_fenxiang"
+                />
+
+            <ImageView
+                android:id="@+id/iv_duihua"
+                android:layout_toLeftOf="@+id/iv_fenxiang"
+                android:layout_width="21dp"
+                android:layout_height="20dp"
+                android:layout_marginRight="15dp"
+                android:layout_centerVertical="true"
+                android:background="@drawable/ic_duihua" />
+
+            <ImageView
+                android:id="@+id/iv_dianhua"
+                android:layout_toLeftOf="@+id/iv_duihua"
+                android:layout_width="14dp"
+                android:layout_height="20dp"
+                android:layout_marginRight="15dp"
+                android:layout_centerVertical="true"
+                android:background="@drawable/ic_dianhua" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,4 +1,4 @@
-package com.zkjinshi.superservice.activity.common;
+package com.zkjinshi.superservice.activity.set;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -20,6 +20,7 @@ import android.widget.LinearLayout;
 import com.zkjinshi.base.util.ImageUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.base.BaseUiController;
+import com.zkjinshi.superservice.activity.common.CutActivity;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.utils.FileUtil;

@@ -141,7 +141,7 @@ public class ContactsSortAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             String clientName = sortModel.getName();
             if(!TextUtils.isEmpty(clientName)){
                 //去除wen
-                if("?".equals(clientName.trim().substring(0,1))){
+                if("?".equals(clientName.trim().substring(0, 1))){
                     ((ServerViewHolder)holder).tvContactName.setText(clientName.substring(1));
                 }
             }

@@ -3,6 +3,9 @@ package com.zkjinshi.superservice;
 import android.app.Application;
 import android.content.Context;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+
 /**
  * 超级服务入口
  * 开发者：JimmyZhang
@@ -19,10 +22,17 @@ public class ServiceApplication extends Application{
         super.onCreate();
 
         mContext = this.getApplicationContext();
+        initImageLoader();
 
     }
 
     public static Context getContext(){
         return mContext;
+    }
+    /**
+     * 初始化ImageLoader
+     */
+    private void initImageLoader() {
+        ImageLoader.getInstance().init(ImageLoaderConfiguration.createDefault(this));
     }
 }

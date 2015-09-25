@@ -34,7 +34,7 @@
         android:name=".ServiceApplication">
 
         <activity
-            android:name=".activity.common.ContactsActivity"
+            android:name=".activity.set.ContactsActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar">
@@ -69,7 +69,7 @@
         </activity>
 
         <activity
-            android:name=".activity.common.ClientAddActivity"
+            android:name=".activity.set.ClientAddActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar">

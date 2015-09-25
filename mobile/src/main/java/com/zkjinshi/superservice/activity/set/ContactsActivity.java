@@ -1,4 +1,4 @@
-package com.zkjinshi.superservice.activity.common;
+package com.zkjinshi.superservice.activity.set;
 
 import android.app.Activity;
 import android.content.ContentResolver;
@@ -46,7 +46,7 @@ public class ContactsActivity extends Activity{
 
     private final static String TAG = ContactsActivity.class.getSimpleName();
 
-    private SideBar mSideBar;
+    private SideBar      mSideBar;
     private TextView     mTvDialog;
     private ImageView    mIvClearText;
     private EditText     mEtSearch;

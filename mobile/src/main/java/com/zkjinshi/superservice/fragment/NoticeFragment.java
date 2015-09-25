@@ -1,14 +1,22 @@
 package com.zkjinshi.superservice.fragment;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.zkjinshi.superservice.R;
+import com.zkjinshi.superservice.adapter.LocNotificationAdapter;
+import com.zkjinshi.superservice.vo.LocNotificationVo;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 /**
  * 到店通知Fragment页面
@@ -19,7 +27,13 @@ import com.zkjinshi.superservice.R;
  */
 public class NoticeFragment extends Fragment {
 
+    private Activity     mActivity;
     private RecyclerView mRcvNotice;
+
+    private RecyclerView.LayoutManager mLayoutManager;
+
+    private List<LocNotificationVo>    mNotifications;
+    private LocNotificationAdapter     mNotificationAdapter;
 
     public static NoticeFragment newInstance() {
         return new NoticeFragment();
@@ -30,11 +44,44 @@ public class NoticeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_notice, container, false);
         initView(view);
+        initData();
         return view;
     }
 
     private void initView(View view){
         mRcvNotice = (RecyclerView) view.findViewById(R.id.rcv_notice);
+    }
+
+    private void initData() {
+
+        mActivity = this.getActivity();
+        //1. 伪造到店通知数据
+        mNotifications = new ArrayList<>();
+        mNotifications.addAll(getNotifications());
+        mNotificationAdapter = new LocNotificationAdapter(mActivity, mNotifications);
+        mRcvNotice.setAdapter(mNotificationAdapter);
+        mRcvNotice.setHasFixedSize(true);
+        mLayoutManager = new LinearLayoutManager(mActivity);
+        mRcvNotice.setLayoutManager(mLayoutManager);
+
+    }
+
+    /**
+     * TODO: 伪造数据
+     * @return
+     */
+    public List<LocNotificationVo> getNotifications(){
+        List<LocNotificationVo> notifications = new ArrayList<>();
+        for(int i=0; i< 10; i++){
+            LocNotificationVo notification = new LocNotificationVo();
+            notification.setTimestamp(System.currentTimeMillis());
+            notification.setShopid("120");
+            notification.setUserid(System.currentTimeMillis() + "");
+            notification.setUsername(System.currentTimeMillis() + "Sir");
+            notification.setTimestamp(new Random().nextInt(10));
+            notifications.add(notification);
+        }
+        return notifications;
     }
 
     @Override
