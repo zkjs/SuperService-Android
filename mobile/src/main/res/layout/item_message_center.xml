@@ -10,8 +10,8 @@
         android:layout_height="50dp"
         android:layout_centerVertical="true"
         android:layout_marginLeft="8dp"
-        android:src="@mipmap/ic_launcher"
-        android:scaleType="centerInside"/>
+        android:src="@drawable/img_hotel_zhanwei"
+        android:scaleType="fitXY"/>
     
     <RelativeLayout
         android:id="@+id/message_notice_center_layout"

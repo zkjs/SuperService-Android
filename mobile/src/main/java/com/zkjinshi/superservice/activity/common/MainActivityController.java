@@ -114,7 +114,7 @@ public class MainActivityController implements View.OnClickListener{
         View sheetView = activity.findViewById(R.id.fab_sheet);
         View overlay = activity.findViewById(R.id.overlay);
         int sheetColor = activity.getResources().getColor(R.color.background_card);
-        int fabColor = activity.getResources().getColor(R.color.theme_accent);
+        int fabColor = activity.getResources().getColor(R.color.text_black_87);
 
         //初始化悬浮按钮
         materialSheetFab = new MaterialSheetFab<>(fab, sheetView, overlay, sheetColor, fabColor);
@@ -124,7 +124,7 @@ public class MainActivityController implements View.OnClickListener{
             @Override
             public void onShowSheet() {
                 statusBarColor = getStatusBarColor();
-                setStatusBarColor(activity.getResources().getColor(R.color.theme_primary_dark2));
+                setStatusBarColor(activity.getResources().getColor(R.color.text_black_87));
             }
 
             @Override

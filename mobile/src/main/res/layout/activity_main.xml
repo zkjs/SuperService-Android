@@ -6,8 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -78,21 +76,19 @@
                     <TextView
                         android:id="@+id/fab_sheet_item_recording"
                         style="@style/TextAppearance.MaterialSheetFab.Sheet.Item"
-                        android:drawableLeft="@drawable/ic_tuandui_w"
-                        android:background="#00acc1"
-                        android:drawableStart="@drawable/ic_tuandui_w"
-                        android:textColor="@android:color/white"
+                        android:drawableLeft="@drawable/ic_tuandui_b"
+                        android:drawableStart="@drawable/ic_tuandui_b"
+                        android:textColor="@android:color/black"
                         android:textSize="16sp"
                         android:text="@string/talk_with_team" />
 
                     <!-- 与客户对话 -->
                     <TextView
                         android:id="@+id/fab_sheet_item_reminder"
-                        android:background="#fb8c00"
                         style="@style/TextAppearance.MaterialSheetFab.Sheet.Item"
-                        android:drawableLeft="@drawable/ic_kehu"
-                        android:drawableStart="@drawable/ic_kehu"
-                        android:textColor="@android:color/white"
+                        android:drawableLeft="@drawable/ic_kehu_b"
+                        android:drawableStart="@drawable/ic_kehu_b"
+                        android:textColor="@android:color/black"
                         android:textSize="16sp"
                         android:text="@string/talk_with_client" />
 
