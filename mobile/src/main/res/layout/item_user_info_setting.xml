@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:background="#FFFFFF"
     android:orientation="vertical">
-    <View style="@style/GrayLineBorder"></View>
+
 
     <RelativeLayout
         android:layout_width="match_parent"

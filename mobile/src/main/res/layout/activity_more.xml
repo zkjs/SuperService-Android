@@ -48,15 +48,19 @@
                     android:textColor="#000000"
                     android:hint="黄小洋"
                     android:layout_alignParentLeft="true"
-                    android:layout_centerVertical="true"/>
+                    android:layout_centerVertical="true"
+                    android:id="@+id/org_username_tv" />
                 <CheckBox
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:background="@drawable/cbx_sex"
-                    android:button="@null"/>
+                    android:button="@null"
+                    android:checked="false"
+                    android:id="@+id/sex_cbx" />
             </RelativeLayout>
             <EditText
+                android:id="@+id/new_username_et"
                 style="@style/inputStyle"
                 android:layout_height="45dp"
                 android:layout_marginTop="10dp"
