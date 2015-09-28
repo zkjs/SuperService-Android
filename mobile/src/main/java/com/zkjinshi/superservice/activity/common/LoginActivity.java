@@ -56,17 +56,18 @@ public class LoginActivity extends Activity implements VerifyPhoneControler.Succ
     }
 
     private void initData() {
-        VerifyPhoneControler.getInstance().init(this);
-        VerifyPhoneControler.getInstance().setSuccessCallBack(this);
+        //VerifyPhoneControler.getInstance().init(this);
+        //VerifyPhoneControler.getInstance().setSuccessCallBack(this);
 
         //测试跳转用的
-//        loginBtn.setEnabled(true);
-//        loginBtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//               requestLogin();
-//            }
-//        });
+        inputEt.setText("15757575577");
+        loginBtn.setEnabled(true);
+        loginBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+               requestLogin();
+            }
+        });
     }
 
     private void initListener() {
@@ -132,8 +133,6 @@ public class LoginActivity extends Activity implements VerifyPhoneControler.Succ
                     startActivity(new Intent(LoginActivity.this, MoreActivity.class));
                     finish();
                     overridePendingTransition(R.anim.activity_new, R.anim.activity_out);
-
-
                 } else {
                     DialogUtil.getInstance().showToast(LoginActivity.this, "手机号还不是服务员 ");
                 }

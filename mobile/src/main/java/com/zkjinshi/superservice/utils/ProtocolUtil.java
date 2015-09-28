@@ -20,4 +20,12 @@ public class ProtocolUtil {
         return ConfigUtil.getInst().getHttpDomain()+"semp/login";
     }
 
+    /**
+     * 服务员修改资料
+     * @return
+     */
+    public static String getSempupdateUrl(){
+        return ConfigUtil.getInst().getHttpDomain()+"semp/sempupdate";
+    }
+
 }
