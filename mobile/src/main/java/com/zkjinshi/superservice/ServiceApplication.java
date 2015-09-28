@@ -5,6 +5,7 @@ import android.content.Context;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.zkjinshi.superservice.utils.CacheUtil;
 
 /**
  * 超级服务入口
@@ -20,10 +21,9 @@ public class ServiceApplication extends Application{
     @Override
     public void onCreate() {
         super.onCreate();
-
         mContext = this.getApplicationContext();
         initImageLoader();
-
+        initCache();
     }
 
     public static Context getContext(){
@@ -34,5 +34,12 @@ public class ServiceApplication extends Application{
      */
     private void initImageLoader() {
         ImageLoader.getInstance().init(ImageLoaderConfiguration.createDefault(this));
+    }
+
+    /**
+     * 初始化缓存
+     */
+    private void initCache(){
+        CacheUtil.getInstance().init(this);
     }
 }
