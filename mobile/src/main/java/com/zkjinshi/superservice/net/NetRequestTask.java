@@ -55,7 +55,7 @@ public class NetRequestTask extends AsyncTask<NetRequest, Void, NetResponse> {
         context = ctx;
     }
 
-    public void setMediaRequestListener(NetRequestListener listener) {
+    public void setNetRequestListener(NetRequestListener listener) {
         this.requestListener = listener;
     }
 
