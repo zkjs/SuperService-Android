@@ -23,6 +23,7 @@ public class SempLoginBean extends BaseBean {
     private String url;
     private String fullname;
     private String token;
+    private String name;
     private String roleid;
 
     public String getSalesid() {
@@ -73,6 +74,14 @@ public class SempLoginBean extends BaseBean {
         this.token = token;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public String getRoleid() {
         return roleid;
     }
@@ -80,4 +89,6 @@ public class SempLoginBean extends BaseBean {
     public void setRoleid(String roleid) {
         this.roleid = roleid;
     }
+
+
 }

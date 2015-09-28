@@ -109,7 +109,7 @@ public class LoginActivity extends Activity implements VerifyPhoneControler.Succ
             @Override
             public void onNetworkRequestError(int errorCode, String errorMessage) {
                 Log.i(TAG, "errorCode:" + errorCode);
-                Log.i(TAG,"errorMessage:"+errorMessage);
+                Log.i(TAG, "errorMessage:" + errorMessage);
             }
 
             @Override
@@ -120,20 +120,22 @@ public class LoginActivity extends Activity implements VerifyPhoneControler.Succ
             @Override
             public void onNetworkResponseSucceed(NetResponse result) {
                 Log.i(TAG, "result.rawResult:" + result.rawResult);
-                SempLoginBean sempLoginbean = new Gson().fromJson(result.rawResult,SempLoginBean.class);
-                if(sempLoginbean.isSet()){
+                SempLoginBean sempLoginbean = new Gson().fromJson(result.rawResult, SempLoginBean.class);
+                if (sempLoginbean.isSet()) {
                     //更新为最新的token和userid
                     CacheUtil.getInstance().setToken(sempLoginbean.getToken());
                     CacheUtil.getInstance().setUserId(sempLoginbean.getSalesid());
+                    CacheUtil.getInstance().setUserPhone(inputEt.getText().toString());
+                    CacheUtil.getInstance().setUserName(sempLoginbean.getName());
                     CacheUtil.getInstance().setLogin(true);
-                    DBOpenHelper.DB_NAME = sempLoginbean.getSalesid() +".db";
-                    startActivity(new Intent(LoginActivity.this,MoreActivity.class));
+                    DBOpenHelper.DB_NAME = sempLoginbean.getSalesid() + ".db";
+                    startActivity(new Intent(LoginActivity.this, MoreActivity.class));
                     finish();
                     overridePendingTransition(R.anim.activity_new, R.anim.activity_out);
 
 
-                }else{
-                    DialogUtil.getInstance().showToast(LoginActivity.this,"手机号还不是服务员 ");
+                } else {
+                    DialogUtil.getInstance().showToast(LoginActivity.this, "手机号还不是服务员 ");
                 }
 
             }
