@@ -16,10 +16,13 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.zkjinshi.base.net.core.WebSocketManager;
 import com.zkjinshi.base.util.DeviceUtils;
 import com.zkjinshi.base.util.ImageUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.set.ContactsActivity;
+import com.zkjinshi.superservice.listener.MessageListener;
 
 import java.util.List;
 
@@ -44,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView shopnameTv;
     private CheckBox onlineCbx;
     private RelativeLayout avatarLayout;
+    private MessageListener messageListener;
 
     private void initView(){
         avatarIv = (ImageView)findViewById(R.id.avatar_iv);
@@ -51,7 +55,14 @@ public class MainActivity extends AppCompatActivity {
         shopnameTv = (TextView)findViewById(R.id.shop_name_tv);
         onlineCbx = (CheckBox)findViewById(R.id.online_cbx);
         avatarLayout = (RelativeLayout)findViewById(R.id.avatar_rlt);
+    }
 
+    private void initData(){
+        messageListener = new MessageListener();
+        initService(messageListener);
+    }
+
+    private void initListeners(){
         //设置在线或离线
         onlineCbx.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -92,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //设置点击事件
-       findViewById(R.id.setting_tv).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.setting_tv).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -108,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //关于我们点击事件
-       findViewById(R.id.about_tv).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.about_tv).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -152,6 +163,8 @@ public class MainActivity extends AppCompatActivity {
         mainActivityController = new MainActivityController(this);
         mainActivityController.onCreate();
         initView();
+        initData();
+        initListeners();
     }
 
     @Override
@@ -183,6 +196,13 @@ public class MainActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    /**
+     * 初始化socket
+     */
+    private void initService(MessageListener messageListener) {
+        WebSocketManager.getInstance().initService(this).setMessageListener(messageListener);
     }
 
 }

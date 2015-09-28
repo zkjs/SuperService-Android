@@ -112,6 +112,15 @@
             android:theme="@android:style/Theme.Translucent.NoTitleBar">
 
         </activity>
+
+        <!--IM消息服务-->
+        <service android:name="com.zkjinshi.base.net.core.MessageService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.zkjinshi.svip.im.Message_SERVICE"/>
+            </intent-filter>
+        </service>
+
     </application>
 
 </manifest>

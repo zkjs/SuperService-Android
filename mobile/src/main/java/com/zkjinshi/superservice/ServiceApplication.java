@@ -7,6 +7,7 @@ import android.util.Log;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.zkjinshi.base.config.ConfigUtil;
+import com.zkjinshi.base.net.util.ImCacheUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
 
 import java.io.File;
@@ -33,6 +34,7 @@ public class ServiceApplication extends Application{
         mContext = this.getApplicationContext();
         saveConfig();
         initImageLoader();
+        initImCache();
         initCache();
     }
 
@@ -67,6 +69,13 @@ public class ServiceApplication extends Application{
      */
     private void initImageLoader() {
         ImageLoader.getInstance().init(ImageLoaderConfiguration.createDefault(this));
+    }
+
+    /**
+     * 初始化IM缓存
+     */
+    private void initImCache(){
+        ImCacheUtil.getInstance().init(this);
     }
 
     /**
