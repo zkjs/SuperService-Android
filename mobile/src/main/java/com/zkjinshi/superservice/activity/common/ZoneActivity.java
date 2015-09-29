@@ -77,7 +77,7 @@ public class ZoneActivity extends Activity implements SwipeRefreshLayout.OnRefre
         HashMap<String,String> bizMap = new HashMap<String,String>();
         bizMap.put("salesid",userVo.getUserId());
         bizMap.put("token",userVo.getToken());
-        bizMap.put("shopid ",userVo.getShopId());
+        bizMap.put("shopid",userVo.getShopId());
         netRequest.setBizParamMap(bizMap);
         NetRequestTask netRequestTask = new NetRequestTask(this,netRequest, NetResponse.class);
         netRequestTask.methodType = MethodType.POST;
