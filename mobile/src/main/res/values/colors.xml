@@ -462,4 +462,13 @@
     <drawable name="focused_color">#48000000</drawable>
     <drawable name="normal_color">#ffffffff</drawable>
 
+    <color name="gray616161">#616161</color>
+    <color name="grayB8B8B8">#B8B8B8</color>
+    <color name="whiteF5F5F5">#F5F5F5</color>
+
+    <color name="green88C057">#88C057</color>
+    <color name="blue48A0DC">#48A0DC</color>
+    <color name="green91DC48">#91DC48</color>
+    <color name="orangeEEAF4B">#EEAF4B</color>
+
 </resources>
