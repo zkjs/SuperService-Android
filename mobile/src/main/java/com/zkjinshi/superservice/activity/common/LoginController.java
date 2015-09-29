@@ -18,6 +18,7 @@ import com.zkjinshi.superservice.net.NetResponse;
 import com.zkjinshi.superservice.sqlite.DBOpenHelper;
 import com.zkjinshi.superservice.sqlite.UserDBUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
+import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.vo.UserVo;
 
@@ -86,6 +87,8 @@ public class LoginController {
                     DBOpenHelper.DB_NAME = sempLoginbean.getSalesid() + ".db";
                     UserVo userVo = UserFactory.getInstance().buildUserVo(sempLoginbean);
                     UserDBUtil.getInstance().addUser(userVo);
+                    String avatarUrl = Constants.AVATAR_PRE_URL+userVo.getUserId()+".jpg";
+                    CacheUtil.getInstance().saveUserPhotoUrl(avatarUrl);
                     if (CacheUtil.getInstance().isLogin()) {
                         Intent intent = new Intent(activity, MainActivity.class);
                         activity.startActivity(intent);

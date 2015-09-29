@@ -252,6 +252,24 @@ public class CacheUtil {
 		return sp.getBoolean("tagsopen", true);
 	}
 
+	public void setOnline(boolean isOnLine){
+		if (null == context) {
+			return;
+		}
+		SharedPreferences sp = context.getSharedPreferences(SVIP_CACHE,
+				Context.MODE_PRIVATE);
+		sp.edit().putBoolean("online", isOnLine).commit();
+	}
+
+	public boolean getOnline() {
+		if (null == context) {
+			return true;
+		}
+		SharedPreferences sp = context.getSharedPreferences(SVIP_CACHE,
+				Context.MODE_PRIVATE);
+		return sp.getBoolean("online", true);
+	}
+
 	/**
 	 * 设置开始录音倒计时
 	 * @param isCountDown

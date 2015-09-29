@@ -36,6 +36,7 @@ import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.utils.FileUtil;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
+import com.zkjinshi.superservice.utils.task.ImgAsyncTask;
 import com.zkjinshi.superservice.view.CircleImageView;
 import com.zkjinshi.superservice.vo.SexType;
 import com.zkjinshi.superservice.vo.UserVo;
@@ -218,6 +219,7 @@ public class MoreActivity extends FragmentActivity implements MultiImageSelector
                     String avatarUrl = Constants.AVATAR_PRE_URL+userVo.getUserId()+".jpg";
                     userVo.setPhotoUrl(avatarUrl);
 
+                    CacheUtil.getInstance().saveUserPhotoUrl(avatarUrl);
                     CacheUtil.getInstance().setUserName(name);
                     UserDBUtil.getInstance().addUser(userVo);
 
@@ -257,69 +259,14 @@ public class MoreActivity extends FragmentActivity implements MultiImageSelector
     }
 
     private void setAvatar(String photoFilePath){
-       ImgAsyncTask imgAsyncTask = new ImgAsyncTask(photoFilePath,avatarCiv);
+       ImgAsyncTask imgAsyncTask = new ImgAsyncTask(this,photoFilePath,avatarCiv,
+        new ImgAsyncTask.CallBack() {
+            @Override
+            public void getNewPath(String path) {
+                picPath = path;
+            }
+        });
        imgAsyncTask.execute();
-    }
-
-    public class ImgAsyncTask extends AsyncTask<Void,Void,Bitmap>{
-
-        public String photoFilePath;
-        public ImageView imageView;
-
-        public ImgAsyncTask(String path,ImageView imageView) {
-            this.photoFilePath = path;
-            this.imageView = imageView;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            //第一个执行方法
-            DialogUtil.getInstance().showProgressDialog(MoreActivity.this);
-            super.onPreExecute();
-        }
-
-        @Override
-        protected Bitmap doInBackground(Void... voids) {
-            Bitmap displayBitmap = BitmapFactory.decodeFile(photoFilePath);
-            if (displayBitmap != null) {
-                int screenHeight = DeviceUtils.getScreenHeight(MoreActivity.this);
-                int screanWidth = DeviceUtils.getScreenWidth(MoreActivity.this);
-                int height = (int)(0.29*screenHeight);
-                int width = (int)(0.71*screanWidth);
-                displayBitmap = ImageUtil.cropBitmap(displayBitmap, width, height);
-
-                String savePath = FileUtil.getInstance().getImageTempPath() + System.currentTimeMillis() + ".jpg";
-                saveBitmap2JPGE(displayBitmap, savePath);
-                picPath = savePath;
-                return displayBitmap;
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Bitmap displayBitmap) {
-            //doInBackground返回时触发，换句话说，就是doInBackground执行完后触发
-            //这里的displayBitmap就是上面doInBackground执行后的返回值
-            DialogUtil.getInstance().cancelProgressDialog();
-            this.imageView.setImageBitmap(displayBitmap);
-            super.onPostExecute(displayBitmap);
-        }
-
-        public void saveBitmap2JPGE(Bitmap bitmap, String path) {
-            File file = new File(path);
-            try {
-                FileOutputStream out = new FileOutputStream(file);
-                if (bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out)) {
-                    out.flush();
-                    out.close();
-                }
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
     }
 
 
