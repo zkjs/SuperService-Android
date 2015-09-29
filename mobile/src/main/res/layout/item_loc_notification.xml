@@ -1,34 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout 
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
-    android:background="@color/white"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
-    
+
     <FrameLayout
-        android:layout_marginLeft="5dp"
-        android:layout_width="wrap_content"
+        android:layout_width="35dp"
+        android:textColor="@color/gray616161"
         android:layout_height="match_parent">
 
         <View
             android:layout_gravity="center"
-            android:layout_width="1dp"
+            android:layout_width="0.5dp"
             android:background="@color/gray"
             android:layout_height="match_parent">
         </View>
-        
+
         <com.zkjinshi.superservice.view.CircleImageView
             android:id="@+id/civ_order_status"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:layout_gravity="center"/>
 
     </FrameLayout>
 
     <LinearLayout
         android:padding="10dp"
-        android:background="@color/ivory"
+        android:background="@color/white"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -45,8 +44,8 @@
 
                 <com.zkjinshi.superservice.view.CircleImageView
                     android:id="@+id/civ_client_avatar"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp" />
+                    android:layout_width="40dp"
+                    android:layout_height="40dp" />
 
             </RelativeLayout>
 
@@ -57,7 +56,9 @@
 
                 <TextView
                     android:id="@+id/tv_vip"
-                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    android:text="VIP#"
+                    android:textColor="@color/gray616161"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 
@@ -65,6 +66,9 @@
                     android:id="@+id/tv_client_name"
                     android:layout_toRightOf="@+id/tv_vip"
                     android:layout_marginLeft="10dp"
+                    android:text="林先生"
+                    android:textColor="@color/gray616161"
+                    android:textSize="14sp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 
@@ -72,6 +76,9 @@
                     android:id="@+id/tv_location_info"
                     android:layout_toRightOf="@+id/tv_client_name"
                     android:layout_marginLeft="10dp"
+                    android:text="即将到达"
+                    android:textSize="14sp"
+                    android:textColor="@color/grayB8B8B8"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 
@@ -79,7 +86,9 @@
                     android:id="@+id/tv_client_notice"
                     android:layout_toRightOf="@+id/tv_location_info"
                     android:layout_marginLeft="10dp"
-                    android:textColor="@color/black"
+                    android:text="离酒店200米"
+                    android:textSize="14sp"
+                    android:textColor="@color/grayB8B8B8"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 
@@ -88,13 +97,18 @@
                     android:layout_marginTop="5dp"
                     android:layout_below="@+id/tv_vip"
                     android:layout_width="wrap_content"
-                    android:textColor="@color/black"
+                    android:textColor="@color/gray616161"
+                    android:text="请做好迎接"
+                    android:textSize="16sp"
                     android:layout_height="wrap_content" />
 
                 <TextView
                     android:id="@+id/tv_order_info"
                     android:padding="10dp"
-                    android:background="@color/khaki"
+                    android:background="@color/whiteF5F5F5"
+                    android:textColor="@color/gray616161"
+                    android:text="无订单消息"
+                    android:textSize="16sp"
                     android:layout_marginTop="5dp"
                     android:layout_below="@+id/tv_to_do"
                     android:layout_width="wrap_content"
@@ -123,6 +137,9 @@
                 android:layout_marginLeft="10dp"
                 android:layout_toRightOf="@+id/iv_clock"
                 android:layout_width="wrap_content"
+                android:textColor="@color/grayB8B8B8"
+                android:text="刚刚"
+                android:textSize="14sp"
                 android:layout_centerVertical="true"
                 android:layout_height="wrap_content" />
 
