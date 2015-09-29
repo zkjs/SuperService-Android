@@ -189,13 +189,10 @@ public class MoreActivity extends FragmentActivity implements MultiImageSelector
         bizMap.put("sex", sex);
         netRequest.setBizParamMap(bizMap);
 
-        HashMap<String,String> fileMap = new HashMap<String, String>();
-        fileMap.put("file", picPath);
-        netRequest.setFileParamMap(fileMap);
+        HashMap<String,File> fileMap = new HashMap<String, File>();
+        fileMap.put("file", new File(picPath));
+        netRequest.setFileMap(fileMap);
 
-        HashMap<String,String> headMap = new HashMap<String,String>();
-        headMap.put("Content-Type","application/form-data");
-        netRequest.setHeadParamMap(headMap);
 
         NetRequestTask netRequestTask = new NetRequestTask(this,netRequest, NetResponse.class);
         netRequestTask.methodType = MethodType.POST;

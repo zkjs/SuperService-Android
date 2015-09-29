@@ -33,7 +33,7 @@ public class ProtocolUtil {
      * @return
      */
     public static String getZonelistUrl(){
-        return ConfigUtil.getInst().getHttpDomain()+"semp/sempupdate";
+        return ConfigUtil.getInst().getHttpDomain()+"semp/shoplocation";
     }
 
 }
