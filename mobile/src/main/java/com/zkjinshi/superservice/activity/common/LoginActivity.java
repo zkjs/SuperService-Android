@@ -14,12 +14,14 @@ import com.google.gson.Gson;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.bean.SempLoginBean;
+import com.zkjinshi.superservice.factory.UserFactory;
 import com.zkjinshi.superservice.net.MethodType;
 import com.zkjinshi.superservice.net.NetRequest;
 import com.zkjinshi.superservice.net.NetRequestListener;
 import com.zkjinshi.superservice.net.NetRequestTask;
 import com.zkjinshi.superservice.net.NetResponse;
 import com.zkjinshi.superservice.sqlite.DBOpenHelper;
+import com.zkjinshi.superservice.sqlite.UserDBUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
 
@@ -130,6 +132,7 @@ public class LoginActivity extends Activity implements VerifyPhoneControler.Succ
                     CacheUtil.getInstance().setUserName(sempLoginbean.getName());
                     CacheUtil.getInstance().setLogin(true);
                     DBOpenHelper.DB_NAME = sempLoginbean.getSalesid() + ".db";
+                    UserDBUtil.getInstance().addUser(UserFactory.getInstance().buildUserVo(sempLoginbean));
                     startActivity(new Intent(LoginActivity.this, MoreActivity.class));
                     finish();
                     overridePendingTransition(R.anim.activity_new, R.anim.activity_out);

@@ -71,6 +71,20 @@ public class TableOpenHelper {
                     + " created long "//创建时间
                     + " )";
 
+    public static String USER_TBL_SQL =
+            "create table if not exists "
+                    + DBOpenHelper.USER_TBL
+                    + "("
+                    + " user_id text primary key, "//用户ID
+                    + " user_name text, "//用户姓名
+                    + " shop_id text, "//商家id
+                    + " cellphone text, "//手机
+                    + " photo_url text, "//用户头像
+                    + " shop_name text , "//商家全称
+                    + " token text, "//token
+                    + " role_id text "//角色id
+                    + " )";
+
     public final static String CLIENT_TBL_SQL =
             " create table if not exists "
                     + DBOpenHelper.CLIENT_TBL
@@ -94,6 +108,7 @@ public class TableOpenHelper {
                 DBOpenHelper.MESSAGE_TBL,//消息表
                 DBOpenHelper.CHAT_ROOM_TBL,//聊天室表
                 DBOpenHelper.MEMBER_TBL,//成员表
+                DBOpenHelper.USER_TBL,//客户表
                 DBOpenHelper.CLIENT_TBL,//客户表
         };
     }
