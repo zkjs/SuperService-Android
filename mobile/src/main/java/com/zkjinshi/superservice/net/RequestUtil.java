@@ -1,7 +1,5 @@
 package com.zkjinshi.superservice.net;
 
-import com.zkjinshi.base.log.LogLevel;
-import com.zkjinshi.base.log.LogUtil;
 import com.zkjinshi.superservice.utils.FileUtil;
 
 import org.apache.http.HttpResponse;
@@ -162,7 +160,6 @@ public class RequestUtil {
                 sb1.append(LINEND);
                 sb1.append("Content-Disposition: form-data; name=\"" + file.getKey() + "\"" + "; filename=\""
                         + FileUtil.getInstance().getFileName(file.getValue().getPath()) + "\"" + LINEND);
-                LogUtil.getInstance().info(LogLevel.INFO, "requestContent:" + sb1.toString());
                 sb1.append("Content-Type: image/jpeg; charset="
                         + CHARSET + LINEND);
                 sb1.append(LINEND);
