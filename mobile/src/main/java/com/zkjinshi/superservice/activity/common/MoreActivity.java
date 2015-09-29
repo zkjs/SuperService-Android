@@ -4,6 +4,7 @@ package com.zkjinshi.superservice.activity.common;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -11,12 +12,20 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageView;
 
+import com.zkjinshi.base.util.DeviceUtils;
+import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.base.util.ImageUtil;
 import com.zkjinshi.superservice.R;
+import com.zkjinshi.superservice.utils.CacheUtil;
+import com.zkjinshi.superservice.utils.FileUtil;
 import com.zkjinshi.superservice.view.CircleImageView;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.List;
 
 import me.nereo.multi_image_selector.MultiImageSelectorActivity;
@@ -35,7 +44,10 @@ public class MoreActivity extends FragmentActivity implements MultiImageSelector
 
     private CircleImageView avatarCiv;
 
+
     public static int REQUEST_IMAGE = 1;
+    private String picPath = null;
+
 
     @Override
     public void onSingleImageSelected(String path) {
@@ -77,7 +89,7 @@ public class MoreActivity extends FragmentActivity implements MultiImageSelector
     private void initFragment() {
         Bundle bundle = new Bundle();
         bundle.putInt(MultiImageSelectorFragment.EXTRA_SELECT_COUNT, 1);
-        bundle.putInt(MultiImageSelectorFragment.EXTRA_SELECT_MODE,  MultiImageSelectorActivity.MODE_SINGLE);
+        bundle.putInt(MultiImageSelectorFragment.EXTRA_SELECT_MODE, MultiImageSelectorActivity.MODE_SINGLE);
         bundle.putBoolean(MultiImageSelectorActivity.EXTRA_SHOW_CAMERA, true);
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.image_grid, Fragment.instantiate(this, MultiImageSelectorFragment.class.getName(), bundle))
@@ -86,6 +98,7 @@ public class MoreActivity extends FragmentActivity implements MultiImageSelector
 
     private void initView() {
         avatarCiv = (CircleImageView)findViewById(R.id.avatar);
+
 
     }
 
@@ -106,9 +119,8 @@ public class MoreActivity extends FragmentActivity implements MultiImageSelector
         findViewById(R.id.go_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(MoreActivity.this, ZoneActivity.class));
-                finish();
-                overridePendingTransition(R.anim.activity_new, R.anim.activity_out);
+                //完善资料api接口
+                sempupdate();
             }
         });
 
@@ -127,6 +139,12 @@ public class MoreActivity extends FragmentActivity implements MultiImageSelector
         });
     }
 
+    private void sempupdate() {
+        startActivity(new Intent(MoreActivity.this, ZoneActivity.class));
+        finish();
+        overridePendingTransition(R.anim.activity_new, R.anim.activity_out);
+    }
+
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == REQUEST_IMAGE){
@@ -143,13 +161,69 @@ public class MoreActivity extends FragmentActivity implements MultiImageSelector
     }
 
     private void setAvatar(String photoFilePath){
-        Bitmap displayBitmap = BitmapFactory.decodeFile(photoFilePath);
-        if (displayBitmap != null) {
-            displayBitmap = ImageUtil.cropThumbBitmap(displayBitmap);
-            displayBitmap = ImageUtil.loadThumbBitmap(MoreActivity.this, displayBitmap);
-            avatarCiv.setImageBitmap(displayBitmap);
+       ImgAsyncTask imgAsyncTask = new ImgAsyncTask(photoFilePath,avatarCiv);
+       imgAsyncTask.execute();
+    }
+
+    public class ImgAsyncTask extends AsyncTask<Void,Void,Bitmap>{
+
+        public String photoFilePath;
+        public ImageView imageView;
+
+        public ImgAsyncTask(String path,ImageView imageView) {
+            this.photoFilePath = path;
+            this.imageView = imageView;
         }
-        // CacheUtil.getInstance().savePicPath(photoFilePath);
+
+        @Override
+        protected void onPreExecute() {
+            //第一个执行方法
+            DialogUtil.getInstance().showProgressDialog(MoreActivity.this);
+            super.onPreExecute();
+        }
+
+        @Override
+        protected Bitmap doInBackground(Void... voids) {
+            Bitmap displayBitmap = BitmapFactory.decodeFile(photoFilePath);
+            if (displayBitmap != null) {
+                int screenHeight = DeviceUtils.getScreenHeight(MoreActivity.this);
+                int screanWidth = DeviceUtils.getScreenWidth(MoreActivity.this);
+                int height = (int)(0.29*screenHeight);
+                int width = (int)(0.71*screanWidth);
+                displayBitmap = ImageUtil.cropBitmap(displayBitmap, width, height);
+
+                String savePath = FileUtil.getInstance().getImageTempPath() + System.currentTimeMillis() + ".jpg";
+                saveBitmap2JPGE(displayBitmap, savePath);
+                picPath = savePath;
+                return displayBitmap;
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap displayBitmap) {
+            //doInBackground返回时触发，换句话说，就是doInBackground执行完后触发
+            //这里的displayBitmap就是上面doInBackground执行后的返回值
+            DialogUtil.getInstance().cancelProgressDialog();
+            this.imageView.setImageBitmap(displayBitmap);
+            super.onPostExecute(displayBitmap);
+        }
+
+        public void saveBitmap2JPGE(Bitmap bitmap, String path) {
+            File file = new File(path);
+            try {
+                FileOutputStream out = new FileOutputStream(file);
+                if (bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out)) {
+                    out.flush();
+                    out.close();
+                }
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
     }
 
 

@@ -2,31 +2,18 @@ package com.zkjinshi.superservice.net;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.text.TextUtils;
 
-import com.google.gson.Gson;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
 import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
 import org.apache.http.conn.ConnectTimeoutException;
-import org.apache.http.entity.mime.MultipartEntity;
-import org.apache.http.entity.mime.content.FileBody;
-import org.apache.http.entity.mime.content.StringBody;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.util.EntityUtils;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.SocketTimeoutException;
-import java.net.URLEncoder;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 
 /**
  * 网络请求异步任务
@@ -37,37 +24,14 @@ import java.util.Map;
  */
 public class NetRequestTask extends AsyncTask<NetRequest, Void, NetResponse> {
 
+    /** http返回成功 */
     private static final int REQ_RESP_SUCCESS = 200;
-
-    /** 没有网络连接 */
-    public static final int NO_NETWORK = -0x000001;
-
-    /** 服务器连接失败 */
-    public static final int CONNECTION_SERVER_ERROR = -0x000002;
-
-    /** 请求参数错误 */
-    public static final int PARAMETER_ERROR = -0x000003;
-
-    /** 解析json错误 */
-    public static final int PARSE_JSON_ERROR = -0x000004;
 
     /** http返回信息错误 */
     public static final int RESPONSE_ERROR = -0x000005;
 
-    /** 不存在服务器 */
-    public static final int HOST_ERROR = -0x000006;
-
-    /** 解析二进制流错误 */
-    public static final int PARSE_STREAM_ERROR = -0x000007;
-
-    /** 解析二进制流错误 */
-    public static final int URL_NOT_FOUND = -0x000008;
-
     /** 请求超时 */
     public static final int REQ_TIME_OUT = -0x000009;
-
-    /** 未知错误 */
-    public static final int UNKNOW_ERROR = -0xFFFFFF;
 
     private NetRequest mediaRequest;
     private Class<NetResponse> responseClazz;
@@ -81,13 +45,17 @@ public class NetRequestTask extends AsyncTask<NetRequest, Void, NetResponse> {
 
     public boolean isShowLoadingDialog = false;
 
+    public SchemeType schemeType = SchemeType.HTTP;
+
+    public MethodType methodType = MethodType.POST;
+
     public NetRequestTask(Context ctx, NetRequest requestInfo, Class<NetResponse> responseClazz) {
         mediaRequest = requestInfo;
         this.responseClazz = responseClazz;
         context = ctx;
     }
 
-    public void setMediaRequestListener(NetRequestListener listener) {
+    public void setNetRequestListener(NetRequestListener listener) {
         this.requestListener = listener;
     }
 
@@ -107,6 +75,7 @@ public class NetRequestTask extends AsyncTask<NetRequest, Void, NetResponse> {
     @Override
     protected NetResponse doInBackground(NetRequest... params) {
         NetResponse resultInfo = null;
+        String resultStr = null;
         String requestUrl = null;
         HashMap bizMap = null;
         HashMap fileMap = null;
@@ -114,47 +83,16 @@ public class NetRequestTask extends AsyncTask<NetRequest, Void, NetResponse> {
             requestUrl = mediaRequest.requestUrl;
             bizMap = mediaRequest.getBizParamMap();
             fileMap = mediaRequest.getFileParamMap();
-            MultipartEntity multipartEntity = new MultipartEntity();
-            if(null != bizMap){
-                Iterator<Map.Entry<String, String>> bizIterator = bizMap.entrySet()
-                        .iterator();
-                while (bizIterator.hasNext()) {
-                    HashMap.Entry bizEntry = (HashMap.Entry) bizIterator.next();
-                    StringBody bizStringBody = new StringBody((URLEncoder.encode(bizEntry
-                            .getValue().toString(), "UTF-8")));
-                    multipartEntity.addPart(bizEntry.getKey().toString(), bizStringBody);
-                }
+            if(methodType ==  MethodType.POST){
+                resultStr = RequestUtil.sendPostRequest(requestUrl, bizMap, fileMap);
+            }else if(methodType == MethodType.GET){
+                resultStr = RequestUtil.sendGetRequest(requestUrl);
             }
-            if(null != fileMap){
-                String filePath = null;
-                File file = null;
-                FileBody fileBody = null;
-                Iterator<Map.Entry<String, String>> fileIterator = fileMap.entrySet()
-                        .iterator();
-                while (fileIterator.hasNext()) {
-                    HashMap.Entry fileEntry = (HashMap.Entry) fileIterator.next();
-                    filePath = (String)fileEntry.getValue();
-                    file = new File(filePath);
-                    fileBody= new FileBody(file);
-                    multipartEntity.addPart(URLEncoder.encode((String)fileEntry.getKey(), "UTF-8"), fileBody);
+            if(!TextUtils.isEmpty(resultStr)){
+                resultInfo = responseClazz.newInstance();
+                if (resultInfo != null) {
+                    resultInfo.rawResult = resultStr;
                 }
-            }
-            HttpPost httpPost = new HttpPost(requestUrl);
-            HttpClient httpClient = new DefaultHttpClient();
-            httpPost.setEntity(multipartEntity);
-            HttpResponse response = httpClient.execute(httpPost);
-            int respCode = 0;
-            if (errorCode == REQ_RESP_SUCCESS) {
-                if (response != null && null != response.getStatusLine() && ((respCode = response.getStatusLine().getStatusCode()) == HttpStatus.SC_OK ||
-                        respCode == 404)) {
-                    resultInfo = buildResultData(response,respCode);
-                } else if (response == null) {
-                    errorCode = RESPONSE_ERROR;
-                } else {
-                    errorCode = HOST_ERROR;
-                }
-            } else {
-                resultInfo = null;
             }
         } catch (UnsupportedEncodingException e) {
             errorCode = RESPONSE_ERROR;
@@ -172,38 +110,6 @@ public class NetRequestTask extends AsyncTask<NetRequest, Void, NetResponse> {
         } catch (Exception e) {
             errorCode = RESPONSE_ERROR;
             onExceptionThrown(e, "Exception thrown when getResultString from the response.");
-        }
-        return resultInfo;
-    }
-
-    private NetStatusMsg buildStatusMessage(String rawRespString) {
-        Gson gson = new Gson();
-        NetStatusMsg statusMsg = gson.fromJson(rawRespString, NetStatusMsg.class);
-        errorCode = statusMsg.code;
-        return statusMsg;
-    }
-
-    private NetResponse buildResultData(HttpResponse response,int respCode) {
-        NetResponse resultInfo = null;
-        String resultString = null;
-        try {
-            resultString =  EntityUtils.toString(response.getEntity());
-            if (respCode == REQ_RESP_SUCCESS) {
-                resultInfo = responseClazz.newInstance();
-                ;
-                if (resultInfo != null) {
-                    resultInfo.rawResult = resultString;
-                }
-            } else {
-                NetStatusMsg statusMsg = buildStatusMessage(resultString);
-                if (statusMsg == null) {
-                    errorLog.append("Failed to convert json to objet: " + responseClazz + "\r\n");
-                }else{
-                    errorLog.append(statusMsg.message);
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
         return resultInfo;
     }
@@ -244,4 +150,6 @@ public class NetRequestTask extends AsyncTask<NetRequest, Void, NetResponse> {
            DialogUtil.getInstance().cancelProgressDialog();
         }
     }
+
+
 }

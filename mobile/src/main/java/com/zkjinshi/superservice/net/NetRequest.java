@@ -29,6 +29,11 @@ public class NetRequest {
     private HashMap<String, String> fileParamMap;
 
     /**
+     * 下载文件保存目录
+     */
+    private String filePath;
+
+    /**
      * 响应的数据的编码格式，默认为UTF-8
      *
      * @return
@@ -65,4 +70,11 @@ public class NetRequest {
         this.bizParamMap = bizParamMap;
     }
 
+    public String getFilePath() {
+        return filePath;
+    }
+
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
+    }
 }
