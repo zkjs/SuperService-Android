@@ -106,4 +106,59 @@ public class RequestUtil {
         return  resultInfo;
     }
 
+    /**
+     * 发送post请求
+     * @param requestUrl
+     * @param bizMap
+     * @param fileMap
+     * @return
+     * @throws Exception
+     */
+    public static String sendPostRequest(String requestUrl, HashMap<String, String> bizMap, HashMap<String, String> fileMap,HashMap<String,String> headMap) throws Exception {
+        String resultInfo = null;
+        MultipartEntity multipartEntity = new MultipartEntity();
+        if (null != bizMap) {
+            Iterator<Map.Entry<String, String>> bizIterator = bizMap.entrySet()
+                    .iterator();
+            while (bizIterator.hasNext()) {
+                HashMap.Entry bizEntry = (HashMap.Entry) bizIterator.next();
+                StringBody bizStringBody = new StringBody((URLEncoder.encode(bizEntry
+                        .getValue().toString(), "UTF-8")));
+                multipartEntity.addPart(bizEntry.getKey().toString(), bizStringBody);
+            }
+        }
+        if (null != fileMap) {
+            String filePath = null;
+            File file = null;
+            FileBody fileBody = null;
+            Iterator<Map.Entry<String, String>> fileIterator = fileMap.entrySet()
+                    .iterator();
+            while (fileIterator.hasNext()) {
+                HashMap.Entry fileEntry = (HashMap.Entry) fileIterator.next();
+                filePath = (String) fileEntry.getValue();
+                file = new File(filePath);
+                fileBody = new FileBody(file);
+                multipartEntity.addPart(URLEncoder.encode((String) fileEntry.getKey(), "UTF-8"), fileBody);
+            }
+        }
+        HttpPost httpPost = new HttpPost(requestUrl);
+        if (null != headMap) {
+            Iterator<Map.Entry<String, String>> headIterator = headMap.entrySet()
+                    .iterator();
+            while (headIterator.hasNext()) {
+                HashMap.Entry headEntry = (HashMap.Entry) headIterator.next();
+                httpPost.setHeader(URLEncoder.encode((String) headEntry.getKey(), "UTF-8"), URLEncoder.encode(headEntry
+                        .getValue().toString(), "UTF-8"));
+            }
+        }
+        HttpClient httpClient = new DefaultHttpClient();
+        httpPost.setEntity(multipartEntity);
+        HttpResponse response = httpClient.execute(httpPost);
+        int respCode = 0;
+        if (response != null && null != response.getStatusLine() && ((respCode = response.getStatusLine().getStatusCode()) == HttpStatus.SC_OK )) {
+            resultInfo = EntityUtils.toString(response.getEntity());
+        }
+        return  resultInfo;
+    }
+
 }

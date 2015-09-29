@@ -29,9 +29,9 @@ public class NetRequest {
     private HashMap<String, String> fileParamMap;
 
     /**
-     * 下载文件保存目录
+     * 头文件Map
      */
-    private String filePath;
+    private HashMap<String,String> headParamMap;
 
     /**
      * 响应的数据的编码格式，默认为UTF-8
@@ -70,11 +70,11 @@ public class NetRequest {
         this.bizParamMap = bizParamMap;
     }
 
-    public String getFilePath() {
-        return filePath;
+    public HashMap<String, String> getHeadParamMap() {
+        return headParamMap;
     }
 
-    public void setFilePath(String filePath) {
-        this.filePath = filePath;
+    public void setHeadParamMap(HashMap<String, String> headParamMap) {
+        this.headParamMap = headParamMap;
     }
 }
