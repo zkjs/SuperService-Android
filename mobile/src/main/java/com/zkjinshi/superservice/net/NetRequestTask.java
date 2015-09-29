@@ -10,6 +10,7 @@ import com.zkjinshi.superservice.R;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.conn.ConnectTimeoutException;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.SocketTimeoutException;
@@ -77,19 +78,19 @@ public class NetRequestTask extends AsyncTask<NetRequest, Void, NetResponse> {
         NetResponse resultInfo = null;
         String resultStr = null;
         String requestUrl = null;
-        HashMap bizMap = null;
-        HashMap fileMap = null;
-        HashMap headMap = null;
+        HashMap<String,String> bizParamsMap = null;
+        HashMap<String,String> fileParamsMap = null;
+        HashMap<String,File> fileMap = null;
         try {
             requestUrl = mediaRequest.requestUrl;
-            bizMap = mediaRequest.getBizParamMap();
-            fileMap = mediaRequest.getFileParamMap();
-            headMap = mediaRequest.getHeadParamMap();
+            bizParamsMap = mediaRequest.getBizParamMap();
+            fileParamsMap = mediaRequest.getFileParamMap();
+            fileMap = mediaRequest.getFileMap();
             if(methodType ==  MethodType.POST){
-                if(null ==  headMap){
-                    resultStr = RequestUtil.sendPostRequest(requestUrl, bizMap, fileMap);
+                if(null ==  fileMap){
+                    resultStr = RequestUtil.sendPostRequest(requestUrl, bizParamsMap, fileParamsMap);
                 }else{
-                    resultStr = RequestUtil.sendPostRequest(requestUrl,bizMap,fileMap,headMap);
+                    resultStr = RequestUtil.sendPostRequest(requestUrl,bizParamsMap,fileMap);
                 }
 
             }else if(methodType == MethodType.GET){
