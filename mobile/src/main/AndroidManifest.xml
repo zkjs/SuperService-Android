@@ -128,6 +128,9 @@
             </intent-filter>
         </service>
 
+        <!--云测appKey-->
+        <meta-data android:name="TESTIN_APPKEY" android:value="d709f38c0330e5edfab0e2ae10ff9827"/>
+
     </application>
 
 </manifest>
