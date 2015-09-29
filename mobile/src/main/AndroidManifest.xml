@@ -79,7 +79,11 @@
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
 
         <activity
@@ -87,11 +91,7 @@
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.MaterialSheetFab">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
 
         <activity
@@ -117,7 +117,7 @@
         <service android:name="com.zkjinshi.base.net.core.MessageService"
             android:exported="false">
             <intent-filter>
-                <action android:name="com.zkjinshi.svip.im.Message_SERVICE"/>
+                <action android:name="com.zkjinshi.superservice.im.Message_SERVICE"/>
             </intent-filter>
         </service>
 
