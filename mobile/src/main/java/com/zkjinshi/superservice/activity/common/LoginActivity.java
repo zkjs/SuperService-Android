@@ -24,6 +24,7 @@ import com.zkjinshi.superservice.sqlite.DBOpenHelper;
 import com.zkjinshi.superservice.sqlite.UserDBUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
+import com.zkjinshi.superservice.vo.UserVo;
 
 import java.util.HashMap;
 
@@ -132,8 +133,11 @@ public class LoginActivity extends Activity implements VerifyPhoneControler.Succ
                     CacheUtil.getInstance().setUserName(sempLoginbean.getName());
                     CacheUtil.getInstance().setLogin(true);
                     DBOpenHelper.DB_NAME = sempLoginbean.getSalesid() + ".db";
-                    UserDBUtil.getInstance().addUser(UserFactory.getInstance().buildUserVo(sempLoginbean));
-                    startActivity(new Intent(LoginActivity.this, MoreActivity.class));
+                    UserVo userVo = UserFactory.getInstance().buildUserVo(sempLoginbean);
+                    UserDBUtil.getInstance().addUser(userVo);
+
+                    Intent intent = new Intent(LoginActivity.this, MoreActivity.class);
+                    startActivity(intent);
                     finish();
                     overridePendingTransition(R.anim.activity_new, R.anim.activity_out);
                 } else {
@@ -147,6 +151,7 @@ public class LoginActivity extends Activity implements VerifyPhoneControler.Succ
 
             }
         });
+        netRequestTask.isShowLoadingDialog = true;
         netRequestTask.execute();
     }
 }

@@ -19,6 +19,9 @@ public class UserVo implements Serializable {
     private String shopName;//商家全称
     private String token;
     private String roleId;
+    private SexType sex;
+
+
 
     public String getUserId() {
         return userId;
@@ -82,6 +85,14 @@ public class UserVo implements Serializable {
 
     public void setRoleId(String roleId) {
         this.roleId = roleId;
+    }
+
+    public SexType getSex() {
+        return sex;
+    }
+
+    public void setSex(SexType sex) {
+        this.sex = sex;
     }
 
 }

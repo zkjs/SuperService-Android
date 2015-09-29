@@ -82,7 +82,8 @@ public class TableOpenHelper {
                     + " photo_url text, "//用户头像
                     + " shop_name text , "//商家全称
                     + " token text, "//token
-                    + " role_id text "//角色id
+                    + " role_id text, "//角色id
+                    + " sex  integer " //性别
                     + " )";
 
     public final static String CLIENT_TBL_SQL =

@@ -8,24 +8,43 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.zkjinshi.base.util.DeviceUtils;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.base.util.ImageUtil;
 import com.zkjinshi.superservice.R;
+import com.zkjinshi.superservice.bean.BaseBean;
+import com.zkjinshi.superservice.bean.SempLoginBean;
+import com.zkjinshi.superservice.net.MethodType;
+import com.zkjinshi.superservice.net.NetRequest;
+import com.zkjinshi.superservice.net.NetRequestListener;
+import com.zkjinshi.superservice.net.NetRequestTask;
+import com.zkjinshi.superservice.net.NetResponse;
+import com.zkjinshi.superservice.sqlite.DBOpenHelper;
+import com.zkjinshi.superservice.sqlite.UserDBUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
+import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.utils.FileUtil;
+import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.view.CircleImageView;
+import com.zkjinshi.superservice.vo.SexType;
+import com.zkjinshi.superservice.vo.UserVo;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 
 import me.nereo.multi_image_selector.MultiImageSelectorActivity;
@@ -43,10 +62,13 @@ public class MoreActivity extends FragmentActivity implements MultiImageSelector
     private final static String TAG = MoreActivity.class.getSimpleName();
 
     private CircleImageView avatarCiv;
-
+    private TextView nameTv;
+    private EditText inputNameEt;
+    private CheckBox sexCbx;
 
     public static int REQUEST_IMAGE = 1;
     private String picPath = null;
+    private UserVo userVo = null;
 
 
     @Override
@@ -77,6 +99,7 @@ public class MoreActivity extends FragmentActivity implements MultiImageSelector
     protected void onCreate(Bundle savedInstanceState) {
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
+        userVo = UserDBUtil.getInstance().queryUserById(CacheUtil.getInstance().getUserId());
         //屏蔽输入法自动弹出
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         setContentView(R.layout.activity_more);
@@ -98,12 +121,18 @@ public class MoreActivity extends FragmentActivity implements MultiImageSelector
 
     private void initView() {
         avatarCiv = (CircleImageView)findViewById(R.id.avatar);
-
-
+        nameTv = (TextView)findViewById(R.id.org_username_tv);
+        inputNameEt = (EditText)findViewById(R.id.new_username_et);
+        sexCbx = (CheckBox)findViewById(R.id.sex_cbx);
     }
 
     private void initData() {
-
+        nameTv.setText(CacheUtil.getInstance().getUserName());
+        if(userVo.getSex() == SexType.FEMALE){
+            sexCbx.setChecked(false);
+        }else{
+            sexCbx.setChecked(true);
+        }
     }
 
     private void initListener() {
@@ -139,10 +168,80 @@ public class MoreActivity extends FragmentActivity implements MultiImageSelector
         });
     }
 
+    /*
+    * 资料更新
+    * */
     private void sempupdate() {
-        startActivity(new Intent(MoreActivity.this, ZoneActivity.class));
-        finish();
-        overridePendingTransition(R.anim.activity_new, R.anim.activity_out);
+        if(picPath == null){
+            DialogUtil.getInstance().showToast(this,"请上传头像");
+            return;
+        }
+
+        String input = inputNameEt.getText().toString();
+        final String name = TextUtils.isEmpty(input)? nameTv.getText().toString() : input;
+        final String sex = sexCbx.isChecked() ? "1" : "0";
+
+        NetRequest netRequest = new NetRequest(ProtocolUtil.getSempupdateUrl());
+        HashMap<String,String> bizMap = new HashMap<String,String>();
+        bizMap.put("salesid", CacheUtil.getInstance().getUserId());
+        bizMap.put("token",CacheUtil.getInstance().getToken());
+        bizMap.put("name", name);
+        bizMap.put("sex", sex);
+        netRequest.setBizParamMap(bizMap);
+
+        HashMap<String,String> fileMap = new HashMap<String, String>();
+        fileMap.put("file", picPath);
+        netRequest.setFileParamMap(fileMap);
+
+        HashMap<String,String> headMap = new HashMap<String,String>();
+        headMap.put("Content-Type","application/form-data");
+        netRequest.setHeadParamMap(headMap);
+
+        NetRequestTask netRequestTask = new NetRequestTask(this,netRequest, NetResponse.class);
+        netRequestTask.methodType = MethodType.POST;
+        netRequestTask.setNetRequestListener(new NetRequestListener() {
+            @Override
+            public void onNetworkRequestError(int errorCode, String errorMessage) {
+                Log.i(TAG, "errorCode:" + errorCode);
+                Log.i(TAG, "errorMessage:" + errorMessage);
+            }
+
+            @Override
+            public void onNetworkRequestCancelled() {
+
+            }
+
+            @Override
+            public void onNetworkResponseSucceed(NetResponse result) {
+                Log.i(TAG, "result.rawResult:" + result.rawResult);
+                 BaseBean baseBean = new Gson().fromJson(result.rawResult, BaseBean.class);
+                if (baseBean.isSet()) {
+                    userVo.setSex(sexCbx.isChecked() ? SexType.MALE : SexType.FEMALE);
+                    userVo.setUserName(name);
+                    String avatarUrl = Constants.AVATAR_PRE_URL+userVo.getUserId()+".jpg";
+                    userVo.setPhotoUrl(avatarUrl);
+
+                    CacheUtil.getInstance().setUserName(name);
+                    UserDBUtil.getInstance().addUser(userVo);
+
+                    startActivity(new Intent(MoreActivity.this, ZoneActivity.class));
+                    finish();
+                    overridePendingTransition(R.anim.activity_new, R.anim.activity_out);
+                } else {
+                    DialogUtil.getInstance().showToast(MoreActivity.this, "error ");
+                }
+
+            }
+
+            @Override
+            public void beforeNetworkRequestStart() {
+
+            }
+        });
+        netRequestTask.isShowLoadingDialog = true;
+        netRequestTask.execute();
+
+
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

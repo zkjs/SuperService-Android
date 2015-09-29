@@ -18,4 +18,7 @@ public class Constants {
     //修改完成
     public static final int FLAG_MODIFY_FINISH = 7;
 
+    //头像前缀
+    public static final String AVATAR_PRE_URL = "http://api.zkjinshi.com/uploades/users/";
+
 }

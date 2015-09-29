@@ -4,14 +4,31 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.ListView;
 
+import com.google.gson.Gson;
+import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.adapter.ZoneAdapter;
+import com.zkjinshi.superservice.bean.SempLoginBean;
+import com.zkjinshi.superservice.factory.UserFactory;
+import com.zkjinshi.superservice.net.MethodType;
+import com.zkjinshi.superservice.net.NetRequest;
+import com.zkjinshi.superservice.net.NetRequestListener;
+import com.zkjinshi.superservice.net.NetRequestTask;
+import com.zkjinshi.superservice.net.NetResponse;
+import com.zkjinshi.superservice.sqlite.DBOpenHelper;
+import com.zkjinshi.superservice.sqlite.UserDBUtil;
 import com.zkjinshi.superservice.test.ZoneBiz;
+import com.zkjinshi.superservice.utils.CacheUtil;
+import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.view.RefreshLayout;
+import com.zkjinshi.superservice.vo.UserVo;
+
+import java.util.HashMap;
 
 
 /**
@@ -52,7 +69,56 @@ public class ZoneActivity extends Activity implements SwipeRefreshLayout.OnRefre
     }
 
     private void initData() {
-
+//        NetRequest netRequest = new NetRequest(ProtocolUtil.getSempLoginUrl());
+//        HashMap<String,String> bizMap = new HashMap<String,String>();
+//        bizMap.put("phone",phone);
+//        netRequest.setBizParamMap(bizMap);
+//        NetRequestTask netRequestTask = new NetRequestTask(this,netRequest, NetResponse.class);
+//        netRequestTask.methodType = MethodType.POST;
+//        netRequestTask.setNetRequestListener(new NetRequestListener() {
+//            @Override
+//            public void onNetworkRequestError(int errorCode, String errorMessage) {
+//                Log.i(TAG, "errorCode:" + errorCode);
+//                Log.i(TAG, "errorMessage:" + errorMessage);
+//            }
+//
+//            @Override
+//            public void onNetworkRequestCancelled() {
+//
+//            }
+//
+//            @Override
+//            public void onNetworkResponseSucceed(NetResponse result) {
+//                Log.i(TAG, "result.rawResult:" + result.rawResult);
+//                SempLoginBean sempLoginbean = new Gson().fromJson(result.rawResult, SempLoginBean.class);
+//                if (sempLoginbean.isSet()) {
+//                    //更新为最新的token和userid
+//                    CacheUtil.getInstance().setToken(sempLoginbean.getToken());
+//                    CacheUtil.getInstance().setUserId(sempLoginbean.getSalesid());
+//                    CacheUtil.getInstance().setUserPhone(inputEt.getText().toString());
+//                    CacheUtil.getInstance().setUserName(sempLoginbean.getName());
+//                    CacheUtil.getInstance().setLogin(true);
+//                    DBOpenHelper.DB_NAME = sempLoginbean.getSalesid() + ".db";
+//                    UserVo userVo = UserFactory.getInstance().buildUserVo(sempLoginbean);
+//                    UserDBUtil.getInstance().addUser(userVo);
+//
+//                    Intent intent = new Intent(LoginActivity.this, MoreActivity.class);
+//                    startActivity(intent);
+//                    finish();
+//                    overridePendingTransition(R.anim.activity_new, R.anim.activity_out);
+//                } else {
+//                    DialogUtil.getInstance().showToast(LoginActivity.this, "手机号还不是服务员 ");
+//                }
+//
+//            }
+//
+//            @Override
+//            public void beforeNetworkRequestStart() {
+//
+//            }
+//        });
+//        netRequestTask.isShowLoadingDialog = true;
+//        netRequestTask.execute();
     }
 
     private void initListener() {

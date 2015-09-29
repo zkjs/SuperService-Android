@@ -1,6 +1,7 @@
 package com.zkjinshi.superservice.bean;
 
 /**
+ * 登录api返回实体
  * 开发者：dujiande
  * 日期：2015/9/28
  * Copyright (C) 2015 深圳中科金石科技有限公司
@@ -25,6 +26,15 @@ public class SempLoginBean extends BaseBean {
     private String token;
     private String name;
     private String roleid;
+    private int sex=0; //0 是女 1 是男
+
+    public int getSex() {
+        return sex;
+    }
+
+    public void setSex(int sex) {
+        this.sex = sex;
+    }
 
     public String getSalesid() {
         return salesid;

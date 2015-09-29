@@ -6,6 +6,7 @@ import android.text.TextUtils;
 
 import com.zkjinshi.superservice.bean.SempLoginBean;
 import com.zkjinshi.superservice.bean.UserBean;
+import com.zkjinshi.superservice.vo.SexType;
 import com.zkjinshi.superservice.vo.UserVo;
 
 /**
@@ -38,6 +39,7 @@ public class UserFactory {
         userVo.setPhotoUrl(userBean.getUrl());
         userVo.setShopId(userBean.getShopid());
         userVo.setUserName(userBean.getName());
+        userVo.setSex(userBean.getSex()== 0 ? SexType.FEMALE : SexType.MALE);
         return userVo;
     }
 
@@ -80,6 +82,7 @@ public class UserFactory {
         if(!TextUtils.isEmpty(roleId)){
             values.put("role_id",roleId);
         }
+        values.put("sex",userVo.getSex() == SexType.FEMALE ? 0 : 1);
         return values;
     }
 
@@ -98,6 +101,7 @@ public class UserFactory {
         userVo.setShopName(cursor.getString(5));
         userVo.setToken(cursor.getString(6));
         userVo.setRoleId(cursor.getString(7));
+        userVo.setSex(cursor.getInt(8)== 0 ? SexType.FEMALE : SexType.MALE);
         return userVo;
     }
 
