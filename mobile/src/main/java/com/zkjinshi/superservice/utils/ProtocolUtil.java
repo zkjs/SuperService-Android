@@ -36,4 +36,12 @@ public class ProtocolUtil {
         return ConfigUtil.getInst().getHttpDomain()+"semp/shoplocation";
     }
 
+    /**
+     * 服务员修改自己管辖的区域通知
+     * @return
+     */
+    public static String getSemplocationupdateUrl(){
+        return ConfigUtil.getInst().getHttpDomain()+"semp/semplocationupdate";
+    }
+
 }
