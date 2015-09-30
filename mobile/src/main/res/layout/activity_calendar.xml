@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:calendar="http://schemas.android.com/apk/res-auto"
+    android:background="#EEEEEE"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <!--标题-->
+    <RelativeLayout
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@android:color/holo_blue_light">
+        <ImageButton
+            android:id="@+id/back_btn"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/header_ibtn_back"
+            android:scaleType="center"
+            android:background="#00000000"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="选择日期"
+            android:textColor="@android:color/white"
+            android:textSize="24sp"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/back_btn"/>
+
+    </RelativeLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <com.andexert.calendarlistview.DayPickerView
+            android:id="@+id/date_picker_choose_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            calendar:drawRoundRect="true"
+            calendar:startCurrentMonth="true"
+            calendar:enablePreviousDay="false"
+            calendar:preSetDay="true"
+            calendar:colorPreviousDay="#CFCFCF"
+            calendar:colorNormalDay="#000000"
+            calendar:colorMonthName="#000000"
+            calendar:colorDayName="#000000"
+            calendar:colorCurrentDay="#000000"
+            calendar:colorSelectedDayBackground="#008B8B"
+            calendar:selectedDayRadius="22dp"
+            calendar:textSizeDay="20dp"
+            calendar:textSizeMonth="22dp"
+            calendar:calendarHeight="500dp"
+            />
+        <LinearLayout
+            android:id="@+id/calendar_tips_llyt"
+            android:layout_width="200dp"
+            android:layout_height="80dp"
+            android:layout_gravity="center|bottom"
+            android:layout_marginBottom="20dp"
+            android:gravity="center"
+            android:background="@drawable/corners_shape_bg"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/calendar_tips_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="请选择入住日期"
+                android:textColor="@android:color/white"
+                android:textSize="22sp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="*注：所选日期为目的地日期"
+                android:textColor="@android:color/white"
+                android:textSize="12sp"
+                android:layout_marginTop="10dp"/>
+
+        </LinearLayout>
+    </FrameLayout>
+
+
+
+</LinearLayout>

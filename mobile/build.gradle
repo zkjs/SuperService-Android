@@ -34,4 +34,5 @@ dependencies {
     compile project(':multi-image-selector')
     compile project(':ZKJinShiBaseClass')
     compile project(':Cloud_TagView')
+    compile project(':CalendarListview')
 }
