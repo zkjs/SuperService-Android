@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -78,11 +79,18 @@ public class MainActivity extends AppCompatActivity {
     private void initData(){
         messageListener = new MessageListener();
         initService(messageListener);
-
         userVo = UserDBUtil.getInstance().queryUserById(CacheUtil.getInstance().getUserId());
-        mainActivityController.setUserPhoto(CacheUtil.getInstance().getUserPhotoUrl(),avatarIv);
-        usernameTv.setText(userVo.getUserName());
-        shopnameTv.setText(userVo.getShopName());
+        mainActivityController.setUserPhoto(CacheUtil.getInstance().getUserPhotoUrl(), avatarIv);
+        if(null != userVo){
+            String userName = userVo.getUserName();
+            if(!TextUtils.isEmpty(userName)){
+                usernameTv.setText(userName);
+            }
+            String shopName = userVo.getShopName();
+            if(!TextUtils.isEmpty(shopName)){
+                shopnameTv.setText(shopName);
+            }
+        }
         onlineCbx.setChecked(CacheUtil.getInstance().getOnline());
 
 

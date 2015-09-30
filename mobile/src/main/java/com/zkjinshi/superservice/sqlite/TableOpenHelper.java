@@ -43,9 +43,9 @@ public class TableOpenHelper {
             "create table if not exists "
                     + DBOpenHelper.CHAT_ROOM_TBL
                     + "("
-                    + " shop_id text primary key, "
+                    + " session_id text primary key, "
                     + " shop_name text, "//聊天室名称
-                    + " session_id text, "
+                    + " shop_id text, "//商家id
                     + " remark text, "//备注
                     + " created long, "//创建时间
                     + " end_time long, "//会话结束时间

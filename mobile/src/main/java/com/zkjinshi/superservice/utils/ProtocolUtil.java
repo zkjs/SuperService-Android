@@ -44,4 +44,14 @@ public class ProtocolUtil {
         return ConfigUtil.getInst().getHttpDomain()+"semp/semplocationupdate";
     }
 
+    /**
+     * 获得商品图片
+     * @param imageUrl
+     * @return
+     */
+    public static String getGoodImgUrl(String imageUrl){
+        return ConfigUtil.getInst().getHttpDomain()+imageUrl;
+    }
+
+
 }

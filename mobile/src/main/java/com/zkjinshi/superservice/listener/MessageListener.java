@@ -90,9 +90,9 @@ public class MessageListener extends Handler implements IMessageListener {
                 long resultCount = MessageDBUtil.getInstance().addMessage(msgText);
                 if(resultCount > 0){
                     MessageVo messageVo = MessageFactory.getInstance().buildMessageVoByMsgText(msgText);
-                    String shopID = messageVo.getShopId();
-                    if(!TextUtils.isEmpty(shopID)) {
-                        if(ChatRoomDBUtil.getInstance().isChatRoomExistsByShopID(shopID)){
+                    String sessionId = messageVo.getSessionId();
+                    if(!TextUtils.isEmpty(sessionId)) {
+                        if(ChatRoomDBUtil.getInstance().isChatRoomExistsBySessionID(sessionId)){
                             ChatRoomDBUtil.getInstance().addChatRoom(messageVo);
                         } else {
                             ChatRoomDBUtil.getInstance().updateChatRoom(messageVo);
@@ -118,9 +118,9 @@ public class MessageListener extends Handler implements IMessageListener {
                 if(resultCount > 0){
                     MessageVo messageVO = MessageFactory.getInstance().buildMessageVoByMsgMedia(msgMediaChat, audioPath);
                     /** insert or update into table ChatRoom */
-                    String shopID = messageVO.getShopId();
-                    if(!TextUtils.isEmpty(shopID)) {
-                        if(ChatRoomDBUtil.getInstance().isChatRoomExistsByShopID(shopID)){
+                    String sessionId = messageVO.getSessionId();
+                    if(!TextUtils.isEmpty(sessionId)) {
+                        if(ChatRoomDBUtil.getInstance().isChatRoomExistsBySessionID(sessionId)){
                             ChatRoomDBUtil.getInstance().addChatRoom(messageVO);
                         } else {
                             ChatRoomDBUtil.getInstance().updateChatRoom(messageVO);
@@ -142,9 +142,9 @@ public class MessageListener extends Handler implements IMessageListener {
                 if(resultCount > 0){
                     MessageVo imageMessageVo = MessageFactory.getInstance().buildMessageVoByMsgImg(
                             msgImgChat);
-                    String shopID = imageMessageVo.getShopId();
-                    if(!TextUtils.isEmpty(shopID)) {
-                        if(ChatRoomDBUtil.getInstance().isChatRoomExistsByShopID(shopID)){
+                    String sessionId = imageMessageVo.getSessionId();
+                    if(!TextUtils.isEmpty(sessionId)) {
+                        if(ChatRoomDBUtil.getInstance().isChatRoomExistsBySessionID(sessionId)){
                             ChatRoomDBUtil.getInstance().addChatRoom(imageMessageVo);
                         } else {
                             ChatRoomDBUtil.getInstance().updateChatRoom(imageMessageVo);

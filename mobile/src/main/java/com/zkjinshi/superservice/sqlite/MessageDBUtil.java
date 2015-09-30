@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+
 import com.zkjinshi.base.log.LogLevel;
 import com.zkjinshi.base.log.LogUtil;
 import com.zkjinshi.superservice.ServiceApplication;
@@ -263,29 +264,7 @@ public class MessageDBUtil {
             db = helper.getWritableDatabase();
             ContentValues values = new ContentValues();
             values.put("is_read", 1);
-            id = db.update(DBOpenHelper.MESSAGE_TBL, values, " message_id = ? ", new String[]{sessionID});
-        } catch (Exception e) {
-            LogUtil.getInstance().info(LogLevel.ERROR,TAG+".updateMessage->"+e.getMessage());
-            e.printStackTrace();
-        } finally{
-            if(null != db)
-                db.close();
-        }
-        return id;
-    }
-
-    /**
-     * 根据shopID更新消息状态为已读
-     * @return
-     */
-    public long updateMsgReadedByShopID(String shopID){
-        int id = -1;
-        SQLiteDatabase db = null;
-        try {
-            db = helper.getWritableDatabase();
-            ContentValues values = new ContentValues();
-            values.put("is_read", 1);
-            id = db.update(DBOpenHelper.MESSAGE_TBL, values, " shop_id = ? ", new String[]{shopID});
+            id = db.update(DBOpenHelper.MESSAGE_TBL, values, " session_id = ? ", new String[]{sessionID});
         } catch (Exception e) {
             LogUtil.getInstance().info(LogLevel.ERROR,TAG+".updateMessage->"+e.getMessage());
             e.printStackTrace();
@@ -358,7 +337,7 @@ public class MessageDBUtil {
         try {
             db = helper.getWritableDatabase();
             id = db.update(DBOpenHelper.MESSAGE_TBL, values, " send_status = ? and send_time < ? ",
-                           new String[] { ""+SendStatus.SENDING.getVlaue(), ""+lastActionTime});
+                    new String[] { ""+SendStatus.SENDING.getVlaue(), ""+lastActionTime});
         } catch (Exception e) {
             LogUtil.getInstance().info(LogLevel.ERROR,TAG+".updateMessageTimeOut->"+e.getMessage());
             e.printStackTrace();
@@ -378,28 +357,18 @@ public class MessageDBUtil {
         SQLiteDatabase db = null;
         Cursor    cursor  = null;
         MessageVo message = null;
-        try {
-            if (null != helper) {
-                db = helper.getReadableDatabase();
-                String sql = "select * from " + DBOpenHelper.MESSAGE_TBL + " where message_id = ?";
-                cursor = db.rawQuery(sql, new String[]{messageID});
-                if (cursor != null && cursor.getCount() > 0) {
-                    while (cursor.moveToNext()) {
-                        message = MessageFactory.getInstance().buildMessageVo(cursor);
-                    }
+        if (null != helper) {
+            db = helper.getReadableDatabase();
+            String sql = "select * from " + DBOpenHelper.MESSAGE_TBL + " where message_id = ?";
+            cursor = db.rawQuery(sql, new String[]{messageID});
+            if (cursor != null && cursor.getCount() > 0) {
+                while (cursor.moveToNext()) {
+                    message = MessageFactory.getInstance().buildMessageVo(cursor);
                 }
             }
-        }catch (Exception e){
-            LogUtil.getInstance().info(LogLevel.ERROR,TAG+".queryMessageByMessageID->"+e.getMessage());
-            e.printStackTrace();
-        }finally {
-            if (null != cursor) {
-                cursor.close();
-            }
-            if (null != db) {
-                db.close();
-            }
         }
+        if (null != cursor) cursor.close();
+        if (null != db)     db.close();
         return message;
     }
 
@@ -417,7 +386,11 @@ public class MessageDBUtil {
                 db = helper.getReadableDatabase();
 				/*Cursor cursor = db.query(DBOpenHelper.MESSAGE_TBL, null,
 				        null, null, "session_id","MAX(send_time)", " send_time desc ");*/
-                String sql = "select * from " + DBOpenHelper.MESSAGE_TBL + " m where send_time=(select MAX(send_time) from "+DBOpenHelper.MESSAGE_TBL+" m1 where m.session_id = m1.session_id ) order by m.send_time desc";
+                String sql =  "select * from "
+                        + DBOpenHelper.MESSAGE_TBL
+                        + " m where send_time=(select MAX(send_time) from "
+                        + DBOpenHelper.MESSAGE_TBL
+                        + " m1 where m.session_id = m1.session_id ) order by m.send_time desc";
                 cursor = db.rawQuery(sql,  null);
                 if (cursor != null && cursor.getCount() > 0) {
                     while (cursor.moveToNext()) {
@@ -425,6 +398,7 @@ public class MessageDBUtil {
                         messageList.add(message);
                     }
                 }
+                LogUtil.getInstance().info(LogLevel.INFO,TAG+".queryHistoryMessageList->"+messageList);
 
             } catch (Exception e) {
                 LogUtil.getInstance().info(LogLevel.ERROR,TAG+".queryHistoryMessageList->"+e.getMessage());
@@ -439,9 +413,7 @@ public class MessageDBUtil {
                     db.close();
                 }
             }
-
         }
-
         return messageList;
     }
 
@@ -449,22 +421,41 @@ public class MessageDBUtil {
      * 删除消息记录
      * @return
      */
-    public long deleteMessage(String messageId){
+    public long deleteMessageBySessionID(String sessionID){
         SQLiteDatabase db = null;
         long id = -1;
         try {
             db = helper.getWritableDatabase();
-            id = db.delete(DBOpenHelper.MESSAGE_TBL, "message_id = " + messageId,
-                    null);
+            id = db.delete(DBOpenHelper.MESSAGE_TBL, " session_id = ? ", new String[]{sessionID});
         } catch (Exception e) {
-            LogUtil.getInstance().info(LogLevel.ERROR,TAG+".deleteMessage->"+e.getMessage());
+            LogUtil.getInstance().info(LogLevel.ERROR,TAG+".deleteMessageBySessionID->"+e.getMessage());
             e.printStackTrace();
         }finally{
             if(null != db)
                 db.close();
         }
         return id;
+    }
 
+    /**
+     * 删除消息记录
+     * @return
+     */
+    public long deleteMessageBySessionId(String sessionId){
+        SQLiteDatabase db = null;
+        long id = -1;
+        try {
+            db = helper.getWritableDatabase();
+            id = db.delete(DBOpenHelper.MESSAGE_TBL, "session_id = " + sessionId,
+                    null);
+        } catch (Exception e) {
+            LogUtil.getInstance().info(LogLevel.ERROR,TAG+".deleteMessageBySessionId->"+e.getMessage());
+            e.printStackTrace();
+        }finally{
+            if(null != db)
+                db.close();
+        }
+        return id;
     }
 
     /**
@@ -475,7 +466,7 @@ public class MessageDBUtil {
      * @param isInclude 是否包含lastSendTime这条消息记录
      * @return
      */
-    public List<MessageVo> queryMessageListBySessionId(String sessionId,long lastSendTime, int limitSize,boolean isInclude){
+    public List<MessageVo> queryMessageListBySessionID(String sessionId, long lastSendTime, int limitSize, boolean isInclude){
         List<MessageVo> messageList = new ArrayList<MessageVo>();
         MessageVo messageVo = null;
         SQLiteDatabase db = null;
@@ -501,55 +492,7 @@ public class MessageDBUtil {
                     }
                 }
             } catch (Exception e) {
-                LogUtil.getInstance().info(LogLevel.ERROR,TAG+".queryMessageListBySessionId->"+e.getMessage());
-                e.printStackTrace();
-            } finally {
-                if (null != cursor) {
-                    cursor.close();
-                }
-                if (null != db) {
-                    db.close();
-                }
-            }
-        }
-        return  messageList;
-    }
-
-    /**
-     * 根据sessionId和时间戳以及查询个数获取消息记录
-     * @param shopID
-     * @param lastSendTime
-     * @param limitSize
-     * @param isInclude 是否包含lastSendTime这条消息记录
-     * @return
-     */
-    public List<MessageVo> queryMessageListByShopID(String shopID,long lastSendTime, int limitSize,boolean isInclude){
-        List<MessageVo> messageList = new ArrayList<MessageVo>();
-        MessageVo messageVo = null;
-        SQLiteDatabase db = null;
-        Cursor cursor = null;
-        if (null != helper) {
-            try {
-                db = helper.getReadableDatabase();
-                if(isInclude){
-                    cursor = db.query(DBOpenHelper.MESSAGE_TBL, null,
-                            " shop_id = ? and send_time <= ? ",
-                            new String[] {shopID, "" + lastSendTime },
-                            null, null, " send_time desc", "" + limitSize);
-                }else{
-                    cursor = db.query(DBOpenHelper.MESSAGE_TBL, null,
-                            " shop_id = ? and send_time < ? ",
-                            new String[] {shopID, "" + lastSendTime },
-                            null, null, " send_time desc", "" + limitSize);
-                }
-                if (cursor != null && cursor.getCount() > 0) {
-                    while (cursor.moveToNext()) {
-                        messageVo = MessageFactory.getInstance().buildMessageVo(cursor);
-                        messageList.add(messageVo);
-                    }
-                }
-            } catch (Exception e) {
-                LogUtil.getInstance().info(LogLevel.ERROR,TAG+".queryMessageListByShopID->"+e.getMessage());
+                LogUtil.getInstance().info(LogLevel.ERROR,TAG+".queryMessageListBySessionID->"+e.getMessage());
                 e.printStackTrace();
             } finally {
                 if (null != cursor) {
@@ -672,77 +615,35 @@ public class MessageDBUtil {
     }
 
     /**
-     * 获得某个商家中最近的发送时间戳
-     * @return
-     */
-    public long queryLastSendTimeByShopID(String shopID) {
-        SQLiteDatabase db = null;
-        long lastSendTime = System.currentTimeMillis();
-        Cursor cursor = null;
-        if (null != helper) {
-            try {
-                db = helper.getReadableDatabase();
-                cursor = db.query(DBOpenHelper.MESSAGE_TBL, null,
-                        " shop_id = ? ", new String[]{shopID}, null, null,
-                        " send_time desc ", "1");
-                if (cursor != null && cursor.getCount() > 0) {
-                    while (cursor.moveToNext()) {
-                        lastSendTime = cursor.getLong(cursor
-                                .getColumnIndex("send_time"));
-                    }
-                }
-            } catch (Exception e) {
-                LogUtil.getInstance().info(LogLevel.ERROR, TAG + ".queryLastSendTimeByShopID->" + e.getMessage());
-                e.printStackTrace();
-            } finally {
-                if (null != cursor) {
-                    cursor.close();
-                }
-                if (null != db) {
-                    db.close();
-                }
-            }
-        }
-        return lastSendTime;
-    }
-
-    /**
      * 根据消息ID查询消息对象
      *
      * @return
      */
-    public MessageVo queryLastMsgByShopId(String shopID) {
+    public MessageVo queryLastMsgBySessionId(String sessionID) {
         SQLiteDatabase db = null;
         Cursor cursor = null;
         MessageVo message = null;
-        try {
-            if (null != helper) {
-                db = helper.getReadableDatabase();
-                cursor = db.query(DBOpenHelper.MESSAGE_TBL, null,
-                        " shop_id = ? ", new String[]{shopID}, null, null,
-                        " send_time desc ", "1");
-                if (cursor != null && cursor.getCount() > 0) {
-                    while (cursor.moveToNext()) {
-                        message = MessageFactory.getInstance().buildMessageVo(cursor);
-                    }
+        if (null != helper) {
+            db = helper.getReadableDatabase();
+            cursor = db.query(DBOpenHelper.MESSAGE_TBL, null,
+                    " session_id = ? ", new String[]{sessionID}, null, null,
+                    " send_time desc ", "1");
+            if (cursor != null && cursor.getCount() > 0) {
+                while (cursor.moveToNext()) {
+                    message = MessageFactory.getInstance().buildMessageVo(cursor);
                 }
             }
-        }catch (Exception e){
-            LogUtil.getInstance().info(LogLevel.ERROR,TAG+".queryLastMsgByShopId->"+e.getMessage());
-            e.printStackTrace();
-        }finally {
-            if (null != cursor) cursor.close();
-            if (null != db) db.close();
         }
+        if (null != cursor) cursor.close();
+        if (null != db) db.close();
         return message;
     }
-
 
     /**
      * 获得某个会话中最近发送时间戳
      * @return
      */
-    public String queryLastMsgByShopID(String shopID) {
+    public String queryLastMsgBySessionID(String sessionID) {
         SQLiteDatabase db      = null;
         String         lastMsg = null;
         Cursor cursor = null;
@@ -750,7 +651,7 @@ public class MessageDBUtil {
             try {
                 db = helper.getReadableDatabase();
                 cursor = db.query(DBOpenHelper.MESSAGE_TBL, null,
-                        " shop_id = ? ", new String[]{shopID}, null, null,
+                        " session_id = ? ", new String[]{sessionID}, null, null,
                         " send_time desc ", "1");
                 if (cursor != null && cursor.getCount() > 0) {
                     while (cursor.moveToNext()) {
@@ -785,7 +686,7 @@ public class MessageDBUtil {
                 db = helper.getReadableDatabase();
                 cursor = db.query(DBOpenHelper.MESSAGE_TBL, null,
                         " is_read = ? ",
-                        new String[]{"0"}, null, null, null);
+                        new String[]{0 + ""}, null, null, null);
                 nofifyCount = cursor.getCount();
             } catch (Exception e) {
                 LogUtil.getInstance().info(LogLevel.ERROR,TAG+".queryNotifyCount->"+e.getMessage());
@@ -814,39 +715,10 @@ public class MessageDBUtil {
                 db = helper.getReadableDatabase();
                 cursor = db.query(DBOpenHelper.MESSAGE_TBL, null,
                         " session_id = ? and is_read = ?  ",
-                        new String[]{sessionId, "0"}, null, null, null);
+                        new String[]{sessionId, 0 + ""}, null, null, null);
                 nofifyCount = cursor.getCount();
             } catch (Exception e) {
                 LogUtil.getInstance().info(LogLevel.ERROR,TAG+".queryNotifyCount->"+e.getMessage());
-                e.printStackTrace();
-            } finally {
-                if (null != cursor) {
-                    cursor.close();
-                }
-                if (null != db) {
-                    db.close();
-                }
-            }
-        }
-        return nofifyCount;
-    }
-
-    /**
-     * 获取某个商家未读消息个数
-     */
-    public int queryNotifyCountByShopID(String shopID){
-        int nofifyCount  = 0;
-        SQLiteDatabase db = null;
-        Cursor cursor = null;
-        if (null != helper) {
-            try {
-                db = helper.getReadableDatabase();
-                cursor = db.query(DBOpenHelper.MESSAGE_TBL, null,
-                        " shop_id = ? and is_read = ?  ",
-                        new String[]{shopID, "0"}, null, null, null);
-                nofifyCount = cursor.getCount();
-            } catch (Exception e) {
-                LogUtil.getInstance().info(LogLevel.ERROR,TAG+".queryNotifyCountByShopID->"+e.getMessage());
                 e.printStackTrace();
             } finally {
                 if (null != cursor) {
@@ -891,8 +763,82 @@ public class MessageDBUtil {
     }
 
     /**
+     * 删除所有聊天室
+     * @return
+     */
+    public long deleteAll(){
+        long id = -1;
+        SQLiteDatabase db = null;
+        try {
+            db = helper.getWritableDatabase();
+            id = db.delete(DBOpenHelper.MESSAGE_TBL, "1 = ?", new String[]{"1"});
+        } catch (Exception e) {
+            LogUtil.getInstance().info(LogLevel.ERROR, TAG+" deleteAll->"+e.getMessage());
+            e.printStackTrace();
+        } finally{
+            if(null != db)
+                db.close();
+        }
+        return id;
+    }
+
+    /**
+     * 根据sessionID查询未读消息数量
+     * @param sessionID
+     * @return
+     */
+    public long queryNotifyCountBySessionID(String sessionID) {
+        int nofifyCount   = 0;
+        SQLiteDatabase db = null;
+        Cursor cursor = null;
+        if (null != helper) {
+            try {
+                db = helper.getReadableDatabase();
+                cursor = db.query(DBOpenHelper.MESSAGE_TBL, null," session_id = ? and is_read = ? ",
+                        new String[]{sessionID, "0"}, null, null, null);
+                nofifyCount = cursor.getCount();
+            } catch (Exception e) {
+                LogUtil.getInstance().info(LogLevel.ERROR, TAG + ".queryNotifyCountBySessionID->" + e.getMessage());
+                e.printStackTrace();
+            } finally {
+                if (null != cursor) {
+                    cursor.close();
+                }
+                if (null != db) {
+                    db.close();
+                }
+            }
+        }
+        return nofifyCount;
+    }
+
+    /**
+     * 判断会话消息是否已经存在
+     */
+    public boolean isMessageExistsBySessionID(String sessionID) {
+        Cursor cursor = null;
+        SQLiteDatabase db = null;
+        try {
+            db = helper.getReadableDatabase();
+            cursor = db.rawQuery(" select * from " + DBOpenHelper.MESSAGE_TBL + " where session_id = ? ", new String[] { sessionID });
+            if(cursor.getCount() > 0){
+                return true;
+            }
+        } catch (Exception e) {
+            LogUtil.getInstance().info(LogLevel.ERROR, TAG + ".isMessageExistsBySessionID->"+e.getMessage());
+            e.printStackTrace();
+        } finally{
+            if(null != db)
+                db.close();
+
+            if(null != cursor)
+                cursor.close();
+        }
+        return false;
+    }
+
+    /**
      * 消息表中添加消息对象
-     *
      * @param msgChat
      */
     public long addMessage(MsgCustomerServiceChat msgChat) {
@@ -903,7 +849,7 @@ public class MessageDBUtil {
             db = helper.getWritableDatabase();
             id = db.insert(DBOpenHelper.MESSAGE_TBL, null, values);
         } catch (Exception e) {
-            LogUtil.getInstance().info(LogLevel.ERROR, TAG + ".addMessage->" + e.getMessage());
+            LogUtil.getInstance().info(LogLevel.ERROR, TAG + ". Message->" + e.getMessage());
             e.printStackTrace();
         } finally {
             if (null != db)
