@@ -62,6 +62,12 @@ public class MainActivityController implements View.OnClickListener{
 
     }
 
+
+    public void clearImageChache(){
+        ImageLoader.getInstance().clearMemoryCache();
+        ImageLoader.getInstance().clearDiskCache();
+    }
+
     public void onCreate() {
         setupActionBar();
         setupDrawer();

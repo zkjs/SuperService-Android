@@ -235,6 +235,12 @@ public class MainActivity extends AppCompatActivity {
         initListeners();
     }
 
+    protected void onDestroy(){
+        super.onDestroy();
+        Log.i(TAG,"protected void onDestroy");
+        mainActivityController.clearImageChache();
+    }
+
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
