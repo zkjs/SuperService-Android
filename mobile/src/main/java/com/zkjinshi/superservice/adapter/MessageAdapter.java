@@ -13,6 +13,7 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.zkjinshi.base.util.TimeUtil;
 import com.zkjinshi.superservice.R;
+import com.zkjinshi.superservice.listener.RecyclerItemClickListener;
 import com.zkjinshi.superservice.vo.MessageVo;
 import com.zkjinshi.superservice.vo.MimeType;
 
@@ -31,6 +32,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private Context context;
     private LayoutInflater inflater;
     private DisplayImageOptions options;
+    private RecyclerItemClickListener itemClickListener;
 
     public void setMessageList(ArrayList<MessageVo> messageList) {
         if(null ==  messageList){
@@ -107,7 +109,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         return messageList.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         private ImageView photoImageView;
         private TextView titleTv,contentTv,sendTimeTv,noticeCountTv;
 
@@ -119,6 +121,16 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             sendTimeTv = (TextView) itemView.findViewById(R.id.message_notice_send_time);
             noticeCountTv = (TextView) itemView.findViewById(R.id.message_notice_notice_count);
         }
+
+        @Override
+        public void onClick(View v) {
+            if(null != itemClickListener){
+                itemClickListener.onItemClick(v,getAdapterPosition());
+            }
+        }
     }
 
+    public void setOnItemClickListener(RecyclerItemClickListener itemClickListener) {
+        this.itemClickListener = itemClickListener;
+    }
 }

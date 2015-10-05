@@ -10,8 +10,6 @@ import com.zkjinshi.superservice.entity.MsgCustomerServiceTextChat;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.vo.ChatRoomVo;
 import com.zkjinshi.superservice.vo.MessageVo;
-import com.zkjinshi.superservice.vo.VisibleStatus;
-
 
 /**
  * 开发者：JimmyZhang
@@ -145,8 +143,8 @@ public class ChatRoomFactory {
         String sessionID = messageVo.getSessionId();
         long   endTime   = messageVo.getSendTime();
         String contactID = messageVo.getContactId();
-        String clientID   = CacheUtil.getInstance().getUserId();
-        String clientName = CacheUtil.getInstance().getUserName();
+        String clientID   = messageVo.getContactId();
+        String clientName = messageVo.getContactName();
         if(!TextUtils.isEmpty(shopID)){
             chatRoom.setShopid(shopID);
         }
@@ -164,8 +162,6 @@ public class ChatRoomFactory {
         if(!TextUtils.isEmpty(clientName)){
             chatRoom.setClientname(clientName);
         }
-        //默认情况下消息为可见
-        chatRoom.setIsVisible(VisibleStatus.VISIBLE);
         return chatRoom;
     }
 
@@ -175,22 +171,49 @@ public class ChatRoomFactory {
      */
     public ContentValues buildAddContentValues(MessageVo messageVo){
         String shopID    = messageVo.getShopId();
+        String shopName  = "长沙豪庭国际大酒店";
         String sessionID = messageVo.getSessionId();
         long   endTime   = messageVo.getSendTime();
-        String contactID = messageVo.getContactId();
-        String clientID   = CacheUtil.getInstance().getUserId();
-        String clientName = CacheUtil.getInstance().getUserName();
+
+        String clientID   = messageVo.getContactId();
+        String clientName = messageVo.getContactName();
 
         ContentValues values = new ContentValues();
         values.put("shop_id", shopID);
+        values.put("shop_name", shopName);
         values.put("session_id", sessionID);
         values.put("remark", "");//备注暂时为空
         values.put("created", System.currentTimeMillis());
         values.put("end_time", endTime);//更新时
-        values.put("end_user_id", contactID);
+        values.put("end_user_id", clientID);
         values.put("client_id", clientID);//创建人
         values.put("client_name", clientName);//创建者名称
-        values.put("is_visible", VisibleStatus.INVISIBLE.getVlaue());
+        return values;
+    }
+
+    /**
+     * 构建聊天室记录键值对
+     * @return
+     */
+    public ContentValues buildAddContentValues(ChatRoomVo chatRoomVo){
+        String shopID    = chatRoomVo.getShopid();
+        String shopName  = chatRoomVo.getShopName();
+        String sessionID = chatRoomVo.getSessionid();
+        long   endTime    = chatRoomVo.getEndtime();
+        String enduserid    = chatRoomVo.getEnduserid();
+        String clientID    = chatRoomVo.getClientid();
+        String clientName = chatRoomVo.getClientname();
+
+        ContentValues values = new ContentValues();
+        values.put("shop_id", shopID);
+        values.put("shop_name", shopName);
+        values.put("session_id", sessionID);
+        values.put("remark", chatRoomVo.getRemark());//备注暂时为空
+        values.put("created", System.currentTimeMillis());
+        values.put("end_time", endTime);//更新时
+        values.put("end_user_id", enduserid);
+        values.put("client_id", clientID);//创建人
+        values.put("client_name", clientName);//创建者名称
         return values;
     }
 
@@ -201,6 +224,7 @@ public class ChatRoomFactory {
      */
     public ContentValues buildUpdateContentValues(MessageVo messageVo){
         String shopID    = messageVo.getShopId();
+        String shopName  = "长沙豪庭国际大酒店";
         String sessionID = messageVo.getSessionId();
         long   endTime   = messageVo.getSendTime();
         String contactID = messageVo.getContactId();
@@ -209,13 +233,13 @@ public class ChatRoomFactory {
 
         ContentValues values = new ContentValues();
         values.put("shop_id", shopID);
+        values.put("shop_name", shopName);
         values.put("session_id", sessionID);
         values.put("remark", "");//备注暂时为空
         values.put("end_time", endTime);//更新时
         values.put("end_user_id", contactID);//
         values.put("client_id", clientID);//创建人
         values.put("client_name", clientName);//创建者名称
-        values.put("is_visible", VisibleStatus.INVISIBLE.getVlaue());
         return values;
     }
 
@@ -234,7 +258,6 @@ public class ChatRoomFactory {
         values.put("end_user_id", chatRoomVo.getEnduserid());
         values.put("client_id", chatRoomVo.getClientid());//创建人
         values.put("client_name", chatRoomVo.getClientname());//创建者名称
-        values.put("is_visible", VisibleStatus.INVISIBLE.getVlaue());
         return values;
     }
 
@@ -244,31 +267,28 @@ public class ChatRoomFactory {
      * @return
      */
     public ChatRoomVo buildChatRoomByCursor(Cursor cursor) {
-        String shopID     = cursor.getString(0);
-        String sessionID  = cursor.getString(1);
-        String remark     = cursor.getString(2);
-        long created      = cursor.getLong(3);
-        long endTime      = cursor.getLong(4);
-        String endUserID  = cursor.getString(5);
-        String clientID   = cursor.getString(6);
-        String clientName = cursor.getString(7);
-        int    isVisible  = cursor.getInt(8);
+        String sessionID  = cursor.getString(0);
+        String shopID     = cursor.getString(1);
+        String shopName   = cursor.getString(2);
+        String remark     = cursor.getString(3);
+        long created      = cursor.getLong(4);
+        long endTime      = cursor.getLong(5);
+        String endUserID  = cursor.getString(6);
+        String clientID   = cursor.getString(7);
+        String clientName = cursor.getString(8);
 
         //新建聊天室对象
         ChatRoomVo chatRoom = new ChatRoomVo();
         chatRoom.setShopid(shopID);
         chatRoom.setSessionid(sessionID);
+        chatRoom.setShopName(shopName);
         chatRoom.setRemark(remark);
         chatRoom.setCreated(created);
         chatRoom.setEndtime(endTime);
         chatRoom.setEnduserid(endUserID);
         chatRoom.setClientid(clientID);
         chatRoom.setClientname(clientName);
-        if(isVisible == VisibleStatus.INVISIBLE.getVlaue()){
-            chatRoom.setIsVisible(VisibleStatus.INVISIBLE);
-        }else {
-            chatRoom.setIsVisible(VisibleStatus.VISIBLE);
-        }
         return chatRoom;
     }
+
 }

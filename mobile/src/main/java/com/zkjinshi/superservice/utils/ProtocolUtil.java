@@ -28,4 +28,30 @@ public class ProtocolUtil {
         return ConfigUtil.getInst().getHttpDomain()+"semp/sempupdate";
     }
 
+    /**
+     * 服务员获取商家整个区域列表
+     * @return
+     */
+    public static String getZonelistUrl(){
+        return ConfigUtil.getInst().getHttpDomain()+"semp/shoplocation";
+    }
+
+    /**
+     * 服务员修改自己管辖的区域通知
+     * @return
+     */
+    public static String getSemplocationupdateUrl(){
+        return ConfigUtil.getInst().getHttpDomain()+"semp/semplocationupdate";
+    }
+
+    /**
+     * 获得商品图片
+     * @param imageUrl
+     * @return
+     */
+    public static String getGoodImgUrl(String imageUrl){
+        return ConfigUtil.getInst().getHttpDomain()+imageUrl;
+    }
+
+
 }

@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -17,13 +18,30 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.zkjinshi.base.net.core.WebSocketManager;
 import com.zkjinshi.base.util.DeviceUtils;
+import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.base.util.ImageUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.set.ContactsActivity;
+import com.zkjinshi.superservice.bean.BaseBean;
 import com.zkjinshi.superservice.listener.MessageListener;
+import com.zkjinshi.superservice.net.MethodType;
+import com.zkjinshi.superservice.net.NetRequest;
+import com.zkjinshi.superservice.net.NetRequestListener;
+import com.zkjinshi.superservice.net.NetRequestTask;
+import com.zkjinshi.superservice.net.NetResponse;
+import com.zkjinshi.superservice.sqlite.UserDBUtil;
+import com.zkjinshi.superservice.utils.CacheUtil;
+import com.zkjinshi.superservice.utils.Constants;
+import com.zkjinshi.superservice.utils.ProtocolUtil;
+import com.zkjinshi.superservice.utils.task.ImgAsyncTask;
+import com.zkjinshi.superservice.vo.SexType;
+import com.zkjinshi.superservice.vo.UserVo;
 
+import java.io.File;
+import java.util.HashMap;
 import java.util.List;
 
 import me.nereo.multi_image_selector.MultiImageSelectorActivity;
@@ -48,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
     private CheckBox onlineCbx;
     private RelativeLayout avatarLayout;
     private MessageListener messageListener;
+    private UserVo userVo;
 
     private void initView(){
         avatarIv = (ImageView)findViewById(R.id.avatar_iv);
@@ -60,6 +79,21 @@ public class MainActivity extends AppCompatActivity {
     private void initData(){
         messageListener = new MessageListener();
         initService(messageListener);
+        userVo = UserDBUtil.getInstance().queryUserById(CacheUtil.getInstance().getUserId());
+        mainActivityController.setUserPhoto(CacheUtil.getInstance().getUserPhotoUrl(), avatarIv);
+        if(null != userVo){
+            String userName = userVo.getUserName();
+            if(!TextUtils.isEmpty(userName)){
+                usernameTv.setText(userName);
+            }
+            String shopName = userVo.getShopName();
+            if(!TextUtils.isEmpty(shopName)){
+                shopnameTv.setText(shopName);
+            }
+        }
+        onlineCbx.setChecked(CacheUtil.getInstance().getOnline());
+
+
     }
 
     private void initListeners(){
@@ -67,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
         onlineCbx.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-
+                CacheUtil.getInstance().setOnline(b);
             }
         });
 
@@ -141,18 +175,60 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setAvatar(String photoFilePath){
-        Bitmap displayBitmap = BitmapFactory.decodeFile(photoFilePath);
-        if (displayBitmap != null) {
-            int screenHeight = DeviceUtils.getScreenHeight(this);
-            int screanWidth = DeviceUtils.getScreenWidth(this);
-            int height = (int)(0.29*screenHeight);
-            int width = (int)(0.71*screanWidth);
+        ImgAsyncTask imgAsyncTask = new ImgAsyncTask(this,photoFilePath,avatarIv,
+                new ImgAsyncTask.CallBack() {
+                    @Override
+                    public void getNewPath(String path) {
+                        submitAvatar(path);
+                    }
+                });
+        imgAsyncTask.execute();
+    }
 
-            displayBitmap = ImageUtil.cropBitmap(displayBitmap, width, height);
-            //displayBitmap = ImageUtil.loadThumbBitmap(getActivity(), displayBitmap);
-            avatarIv.setImageBitmap(displayBitmap);
-        }
-        // CacheUtil.getInstance().savePicPath(photoFilePath);
+    private void submitAvatar(final String path){
+        NetRequest netRequest = new NetRequest(ProtocolUtil.getSempupdateUrl());
+        HashMap<String,String> bizMap = new HashMap<String,String>();
+        bizMap.put("salesid", CacheUtil.getInstance().getUserId());
+        bizMap.put("token",CacheUtil.getInstance().getToken());
+        netRequest.setBizParamMap(bizMap);
+
+        HashMap<String,File> fileMap = new HashMap<String, File>();
+        fileMap.put("file", new File(path));
+        netRequest.setFileMap(fileMap);
+
+        NetRequestTask netRequestTask = new NetRequestTask(this,netRequest, NetResponse.class);
+        netRequestTask.methodType = MethodType.POST;
+        netRequestTask.setNetRequestListener(new NetRequestListener() {
+            @Override
+            public void onNetworkRequestError(int errorCode, String errorMessage) {
+                Log.i(TAG, "errorCode:" + errorCode);
+                Log.i(TAG, "errorMessage:" + errorMessage);
+            }
+
+            @Override
+            public void onNetworkRequestCancelled() {
+
+            }
+
+            @Override
+            public void onNetworkResponseSucceed(NetResponse result) {
+                Log.i(TAG, "result.rawResult:" + result.rawResult);
+                BaseBean baseBean = new Gson().fromJson(result.rawResult, BaseBean.class);
+                if (baseBean.isSet()) {
+                    DialogUtil.getInstance().showToast(MainActivity.this, "头像上传成功");
+                } else {
+                    DialogUtil.getInstance().showToast(MainActivity.this, baseBean.getErr());
+                }
+
+            }
+
+            @Override
+            public void beforeNetworkRequestStart() {
+
+            }
+        });
+        netRequestTask.isShowLoadingDialog = true;
+        netRequestTask.execute();
     }
 
     @Override
@@ -165,6 +241,12 @@ public class MainActivity extends AppCompatActivity {
         initView();
         initData();
         initListeners();
+    }
+
+    protected void onDestroy(){
+        super.onDestroy();
+        Log.i(TAG,"protected void onDestroy");
+        mainActivityController.clearImageChache();
     }
 
     @Override

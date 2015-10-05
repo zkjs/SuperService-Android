@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout 
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
-    
+
     <FrameLayout
         android:layout_width="35dp"
+        android:textColor="@color/gray616161"
         android:layout_height="match_parent">
 
         <View
@@ -15,7 +16,7 @@
             android:background="@color/gray"
             android:layout_height="match_parent">
         </View>
-        
+
         <com.zkjinshi.superservice.view.CircleImageView
             android:id="@+id/civ_order_status"
             android:layout_width="20dp"

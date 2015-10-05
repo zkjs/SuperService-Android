@@ -14,7 +14,7 @@ import android.widget.TextView;
 import com.zkjinshi.base.log.LogLevel;
 import com.zkjinshi.base.log.LogUtil;
 import com.zkjinshi.superservice.R;
-import com.zkjinshi.superservice.vo.ZoneVo;
+import com.zkjinshi.superservice.bean.ZoneBean;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,19 +32,19 @@ public class ZoneAdapter extends BaseAdapter implements CompoundButton.OnChecked
     private final static String TAG = ZoneAdapter.class.getSimpleName();
 
     private LayoutInflater mInflater;//得到一个LayoutInfalter对象用来导入布局
-    private ArrayList<ZoneVo> zoneList = new ArrayList<ZoneVo>();
+    private ArrayList<ZoneBean> zoneList = new ArrayList<ZoneBean>();
     private HashMap<Integer,Integer> checkedHashmap = new HashMap<Integer,Integer>();
 
-    public ZoneAdapter(Context context,ArrayList<ZoneVo> zoneList) {
+    public ZoneAdapter(Context context,ArrayList<ZoneBean> zoneList) {
         this.mInflater = LayoutInflater.from(context);
         this.zoneList = zoneList;
     }
 
-    public ArrayList<ZoneVo> getZoneList() {
+    public ArrayList<ZoneBean> getZoneList() {
         return zoneList;
     }
 
-    public void setZoneList(ArrayList<ZoneVo> zoneList) {
+    public void setZoneList(ArrayList<ZoneBean> zoneList) {
         this.zoneList = zoneList;
     }
 
@@ -109,9 +109,9 @@ public class ZoneAdapter extends BaseAdapter implements CompoundButton.OnChecked
         }else{
             holder = (ViewHolder)convertView.getTag();//取出ViewHolder对象
         }
-        holder.name.setText(zoneList.get(position).getName());
+        holder.name.setText(zoneList.get(position).getLocdesc());
 
-        int id = zoneList.get(position).getId();
+        int id = zoneList.get(position).getLocid();
         boolean c = ischecked(id);
         holder.check.setTag(new Integer(id));
         holder.check.setOnCheckedChangeListener(this);

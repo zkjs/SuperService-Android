@@ -1,5 +1,6 @@
 package com.zkjinshi.superservice.net;
 
+import java.io.File;
 import java.util.HashMap;
 
 /**
@@ -29,9 +30,9 @@ public class NetRequest {
     private HashMap<String, String> fileParamMap;
 
     /**
-     * 下载文件保存目录
+     * 文件Map
      */
-    private String filePath;
+    private HashMap<String,File> fileMap;
 
     /**
      * 响应的数据的编码格式，默认为UTF-8
@@ -70,11 +71,11 @@ public class NetRequest {
         this.bizParamMap = bizParamMap;
     }
 
-    public String getFilePath() {
-        return filePath;
+    public HashMap<String, File> getFileMap() {
+        return fileMap;
     }
 
-    public void setFilePath(String filePath) {
-        this.filePath = filePath;
+    public void setFileMap(HashMap<String, File> fileMap) {
+        this.fileMap = fileMap;
     }
 }

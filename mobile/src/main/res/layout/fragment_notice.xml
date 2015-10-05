@@ -3,83 +3,103 @@
     android:layout_height="match_parent"
     android:background="#ccc">
 
-    <SwipeRefreshLayout
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rcv_notice"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:cacheColorHint="#000000"
+        android:divider="#e3e3e3"
+        android:dividerHeight="1.0dp"
+        android:fadingEdge="none"
+        android:scrollbars="none"
+        android:scrollingCache="false"
+        android:visibility="visible" />
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rcv_notice"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:cacheColorHint="#000000"
-            android:divider="#e3e3e3"
-            android:dividerHeight="1.0dp"
-            android:fadingEdge="none"
-            android:scrollbars="none"
-            android:scrollingCache="false"
-            android:visibility="visible" />
-
-    </SwipeRefreshLayout>
-
-    <LinearLayout
-        android:padding="10dp"
-        android:background="@color/white"
-        android:orientation="vertical"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal|bottom">
+        android:layout_height="wrap_content">
 
-        <RelativeLayout
-            android:padding="10dp"
-            android:layout_width="wrap_content"
+        <FrameLayout
+            android:id="@+id/fl_line"
+            android:layout_width="35dp"
+            android:layout_alignParentLeft="true"
+            android:textColor="@color/gray616161"
             android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/tv_vip"
-                android:textSize="16sp"
-                android:text="已完成订单用户"
-                android:textColor="@color/gray616161"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+            <View
+                android:layout_gravity="center"
+                android:layout_width="0.5dp"
+                android:background="@color/gray"
+                android:layout_height="wrap_content">
+            </View>
 
-        </RelativeLayout>
+            <com.zkjinshi.superservice.view.CircleImageView
+                android:id="@+id/civ_order_status"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center"/>
 
+        </FrameLayout>
+5
         <LinearLayout
-            android:id="@+id/ll_client_avatars"
             android:padding="10dp"
-            android:orientation="horizontal"
+            android:background="@color/white"
+            android:orientation="vertical"
+            android:layout_toRightOf="@+id/fl_line"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-        </LinearLayout>
+                <RelativeLayout
+                    android:padding="10dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
 
-        <RelativeLayout
-            android:padding="5dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+                    <TextView
+                        android:id="@+id/tv_vip"
+                        android:textSize="16sp"
+                        android:text="已完成订单用户"
+                        android:textColor="@color/gray616161"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
 
-            <ImageView
-                android:id="@+id/iv_clock"
-                android:layout_alignParentLeft="true"
-                android:layout_width="19dp"
-                android:layout_height="19dp"
-                android:layout_centerVertical="true"
-                android:background="@drawable/ic_clock"
-                />
+                </RelativeLayout>
 
-            <TextView
-                android:id="@+id/tv_time_info"
-                android:layout_marginLeft="10dp"
-                android:layout_toRightOf="@+id/iv_clock"
-                android:layout_width="wrap_content"
-                android:textColor="@color/grayB8B8B8"
-                android:text="刚刚"
-                android:textSize="14sp"
-                android:layout_centerVertical="true"
-                android:layout_height="wrap_content" />
+                <LinearLayout
+                    android:id="@+id/ll_client_avatars"
+                    android:padding="10dp"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
-        </RelativeLayout>
+                </LinearLayout>
 
-    </LinearLayout>
+                <RelativeLayout
+                    android:padding="5dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:id="@+id/iv_clock"
+                        android:layout_alignParentLeft="true"
+                        android:layout_width="19dp"
+                        android:layout_height="19dp"
+                        android:layout_centerVertical="true"
+                        android:background="@drawable/ic_clock"
+                        />
+
+                    <TextView
+                        android:id="@+id/tv_time_info"
+                        android:layout_marginLeft="10dp"
+                        android:layout_toRightOf="@+id/iv_clock"
+                        android:layout_width="wrap_content"
+                        android:textColor="@color/grayB8B8B8"
+                        android:text="刚刚"
+                        android:textSize="14sp"
+                        android:layout_centerVertical="true"
+                        android:layout_height="wrap_content" />
+
+                </RelativeLayout>
+            </LinearLayout>
+    </RelativeLayout>
 
 </FrameLayout>

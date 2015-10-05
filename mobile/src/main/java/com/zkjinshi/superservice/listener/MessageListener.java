@@ -20,12 +20,14 @@ import com.zkjinshi.base.net.core.WebSocketClient;
 import com.zkjinshi.base.net.core.WebSocketManager;
 import com.zkjinshi.base.net.protocol.ProtocolMSG;
 import com.zkjinshi.base.util.Constants;
+import com.zkjinshi.base.util.VibratorHelper;
 import com.zkjinshi.base.view.CustomDialog;
 import com.zkjinshi.superservice.ServiceApplication;
 import com.zkjinshi.superservice.activity.common.LoginActivity;
 import com.zkjinshi.superservice.entity.MsgCustomerServiceImgChat;
 import com.zkjinshi.superservice.entity.MsgCustomerServiceMediaChat;
 import com.zkjinshi.superservice.entity.MsgCustomerServiceTextChat;
+import com.zkjinshi.superservice.entity.MsgPushTriggerLocNotificationM2S;
 import com.zkjinshi.superservice.entity.MsgUserDefine;
 import com.zkjinshi.superservice.factory.MessageFactory;
 import com.zkjinshi.superservice.notification.NotificationHelper;
@@ -33,6 +35,7 @@ import com.zkjinshi.superservice.request.LoginRequestManager;
 import com.zkjinshi.superservice.sqlite.ChatRoomDBUtil;
 import com.zkjinshi.superservice.sqlite.MessageDBUtil;
 import com.zkjinshi.superservice.utils.FileUtil;
+import com.zkjinshi.superservice.utils.MediaPlayerUtil;
 import com.zkjinshi.superservice.vo.MessageVo;
 
 import org.json.JSONException;
@@ -87,9 +90,9 @@ public class MessageListener extends Handler implements IMessageListener {
                 long resultCount = MessageDBUtil.getInstance().addMessage(msgText);
                 if(resultCount > 0){
                     MessageVo messageVo = MessageFactory.getInstance().buildMessageVoByMsgText(msgText);
-                    String shopID = messageVo.getShopId();
-                    if(!TextUtils.isEmpty(shopID)) {
-                        if(ChatRoomDBUtil.getInstance().isChatRoomExistsByShopID(shopID)){
+                    String sessionId = messageVo.getSessionId();
+                    if(!TextUtils.isEmpty(sessionId)) {
+                        if(ChatRoomDBUtil.getInstance().isChatRoomExistsBySessionID(sessionId)){
                             ChatRoomDBUtil.getInstance().addChatRoom(messageVo);
                         } else {
                             ChatRoomDBUtil.getInstance().updateChatRoom(messageVo);
@@ -115,9 +118,9 @@ public class MessageListener extends Handler implements IMessageListener {
                 if(resultCount > 0){
                     MessageVo messageVO = MessageFactory.getInstance().buildMessageVoByMsgMedia(msgMediaChat, audioPath);
                     /** insert or update into table ChatRoom */
-                    String shopID = messageVO.getShopId();
-                    if(!TextUtils.isEmpty(shopID)) {
-                        if(ChatRoomDBUtil.getInstance().isChatRoomExistsByShopID(shopID)){
+                    String sessionId = messageVO.getSessionId();
+                    if(!TextUtils.isEmpty(sessionId)) {
+                        if(ChatRoomDBUtil.getInstance().isChatRoomExistsBySessionID(sessionId)){
                             ChatRoomDBUtil.getInstance().addChatRoom(messageVO);
                         } else {
                             ChatRoomDBUtil.getInstance().updateChatRoom(messageVO);
@@ -138,10 +141,10 @@ public class MessageListener extends Handler implements IMessageListener {
                 long resultCount = MessageDBUtil.getInstance().addMessage(msgImgChat);
                 if(resultCount > 0){
                     MessageVo imageMessageVo = MessageFactory.getInstance().buildMessageVoByMsgImg(
-                                                                             msgImgChat);
-                    String shopID = imageMessageVo.getShopId();
-                    if(!TextUtils.isEmpty(shopID)) {
-                        if(ChatRoomDBUtil.getInstance().isChatRoomExistsByShopID(shopID)){
+                            msgImgChat);
+                    String sessionId = imageMessageVo.getSessionId();
+                    if(!TextUtils.isEmpty(sessionId)) {
+                        if(ChatRoomDBUtil.getInstance().isChatRoomExistsBySessionID(sessionId)){
                             ChatRoomDBUtil.getInstance().addChatRoom(imageMessageVo);
                         } else {
                             ChatRoomDBUtil.getInstance().updateChatRoom(imageMessageVo);
@@ -151,10 +154,20 @@ public class MessageListener extends Handler implements IMessageListener {
                 }
             }
 
-            /** 注册转移服务器IP */
-            if(ProtocolMSG.MSG_TransferServer == type){
+            /** 用户到店通知 */
+            if (ProtocolMSG.MSG_PushTriggerLocNotification_M2S == type) {
+                if(gson == null){
+                    gson = new Gson();
+                }
+                LogUtil.getInstance().info(LogLevel.INFO, "用户到店通知");
+                MediaPlayerUtil.playNotifyVoice(ServiceApplication.getContext());
+                VibratorHelper.vibratorShark(ServiceApplication.getContext());
+                MsgPushTriggerLocNotificationM2S msgLocNotification = gson.fromJson(message,
+                        MsgPushTriggerLocNotificationM2S.class);
+                //TODO JimmyZhang 对到店通知进行数据库插入操作
 
             }
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -176,7 +189,7 @@ public class MessageListener extends Handler implements IMessageListener {
         Dialog dialog = null;
         sdf = new SimpleDateFormat("HH:mm");
         CustomDialog.Builder customBuilder = new CustomDialog.Builder(context);
-        customBuilder.setTitle("下载通知");
+        customBuilder.setTitle("下线通知");
         customBuilder.setMessage("您的账号于" + sdf.format(new Date()) + "在另一台设备登录");
         customBuilder.setGravity(Gravity.CENTER);
         customBuilder.setNegativeButton("退出", new DialogInterface.OnClickListener() {

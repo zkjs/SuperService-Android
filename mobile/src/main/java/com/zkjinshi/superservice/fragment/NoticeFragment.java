@@ -10,6 +10,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.zkjinshi.base.net.observer.IMessageObserver;
+import com.zkjinshi.base.net.observer.MessageSubject;
+import com.zkjinshi.base.net.protocol.ProtocolMSG;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.adapter.LocNotificationAdapter;
 import com.zkjinshi.superservice.vo.LocNotificationVo;
@@ -25,7 +28,7 @@ import java.util.Random;
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class NoticeFragment extends Fragment {
+public class NoticeFragment extends Fragment implements IMessageObserver{
 
     private Activity     mActivity;
     private RecyclerView mRcvNotice;
@@ -87,6 +90,7 @@ public class NoticeFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        MessageSubject.getInstance().addObserver(this, ProtocolMSG.MSG_PushTriggerLocNotification_M2S);
     }
 
     @Override
@@ -102,5 +106,13 @@ public class NoticeFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        MessageSubject.getInstance().removeObserver(this, ProtocolMSG.MSG_PushTriggerLocNotification_M2S);
+    }
+
+    @Override
+    public void receive(String message) {
+        //TODO JimmyZhang接收到店通知
+        //TODO JimmyZhang 1、查询数据库，重新获取数据
+        //TODO JimmyZhang 2、根据查询数据刷新界面
     }
 }
