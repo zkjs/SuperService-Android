@@ -11,6 +11,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.SectionIndexer;
 import android.widget.TextView;
@@ -18,6 +19,7 @@ import android.widget.TextView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.zkjinshi.superservice.R;
+import com.zkjinshi.superservice.listener.RecyclerItemClickListener;
 import com.zkjinshi.superservice.vo.ContactType;
 import com.zkjinshi.superservice.vo.SortModel;
 import com.zkjinshi.superservice.view.CircleImageView;
@@ -35,14 +37,14 @@ import java.util.Locale;
  * 版权所有
  */
 public class ContactsSortAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
-                                  implements SectionIndexer, View.OnClickListener {
+                                  implements SectionIndexer {
 
     private List<SortModel> mList;
     private Context         mContext;
 
     private DisplayImageOptions options;
 
-    private OnContactItemClickListener mOnContactItemClickListener;
+    private RecyclerItemClickListener mRecyclerItemClickListener;
 
     public ContactsSortAdapter(Context mContext, List<SortModel> list) {
         this.mContext = mContext;
@@ -80,13 +82,18 @@ public class ContactsSortAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         if(ContactType.LOCAL.getValue() == viewType){
             //本地联系人
             View view = LayoutInflater.from(mContext).inflate(R.layout.item_contact_local, null);
-            view.setOnClickListener(this);
-            LocalViewHolder localHolder = new LocalViewHolder(view);
+            //设置条目宽度满足屏幕
+            view.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT));
+            LocalViewHolder localHolder = new LocalViewHolder(view, mRecyclerItemClickListener);
             return localHolder;
         } else {
             //本地联系人
             View view = LayoutInflater.from(mContext).inflate(R.layout.item_contact_server, null);
-            ServerViewHolder serverHolder = new ServerViewHolder(view);
+            //设置条目宽度满足屏幕
+            view.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT));
+            ServerViewHolder serverHolder = new ServerViewHolder(view, mRecyclerItemClickListener);
             return serverHolder;
         }
     }
@@ -156,19 +163,8 @@ public class ContactsSortAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         return mList.get(position).getContactType().getValue();
     }
 
-    public void onClick(View view) {
-        if (mOnContactItemClickListener != null) {
-            //注意这里使用getTag方法获取数据
-            mOnContactItemClickListener.onItemClick(view, (SortModel)view.getTag());
-        }
-    }
-
-    public void setOnItemClickListener(OnContactItemClickListener listener) {
-        this.mOnContactItemClickListener = listener;
-    }
-
-    public interface OnContactItemClickListener {
-        void onItemClick(View view , SortModel sortModel);
+    public void setOnItemClickListener(RecyclerItemClickListener listener) {
+        this.mRecyclerItemClickListener = listener;
     }
 
     public static class LocalViewHolder extends RecyclerView.ViewHolder{
@@ -178,12 +174,22 @@ public class ContactsSortAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         public TextView         tvContactName;
         public TextView         tvContactPhone;
 
-        public LocalViewHolder(View view) {
+        private RecyclerItemClickListener mItemClickListener;
+
+        public LocalViewHolder(View view, RecyclerItemClickListener itemClickListener) {
             super(view);
             tvLetter         = (TextView) view.findViewById(R.id.catalog);
             civContactAvatar = (CircleImageView) view.findViewById(R.id.civ_contact_avatar);
             tvContactName    = (TextView) view.findViewById(R.id.tv_contact_name);
             tvContactPhone   = (TextView) view.findViewById(R.id.tv_contact_phone);
+
+            this.mItemClickListener = itemClickListener;
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mItemClickListener.onItemClick(v, getPosition());
+                }
+            });
         }
     }
 
@@ -199,7 +205,9 @@ public class ContactsSortAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         public TextView         tvContactOnLine;
         public TextView         tvContactOnShop;
 
-        public ServerViewHolder(View view) {
+        private RecyclerItemClickListener mItemClickListener;
+
+        public ServerViewHolder(View view, RecyclerItemClickListener itemClickListener) {
             super(view);
             tvLetter         = (TextView) view.findViewById(R.id.catalog);
             civContactAvatar = (CircleImageView) view.findViewById(R.id.civ_contact_avatar);
@@ -208,8 +216,18 @@ public class ContactsSortAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             rlContactStatus  = (RelativeLayout) view.findViewById(R.id.rl_contact_status);
             tvContactStatus    = (TextView) view.findViewById(R.id.tv_contact_status);
             rlContactOnStatus  = (RelativeLayout) view.findViewById(R.id.rl_contact_on_status);
-            tvContactOnLine    = (TextView) view.findViewById(R.id.tv_contact_on_shop);
+            tvContactOnLine    = (TextView) view.findViewById(R.id.tv_contact_on_line);
             tvContactOnShop    = (TextView) view.findViewById(R.id.tv_contact_on_shop);
+            this.mItemClickListener = itemClickListener;
+
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(mItemClickListener != null){
+                        mItemClickListener.onItemClick(v, getPosition());
+                    }
+                }
+            });
         }
     }
 

@@ -71,6 +71,49 @@ public class LatestClientDBUtil {
     }
 
     /**
+     * 查询
+     * @return
+     */
+    public LatestClientBean queryLatestClientByUserID(String userID) {
+        LatestClientBean client = null;
+        SQLiteDatabase db   = null;
+        Cursor cursor = null;
+        if (null != helper) {
+            try {
+                db = helper.getReadableDatabase();
+
+                String sql = " select * from " + DBOpenHelper.CLIENT_LATEST_TBL + " as c where c.timestamp in ( "
+                        +" select MAX(timestamp) from "
+                        + DBOpenHelper.CLIENT_LATEST_TBL + " as c2 where c2.user_id = " + userID
+                        + " ) ";
+
+                cursor = db.rawQuery(sql, null);
+                if (cursor != null && cursor.getCount() > 0) {
+                    while (cursor.moveToNext()) {
+                        client = LatestClientFactory.getInstance().bulidLatestClient(cursor);
+                    }
+                    LogUtil.getInstance().info(LogLevel.INFO, TAG + ".queryLatestClientByUserID 成功" + client.getUserID());
+                } else {
+                    LogUtil.getInstance().info(LogLevel.INFO, TAG + ".queryLatestClientByUserID为空");
+                }
+            } catch (Exception e) {
+                LogUtil.getInstance().info(LogLevel.ERROR,TAG+".queryLatestClientByUserID->"+e.getMessage());
+                e.printStackTrace();
+            } finally {
+
+                if (null != cursor) {
+                    cursor.close();
+                }
+
+                if (null != db) {
+                    db.close();
+                }
+            }
+        }
+        return client;
+    }
+
+    /**
      * 查询最近10条到店消息记录
      * @return
      */

@@ -71,6 +71,10 @@ public class MessageListener extends Handler implements IMessageListener {
             JSONObject messageObj = new JSONObject(message);
             int type = messageObj.getInt("type");
 
+            if (type == ProtocolMSG.MSG_ClientLogin_RSP) {
+                return;
+            }
+
             if (type == ProtocolMSG.MSG_ServerRepeatLogin) {//重复登录
                 WebSocketManager.getInstance().logoutIM(ServiceApplication.getContext());
                 notifyMessage = new Message();

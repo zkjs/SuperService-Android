@@ -17,7 +17,9 @@ import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.bean.LatestClientBean;
 import com.zkjinshi.superservice.view.CircleImageView;
 import com.zkjinshi.superservice.vo.LocNotificationVo;
+import com.zkjinshi.superservice.vo.MessageVo;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -31,7 +33,7 @@ public class LocNotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
     private Context mActivity;
 
-    private List<LatestClientBean> mList;
+    private List<LatestClientBean>  mList;
     private DisplayImageOptions     options;
     private TypedArray              locNoticeColors;
 
@@ -130,5 +132,14 @@ public class LocNotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             ivDuiHua        = (ImageView) view.findViewById(R.id.iv_duihua);
             ivFenXiang      = (ImageView) view.findViewById(R.id.iv_fenxiang);
         }
+    }
+
+    public void setData(List<LatestClientBean> latestClientBeans) {
+        if (null == latestClientBeans) {
+            this.mList = new ArrayList<>();
+        } else {
+            this.mList = latestClientBeans;
+        }
+        notifyDataSetChanged();
     }
 }

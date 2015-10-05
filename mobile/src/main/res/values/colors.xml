@@ -470,6 +470,7 @@
     <color name="blue48A0DC">#48A0DC</color>
     <color name="green91DC48">#91DC48</color>
     <color name="orangeEEAF4B">#EEAF4B</color>
+    <color name="blue03a9f4">#03a9f4</color>
 
     <array name="loc_notice_colors">
         <item>#666666</item>
@@ -488,6 +489,5 @@
         <item>#7e57c2</item>
         <item>#78909c</item>
     </array>
-
 
 </resources>
