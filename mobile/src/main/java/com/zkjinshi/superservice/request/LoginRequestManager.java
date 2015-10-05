@@ -1,6 +1,8 @@
 package com.zkjinshi.superservice.request;
 
 import com.google.gson.Gson;
+import com.zkjinshi.base.log.LogLevel;
+import com.zkjinshi.base.log.LogUtil;
 import com.zkjinshi.base.net.core.WebSocketClient;
 import com.zkjinshi.base.net.core.WebSocketManager;
 import com.zkjinshi.base.net.observer.IMessageObserver;
@@ -51,7 +53,9 @@ public class LoginRequestManager implements IMessageObserver {
     public void receive(String message) {
         try {
             JSONObject messageObj = new JSONObject(message);
+            LogUtil.getInstance().info(LogLevel.INFO, "messageObj:" + messageObj.toString());
             int type = messageObj.getInt("type");
+
             if (ProtocolMSG.MSG_ClientLogin_RSP == type) {
                 ImCacheUtil.getInstance().setIMLogin(true);
                 WebSocketManager.getInstance().startHeartBeat();

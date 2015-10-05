@@ -3,6 +3,7 @@ package com.zkjinshi.superservice.entity;
 import java.io.Serializable;
 
 /**
+ * 到店通知消息对象
  * 开发者：vincent
  * 日期：2015/9/25
  * Copyright (C) 2015 深圳中科金石科技有限公司

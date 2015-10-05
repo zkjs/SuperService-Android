@@ -171,6 +171,4 @@ public class MsgClientLogin {
         this.workstatus = workstatus;
     }
 
-
-
 }

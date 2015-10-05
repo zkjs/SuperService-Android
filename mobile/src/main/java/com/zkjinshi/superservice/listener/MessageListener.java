@@ -33,6 +33,7 @@ import com.zkjinshi.superservice.factory.MessageFactory;
 import com.zkjinshi.superservice.notification.NotificationHelper;
 import com.zkjinshi.superservice.request.LoginRequestManager;
 import com.zkjinshi.superservice.sqlite.ChatRoomDBUtil;
+import com.zkjinshi.superservice.sqlite.LatestClientDBUtil;
 import com.zkjinshi.superservice.sqlite.MessageDBUtil;
 import com.zkjinshi.superservice.utils.FileUtil;
 import com.zkjinshi.superservice.utils.MediaPlayerUtil;
@@ -163,9 +164,14 @@ public class MessageListener extends Handler implements IMessageListener {
                 MediaPlayerUtil.playNotifyVoice(ServiceApplication.getContext());
                 VibratorHelper.vibratorShark(ServiceApplication.getContext());
                 MsgPushTriggerLocNotificationM2S msgLocNotification = gson.fromJson(message,
-                        MsgPushTriggerLocNotificationM2S.class);
-                //TODO JimmyZhang 对到店通知进行数据库插入操作
-
+                                                    MsgPushTriggerLocNotificationM2S.class);
+                //对到店通知进行数据库插入操作
+                long addResult = LatestClientDBUtil.getInstance().addLatestClient(msgLocNotification);
+                if(addResult > 0){
+                    LogUtil.getInstance().info(LogLevel.INFO, "添加到店用户成功:"+ msgLocNotification.toString());
+                } else {
+                    LogUtil.getInstance().info(LogLevel.INFO, "添加到店用户失败");
+                }
             }
 
         } catch (JSONException e) {
