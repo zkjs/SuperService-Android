@@ -97,7 +97,7 @@
 
                     <TextView
                         android:id="@+id/tv_contact_on_line"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:singleLine="true"
                         android:text="在线"
@@ -108,7 +108,7 @@
                         android:id="@+id/tv_contact_on_shop"
                         android:layout_toRightOf="@+id/tv_contact_on_line"
                         android:layout_marginLeft="10dp"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:singleLine="true"
                         android:text="在酒店"

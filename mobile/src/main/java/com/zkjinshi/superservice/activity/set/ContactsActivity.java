@@ -18,9 +18,13 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.zkjinshi.base.log.LogUtil;
+import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.adapter.ContactsSortAdapter;
 import com.zkjinshi.superservice.factory.SortModelFactory;
+import com.zkjinshi.superservice.listener.RecyclerItemClickListener;
 import com.zkjinshi.superservice.sqlite.ClientDBUtil;
 import com.zkjinshi.superservice.utils.CharacterParser;
 import com.zkjinshi.superservice.utils.PinyinComparator;
@@ -55,10 +59,10 @@ public class ContactsActivity extends Activity{
     private RecyclerView        mRcvContacts;
     private LinearLayoutManager mLayoutManager;
 
-    private CharacterParser characterParser;
+    private CharacterParser      characterParser;
     private List<SortModel>      mAllContactsList;
-    private PinyinComparator pinyinComparator;
-    private ContactsSortAdapter mContactsAdapter;
+    private PinyinComparator     pinyinComparator;
+    private ContactsSortAdapter  mContactsAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -177,10 +181,14 @@ public class ContactsActivity extends Activity{
         });
 
         /** 我的客人条目点击事件 */
-        mContactsAdapter.setOnItemClickListener(new ContactsSortAdapter.OnContactItemClickListener() {
+        mContactsAdapter.setOnItemClickListener(new RecyclerItemClickListener() {
             @Override
-            public void onItemClick(View view, SortModel sortModel) {
-                Log.v(TAG, "sortModel:" + sortModel.getSortLetters());
+            public void onItemClick(View view, int postion) {
+                SortModel sortModel = mAllContactsList.get(postion);
+                String name      = sortModel.getName();
+                String number    = sortModel.getNumber();
+                long  contactID  = sortModel.getContactID();
+                //TODO:
             }
         });
     }

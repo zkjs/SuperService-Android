@@ -22,6 +22,10 @@
         <FrameLayout
             android:id="@+id/fl_line"
             android:layout_width="35dp"
+            android:background="@color/white"
+            android:layout_alignParentBottom="true"
+            android:layout_alignTop="@+id/ll_next_clients"
+            android:layout_alignBottom="@+id/ll_next_clients"
             android:layout_alignParentLeft="true"
             android:textColor="@color/gray616161"
             android:layout_height="wrap_content">
@@ -40,10 +44,12 @@
                 android:layout_gravity="center"/>
 
         </FrameLayout>
-5
+
         <LinearLayout
+            android:id="@+id/ll_next_clients"
             android:padding="10dp"
             android:background="@color/white"
+            android:layout_alignParentBottom="true"
             android:orientation="vertical"
             android:layout_toRightOf="@+id/fl_line"
             android:layout_width="match_parent"

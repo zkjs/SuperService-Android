@@ -6,12 +6,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
+import android.support.v4.app.RemoteInput;
 
 import com.zkjinshi.base.util.ActivityManagerHelper;
 import com.zkjinshi.base.util.VibratorHelper;
 import com.zkjinshi.superservice.R;
+import com.zkjinshi.superservice.activity.chat.ChatActivity;
 import com.zkjinshi.superservice.activity.common.MainActivity;
+import com.zkjinshi.superservice.activity.common.SplashActivity;
 import com.zkjinshi.superservice.entity.MsgPushLocAd;
+import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.utils.MediaPlayerUtil;
 import com.zkjinshi.superservice.vo.MessageVo;
 import com.zkjinshi.superservice.vo.MimeType;
@@ -62,13 +66,15 @@ public class NotificationHelper {
             }
             notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
             // 2.设置点击跳转事件
-            Intent intent = new Intent(context, MainActivity.class);
+            Intent intent = new Intent(context, SplashActivity.class);
             PendingIntent pendingIntent = PendingIntent.getActivity(context, 0,
                     intent, 0);
             notificationBuilder.setContentIntent(pendingIntent);
             // 3.设置通知栏其他属性
             notificationBuilder.setAutoCancel(true);
             notificationBuilder.setDefaults(Notification.DEFAULT_ALL);
+            //4、设置手表特有属性
+            notificationBuilder.extend(extendWear(context, notificationBuilder,messageVo));
             NotificationManagerCompat notificationManager =
                     NotificationManagerCompat.from(context);
             notificationManager.notify(nofifyFlag, notificationBuilder.build());
@@ -103,6 +109,33 @@ public class NotificationHelper {
         NotificationManagerCompat notificationManager =
                 NotificationManagerCompat.from(context);
         notificationManager.notify(++NOTIFY_ID, notificationBuilder.build());
+    }
+
+    private NotificationCompat.WearableExtender extendWear(
+            Context context,NotificationCompat.Builder builder,MessageVo messageVo) {
+        NotificationCompat.WearableExtender wearableExtender = new NotificationCompat.WearableExtender();
+        String shopId = messageVo.getShopId();
+        String sessionId = messageVo.getSessionId();
+        // 1、增加语音快捷回复
+        Intent intent = new Intent(context, ChatActivity.class);
+        intent.setAction("waiter.intent.action.RELAY");
+        intent.putExtra("session_id", sessionId);
+        intent.putExtra("shop_id",shopId);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0,
+                intent, 0);
+        String replyLabel = context.getResources().getString(R.string.reply_label);
+        String[] replyChoices = context.getResources().getStringArray(R.array.reply_choices);
+        RemoteInput remoteInput = new RemoteInput.Builder(Constants.EXTRA_VOICE_REPLY)
+                .setLabel(replyLabel)
+                .setChoices(replyChoices)
+                .build();
+        String voiceReply = context.getResources().getString(R.string.voice_reply);
+        NotificationCompat.Action replyAction = new NotificationCompat.Action.Builder(R.mipmap.yuyin,
+                voiceReply, pendingIntent)
+                .addRemoteInput(remoteInput)
+                .build();
+        wearableExtender.addAction(replyAction);
+        return wearableExtender;
     }
 
 }

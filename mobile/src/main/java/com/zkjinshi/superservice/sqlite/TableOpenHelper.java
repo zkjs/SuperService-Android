@@ -43,9 +43,9 @@ public class TableOpenHelper {
             "create table if not exists "
                     + DBOpenHelper.CHAT_ROOM_TBL
                     + "("
-                    + " session_id text primary key, "
+                    + " shop_id text primary key, "
                     + " shop_name text, "//聊天室名称
-                    + " shop_id text, "//商家id
+                    + " session_id text, "
                     + " remark text, "//备注
                     + " created long, "//创建时间
                     + " end_time long, "//会话结束时间
@@ -100,6 +100,18 @@ public class TableOpenHelper {
                     + " on_account      integer "   //是否挂账会员 0:挂账会员 1 非挂账会员
                     + " ) ";
 
+    /** 创建到店用户信息表 */
+    public static String CLIENT_LATEST_TBL_SQL =
+            " create table if not exists "
+                    + DBOpenHelper.CLIENT_LATEST_TBL
+                    + " ( "
+                    + " user_id     text, "
+                    + " user_name   text, "
+                    + " timestamp   long, "
+                    + " shop_id     text, "
+                    + " loc_id      text "
+                    + " ) ";
+
     /**
      * 获取数据库所有表名
      * @return
@@ -111,6 +123,7 @@ public class TableOpenHelper {
                 DBOpenHelper.MEMBER_TBL,//成员表
                 DBOpenHelper.USER_TBL,//客户表
                 DBOpenHelper.CLIENT_TBL,//客户表
+                DBOpenHelper.CLIENT_LATEST_TBL,//到店通知客户表
         };
     }
 

@@ -2,6 +2,7 @@ package com.zkjinshi.superservice.adapter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,10 +14,14 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
+import com.zkjinshi.superservice.bean.LatestClientBean;
 import com.zkjinshi.superservice.view.CircleImageView;
 import com.zkjinshi.superservice.vo.LocNotificationVo;
+import com.zkjinshi.superservice.vo.MessageVo;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * 开发者：vincent
@@ -28,16 +33,17 @@ public class LocNotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
     private Context mActivity;
 
-    private List<LocNotificationVo> mList;
+    private List<LatestClientBean>  mList;
     private DisplayImageOptions     options;
+    private TypedArray              locNoticeColors;
 
-    public LocNotificationAdapter(Activity activity, List<LocNotificationVo> list) {
+    public LocNotificationAdapter(Activity activity, List<LatestClientBean> list) {
 
         this.mActivity = activity;
-        this.mList    = list;
-
+        this.mList     = list;
+        locNoticeColors = activity.getResources().obtainTypedArray(R.array.loc_notice_colors);
         this.options = new DisplayImageOptions.Builder()
-                .showImageOnLoading(R.mipmap.ic_launcher)// 设置图片下载期间显示的图片
+                .showImageOnLoading(R.mipmap.ic_launcher)// 设置图片下载期间显示的 图片
                 .showImageForEmptyUri(R.mipmap.ic_launcher)// 设置图片Uri为空或是错误的时候显示的图片
                 .showImageOnFail(R.mipmap.ic_launcher)// 设置图片加载或解码过程中发生错误显示的图片
                 .cacheInMemory(true) // 设置下载的图片是否缓存在内存中
@@ -54,17 +60,18 @@ public class LocNotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        LocNotificationVo notificationVo = mList.get(position);
+        LatestClientBean clientBean = mList.get(position);
 
-        ImageLoader.getInstance().displayImage("", ((NoticeViewHolder) holder).civOrderStatus, options);
+        ((NoticeViewHolder) holder).civOrderStatus.setBackgroundDrawable(locNoticeColors.
+                getDrawable(new Random().nextInt(locNoticeColors.length())));
         ImageLoader.getInstance().displayImage("", ((NoticeViewHolder) holder).civClientAvatar, options);
         ((NoticeViewHolder) holder).tvVip.setText("VIP#");
-        ((NoticeViewHolder) holder).tvClientName.setText(notificationVo.getUsername());
-        ((NoticeViewHolder) holder).tvClientInfo.setText(notificationVo.getUserid());
+        ((NoticeViewHolder) holder).tvClientName.setText(clientBean.getUserName());
+        ((NoticeViewHolder) holder).tvClientInfo.setText(clientBean.getUserID());
         ((NoticeViewHolder) holder).tvClientNotice.setText("VIP#");
         ((NoticeViewHolder) holder).tvTodo.setText("VIP#");
         ((NoticeViewHolder) holder).tvOrderInfo.setText("VIP#");
-        ((NoticeViewHolder) holder).tvTimeInfo.setText(notificationVo.getTimestamp()+"");
+        ((NoticeViewHolder) holder).tvTimeInfo.setText(clientBean.getTimeStamp()+"");
 
         ((NoticeViewHolder) holder).ivDianHua.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -125,5 +132,14 @@ public class LocNotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             ivDuiHua        = (ImageView) view.findViewById(R.id.iv_duihua);
             ivFenXiang      = (ImageView) view.findViewById(R.id.iv_fenxiang);
         }
+    }
+
+    public void setData(List<LatestClientBean> latestClientBeans) {
+        if (null == latestClientBeans) {
+            this.mList = new ArrayList<>();
+        } else {
+            this.mList = latestClientBeans;
+        }
+        notifyDataSetChanged();
     }
 }

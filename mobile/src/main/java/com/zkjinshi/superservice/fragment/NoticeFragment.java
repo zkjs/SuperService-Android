@@ -1,25 +1,37 @@
 package com.zkjinshi.superservice.fragment;
 
 import android.app.Activity;
+import android.content.res.TypedArray;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.gson.Gson;
 import com.zkjinshi.base.net.observer.IMessageObserver;
 import com.zkjinshi.base.net.observer.MessageSubject;
 import com.zkjinshi.base.net.protocol.ProtocolMSG;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.adapter.LocNotificationAdapter;
-import com.zkjinshi.superservice.vo.LocNotificationVo;
+import com.zkjinshi.superservice.bean.LatestClientBean;
+import com.zkjinshi.superservice.entity.MsgPushTriggerLocNotificationM2S;
+import com.zkjinshi.superservice.sqlite.LatestClientDBUtil;
+import com.zkjinshi.superservice.test.LatestClientBiz;
+import com.zkjinshi.superservice.view.CircleImageView;
 
-import java.util.ArrayList;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.List;
 import java.util.Random;
+
 
 /**
  * 到店通知Fragment页面
@@ -30,17 +42,36 @@ import java.util.Random;
  */
 public class NoticeFragment extends Fragment implements IMessageObserver{
 
+    private final static int REFRESH_UI = 0x00;
+
     private Activity     mActivity;
     private RecyclerView mRcvNotice;
-
+    private TypedArray   mLocNoticeColors;
+    private CircleImageView mCivOrderStatus;
     private RecyclerView.LayoutManager mLayoutManager;
 
-    private List<LocNotificationVo>    mNotifications;
+    private List<LatestClientBean>     mLatestClients;
     private LocNotificationAdapter     mNotificationAdapter;
 
     public static NoticeFragment newInstance() {
         return new NoticeFragment();
     }
+
+    private Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case REFRESH_UI :
+                    LatestClientBean clientBean = (LatestClientBean) msg.obj;
+                    if(null != clientBean){
+                        mLatestClients.add(clientBean);
+                        mNotificationAdapter.setData(mLatestClients);
+                    }
+                break;
+            }
+        }
+    };
 
     @Nullable
     @Override
@@ -52,39 +83,25 @@ public class NoticeFragment extends Fragment implements IMessageObserver{
     }
 
     private void initView(View view){
-        mRcvNotice = (RecyclerView) view.findViewById(R.id.rcv_notice);
+        mRcvNotice      = (RecyclerView) view.findViewById(R.id.rcv_notice);
+        mCivOrderStatus = (CircleImageView) view.findViewById(R.id.civ_order_status);
     }
 
     private void initData() {
-
         mActivity = this.getActivity();
-        //1. 伪造到店通知数据
-        mNotifications = new ArrayList<>();
-        mNotifications.addAll(getNotifications());
-        mNotificationAdapter = new LocNotificationAdapter(mActivity, mNotifications);
+
+        //1. TODO 本地查询到店数据
+        //2. TODO 服务器查询到店数据并保存
+        mLatestClients       = LatestClientBiz.getLatestClients();
+        mNotificationAdapter = new LocNotificationAdapter(mActivity, mLatestClients);
+
         mRcvNotice.setAdapter(mNotificationAdapter);
         mRcvNotice.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(mActivity);
         mRcvNotice.setLayoutManager(mLayoutManager);
-
-    }
-
-    /**
-     * TODO: 伪造数据
-     * @return
-     */
-    public List<LocNotificationVo> getNotifications(){
-        List<LocNotificationVo> notifications = new ArrayList<>();
-        for(int i=0; i< 10; i++){
-            LocNotificationVo notification = new LocNotificationVo();
-            notification.setTimestamp(System.currentTimeMillis());
-            notification.setShopid("120");
-            notification.setUserid(System.currentTimeMillis() + "");
-            notification.setUsername(System.currentTimeMillis() + "Sir");
-            notification.setTimestamp(new Random().nextInt(10));
-            notifications.add(notification);
-        }
-        return notifications;
+        mLocNoticeColors = mActivity.getResources().obtainTypedArray(R.array.loc_notice_colors);
+        mCivOrderStatus.setBackgroundDrawable(mLocNoticeColors.getDrawable(
+                          new Random().nextInt(mLocNoticeColors.length())));
     }
 
     @Override
@@ -101,6 +118,7 @@ public class NoticeFragment extends Fragment implements IMessageObserver{
     @Override
     public void onResume() {
         super.onResume();
+
     }
 
     @Override
@@ -111,8 +129,31 @@ public class NoticeFragment extends Fragment implements IMessageObserver{
 
     @Override
     public void receive(String message) {
-        //TODO JimmyZhang接收到店通知
-        //TODO JimmyZhang 1、查询数据库，重新获取数据
-        //TODO JimmyZhang 2、根据查询数据刷新界面
+        if(TextUtils.isEmpty(message)){
+            return ;
+        }
+        Gson gson = null;
+        try {
+            JSONObject messageObj = null;
+                messageObj = new JSONObject(message);
+            //接收到店通知
+            int type = messageObj.getInt("type");
+            if (type == ProtocolMSG.MSG_PushTriggerLocNotification_M2S) {
+                //1、查询数据库，重新获取数据
+                MsgPushTriggerLocNotificationM2S msgLocNotification = gson.fromJson(message,
+                                                    MsgPushTriggerLocNotificationM2S.class);
+                String userID = msgLocNotification.getUserid();
+                if(!TextUtils.isEmpty(userID)){
+                    LatestClientBean clientBean = LatestClientDBUtil.getInstance().queryLatestClientByUserID(userID);
+                    //2、根据查询数据刷新界面
+                    Message msg = Message.obtain();
+                    msg.what    = REFRESH_UI;
+                    msg.obj     = clientBean;
+                    handler.sendMessage(msg);
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 }

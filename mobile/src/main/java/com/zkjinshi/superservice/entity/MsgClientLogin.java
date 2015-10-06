@@ -23,7 +23,7 @@ public class MsgClientLogin {
     private String      shopid;     //商家id
     private String      empid;      //员工id
     private int         roleid;     //商家角色ID
-    private JSONArray   loc;        //员工区域数组
+    private String   loc;        //员工区域数组
     private String      beaconid;   //beaconid
     private int         workstatus; //0:上班 1:下班
 
@@ -147,11 +147,11 @@ public class MsgClientLogin {
         this.roleid = roleid;
     }
 
-    public JSONArray getLoc() {
+    public String getLoc() {
         return loc;
     }
 
-    public void setLoc(JSONArray loc) {
+    public void setLoc(String loc) {
         this.loc = loc;
     }
 
@@ -170,7 +170,5 @@ public class MsgClientLogin {
     public void setWorkstatus(int workstatus) {
         this.workstatus = workstatus;
     }
-
-
 
 }

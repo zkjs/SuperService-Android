@@ -35,5 +35,6 @@
     <string name="latest_contact">最近联系</string>
 
     <string name="no_data">暂无数据</string>
+    <string name="client_detail">客人信息</string>
 
 </resources>

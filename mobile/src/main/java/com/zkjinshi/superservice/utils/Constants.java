@@ -34,4 +34,6 @@ public class Constants {
 
     public final static String GET_USER_AVATAR    = HTTP_URL + "uploads/users/";
 
+    public static final String EXTRA_VOICE_REPLY = "extra_voice_reply";
+
 }
