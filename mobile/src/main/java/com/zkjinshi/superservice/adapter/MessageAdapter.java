@@ -14,6 +14,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.zkjinshi.base.util.TimeUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.listener.RecyclerItemClickListener;
+import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.vo.MessageVo;
 import com.zkjinshi.superservice.vo.MimeType;
 
@@ -70,9 +71,12 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         String content = messageVo.getContent();
         MimeType mimeType = messageVo.getMimeType();
         String title = messageVo.getTitle();
-        String imageUrl = messageVo.getUrl();
+        String contactId   = messageVo.getContactId();
         if(!TextUtils.isEmpty(title)){
             ((ViewHolder)holder).titleTv.setText(title);
+        }else{
+            String contactName = messageVo.getContactName();
+            ((ViewHolder) holder).titleTv.setText(contactName);
         }
         if(MimeType.TEXT == mimeType){
             if(!TextUtils.isEmpty(content)){
@@ -90,6 +94,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             ((ViewHolder)holder).contentTv.setText("[订单信息]");
         }
         ((ViewHolder)holder).sendTimeTv.setText(TimeUtil.getChatTime(sendTime));
+        String imageUrl = Constants.GET_USER_AVATAR + contactId + ".jpg";
         if(!TextUtils.isEmpty(imageUrl)){
             ImageLoader.getInstance().displayImage(imageUrl, ((ViewHolder)holder).photoImageView,options);
         }
