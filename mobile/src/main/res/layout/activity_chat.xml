@@ -33,7 +33,7 @@
             android:layout_height="0.0dip"
             android:layout_weight="1.0" >
 
-            <com.zkjinshi.svip.view.MsgListView
+            <com.zkjinshi.superservice.view.MsgListView
                 android:id="@+id/msg_listView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -100,7 +100,7 @@
             android:paddingTop="5dip"
             android:visibility="gone" >
 
-            <com.zkjinshi.svip.view.JazzyViewPager
+            <com.zkjinshi.superservice.view.JazzyViewPager
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/face_pager"
                 app:style="standard"
@@ -113,7 +113,7 @@
                 android:flipInterval="30"
                 android:persistentDrawingCache="animation" />
 
-            <com.zkjinshi.svip.view.CirclePageIndicator
+            <com.zkjinshi.superservice.view.CirclePageIndicator
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/indicator"
                 android:layout_width="fill_parent"
@@ -131,7 +131,7 @@
             android:paddingTop="5dip"
             android:visibility="gone" >
 
-            <com.zkjinshi.svip.view.JazzyViewPager
+            <com.zkjinshi.superservice.view.JazzyViewPager
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/more_pager"
                 app:style="standard"
@@ -144,7 +144,7 @@
                 android:flipInterval="30"
                 android:persistentDrawingCache="animation" />
 
-            <com.zkjinshi.svip.view.CirclePageIndicator
+            <com.zkjinshi.superservice.view.CirclePageIndicator
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/more_indicator"
                 android:layout_width="fill_parent"

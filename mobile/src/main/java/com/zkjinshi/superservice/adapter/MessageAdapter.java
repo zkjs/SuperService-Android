@@ -121,6 +121,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             contentTv = (TextView) itemView.findViewById(R.id.message_notice_content);
             sendTimeTv = (TextView) itemView.findViewById(R.id.message_notice_send_time);
             noticeCountTv = (TextView) itemView.findViewById(R.id.message_notice_notice_count);
+            itemView.setOnClickListener(this);
         }
 
         @Override

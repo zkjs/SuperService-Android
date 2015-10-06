@@ -19,7 +19,7 @@
         android:layout_below="@+id/datetime"
         android:orientation="horizontal" >
 
-        <com.zkjinshi.svip.view.CircleImageView
+        <com.zkjinshi.superservice.view.CircleImageView
             android:id="@+id/icon"
             android:layout_width="40.0dip"
             android:layout_height="40.0dip"

@@ -86,10 +86,10 @@ public class MessageFragment extends Fragment  implements IMessageObserver {
                     Intent intent = new Intent(getActivity(), ChatActivity.class);
                     String sessionId = messageVo.getSessionId();
                     String shopId = messageVo.getShopId();
-                    if(TextUtils.isEmpty(sessionId)){
+                    if(!TextUtils.isEmpty(sessionId)){
                         intent.putExtra("session_id",sessionId);
                     }
-                    if(TextUtils.isEmpty(shopId)){
+                    if(!TextUtils.isEmpty(shopId)){
                         intent.putExtra("shop_id",shopId);
                     }
                     startActivity(intent);
