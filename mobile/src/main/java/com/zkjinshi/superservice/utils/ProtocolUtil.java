@@ -53,6 +53,33 @@ public class ProtocolUtil {
     }
 
     /**
+     * 获取订单详情
+     * @return
+     */
+    public static String getSempShowUrl(){
+        return ConfigUtil.getInst().getHttpDomain()+"semp/show";
+    }
+
+    /**
+     * 订单处理1,商家锁定/增加订单
+     * @return
+     */
+    public static String getAddOrderUrl(){
+        return ConfigUtil.getInst().getHttpDomain()+"order/add";
+    }
+
+    /**
+     * 订单修改/确认/改变状态
+     * @return
+     */
+    public static String getUpdateOrderUrl(){
+        return ConfigUtil.getInst().getHttpDomain()+"order/update";
+    }
+
+
+
+
+    /**
      * 获得商品图片
      * @param imageUrl
      * @return
@@ -69,6 +96,8 @@ public class ProtocolUtil {
     public static String getImgUrl(String imageUrl){
         return ConfigUtil.getInst().getHttpDomain()+imageUrl;
     }
+
+
 
 
 }
