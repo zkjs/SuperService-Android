@@ -3,6 +3,7 @@ package com.zkjinshi.superservice.activity.order;
 import android.app.Activity;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 
 import android.text.TextUtils;
@@ -55,8 +56,9 @@ public class OrderGoodsActivity extends Activity implements AdapterView.OnItemCl
     private ListView goodLv;
     private GoodAdapter goodAdapter;
     private TextView roomText;
-    private int roomNum = 2;
-    private int selelectId = 0;
+    private int roomNum;
+    private int selelectId;
+    private GoodBean selectGood = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +69,9 @@ public class OrderGoodsActivity extends Activity implements AdapterView.OnItemCl
         String userid = CacheUtil.getInstance().getUserId();
         initDBName();
         userVo = UserDBUtil.getInstance().queryUserById(userid);
+
+        roomNum = getIntent().getIntExtra("roomNum", 2);
+        selelectId = getIntent().getIntExtra("selelectId",0);
 
         initView();
         initData();
@@ -89,7 +94,7 @@ public class OrderGoodsActivity extends Activity implements AdapterView.OnItemCl
 
     private void initData() {
         getGoodsList();
-        roomText.setText(roomNum+"间");
+        roomText.setText(roomNum + "间");
     }
 
     private void initListener() {
@@ -120,7 +125,17 @@ public class OrderGoodsActivity extends Activity implements AdapterView.OnItemCl
         findViewById(R.id.go_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                if(selectGood != null){
+                    Intent data = new Intent();
+                    data.putExtra("roomNum",roomNum);
+                    data.putExtra("selectGood",selectGood);
+                    setResult(RESULT_OK, data);
+                    finish();
+                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                }else{
+                    finish();
+                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                }
             }
         });
     }
@@ -166,10 +181,11 @@ public class OrderGoodsActivity extends Activity implements AdapterView.OnItemCl
 
 
     @Override
-    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        Log.e(TAG, "positoin" + i);
-        goodAdapter.setCheckidByPosition(i);
+    public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+        Log.e(TAG, "positoin" + position);
+        goodAdapter.setCheckidByPosition(position);
         goodAdapter.notifyDataSetChanged();
+        selectGood = goodAdapter.getGoodByPosition(position);
     }
 
     //显示房间数量选择对话框

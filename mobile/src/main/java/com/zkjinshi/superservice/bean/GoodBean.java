@@ -1,5 +1,7 @@
 package com.zkjinshi.superservice.bean;
 
+import java.io.Serializable;
+
 /**
  * 获取商品列表 返回实体
  * 开发者：dujiande
@@ -7,7 +9,7 @@ package com.zkjinshi.superservice.bean;
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class GoodBean {
+public class GoodBean implements Serializable {
 
     private int id;
     private String room;
