@@ -25,7 +25,7 @@
             android:layout_height="wrap_content"
             android:text="订单处理"
             android:textColor="@android:color/white"
-            android:textSize="24sp"
+            android:textSize="18sp"
             android:layout_centerInParent="true"/>
 
     </RelativeLayout>
@@ -148,7 +148,8 @@
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
                 android:paddingBottom="10dp"
-                android:paddingTop="10dp">
+                android:paddingTop="10dp"
+                android:id="@+id/pay_layout">
 
                 <TextView
                     android:padding="5dp"

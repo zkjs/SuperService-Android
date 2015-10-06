@@ -43,7 +43,9 @@ public class GoodAdapter extends BaseAdapter{
         this.checkid = checkid;
     }
 
-
+    public GoodBean getGoodByPosition(int position){
+        return goodList.get(position);
+    }
 
     public void setCheckidByPosition(int position) {
         this.checkid = goodList.get(position).getId();

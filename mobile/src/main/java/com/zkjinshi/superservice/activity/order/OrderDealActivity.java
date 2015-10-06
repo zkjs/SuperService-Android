@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.zkjinshi.base.util.TimeUtil;
 import com.zkjinshi.superservice.R;
+import com.zkjinshi.superservice.bean.GoodBean;
 import com.zkjinshi.superservice.view.ItemUserSettingView;
 
 import java.text.SimpleDateFormat;
@@ -30,6 +31,11 @@ import me.kaede.tagview.TagView;
  * 版权所有
  */
 public class OrderDealActivity extends Activity {
+
+    public static final int GOOD_REQUEST_CODE = 6;
+    public static final int PAY_REQUEST_CODE = 7;
+    public static final int TICKET_REQUEST_CODE = 8;
+    public static final int REMARK_REQUEST_CODE = 9;
 
     private TagView mRoomTagView;
     private TagView mServiceTagView;
@@ -51,6 +57,7 @@ public class OrderDealActivity extends Activity {
 
     private int dayNum;
     private int roomNum;
+    private int selelectId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +80,7 @@ public class OrderDealActivity extends Activity {
 
         mIusvRoomNumber = (ItemUserSettingView)findViewById(R.id.aod_room_number);
         addRightIcon(mIusvRoomNumber);
+
         mIusvPlayType  = (ItemUserSettingView)findViewById(R.id.pay_type);
         addRightIcon(mIusvPlayType);
         customerList = new ArrayList<ItemUserSettingView>();
@@ -91,6 +99,9 @@ public class OrderDealActivity extends Activity {
     }
 
     private void initData() {
+        roomNum = 2;
+        selelectId = 0;
+        notifyRoomNumberChange();
         initCalendar();
         initRoomTags();
         initServiceTags();
@@ -115,6 +126,28 @@ public class OrderDealActivity extends Activity {
                         R.anim.slide_out_left);
             }
         });
+
+        mIusvRoomNumber.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(OrderDealActivity.this, OrderGoodsActivity.class);
+                intent.putExtra("roomNum", roomNum);
+                intent.putExtra("selelectId", selelectId);
+                startActivityForResult(intent, GOOD_REQUEST_CODE);
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+            }
+        });
+
+        findViewById(R.id.pay_type).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(OrderDealActivity.this, OrderPayActivity.class);
+               // intent.putExtra("room_rate", roomNum);
+               // intent.putExtra("pay_type", selelectId);
+                startActivityForResult(intent, PAY_REQUEST_CODE);
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+            }
+        });
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -125,8 +158,29 @@ public class OrderDealActivity extends Activity {
                     calendarList = (ArrayList<Calendar>)data.getSerializableExtra("calendarList");
                     setOrderDate(calendarList);
                 }
+            }else if(GOOD_REQUEST_CODE == requestCode){
+                if(null != data){
+                    roomNum = data.getIntExtra("roomNum",0);
+                    notifyRoomNumberChange();
+                    GoodBean goodBean = (GoodBean)data.getSerializableExtra("selectGood");
+                    selelectId = goodBean.getId();
+                    mIusvRoomNumber.setTextTitle(goodBean.getRoom()+goodBean.getType());
+                }
             }
         }
+    }
+
+    //房间数量已经变 通知UI做调整
+    private void notifyRoomNumberChange(){
+        mIusvRoomNumber.setTextContent2(roomNum + "间");
+        for(int i=0;i<customerList.size();i++){
+            if(i < roomNum){
+                customerList.get(i).setVisibility(View.VISIBLE);
+            }else{
+                customerList.get(i).setVisibility(View.GONE);
+            }
+        }
+        //orderRoomResponse.setRooms(roomNum);
     }
 
     //初始化日期
