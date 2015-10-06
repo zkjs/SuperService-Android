@@ -139,6 +139,9 @@ public class NoticeFragment extends Fragment implements IMessageObserver{
             //接收到店通知
             int type = messageObj.getInt("type");
             if (type == ProtocolMSG.MSG_PushTriggerLocNotification_M2S) {
+                if(null == gson){
+                    gson = new Gson();
+                }
                 //1、查询数据库，重新获取数据
                 MsgPushTriggerLocNotificationM2S msgLocNotification = gson.fromJson(message,
                                                     MsgPushTriggerLocNotificationM2S.class);

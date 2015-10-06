@@ -40,6 +40,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }else{
             this.messageList = messageList;
         }
+        notifyDataSetChanged();
     }
 
     public MessageAdapter(Context context,ArrayList<MessageVo> messageList){
