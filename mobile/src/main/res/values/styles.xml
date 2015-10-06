@@ -5,6 +5,16 @@
         <!-- Customize your theme here. -->
     </style>
 
+    <style name="sex_radio_item">
+        <item name="android:layout_width">30dip</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:button">@null</item>
+        <item name="android:textSize">22sp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/set_radio_textcolor</item>
+    </style>
+
     <style name="inputStyle">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">50dp</item>

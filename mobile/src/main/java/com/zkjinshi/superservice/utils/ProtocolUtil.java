@@ -45,11 +45,28 @@ public class ProtocolUtil {
     }
 
     /**
+     * 获取商品列表
+     * @return
+     */
+    public static String getGoodslistUrl(String shopid){
+        return ConfigUtil.getInst().getHttpDomain()+"semp/goods?shopid="+shopid;
+    }
+
+    /**
      * 获得商品图片
      * @param imageUrl
      * @return
      */
     public static String getGoodImgUrl(String imageUrl){
+        return ConfigUtil.getInst().getHttpDomain()+imageUrl;
+    }
+
+    /**
+     * 获得图片
+     * @param imageUrl
+     * @return
+     */
+    public static String getImgUrl(String imageUrl){
         return ConfigUtil.getInst().getHttpDomain()+imageUrl;
     }
 
