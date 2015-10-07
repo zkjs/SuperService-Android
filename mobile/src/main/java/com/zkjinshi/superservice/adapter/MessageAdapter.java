@@ -14,7 +14,10 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.zkjinshi.base.util.TimeUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.listener.RecyclerItemClickListener;
+import com.zkjinshi.superservice.sqlite.ChatRoomDBUtil;
 import com.zkjinshi.superservice.utils.Constants;
+import com.zkjinshi.superservice.view.CircleImageView;
+import com.zkjinshi.superservice.vo.ChatRoomVo;
 import com.zkjinshi.superservice.vo.MessageVo;
 import com.zkjinshi.superservice.vo.MimeType;
 
@@ -70,14 +73,6 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         long sendTime = messageVo.getSendTime();
         String content = messageVo.getContent();
         MimeType mimeType = messageVo.getMimeType();
-        String title = messageVo.getTitle();
-        String contactId   = messageVo.getContactId();
-        if(!TextUtils.isEmpty(title)){
-            ((ViewHolder)holder).titleTv.setText(title);
-        }else{
-            String contactName = messageVo.getContactName();
-            ((ViewHolder) holder).titleTv.setText(contactName);
-        }
         if(MimeType.TEXT == mimeType){
             if(!TextUtils.isEmpty(content)){
                 ((ViewHolder)holder).contentTv.setText(content);
@@ -94,9 +89,22 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             ((ViewHolder)holder).contentTv.setText("[订单信息]");
         }
         ((ViewHolder)holder).sendTimeTv.setText(TimeUtil.getChatTime(sendTime));
-        String imageUrl = Constants.GET_USER_AVATAR + contactId + ".jpg";
-        if(!TextUtils.isEmpty(imageUrl)){
-            ImageLoader.getInstance().displayImage(imageUrl, ((ViewHolder)holder).photoImageView,options);
+        String sessionId = messageVo.getSessionId();
+        if(!TextUtils.isEmpty(sessionId)){
+            ChatRoomVo chatRoomVo = ChatRoomDBUtil.getInstance().queryChatRoomBySessionId(sessionId);
+            if(null != chatRoomVo){
+                String createrId = chatRoomVo.getCreaterId();
+                if(!TextUtils.isEmpty(createrId)){
+                    String imageUrl = Constants.GET_USER_AVATAR + createrId + ".jpg";
+                    if(!TextUtils.isEmpty(imageUrl)){
+                        ImageLoader.getInstance().displayImage(imageUrl, ((ViewHolder)holder).photoImageView,options);
+                    }
+                }
+                String title = chatRoomVo.getTitle();
+                if(!TextUtils.isEmpty(title)){
+                    ((ViewHolder) holder).titleTv.setText(title);
+                }
+            }
         }
         int notifyCount = 0;
         if(notifyCount <= 0){
@@ -116,12 +124,12 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
-        private ImageView photoImageView;
+        private CircleImageView photoImageView;
         private TextView titleTv,contentTv,sendTimeTv,noticeCountTv;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            photoImageView = (ImageView) itemView.findViewById(R.id.message_notice_photo_iv);
+            photoImageView = (CircleImageView) itemView.findViewById(R.id.message_notice_photo_iv);
             titleTv = (TextView) itemView.findViewById(R.id.message_notice_title);
             contentTv = (TextView) itemView.findViewById(R.id.message_notice_content);
             sendTimeTv = (TextView) itemView.findViewById(R.id.message_notice_send_time);

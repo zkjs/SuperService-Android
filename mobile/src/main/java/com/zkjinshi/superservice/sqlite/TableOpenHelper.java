@@ -41,19 +41,18 @@ public class TableOpenHelper {
      */
     public static String CHAT_ROOM_TBL_SQL =
             "create table if not exists "
-                    + DBOpenHelper.CHAT_ROOM_TBL
-                    + "("
-                    + " shop_id text primary key, "
-                    + " shop_name text, "//聊天室名称
-                    + " session_id text, "
-                    + " remark text, "//备注
-                    + " created long, "//创建时间
-                    + " end_time long, "//会话结束时间
-                    + " end_user_id text, "//会话结束人
-                    + " client_id text, "//会话创建人
-                    + " client_name text , "//会话创建姓名
-                    + " is_visible integer"//是否显示此聊天室 //0:隐藏 //1:显示
-                    + " )";
+                + DBOpenHelper.CHAT_ROOM_TBL + "("
+                + " chat_id text primary key, "//聊天室id
+                + " shop_id text , "//商家id
+                + " chat_type int, " // 对应chatType 枚举类型
+                + " create_time long, "//创建聊天室时间
+                + " creater_id text, "//创建者id
+                + " image_url text, "//聊天室头像链接
+                + " title text, "//聊天室标题
+                + " last_action long, "//资料更新时间戳	更新聊天室群成员资料凭证
+                + " enabled int, " // 聊天室是否可用 true 1 false 0
+                + " notice_count int "//消息未读数
+                + ")";
 
     /**
      * 创建membertbl表sql语句
