@@ -34,6 +34,8 @@ public class Constants {
 
     public final static String GET_USER_AVATAR    = HTTP_URL + "uploads/users/";
 
-    public static final String EXTRA_VOICE_REPLY = "extra_voice_reply";
+    public static final String EXTRA_VOICE_REPLY = "extra_voice_reply";//语音回复
+
+    public static final String ACTION_VOICE_RELAY = "com.zkjinshi.superservice.intent.action.RELAY";
 
 }

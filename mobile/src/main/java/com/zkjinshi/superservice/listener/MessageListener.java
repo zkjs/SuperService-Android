@@ -165,8 +165,6 @@ public class MessageListener extends Handler implements IMessageListener {
                     gson = new Gson();
                 }
                 LogUtil.getInstance().info(LogLevel.INFO, "用户到店通知");
-                MediaPlayerUtil.playNotifyVoice(ServiceApplication.getContext());
-                VibratorHelper.vibratorShark(ServiceApplication.getContext());
                 MsgPushTriggerLocNotificationM2S msgLocNotification = gson.fromJson(message,
                                                     MsgPushTriggerLocNotificationM2S.class);
                 //对到店通知进行数据库插入操作
@@ -176,6 +174,7 @@ public class MessageListener extends Handler implements IMessageListener {
                 } else {
                     LogUtil.getInstance().info(LogLevel.INFO, "添加到店用户失败");
                 }
+                NotificationHelper.getInstance().showNotification(ServiceApplication.getContext(), msgLocNotification);
             }
 
         } catch (JSONException e) {

@@ -7,6 +7,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.support.v4.app.RemoteInput;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -106,6 +107,9 @@ public class ChatActivity extends Activity implements CompoundButton.OnCheckedCh
 
     private ChatRoomVo mChatRoom;
 
+    private String remoteAction;
+    private String remoteMessage;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -164,6 +168,15 @@ public class ChatActivity extends Activity implements CompoundButton.OnCheckedCh
             bookOrderStr = new Gson().toJson(bookOrder);
             if (!TextUtils.isEmpty(bookOrderStr)) {
                 messageListViewManager.sendBookTextMessage(bookOrderStr);
+            }
+        }
+        //增加远程手表语音自动回复
+        remoteAction = getIntent().getAction();
+        if(!TextUtils.isEmpty(remoteAction) && remoteAction.equals(Constants.ACTION_VOICE_RELAY)){
+            remoteMessage = getRemoteInputText(getIntent()).toString();
+            if(!TextUtils.isEmpty(remoteMessage)){
+                messageListViewManager.sendTextMessage(remoteMessage);
+                remoteMessage = null;
             }
         }
     }
@@ -562,5 +575,18 @@ public class ChatActivity extends Activity implements CompoundButton.OnCheckedCh
             }
         }
         return super.onTouchEvent(event);
+    }
+
+    /**
+     * 获取远程wear端输入文本
+     * @param intent
+     * @return
+     */
+    private CharSequence getRemoteInputText(Intent intent) {
+        Bundle remoteInput = RemoteInput.getResultsFromIntent(intent);
+        if (remoteInput != null) {
+            return remoteInput.getCharSequence(Constants.EXTRA_VOICE_REPLY);
+        }
+        return null;
     }
 }
