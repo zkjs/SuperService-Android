@@ -76,6 +76,14 @@ public class ProtocolUtil {
         return ConfigUtil.getInst().getHttpDomain()+"order/update";
     }
 
+    /**
+     * 订单管理 获取订单详情 超级接口
+     * @return
+     */
+    public static String getSempOrderUrl(){
+        return ConfigUtil.getInst().getHttpDomain()+"semp/order";
+    }
+
 
 
 
