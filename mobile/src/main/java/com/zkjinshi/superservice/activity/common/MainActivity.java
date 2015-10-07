@@ -68,6 +68,8 @@ public class MainActivity extends AppCompatActivity {
     private MessageListener messageListener;
     private UserVo userVo;
 
+
+
     private void initView(){
         avatarIv = (ImageView)findViewById(R.id.avatar_iv);
         usernameTv = (TextView)findViewById(R.id.username_tv);
