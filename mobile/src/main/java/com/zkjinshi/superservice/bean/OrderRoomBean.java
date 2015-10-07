@@ -16,6 +16,10 @@ public class OrderRoomBean implements Serializable {
     private String  reservation_no;// 预定单号
     private String  userid ;//用户id
     private String  shopid ;//商家id int
+    private String guestid;
+    private String guest;
+    private String guesttel;
+    private String created;
     private String  fullname ;//商家名称
     private String  room_typeid ;//房间id
     private String  room_type;// 房间类型
@@ -27,6 +31,48 @@ public class OrderRoomBean implements Serializable {
     private String  remark;// 备注内容
     private String  pay_status;// 支付状态 0未支付,1已支付,3支付一部分,4已退款, 5已挂账   int
     private String imgurl;
+
+    private String payment;//付款方式
+
+    public String getPayment() {
+        return payment;
+    }
+
+    public void setPayment(String payment) {
+        this.payment = payment;
+    }
+
+    public String getGuestid() {
+        return guestid;
+    }
+
+    public void setGuestid(String guestid) {
+        this.guestid = guestid;
+    }
+
+    public String getGuest() {
+        return guest;
+    }
+
+    public void setGuest(String guest) {
+        this.guest = guest;
+    }
+
+    public String getGuesttel() {
+        return guesttel;
+    }
+
+    public void setGuesttel(String guesttel) {
+        this.guesttel = guesttel;
+    }
+
+    public String getCreated() {
+        return created;
+    }
+
+    public void setCreated(String created) {
+        this.created = created;
+    }
 
     public String getImgurl() {
         return imgurl;
