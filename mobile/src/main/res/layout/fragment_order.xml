@@ -32,14 +32,11 @@
                 android:background="@color/gray"
                 android:layout_height="match_parent">
             </View>
-            <com.zkjinshi.superservice.view.CircleImageView
+            <com.zkjinshi.superservice.view.CircleStatusView
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:layout_centerInParent="true"
-                android:scaleType="centerInside"
-                android:background="#eeaf4e"
-                android:src="@drawable/ic_more">
-            </com.zkjinshi.superservice.view.CircleImageView>
+                android:layout_centerInParent="true">
+            </com.zkjinshi.superservice.view.CircleStatusView>
         </RelativeLayout>
 
         <LinearLayout

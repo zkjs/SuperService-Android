@@ -22,14 +22,14 @@ import java.util.Random;
  */
 public class CircleStatusView extends View{
 
-    enum CircleStatus{
+    public enum CircleStatus{
         STATUS_LOADING,
         STATUS_FINISH,
         STATUS_MORE
     }
 
     private CircleStatus status = CircleStatus.STATUS_LOADING;
-    private int bgcolor =   Color.rgb(new Random().nextInt(256), new Random().nextInt(256), new Random().nextInt(256));  ;
+    private int bgcolor =   Color.rgb(new Random().nextInt(256), new Random().nextInt(256), new Random().nextInt(256));
     protected Paint mSelectedCirclePaint;
     private int width;
     private int height;
@@ -84,8 +84,13 @@ public class CircleStatusView extends View{
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         int radius = width/2;
+
+        mSelectedCirclePaint.setAlpha(128);
         mSelectedCirclePaint.setColor(bgcolor);
         canvas.drawCircle(width/2, height/2, radius, mSelectedCirclePaint);
+
+        //画图片，就是贴图
+        // 创建画笔
         Bitmap bitmap = null;
         if(status ==  CircleStatus.STATUS_LOADING){
             bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_hourglass);
@@ -97,6 +102,7 @@ public class CircleStatusView extends View{
         }
         int h = bitmap.getHeight();
         int w = bitmap.getWidth();
+        mSelectedCirclePaint.setAlpha(255);
         canvas.drawBitmap(bitmap,radius-w/2,radius-h/2,mSelectedCirclePaint);
 
     }
