@@ -118,9 +118,9 @@ public class NoticeFragment extends Fragment implements IMessageObserver{
     @Override
     public void onResume() {
         super.onResume();
+        //TODO: 随机修改圆形图片背景色
 
     }
-
     @Override
     public void onDestroy() {
         super.onDestroy();

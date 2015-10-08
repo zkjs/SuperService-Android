@@ -16,6 +16,7 @@
         android:visibility="visible" />
 
     <RelativeLayout
+        android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -23,7 +24,6 @@
             android:id="@+id/fl_line"
             android:layout_width="35dp"
             android:background="@color/white"
-            android:layout_alignParentBottom="true"
             android:layout_alignTop="@+id/ll_next_clients"
             android:layout_alignBottom="@+id/ll_next_clients"
             android:layout_alignParentLeft="true"
