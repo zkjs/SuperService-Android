@@ -422,7 +422,7 @@ public class OrderDealActivity extends Activity {
 
         bizMap.put("guest",orderDetailBean.getRoom().getGuest());
         bizMap.put("fullname",orderDetailBean.getRoom().getFullname());
-        bizMap.put("roomid",orderDetailBean.getRoom().getRoom_typeid());
+        bizMap.put("roomid",orderDetailBean.getRoom().getRoom_typeid()+"");
         bizMap.put("room_type",orderDetailBean.getRoom().getRoom_type());
         bizMap.put("imgurl",orderDetailBean.getRoom().getImgurl());
         bizMap.put("rooms",orderDetailBean.getRoom().getRooms()+"");
@@ -489,7 +489,7 @@ public class OrderDealActivity extends Activity {
                     orderDetailBean.getRoom().setRooms(roomNum);
                     GoodBean goodBean = (GoodBean)data.getSerializableExtra("selectGood");
                     int selelectId = goodBean.getId();
-                    orderDetailBean.getRoom().setRoom_typeid(selelectId + "");
+                    orderDetailBean.getRoom().setRoom_typeid(selelectId);
                     orderDetailBean.getRoom().setRoom_type(goodBean.getRoom() + goodBean.getType());
                     notifyRoomNumberChange();
                 }

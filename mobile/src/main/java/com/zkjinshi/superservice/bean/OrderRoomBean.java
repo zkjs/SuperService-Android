@@ -21,7 +21,7 @@ public class OrderRoomBean implements Serializable {
     private String guesttel;
     private String created;
     private String  fullname ;//商家名称
-    private String  room_typeid ;//房间id
+    private int  room_typeid ;//房间id
     private String  room_type;// 房间类型
     private int  rooms;// 房间数 int
     private String  arrival_date;// 入住时间 data
@@ -114,11 +114,11 @@ public class OrderRoomBean implements Serializable {
         this.fullname = fullname;
     }
 
-    public String getRoom_typeid() {
+    public int getRoom_typeid() {
         return room_typeid;
     }
 
-    public void setRoom_typeid(String room_typeid) {
+    public void setRoom_typeid(int room_typeid) {
         this.room_typeid = room_typeid;
     }
 
