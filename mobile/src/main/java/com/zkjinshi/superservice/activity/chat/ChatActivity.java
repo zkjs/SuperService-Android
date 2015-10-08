@@ -143,9 +143,9 @@ public class ChatActivity extends Activity implements CompoundButton.OnCheckedCh
         mChatRoom  = ChatRoomDBUtil.getInstance().queryChatRoomBySessionId(mSessionID);
         if(null != mChatRoom){
             if(TextUtils.isEmpty(mShopID)){
-                mShopID    = mChatRoom.getShopid();
+                mShopID    = mChatRoom.getShopId();
             }
-            mClientID  = mChatRoom.getClientid();
+            mClientID  = mChatRoom.getCreaterId();
         }
         mUserID    = CacheUtil.getInstance().getUserId();
         bookOrder  = (BookOrderBean) getIntent().getSerializableExtra("bookOrder");

@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -62,7 +63,7 @@ public class LocNotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         LatestClientBean clientBean = mList.get(position);
 
-        ((NoticeViewHolder) holder).civOrderStatus.setBackgroundDrawable(locNoticeColors.
+        ((NoticeViewHolder) holder).ibtnOrderStatus.setBackgroundDrawable(locNoticeColors.
                 getDrawable(new Random().nextInt(locNoticeColors.length())));
         ImageLoader.getInstance().displayImage("", ((NoticeViewHolder) holder).civClientAvatar, options);
         ((NoticeViewHolder) holder).tvVip.setText("VIP#");
@@ -102,7 +103,7 @@ public class LocNotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
     public static class NoticeViewHolder extends RecyclerView.ViewHolder{
 
-        CircleImageView civOrderStatus;
+        ImageButton     ibtnOrderStatus;
         CircleImageView civClientAvatar;
         TextView  tvVip;
         TextView  tvClientName;
@@ -118,7 +119,7 @@ public class LocNotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
         public NoticeViewHolder(View view) {
             super(view);
-            civOrderStatus  = (CircleImageView) view.findViewById(R.id.civ_order_status);
+            ibtnOrderStatus = (ImageButton) view.findViewById(R.id.ibtn_order_status);
             civClientAvatar = (CircleImageView) view.findViewById(R.id.civ_client_avatar);
             tvVip           = (TextView)  view.findViewById(R.id.tv_vip);
             tvClientName    = (TextView)  view.findViewById(R.id.tv_client_name);

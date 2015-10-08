@@ -186,20 +186,6 @@ public class MessageListViewManager implements MsgListView.IXListViewListener,
                 content, tempMessageId, tempSendTime,
                 SendStatus.SENDING, defaultRuleType);
 
-        /** 判断shopID聊天室是否存在 */
-        boolean isExist = ChatRoomDBUtil.getInstance().isChatRoomExistsBySessionID(mSessionID);
-        if(isExist){
-            // 聊天室已存在, 更新聊天室信息
-            long updResult = ChatRoomDBUtil.getInstance().updateChatRoom(mMessageVo);
-            LogUtil.getInstance().info(LogLevel.INFO, updResult > 0 ? "更新聊天室成功: updResult:"+
-                    updResult : "更新聊天室失败: updResult:" + updResult);
-        } else {
-            // 创建新的聊天室
-            long addResult = ChatRoomDBUtil.getInstance().addChatRoom(mMessageVo);
-            LogUtil.getInstance().info(LogLevel.INFO, addResult > 0 ? "添加聊天室成功: addResult:"+
-                    addResult : "添加聊天室失败: addResult:" + addResult);
-        }
-
         /** 2、保存文本消息到sqlite(注意此时的消息正在发送中) */
         MessageDBUtil.getInstance().addMessage(mMessageVo);
 
@@ -222,16 +208,6 @@ public class MessageListViewManager implements MsgListView.IXListViewListener,
         /** 1、IM发送文本消息 */
         mMessageVo = buildTextMessageVo(shopID, mSessionID,
                 content, tempMessageId, tempSendTime, SendStatus.SENDING, ruleType);
-
-        /** 判断此sessionID聊天室是否存在 */
-        boolean isExist = ChatRoomDBUtil.getInstance().isChatRoomExistsBySessionID(mSessionID);
-        if(isExist){
-            // 聊天室已存在, 更新聊天室信息
-            long updResult = ChatRoomDBUtil.getInstance().updateChatRoom(mMessageVo);
-        } else {
-            // 聊天室尚未创建, 创建新的聊天室
-            long addResult = ChatRoomDBUtil.getInstance().addChatRoom(mMessageVo);
-        }
 
         /** 2、保存文本消息到sqlite(注意此时的消息正在发送中) */
         MessageDBUtil.getInstance().addMessage(mMessageVo);
@@ -257,16 +233,6 @@ public class MessageListViewManager implements MsgListView.IXListViewListener,
         mMessageVo = buildBookTextMessageVo(mShopID, mSessionID, content,
                 tempMessageId, tempSendTime,
                 SendStatus.SENDING, defaultRuleType);
-
-        /** 判断shopID聊天室是否存在 */
-        boolean isExist = ChatRoomDBUtil.getInstance().isChatRoomExistsBySessionID(mSessionID);
-        if (isExist) {
-            // 聊天室已存在, 更新聊天室信息
-            long updResult = ChatRoomDBUtil.getInstance().updateChatRoom(mMessageVo);
-        } else {
-            // 聊天室尚未创建, 创建新的聊天室
-            long addResult = ChatRoomDBUtil.getInstance().addChatRoom(mMessageVo);
-        }
 
         /** 2、保存文本消息到sqlite(注意此时的消息正在发送中) */
         MessageDBUtil.getInstance().addMessage(mMessageVo);
@@ -298,16 +264,6 @@ public class MessageListViewManager implements MsgListView.IXListViewListener,
                 attachId, fileName, filePath,
                 voiceTime, ruleType);
 
-        /** 判断shopID聊天室是否存在 */
-        boolean isExist = ChatRoomDBUtil.getInstance().isChatRoomExistsBySessionID(shopID);
-        if(isExist){
-            // 聊天室已存在, 更新聊天室信息
-            long updResult = ChatRoomDBUtil.getInstance().updateChatRoom(mMessageVo);
-        } else {
-            // 聊天室尚未创建, 创建新的聊天室
-            long addResult = ChatRoomDBUtil.getInstance().addChatRoom(mMessageVo);
-        }
-
         // 1、保存文本消息到sqlite(注意此时的消息正在发送中)
         MessageDBUtil.getInstance().addMessage(mMessageVo);
 
@@ -335,16 +291,6 @@ public class MessageListViewManager implements MsgListView.IXListViewListener,
                 shopID, mSessionID, tempMessageId,
                 tempSendTime, SendStatus.SENDING,
                 attachId, fileName, filePath, ruleType);
-
-        /** 判断shopID聊天室是否存在 */
-        boolean isExist = ChatRoomDBUtil.getInstance().isChatRoomExistsBySessionID(mSessionID);
-        if(isExist){
-            // 聊天室已存在, 更新聊天室信息
-            long updResult = ChatRoomDBUtil.getInstance().updateChatRoom(mMessageVo);
-        } else {
-            // 聊天室尚未创建, 创建新的聊天室
-            long addResult = ChatRoomDBUtil.getInstance().addChatRoom(mMessageVo);
-        }
 
         /** 1 保存文本消息到sqlite(注意此时的消息正在发送中) */
         MessageDBUtil.getInstance().addMessage(mMessageVo);

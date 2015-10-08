@@ -17,8 +17,8 @@
             android:layout_height="match_parent">
         </View>
 
-        <com.zkjinshi.superservice.view.CircleImageView
-            android:id="@+id/civ_order_status"
+        <ImageButton
+            android:id="@+id/ibtn_order_status"
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_gravity="center"/>
