@@ -26,6 +26,7 @@ import com.zkjinshi.superservice.adapter.ContactsSortAdapter;
 import com.zkjinshi.superservice.factory.SortModelFactory;
 import com.zkjinshi.superservice.listener.RecyclerItemClickListener;
 import com.zkjinshi.superservice.sqlite.ClientDBUtil;
+import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.CharacterParser;
 import com.zkjinshi.superservice.utils.PinyinComparator;
 import com.zkjinshi.superservice.utils.SortKeyUtil;
@@ -185,10 +186,10 @@ public class ContactsActivity extends Activity{
             @Override
             public void onItemClick(View view, int postion) {
                 SortModel sortModel = mAllContactsList.get(postion);
-                String name      = sortModel.getName();
-                String number    = sortModel.getNumber();
-                long  contactID  = sortModel.getContactID();
-                //TODO:
+                String phoneNumber  = sortModel.getNumber();
+                Intent clientDetail = new Intent(ContactsActivity.this, ClientDetailActivity.class);
+                clientDetail.putExtra("phone_number", phoneNumber);
+                ContactsActivity.this.startActivity(clientDetail);
             }
         });
     }

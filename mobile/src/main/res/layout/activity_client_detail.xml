@@ -1,30 +1,290 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:background="@color/white"
     android:layout_height="match_parent">
 
-    <RelativeLayout
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:background="@color/blue03a9f4"
-        android:layout_height="50dp">
+        android:layout_height="match_parent">
 
-        <ImageButton
-            android:id="@+id/ibtn_back"
-            android:layout_marginLeft="10dp"
-            android:layout_centerVertical="true"
-            android:layout_width="11dp"
-            android:layout_height="20dp"
-            android:background="@drawable/ic_fanhui" />
-
-        <TextView
-            android:gravity="center"
-            android:text="@string/client_detail"
-            android:textColor="@color/white"
-            android:layout_centerVertical="true"
+        <RelativeLayout
             android:layout_width="match_parent"
+            android:background="@color/blue03a9f4"
+            android:layout_height="50dp">
+
+            <ImageButton
+                android:id="@+id/ibtn_back"
+                android:layout_marginLeft="10dp"
+                android:layout_centerVertical="true"
+                android:layout_width="11dp"
+                android:layout_height="20dp"
+                android:background="@drawable/ic_fanhui" />
+
+            <TextView
+                android:gravity="left"
+                android:layout_toRightOf="@id/ibtn_back"
+                android:text="@string/member_detail"
+                android:textColor="@color/white"
+                android:layout_marginLeft="10dp"
+                android:layout_centerVertical="true"
+                android:layout_width="match_parent"
+                android:textSize="16sp"
+                android:layout_height="wrap_content" />
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:background="@color/blue03a9f4"
+            android:layout_height="wrap_content">
+
+            <RelativeLayout
+                android:padding="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <com.zkjinshi.superservice.view.CircleImageView
+                    android:id="@+id/civ_member_avatar"
+                    android:layout_centerVertical="true"
+                    android:layout_width="72dp"
+                    android:layout_height="72dp"
+                    android:background="@drawable/ic_launcher"/>
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:gravity="center_vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent">
+
+                    <TextView
+                        android:padding="5dp"
+                        android:id="@+id/tv_member_name"
+                        android:layout_width="wrap_content"
+                        android:text="林先生"
+                        android:textSize="16sp"
+                        android:textColor="@color/white"
+                        android:layout_height="wrap_content" />
+
+                    <RelativeLayout
+                        android:padding="5dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:paddingRight="10dp"
+                            android:id="@+id/tv_member_phone"
+                            android:layout_width="wrap_content"
+                            android:text="18912345678"
+                            android:textSize="16sp"
+                            android:textColor="@color/white"
+                            android:layout_height="wrap_content" />
+                        
+                        <ImageButton
+                            android:layout_centerVertical="true"
+                            android:layout_toRightOf="@id/tv_member_phone"
+                            android:id="@+id/ibtn_dianhua"
+                            android:background="@drawable/bg_ic_dianhua"
+                            android:layout_width="14dp"
+                            android:layout_height="20dp" />
+
+                    </RelativeLayout>
+
+                <RelativeLayout
+                    android:padding="5dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:paddingRight="10dp"
+                        android:id="@+id/tv_member_level"
+                        android:layout_width="wrap_content"
+                        android:text="VIP009"
+                        android:textSize="16sp"
+                        android:textColor="@color/white"
+                        android:layout_height="wrap_content" />
+
+                    <ImageButton
+                        android:layout_centerVertical="true"
+                        android:layout_toRightOf="@id/tv_member_level"
+                        android:id="@+id/ibtn_duihua"
+                        android:background="@drawable/bg_ic_duihua"
+                        android:layout_width="21dp"
+                        android:layout_height="20dp" />
+
+                </RelativeLayout>
+
+            </LinearLayout>
+        </LinearLayout>
+        
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp">
+
+            <TextView
+                android:paddingLeft="10dp"
+                android:layout_centerVertical="true"
+                android:layout_width="wrap_content"
+                android:text="@string/account_type"
+                android:textColor="@color/grayB8B8B8"
+                android:textSize="16sp"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:paddingRight="10dp"
+                android:id="@+id/tv_member_type"
+                android:layout_centerVertical="true"
+                android:layout_width="wrap_content"
+                android:textColor="@color/black"
+                android:layout_alignParentRight="true"
+                android:textSize="16sp"
+                android:text="挂账会员"
+                android:layout_height="wrap_content" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp">
+
+            <TextView
+                android:paddingLeft="10dp"
+                android:layout_centerVertical="true"
+                android:layout_width="wrap_content"
+                android:text="@string/visit_history_record"
+                android:textColor="@color/grayB8B8B8"
+                android:textSize="16sp"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/tv_times_chinese"
+                android:layout_centerVertical="true"
+                android:paddingRight="10dp"
+                android:layout_width="wrap_content"
+                android:textColor="@color/black"
+                android:layout_alignParentRight="true"
+                android:textSize="16sp"
+                android:text="次"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/tv_record_times"
+                android:layout_centerVertical="true"
+                android:layout_width="wrap_content"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:text="39"
+                android:layout_toLeftOf="@+id/tv_times_chinese"
+                android:inputType="number"
+                android:layout_height="wrap_content" />
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:padding="10dp"
+                android:layout_centerVertical="true"
+                android:layout_width="wrap_content"
+                android:text="@string/prefrence_info"
+                android:textColor="@color/grayB8B8B8"
+                android:textSize="16sp"
+                android:layout_height="wrap_content" />
+
+            <GridView
+                android:id="@+id/gv_preference_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:numColumns="3" >
+
+            </GridView>
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:padding="10dp"
+                android:layout_centerVertical="true"
+                android:layout_width="wrap_content"
+                android:text="@string/privilege_info"
+                android:textColor="@color/grayB8B8B8"
+                android:textSize="16sp"
+                android:layout_height="wrap_content" />
+
+            <GridView
+                android:id="@+id/gv_privilege_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:numColumns="3" >
+                
+            </GridView>
+        </LinearLayout>
+        
+        <TextView
+            android:gravity="center_vertical"
+            android:padding="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:text="* 以下信息请编辑"
             android:textSize="16sp"
-            android:layout_height="wrap_content" />
+            android:textColor="@color/blue03a9f4" />
 
-    </RelativeLayout>
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-</LinearLayout>
+            <TextView
+                android:padding="10dp"
+                android:layout_centerVertical="true"
+                android:layout_width="wrap_content"
+                android:text="@string/tag"
+                android:textColor="@color/grayB8B8B8"
+                android:textSize="16sp"
+                android:layout_height="wrap_content" />
+
+            <GridView
+                android:id="@+id/gv_tags"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:numColumns="3" >
+            </GridView>
+        </LinearLayout>
+        <RelativeLayout
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/tv_remark"
+                android:padding="10dp"
+                android:layout_width="wrap_content"
+                android:text="@string/remark"
+                android:textColor="@color/grayB8B8B8"
+                android:textSize="16sp"
+                android:layout_height="wrap_content" />
+
+            <EditText
+                android:padding="10dp"
+                android:layout_toRightOf="@id/tv_remark"
+                android:id="@+id/et_remark"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLines="3"
+                android:lines="3"/>
+        </RelativeLayout>
+
+    </LinearLayout>
+</ScrollView>
