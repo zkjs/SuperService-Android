@@ -19,7 +19,9 @@ import com.zkjinshi.base.net.observer.IMessageObserver;
 import com.zkjinshi.base.net.observer.MessageSubject;
 import com.zkjinshi.base.net.protocol.ProtocolMSG;
 import com.zkjinshi.superservice.R;
+import com.zkjinshi.superservice.adapter.LocMoreAdapter;
 import com.zkjinshi.superservice.adapter.LocNotificationAdapter;
+import com.zkjinshi.superservice.view.CircleStatusView;
 import com.zkjinshi.superservice.vo.LatestClientVo;
 import com.zkjinshi.superservice.entity.MsgPushTriggerLocNotificationM2S;
 import com.zkjinshi.superservice.sqlite.LatestClientDBUtil;
@@ -29,6 +31,7 @@ import com.zkjinshi.superservice.view.CircleImageView;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -44,14 +47,14 @@ public class NoticeFragment extends Fragment implements IMessageObserver{
 
     private final static int REFRESH_UI = 0x00;
 
-    private Activity     mActivity;
-    private RecyclerView mRcvNotice;
-    private TypedArray   mLocNoticeColors;
-    private CircleImageView mCivOrderStatus;
-    private RecyclerView.LayoutManager mLayoutManager;
-
-    private List<LatestClientVo>     mLatestClients;
-    private LocNotificationAdapter     mNotificationAdapter;
+    private Activity mActivity;
+    private RecyclerView mRcvNotice,moreRecyclerView;
+    private LinearLayoutManager mLayoutManager;
+    private LinearLayoutManager moreLayoutManager;
+    private ArrayList<LatestClientVo> mLatestClients;
+    private LocNotificationAdapter mNotificationAdapter;
+    private LocMoreAdapter locMoreAdapter;
+    private CircleStatusView moreStatsuView;
 
     public static NoticeFragment newInstance() {
         return new NoticeFragment();
@@ -84,24 +87,27 @@ public class NoticeFragment extends Fragment implements IMessageObserver{
 
     private void initView(View view){
         mRcvNotice      = (RecyclerView) view.findViewById(R.id.rcv_notice);
-        mCivOrderStatus = (CircleImageView) view.findViewById(R.id.civ_order_status);
+        moreRecyclerView = (RecyclerView)view.findViewById(R.id.rcv_more);
+        moreStatsuView = (CircleStatusView)view.findViewById(R.id.notice_more_cv_status);
     }
 
     private void initData() {
         mActivity = this.getActivity();
-
-        //1. TODO 本地查询到店数据
-        //2. TODO 服务器查询到店数据并保存
         mLatestClients       = LatestClientBiz.getLatestClients();
         mNotificationAdapter = new LocNotificationAdapter(mActivity, mLatestClients);
-
         mRcvNotice.setAdapter(mNotificationAdapter);
         mRcvNotice.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(mActivity);
+        mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRcvNotice.setLayoutManager(mLayoutManager);
-        mLocNoticeColors = mActivity.getResources().obtainTypedArray(R.array.loc_notice_colors);
-        mCivOrderStatus.setBackgroundDrawable(mLocNoticeColors.getDrawable(
-                          new Random().nextInt(mLocNoticeColors.length())));
+
+        locMoreAdapter = new LocMoreAdapter(mActivity,mLatestClients);
+        moreLayoutManager = new LinearLayoutManager(mActivity);
+        moreLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        moreRecyclerView.setLayoutManager(moreLayoutManager);
+        moreRecyclerView.setAdapter(locMoreAdapter);
+        moreStatsuView.setStatus(CircleStatusView.CircleStatus.STATUS_MORE);
+        moreStatsuView.invalidate();
     }
 
     @Override

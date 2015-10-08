@@ -14,9 +14,9 @@ import java.util.Random;
  */
 public class LatestClientBiz {
 
-    public static List<LatestClientVo> getLatestClients(){
+    public static ArrayList<LatestClientVo> getLatestClients(){
 
-        List<LatestClientVo> clientBeanList = new ArrayList<>();
+        ArrayList<LatestClientVo> clientBeanList = new ArrayList<>();
 
         LatestClientVo clientBean1 = new LatestClientVo();
         LatestClientVo clientBean2 = new LatestClientVo();

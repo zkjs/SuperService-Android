@@ -97,7 +97,7 @@ public class CircleStatusView extends View{
         }else if(status ==  CircleStatus.STATUS_FINISH){
             bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_right);
         }
-        else if(status ==  CircleStatus.STATUS_FINISH){
+        else if(status ==  CircleStatus.STATUS_MORE){
            bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_more);
         }
         int h = bitmap.getHeight();

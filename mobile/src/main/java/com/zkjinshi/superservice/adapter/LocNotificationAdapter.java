@@ -8,13 +8,14 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.zkjinshi.base.util.DialogUtil;
+import com.zkjinshi.base.util.DisplayUtil;
 import com.zkjinshi.base.util.TimeUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.utils.Constants;
@@ -97,8 +98,15 @@ public class LocNotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                 DialogUtil.getInstance().showToast(mActivity, "ivFenXiang onClick");
             }
         });
-        ((NoticeViewHolder) holder).ibtnOrderStatus.setStatus(CircleStatusView.CircleStatus.STATUS_FINISH);
-        ((NoticeViewHolder) holder).ibtnOrderStatus.invalidate();
+        LinearLayout.LayoutParams contentLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        if(position == 0){
+            contentLayoutParams.setMargins(0,DisplayUtil.dip2px(mActivity,12),DisplayUtil.dip2px(mActivity,8),DisplayUtil.dip2px(mActivity,6));
+        }else if(position == getItemCount()-1){
+            contentLayoutParams.setMargins(0, DisplayUtil.dip2px(mActivity, 6), DisplayUtil.dip2px(mActivity, 8), DisplayUtil.dip2px(mActivity, 6));
+        }else{
+            contentLayoutParams.setMargins(0, DisplayUtil.dip2px(mActivity, 6), DisplayUtil.dip2px(mActivity, 8), DisplayUtil.dip2px(mActivity, 6));
+        }
+        ((NoticeViewHolder) holder).contentLayout.setLayoutParams(contentLayoutParams);
     }
 
     @Override
@@ -121,6 +129,7 @@ public class LocNotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         ImageView ivDianHua;
         ImageView ivDuiHua;
         ImageView ivFenXiang;
+        LinearLayout contentLayout;
 
         public NoticeViewHolder(View view) {
             super(view);
@@ -137,6 +146,7 @@ public class LocNotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             ivDianHua       = (ImageView) view.findViewById(R.id.iv_dianhua);
             ivDuiHua        = (ImageView) view.findViewById(R.id.iv_duihua);
             ivFenXiang      = (ImageView) view.findViewById(R.id.iv_fenxiang);
+            contentLayout = (LinearLayout)view.findViewById(R.id.content_layout);
         }
     }
 
