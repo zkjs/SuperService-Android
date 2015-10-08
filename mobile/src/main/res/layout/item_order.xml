@@ -11,13 +11,13 @@
             android:background="@color/gray"
             android:layout_height="match_parent">
         </View>
-        <com.zkjinshi.superservice.view.zoomview.CircleStatusView
+        <com.zkjinshi.superservice.view.CircleStatusView
             android:id="@+id/civ_left_icon"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_centerInParent="true"
            >
-        </com.zkjinshi.superservice.view.zoomview.CircleStatusView>
+        </com.zkjinshi.superservice.view.CircleStatusView>
     </RelativeLayout>
 
     <LinearLayout

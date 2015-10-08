@@ -11,7 +11,7 @@ import android.widget.TextView;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.bean.OrderBean;
 import com.zkjinshi.superservice.view.CircleImageView;
-import com.zkjinshi.superservice.view.zoomview.CircleStatusView;
+import com.zkjinshi.superservice.view.CircleStatusView;
 
 import java.util.ArrayList;
 

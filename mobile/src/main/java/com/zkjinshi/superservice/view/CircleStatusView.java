@@ -1,4 +1,4 @@
-package com.zkjinshi.superservice.view.zoomview;
+package com.zkjinshi.superservice.view;
 
 import android.content.Context;
 import android.graphics.Bitmap;
