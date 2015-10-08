@@ -84,6 +84,14 @@ public class ProtocolUtil {
         return ConfigUtil.getInst().getHttpDomain()+"semp/order";
     }
 
+    /**
+     * 支付方式列表
+     * @return
+     */
+    public static String getSempPayListUrl(){
+        return ConfigUtil.getInst().getHttpDomain()+"semp/paylist";
+    }
+
 
 
 
