@@ -7,7 +7,6 @@
 
     <FrameLayout
         android:layout_width="35dp"
-        android:textColor="@color/gray616161"
         android:layout_height="match_parent">
 
         <View
@@ -19,15 +18,16 @@
 
         <com.zkjinshi.superservice.view.CircleStatusView
             android:id="@+id/ibtn_order_status"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:layout_gravity="center"/>
 
     </FrameLayout>
 
     <LinearLayout
-        android:padding="10dp"
-        android:background="@color/white"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/radius_frame_bg"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
