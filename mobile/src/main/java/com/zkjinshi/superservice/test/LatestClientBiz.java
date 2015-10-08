@@ -37,7 +37,7 @@ public class LatestClientBiz {
         clientBean3.setTimeStamp(System.currentTimeMillis());
         clientBean3.setShopID("808");
         clientBean3.setUserID("557cff54a9a97");
-        clientBean3.setUserName("古天乐");
+        clientBean3.setUserName("金石小智");
         clientBean3.setLocID(new Random().nextInt(10) + "");
 
         clientBeanList.add(clientBean1);
