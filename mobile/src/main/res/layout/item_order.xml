@@ -11,15 +11,13 @@
             android:background="@color/gray"
             android:layout_height="match_parent">
         </View>
-        <com.zkjinshi.superservice.view.CircleImageView
+        <com.zkjinshi.superservice.view.zoomview.CircleStatusView
+            android:id="@+id/civ_left_icon"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_centerInParent="true"
-            android:scaleType="centerInside"
-            android:background="@color/orange"
-            android:src="@drawable/ic_more"
-            android:id="@+id/civ_left_icon">
-        </com.zkjinshi.superservice.view.CircleImageView>
+           >
+        </com.zkjinshi.superservice.view.zoomview.CircleStatusView>
     </RelativeLayout>
 
     <LinearLayout

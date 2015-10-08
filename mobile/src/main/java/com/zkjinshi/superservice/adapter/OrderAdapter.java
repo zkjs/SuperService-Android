@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.bean.OrderBean;
 import com.zkjinshi.superservice.view.CircleImageView;
+import com.zkjinshi.superservice.view.zoomview.CircleStatusView;
 
 import java.util.ArrayList;
 
@@ -72,7 +73,7 @@ public class OrderAdapter extends RecyclerView.Adapter{
 
         public int position;
 
-        public CircleImageView leftIcon;
+        public CircleStatusView leftIcon;
         public CircleImageView avatar;
         public TextView  name;
         public TextView  order;
@@ -85,7 +86,7 @@ public class OrderAdapter extends RecyclerView.Adapter{
 
         public OrderViewHolder(View itemView) {
             super(itemView);
-            leftIcon = (CircleImageView)itemView.findViewById(R.id.civ_left_icon);
+            leftIcon = (CircleStatusView)itemView.findViewById(R.id.civ_left_icon);
             avatar = (CircleImageView)itemView.findViewById(R.id.civ_avatar);
             name = (TextView )itemView.findViewById(R.id.tv_name);
             order = (TextView )itemView.findViewById(R.id.tv_order);
