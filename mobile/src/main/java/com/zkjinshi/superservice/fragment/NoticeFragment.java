@@ -20,7 +20,7 @@ import com.zkjinshi.base.net.observer.MessageSubject;
 import com.zkjinshi.base.net.protocol.ProtocolMSG;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.adapter.LocNotificationAdapter;
-import com.zkjinshi.superservice.bean.LatestClientBean;
+import com.zkjinshi.superservice.vo.LatestClientVo;
 import com.zkjinshi.superservice.entity.MsgPushTriggerLocNotificationM2S;
 import com.zkjinshi.superservice.sqlite.LatestClientDBUtil;
 import com.zkjinshi.superservice.test.LatestClientBiz;
@@ -50,7 +50,7 @@ public class NoticeFragment extends Fragment implements IMessageObserver{
     private CircleImageView mCivOrderStatus;
     private RecyclerView.LayoutManager mLayoutManager;
 
-    private List<LatestClientBean>     mLatestClients;
+    private List<LatestClientVo>     mLatestClients;
     private LocNotificationAdapter     mNotificationAdapter;
 
     public static NoticeFragment newInstance() {
@@ -63,7 +63,7 @@ public class NoticeFragment extends Fragment implements IMessageObserver{
             super.handleMessage(msg);
             switch (msg.what) {
                 case REFRESH_UI :
-                    LatestClientBean clientBean = (LatestClientBean) msg.obj;
+                    LatestClientVo clientBean = (LatestClientVo) msg.obj;
                     if(null != clientBean){
                         mLatestClients.add(clientBean);
                         mNotificationAdapter.setData(mLatestClients);
@@ -147,7 +147,7 @@ public class NoticeFragment extends Fragment implements IMessageObserver{
                                                     MsgPushTriggerLocNotificationM2S.class);
                 String userID = msgLocNotification.getUserid();
                 if(!TextUtils.isEmpty(userID)){
-                    LatestClientBean clientBean = LatestClientDBUtil.getInstance().queryLatestClientByUserID(userID);
+                    LatestClientVo clientBean = LatestClientDBUtil.getInstance().queryLatestClientByUserID(userID);
                     //2、根据查询数据刷新界面
                     Message msg = Message.obtain();
                     msg.what    = REFRESH_UI;

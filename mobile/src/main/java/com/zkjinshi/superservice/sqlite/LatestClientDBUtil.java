@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import com.zkjinshi.base.log.LogLevel;
 import com.zkjinshi.base.log.LogUtil;
 import com.zkjinshi.superservice.ServiceApplication;
-import com.zkjinshi.superservice.bean.LatestClientBean;
+import com.zkjinshi.superservice.vo.LatestClientVo;
 import com.zkjinshi.superservice.entity.MsgPushTriggerLocNotificationM2S;
 import com.zkjinshi.superservice.factory.LatestClientFactory;
 
@@ -74,8 +74,8 @@ public class LatestClientDBUtil {
      * 查询
      * @return
      */
-    public LatestClientBean queryLatestClientByUserID(String userID) {
-        LatestClientBean client = null;
+    public LatestClientVo queryLatestClientByUserID(String userID) {
+        LatestClientVo client = null;
         SQLiteDatabase db   = null;
         Cursor cursor = null;
         if (null != helper) {
@@ -117,9 +117,9 @@ public class LatestClientDBUtil {
      * 查询最近10条到店消息记录
      * @return
      */
-    public List<LatestClientBean> queryLatestClients() {
-        ArrayList<LatestClientBean> clientList = new ArrayList<>();
-        LatestClientBean client = null;
+    public List<LatestClientVo> queryLatestClients() {
+        ArrayList<LatestClientVo> clientList = new ArrayList<>();
+        LatestClientVo client = null;
         SQLiteDatabase db   = null;
         Cursor cursor = null;
         if (null != helper) {

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,15 +15,15 @@ import android.widget.TextView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.zkjinshi.base.util.DialogUtil;
+import com.zkjinshi.base.util.TimeUtil;
 import com.zkjinshi.superservice.R;
-import com.zkjinshi.superservice.bean.LatestClientBean;
+import com.zkjinshi.superservice.utils.Constants;
+import com.zkjinshi.superservice.view.CircleStatusView;
+import com.zkjinshi.superservice.vo.LatestClientVo;
 import com.zkjinshi.superservice.view.CircleImageView;
-import com.zkjinshi.superservice.vo.LocNotificationVo;
-import com.zkjinshi.superservice.vo.MessageVo;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 /**
  * 开发者：vincent
@@ -34,19 +35,19 @@ public class LocNotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
     private Context mActivity;
 
-    private List<LatestClientBean>  mList;
+    private List<LatestClientVo>  mList;
     private DisplayImageOptions     options;
     private TypedArray              locNoticeColors;
 
-    public LocNotificationAdapter(Activity activity, List<LatestClientBean> list) {
+    public LocNotificationAdapter(Activity activity, List<LatestClientVo> list) {
 
         this.mActivity = activity;
         this.mList     = list;
         locNoticeColors = activity.getResources().obtainTypedArray(R.array.loc_notice_colors);
         this.options = new DisplayImageOptions.Builder()
-                .showImageOnLoading(R.mipmap.ic_launcher)// 设置图片下载期间显示的 图片
-                .showImageForEmptyUri(R.mipmap.ic_launcher)// 设置图片Uri为空或是错误的时候显示的图片
-                .showImageOnFail(R.mipmap.ic_launcher)// 设置图片加载或解码过程中发生错误显示的图片
+                .showImageOnLoading(R.drawable.img_hotel_zhanwei)// 设置图片下载期间显示的图片
+                .showImageForEmptyUri(R.drawable.img_hotel_zhanwei)// 设置图片Uri为空或是错误的时候显示的图片
+                .showImageOnFail(R.drawable.img_hotel_zhanwei)// 设置图片加载或解码过程中发生错误显示的图片
                 .cacheInMemory(true) // 设置下载的图片是否缓存在内存中
                 .cacheOnDisk(true) // 设置下载的图片是否缓存在SD卡中
                 .build();
@@ -61,18 +62,20 @@ public class LocNotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        LatestClientBean clientBean = mList.get(position);
+        LatestClientVo latestClientVo = mList.get(position);
 
-        ((NoticeViewHolder) holder).ibtnOrderStatus.setBackgroundDrawable(locNoticeColors.
-                getDrawable(new Random().nextInt(locNoticeColors.length())));
-        ImageLoader.getInstance().displayImage("", ((NoticeViewHolder) holder).civClientAvatar, options);
-        ((NoticeViewHolder) holder).tvVip.setText("VIP#");
-        ((NoticeViewHolder) holder).tvClientName.setText(clientBean.getUserName());
-        ((NoticeViewHolder) holder).tvClientInfo.setText(clientBean.getUserID());
-        ((NoticeViewHolder) holder).tvClientNotice.setText("VIP#");
-        ((NoticeViewHolder) holder).tvTodo.setText("VIP#");
-        ((NoticeViewHolder) holder).tvOrderInfo.setText("VIP#");
-        ((NoticeViewHolder) holder).tvTimeInfo.setText(clientBean.getTimeStamp()+"");
+        String userId = latestClientVo.getUserID();
+        String imageUrl = Constants.GET_USER_AVATAR + userId + ".jpg";
+        if(!TextUtils.isEmpty(imageUrl)){
+            ImageLoader.getInstance().displayImage(imageUrl, ((NoticeViewHolder) holder).civClientAvatar, options);
+        }
+        //((NoticeViewHolder) holder).tvVip.setText("VIP1");
+        ((NoticeViewHolder) holder).tvClientName.setText(latestClientVo.getUserName());
+        //((NoticeViewHolder) holder).tvClientInfo.setText(latestClientVo.getUserID());
+        //((NoticeViewHolder) holder).tvClientNotice.setText("VIP#");
+        //((NoticeViewHolder) holder).tvTodo.setText("VIP#");
+        //((NoticeViewHolder) holder).tvOrderInfo.setText("VIP#");
+        ((NoticeViewHolder) holder).tvTimeInfo.setText(TimeUtil.getChatTime(latestClientVo.getTimeStamp()));
 
         ((NoticeViewHolder) holder).ivDianHua.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -103,7 +106,7 @@ public class LocNotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
     public static class NoticeViewHolder extends RecyclerView.ViewHolder{
 
-        ImageButton     ibtnOrderStatus;
+        CircleStatusView ibtnOrderStatus;
         CircleImageView civClientAvatar;
         TextView  tvVip;
         TextView  tvClientName;
@@ -119,7 +122,7 @@ public class LocNotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
         public NoticeViewHolder(View view) {
             super(view);
-            ibtnOrderStatus = (ImageButton) view.findViewById(R.id.ibtn_order_status);
+            ibtnOrderStatus = (CircleStatusView) view.findViewById(R.id.ibtn_order_status);
             civClientAvatar = (CircleImageView) view.findViewById(R.id.civ_client_avatar);
             tvVip           = (TextView)  view.findViewById(R.id.tv_vip);
             tvClientName    = (TextView)  view.findViewById(R.id.tv_client_name);
@@ -135,7 +138,7 @@ public class LocNotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         }
     }
 
-    public void setData(List<LatestClientBean> latestClientBeans) {
+    public void setData(List<LatestClientVo> latestClientBeans) {
         if (null == latestClientBeans) {
             this.mList = new ArrayList<>();
         } else {

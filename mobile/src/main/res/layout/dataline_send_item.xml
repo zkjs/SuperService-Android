@@ -141,7 +141,7 @@
             android:layout_height="40.0dip"
             android:layout_marginTop="5.0dip"
             android:scaleType="fitXY"
-            android:src="@drawable/list_img_selfish" />
+            android:src="@drawable/img_hotel_zhanwei" />
 
         <CheckBox
             android:id="@+id/cb_select"

@@ -11,6 +11,8 @@ import android.view.View;
 
 import com.zkjinshi.superservice.R;
 
+import java.util.Random;
+
 /**
  * 圆形状态控件
  * 开发者：dujiande
@@ -27,7 +29,7 @@ public class CircleStatusView extends View{
     }
 
     private CircleStatus status = CircleStatus.STATUS_LOADING;
-    private int bgcolor =  Color.GREEN;
+    private int bgcolor =   Color.rgb(new Random().nextInt(256), new Random().nextInt(256), new Random().nextInt(256));  ;
     protected Paint mSelectedCirclePaint;
     private int width;
     private int height;
@@ -82,12 +84,8 @@ public class CircleStatusView extends View{
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         int radius = width/2;
-
         mSelectedCirclePaint.setColor(bgcolor);
         canvas.drawCircle(width/2, height/2, radius, mSelectedCirclePaint);
-
-        //画图片，就是贴图
-        // 创建画笔
         Bitmap bitmap = null;
         if(status ==  CircleStatus.STATUS_LOADING){
             bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_hourglass);

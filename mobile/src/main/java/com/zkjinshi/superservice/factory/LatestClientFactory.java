@@ -3,7 +3,7 @@ package com.zkjinshi.superservice.factory;
 import android.content.ContentValues;
 import android.database.Cursor;
 
-import com.zkjinshi.superservice.bean.LatestClientBean;
+import com.zkjinshi.superservice.vo.LatestClientVo;
 import com.zkjinshi.superservice.entity.MsgPushTriggerLocNotificationM2S;
 
 /**
@@ -32,8 +32,8 @@ public class LatestClientFactory {
      * @param locNotificationM2S
      * @return
      */
-    public LatestClientBean buildClientByMsgLoc(MsgPushTriggerLocNotificationM2S locNotificationM2S) {
-        LatestClientBean client = new LatestClientBean();
+    public LatestClientVo buildClientByMsgLoc(MsgPushTriggerLocNotificationM2S locNotificationM2S) {
+        LatestClientVo client = new LatestClientVo();
         client.setUserID(locNotificationM2S.getUserid());
         client.setUserName(locNotificationM2S.getUsername());
         client.setTimeStamp(locNotificationM2S.getTimestamp());
@@ -48,7 +48,7 @@ public class LatestClientFactory {
      * @return
      */
     public ContentValues buildContentValues(MsgPushTriggerLocNotificationM2S locNotificationM2S) {
-        LatestClientBean client = buildClientByMsgLoc(locNotificationM2S);
+        LatestClientVo client = buildClientByMsgLoc(locNotificationM2S);
         ContentValues values = new ContentValues();
         values.put("user_id", client.getUserID());
         values.put("user_name", client.getUserName());
@@ -63,8 +63,8 @@ public class LatestClientFactory {
      * @param cursor
      * @return
      */
-    public LatestClientBean bulidLatestClient(Cursor cursor) {
-        LatestClientBean client = new LatestClientBean();
+    public LatestClientVo bulidLatestClient(Cursor cursor) {
+        LatestClientVo client = new LatestClientVo();
         client.setUserID(cursor.getString(0));
         client.setUserName(cursor.getString(1));
         client.setTimeStamp(cursor.getLong(2));
