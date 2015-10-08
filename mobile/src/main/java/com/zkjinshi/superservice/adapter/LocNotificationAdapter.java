@@ -97,6 +97,8 @@ public class LocNotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                 DialogUtil.getInstance().showToast(mActivity, "ivFenXiang onClick");
             }
         });
+        ((NoticeViewHolder) holder).ibtnOrderStatus.setStatus(CircleStatusView.CircleStatus.STATUS_FINISH);
+        ((NoticeViewHolder) holder).ibtnOrderStatus.invalidate();
     }
 
     @Override
