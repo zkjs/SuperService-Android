@@ -119,8 +119,12 @@ public class NoticeFragment extends Fragment implements IMessageObserver{
     public void onResume() {
         super.onResume();
         //TODO: 随机修改圆形图片背景色
-
+        mLatestClients       = LatestClientBiz.getLatestClients();
+        if(null != mLatestClients && !mLatestClients.isEmpty()){
+            mNotificationAdapter.setData(mLatestClients);
+        }
     }
+
     @Override
     public void onDestroy() {
         super.onDestroy();

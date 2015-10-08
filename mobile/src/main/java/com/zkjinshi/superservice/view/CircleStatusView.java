@@ -22,7 +22,7 @@ import java.util.Random;
  */
 public class CircleStatusView extends View{
 
-    enum CircleStatus{
+    public enum CircleStatus{
         STATUS_LOADING,
         STATUS_FINISH,
         STATUS_MORE
