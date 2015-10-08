@@ -84,6 +84,23 @@ public class ProtocolUtil {
         return ConfigUtil.getInst().getHttpDomain()+"semp/order";
     }
 
+    /**
+     * 会员信息 获取客人详细信息
+     * @return
+     */
+    public static String getClientDetailUrl(){
+
+        return ConfigUtil.getInst().getHttpDomain()+"semp/sempsuforphone";
+    }
+
+    /**
+     * 支付方式列表
+     * @return
+     */
+    public static String getSempPayListUrl(){
+        return ConfigUtil.getInst().getHttpDomain()+"semp/paylist";
+    }
+
 
 
 

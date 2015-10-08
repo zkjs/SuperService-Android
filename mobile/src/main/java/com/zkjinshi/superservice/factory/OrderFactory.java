@@ -44,7 +44,7 @@ public class OrderFactory {
         orderRoomBean.setGuesttel(bookOrderBean.getGuestTel());
         orderRoomBean.setCreated(bookOrderBean.getCreated());
         orderRoomBean.setFullname(bookOrderBean.getFullName());
-        orderRoomBean.setRoom_typeid(bookOrderBean.getRoomTypeID());
+        orderRoomBean.setRoom_typeid(Integer.parseInt(bookOrderBean.getRoomTypeID()));
         orderRoomBean.setRoom_type(bookOrderBean.getRoomType());
         orderRoomBean.setRooms(Integer.parseInt(bookOrderBean.getRooms()));
         orderRoomBean.setArrival_date(bookOrderBean.getArrivalDate());
