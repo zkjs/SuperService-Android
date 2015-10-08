@@ -18,6 +18,8 @@ import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.base.util.DisplayUtil;
 import com.zkjinshi.base.util.TimeUtil;
 import com.zkjinshi.superservice.R;
+import com.zkjinshi.superservice.listener.RecyclerItemClickListener;
+import com.zkjinshi.superservice.listener.RecyclerLoadMoreListener;
 import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.view.CircleStatusView;
 import com.zkjinshi.superservice.vo.LatestClientVo;
@@ -38,13 +40,13 @@ public class LocNotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
     private List<LatestClientVo>  mList;
     private DisplayImageOptions     options;
-    private TypedArray              locNoticeColors;
+    private RecyclerItemClickListener itemClickListener;
+    private RecyclerLoadMoreListener loadMoreListener;
 
     public LocNotificationAdapter(Activity activity, List<LatestClientVo> list) {
 
         this.mActivity = activity;
         this.mList     = list;
-        locNoticeColors = activity.getResources().obtainTypedArray(R.array.loc_notice_colors);
         this.options = new DisplayImageOptions.Builder()
                 .showImageOnLoading(R.drawable.img_hotel_zhanwei)// 设置图片下载期间显示的图片
                 .showImageForEmptyUri(R.drawable.img_hotel_zhanwei)// 设置图片Uri为空或是错误的时候显示的图片
@@ -107,6 +109,11 @@ public class LocNotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             contentLayoutParams.setMargins(0, DisplayUtil.dip2px(mActivity, 6), DisplayUtil.dip2px(mActivity, 8), DisplayUtil.dip2px(mActivity, 6));
         }
         ((NoticeViewHolder) holder).contentLayout.setLayoutParams(contentLayoutParams);
+        if(null != loadMoreListener){
+            if (position == mList.size() - 1) {
+                loadMoreListener.loadMore();
+            }
+        }
     }
 
     @Override
@@ -114,7 +121,7 @@ public class LocNotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         return mList.size();
     }
 
-    public static class NoticeViewHolder extends RecyclerView.ViewHolder{
+    public class NoticeViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         CircleStatusView ibtnOrderStatus;
         CircleImageView civClientAvatar;
@@ -147,6 +154,14 @@ public class LocNotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             ivDuiHua        = (ImageView) view.findViewById(R.id.iv_duihua);
             ivFenXiang      = (ImageView) view.findViewById(R.id.iv_fenxiang);
             contentLayout = (LinearLayout)view.findViewById(R.id.content_layout);
+            view.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            if(null != itemClickListener){
+                itemClickListener.onItemClick(v,getAdapterPosition());
+            }
         }
     }
 
@@ -157,5 +172,13 @@ public class LocNotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             this.mList = latestClientBeans;
         }
         notifyDataSetChanged();
+    }
+
+    public void setOnItemClickListener(RecyclerItemClickListener itemClickListener) {
+        this.itemClickListener = itemClickListener;
+    }
+
+    public void setOnLoadMoreListener(RecyclerLoadMoreListener loadMoreListener){
+        this.loadMoreListener = loadMoreListener;
     }
 }

@@ -17,32 +17,77 @@ public class LatestClientBiz {
     public static ArrayList<LatestClientVo> getLatestClients(){
 
         ArrayList<LatestClientVo> clientBeanList = new ArrayList<>();
+        LatestClientVo clientBean = new LatestClientVo();
+        clientBean.setTimeStamp(System.currentTimeMillis());
+        clientBean.setShopID("120");
+        clientBean.setUserID("557afb0604ed8");
+        clientBean.setUserName("休止符");
+        clientBean.setLocID(new Random().nextInt(10) + "");
+        clientBeanList.add(clientBean);
 
-        LatestClientVo clientBean1 = new LatestClientVo();
-        LatestClientVo clientBean2 = new LatestClientVo();
-        LatestClientVo clientBean3 = new LatestClientVo();
+        clientBean = new LatestClientVo();
+        clientBean.setTimeStamp(System.currentTimeMillis());
+        clientBean.setShopID("808");
+        clientBean.setUserID("55d17e2c054cb");
+        clientBean.setUserName("千里马");
+        clientBean.setLocID(new Random().nextInt(10) + "");
+        clientBeanList.add(clientBean);
 
-        clientBean1.setTimeStamp(System.currentTimeMillis());
-        clientBean1.setShopID("120");
-        clientBean1.setUserID("557afb0604ed8");
-        clientBean1.setUserName("休止符");
-        clientBean1.setLocID(new Random().nextInt(10) + "");
+        clientBean = new LatestClientVo();
+        clientBean.setTimeStamp(System.currentTimeMillis());
+        clientBean.setShopID("808");
+        clientBean.setUserID("557cff54a9a97");
+        clientBean.setUserName("金石小智");
+        clientBean.setLocID(new Random().nextInt(10) + "");
+        clientBeanList.add(clientBean);
 
-        clientBean2.setTimeStamp(System.currentTimeMillis());
-        clientBean2.setShopID("808");
-        clientBean2.setUserID("55d17e2c054cb");
-        clientBean2.setUserName("千里马");
-        clientBean2.setLocID(new Random().nextInt(10) + "");
+        clientBean = new LatestClientVo();
+        clientBean.setTimeStamp(System.currentTimeMillis());
+        clientBean.setShopID("808");
+        clientBean.setUserID("55d17e2c054cb");
+        clientBean.setUserName("千里马");
+        clientBean.setLocID(new Random().nextInt(10) + "");
+        clientBeanList.add(clientBean);
 
-        clientBean3.setTimeStamp(System.currentTimeMillis());
-        clientBean3.setShopID("808");
-        clientBean3.setUserID("557cff54a9a97");
-        clientBean3.setUserName("金石小智");
-        clientBean3.setLocID(new Random().nextInt(10) + "");
+        clientBean = new LatestClientVo();
+        clientBean.setTimeStamp(System.currentTimeMillis());
+        clientBean.setShopID("808");
+        clientBean.setUserID("557cff54a9a97");
+        clientBean.setUserName("金石小智");
+        clientBean.setLocID(new Random().nextInt(10) + "");
+        clientBeanList.add(clientBean);
 
-        clientBeanList.add(clientBean1);
-        clientBeanList.add(clientBean2);
-        clientBeanList.add(clientBean3);
+        clientBean = new LatestClientVo();
+        clientBean.setTimeStamp(System.currentTimeMillis());
+        clientBean.setShopID("808");
+        clientBean.setUserID("55d17e2c054cb");
+        clientBean.setUserName("千里马");
+        clientBean.setLocID(new Random().nextInt(10) + "");
+        clientBeanList.add(clientBean);
+
+        clientBean = new LatestClientVo();
+        clientBean.setTimeStamp(System.currentTimeMillis());
+        clientBean.setShopID("808");
+        clientBean.setUserID("557cff54a9a97");
+        clientBean.setUserName("金石小智");
+        clientBean.setLocID(new Random().nextInt(10) + "");
+        clientBeanList.add(clientBean);
+
+        clientBean = new LatestClientVo();
+        clientBean.setTimeStamp(System.currentTimeMillis());
+        clientBean.setShopID("808");
+        clientBean.setUserID("55d17e2c054cb");
+        clientBean.setUserName("千里马");
+        clientBean.setLocID(new Random().nextInt(10) + "");
+        clientBeanList.add(clientBean);
+
+        clientBean = new LatestClientVo();
+        clientBean.setTimeStamp(System.currentTimeMillis());
+        clientBean.setShopID("808");
+        clientBean.setUserID("557cff54a9a97");
+        clientBean.setUserName("金石小智");
+        clientBean.setLocID(new Random().nextInt(10) + "");
+        clientBeanList.add(clientBean);
 
         return clientBeanList;
     }

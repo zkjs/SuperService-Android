@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -21,6 +22,7 @@ import com.zkjinshi.base.net.protocol.ProtocolMSG;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.adapter.LocMoreAdapter;
 import com.zkjinshi.superservice.adapter.LocNotificationAdapter;
+import com.zkjinshi.superservice.listener.RecyclerLoadMoreListener;
 import com.zkjinshi.superservice.view.CircleStatusView;
 import com.zkjinshi.superservice.vo.LatestClientVo;
 import com.zkjinshi.superservice.entity.MsgPushTriggerLocNotificationM2S;
@@ -55,6 +57,7 @@ public class NoticeFragment extends Fragment implements IMessageObserver{
     private LocNotificationAdapter mNotificationAdapter;
     private LocMoreAdapter locMoreAdapter;
     private CircleStatusView moreStatsuView;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     public static NoticeFragment newInstance() {
         return new NoticeFragment();
@@ -81,7 +84,6 @@ public class NoticeFragment extends Fragment implements IMessageObserver{
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_notice, container, false);
         initView(view);
-        initData();
         return view;
     }
 
@@ -89,6 +91,7 @@ public class NoticeFragment extends Fragment implements IMessageObserver{
         mRcvNotice      = (RecyclerView) view.findViewById(R.id.rcv_notice);
         moreRecyclerView = (RecyclerView)view.findViewById(R.id.rcv_more);
         moreStatsuView = (CircleStatusView)view.findViewById(R.id.notice_more_cv_status);
+        swipeRefreshLayout = (SwipeRefreshLayout)view.findViewById(R.id.srl_notice);
     }
 
     private void initData() {
@@ -110,6 +113,36 @@ public class NoticeFragment extends Fragment implements IMessageObserver{
         moreStatsuView.invalidate();
     }
 
+    private void initListeners(){
+
+        //下拉刷新
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+                }, 3000);
+            }
+        });
+
+        //自动加载更多
+        mNotificationAdapter.setOnLoadMoreListener(new RecyclerLoadMoreListener() {
+            @Override
+            public void loadMore() {
+                swipeRefreshLayout.setRefreshing(true);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+                }, 3000);
+            }
+        });
+    }
+
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -119,6 +152,8 @@ public class NoticeFragment extends Fragment implements IMessageObserver{
     @Override
     public void onStart() {
         super.onStart();
+        initData();
+        initListeners();
     }
 
     @Override

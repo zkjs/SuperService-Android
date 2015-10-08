@@ -2,8 +2,10 @@ package com.zkjinshi.superservice.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -18,6 +20,7 @@ import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.chat.ChatActivity;
 import com.zkjinshi.superservice.adapter.MessageAdapter;
 import com.zkjinshi.superservice.listener.RecyclerItemClickListener;
+import com.zkjinshi.superservice.listener.RecyclerLoadMoreListener;
 import com.zkjinshi.superservice.sqlite.MessageDBUtil;
 import com.zkjinshi.superservice.vo.MessageVo;
 
@@ -38,6 +41,7 @@ public class MessageFragment extends Fragment  implements IMessageObserver {
     private MessageAdapter messageAdapter;
     private ArrayList<MessageVo> messageList;
     private LinearLayoutManager linearLayoutManager;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     public static MessageFragment newInstance() {
         return new MessageFragment();
@@ -45,6 +49,7 @@ public class MessageFragment extends Fragment  implements IMessageObserver {
 
     private void initView(View view){
         messageRCV = (RecyclerView)view.findViewById(R.id.rcv_message);
+        swipeRefreshLayout = (SwipeRefreshLayout)view.findViewById(R.id.srl_message);
     }
 
     /**
@@ -82,18 +87,45 @@ public class MessageFragment extends Fragment  implements IMessageObserver {
             @Override
             public void onItemClick(View view, int postion) {
                 MessageVo messageVo = messageList.get(postion);
-                if(null != messageVo){
+                if (null != messageVo) {
                     Intent intent = new Intent(getActivity(), ChatActivity.class);
                     String sessionId = messageVo.getSessionId();
                     String shopId = messageVo.getShopId();
-                    if(!TextUtils.isEmpty(sessionId)){
-                        intent.putExtra("session_id",sessionId);
+                    if (!TextUtils.isEmpty(sessionId)) {
+                        intent.putExtra("session_id", sessionId);
                     }
-                    if(!TextUtils.isEmpty(shopId)){
-                        intent.putExtra("shop_id",shopId);
+                    if (!TextUtils.isEmpty(shopId)) {
+                        intent.putExtra("shop_id", shopId);
                     }
                     startActivity(intent);
                 }
+            }
+        });
+
+        //下拉刷新
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+                }, 3000);
+            }
+        });
+
+        //自动加载更多
+        messageAdapter.setOnLoadMoreListener(new RecyclerLoadMoreListener() {
+            @Override
+            public void loadMore() {
+                swipeRefreshLayout.setRefreshing(true);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+                }, 3000);
             }
         });
     }
