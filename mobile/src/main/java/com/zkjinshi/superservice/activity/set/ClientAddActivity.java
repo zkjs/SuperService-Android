@@ -19,6 +19,8 @@ import com.zkjinshi.superservice.view.CircleImageView;
 import com.zkjinshi.superservice.vo.ClientVo;
 import com.zkjinshi.superservice.vo.OnAccountStatus;
 
+import org.w3c.dom.Text;
+
 /**
  * 新增客户联系人
  * 开发者：vincent
@@ -82,11 +84,16 @@ public class ClientAddActivity extends Activity {
     }
 
     private void initData() {
-
+        String phoneNumber = getIntent().getStringExtra("phone_number");
+        if(!TextUtils.isEmpty(phoneNumber)){
+            mEtClientPhone.setText(phoneNumber);
+        }
         mClientVo = new ClientVo();
         mClientVo.setOnAccount(OnAccountStatus.ISONACCOUNT);
         CacheUtil.getInstance().init(this);
         AvatarChooseController.getInstance().init(this);
+
+        getIntent().getStringExtra("phone_number");
     }
 
     private void initListener() {

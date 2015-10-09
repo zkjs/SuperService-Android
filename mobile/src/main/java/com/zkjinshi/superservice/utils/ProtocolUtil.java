@@ -102,6 +102,30 @@ public class ProtocolUtil {
     }
 
     /**
+     * 会员信息 绑定会员
+     * @return
+     */
+    public static String getAddUserUrl(){
+        return ConfigUtil.getInst().getHttpDomain()+"semp/adduser";
+    }
+
+    /**
+     * 我的客户 获取我的客户列表
+     * @return
+     */
+    public static String getShopUserListUrl(){
+        return ConfigUtil.getInst().getHttpDomain()+"semp/showuserlist";
+    }
+
+    /**
+     * 我的团队 获取团队联系人列表
+     * @return
+     */
+    public static String getTeamListUrl(){
+        return ConfigUtil.getInst().getHttpDomain()+"semp/teamlist";
+    }
+
+    /**
      * 支付方式列表
      * @return
      */

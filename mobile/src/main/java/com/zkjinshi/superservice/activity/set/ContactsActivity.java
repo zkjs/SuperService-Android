@@ -21,16 +21,26 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.zkjinshi.base.log.LogUtil;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.adapter.ContactsSortAdapter;
+import com.zkjinshi.superservice.bean.MyClientBean;
+import com.zkjinshi.superservice.bean.TeamContactBean;
 import com.zkjinshi.superservice.factory.SortModelFactory;
 import com.zkjinshi.superservice.listener.RecyclerItemClickListener;
+import com.zkjinshi.superservice.net.MethodType;
+import com.zkjinshi.superservice.net.NetRequest;
+import com.zkjinshi.superservice.net.NetRequestListener;
+import com.zkjinshi.superservice.net.NetRequestTask;
+import com.zkjinshi.superservice.net.NetResponse;
 import com.zkjinshi.superservice.sqlite.ClientDBUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.CharacterParser;
 import com.zkjinshi.superservice.utils.PinyinComparator;
+import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.utils.SortKeyUtil;
 import com.zkjinshi.superservice.view.SideBar;
 import com.zkjinshi.superservice.vo.ClientVo;
@@ -39,6 +49,7 @@ import com.zkjinshi.superservice.vo.SortModel;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -53,6 +64,10 @@ public class ContactsActivity extends Activity{
 
     private final static String TAG = ContactsActivity.class.getSimpleName();
 
+    private String mUserID;
+    private String mToken;
+    private String mShopID;
+
     private SideBar      mSideBar;
     private TextView     mTvDialog;
     private ImageView    mIvClearText;
@@ -66,6 +81,8 @@ public class ContactsActivity extends Activity{
     private List<SortModel>      mAllContactsList;
     private PinyinComparator     pinyinComparator;
     private ContactsSortAdapter  mContactsAdapter;
+//    private Object myUserList;
+//    private Object localContacts;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,7 +92,6 @@ public class ContactsActivity extends Activity{
         initView();
         initData();
         initListener();
-        loadContacts();
     }
 
     private void initView() {
@@ -89,6 +105,10 @@ public class ContactsActivity extends Activity{
     }
 
     private void initData() {
+        mUserID = CacheUtil.getInstance().getUserId();
+        mToken  = CacheUtil.getInstance().getToken();
+        mShopID = CacheUtil.getInstance().getShopID();
+
         /** 给ListView设置adapter **/
         mSideBar.setTextView(mTvDialog);
         characterParser  = CharacterParser.getInstance();
@@ -103,17 +123,20 @@ public class ContactsActivity extends Activity{
         mRcvContacts.setLayoutManager(mLayoutManager);
         mRcvContacts.setAdapter(mContactsAdapter);
 
-        //TODO: 1.服务器获得当前服务员关联的客户列表
-        List<ClientVo> clientVos       = ClientDBUtil.getInstance().queryAll();
-        if(!clientVos.isEmpty()){
-            List<SortModel> sortModels = SortModelFactory.getInstance().convertClients2SortModels(clientVos);
-            mAllContactsList = new ArrayList<>();
-            mAllContactsList.addAll(sortModels);
+//        getLocalContacts();//本地联系人列表
+        getMyClientList(mUserID, mToken, mShopID);
 
-            //TODO:2.获得服务器最近联系人列表， 进入排序
-            List<SortModel> latestSortModels = SortModelFactory.getInstance().getLatestSortModel(clientVos);
-            mAllContactsList.addAll(latestSortModels);
-        }
+//        //TODO: 1.服务器获得最近联系人列表的客户列表
+//        List<ClientVo> clientVos       = ClientDBUtil.getInstance().queryAll();
+//        if(!clientVos.isEmpty()){
+//            List<SortModel> sortModels = SortModelFactory.getInstance().convertClients2SortModels(clientVos);
+//            mAllContactsList = new ArrayList<>();
+//            mAllContactsList.addAll(sortModels);
+//
+//            //TODO:2.获得服务器最近联系人列表， 进入排序
+//            List<SortModel> latestSortModels = SortModelFactory.getInstance().getLatestSortModel(clientVos);
+//            mAllContactsList.addAll(latestSortModels);
+//        }
     }
 
     private void initListener() {
@@ -130,8 +153,8 @@ public class ContactsActivity extends Activity{
         mIbtnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent goAddClient = new Intent(ContactsActivity.this, ClientAddActivity.class);
-                ContactsActivity.this.startActivity(goAddClient);
+                Intent clientSelect = new Intent(ContactsActivity.this, ClientSelectActivity.class);
+                ContactsActivity.this.startActivity(clientSelect);
             }
         });
 
@@ -188,7 +211,7 @@ public class ContactsActivity extends Activity{
             @Override
             public void onItemClick(View view, int postion) {
                 SortModel sortModel = mAllContactsList.get(postion);
-                String phoneNumber  = sortModel.getNumber();
+                String phoneNumber = sortModel.getNumber();
                 Intent clientDetail = new Intent(ContactsActivity.this, ClientDetailActivity.class);
                 clientDetail.putExtra("phone_number", phoneNumber);
                 ContactsActivity.this.startActivity(clientDetail);
@@ -197,22 +220,115 @@ public class ContactsActivity extends Activity{
         });
     }
 
-    /** 内容解析器获取联系人数据  */
-    private void loadContacts() {
+    /**
+     * 模糊查询
+     * @param str
+     * @return
+     */
+    public List<SortModel> search(String str) {
+        List<SortModel> filterList = new ArrayList<SortModel>();// 过滤后的list
+        //if (str.matches("^([0-9]|[/+])*$")) {// 正则表达式 匹配号码
+        if (str.matches("^([0-9]|[/+]).*")) {// 正则表达式 匹配以数字或者加号开头的字符串(包括了带空格及-分割的号码)
+            String simpleStr = str.replaceAll("\\-|\\s", "");
+            for (SortModel contact : mAllContactsList) {
+                if (contact.getNumber() != null && contact.getName() != null) {
+                    if (contact.getSimpleNumber().contains(simpleStr) || contact.getName().contains(str)) {
+                        if (!filterList.contains(contact)) {
+                            filterList.add(contact);
+                        }
+                    }
+                }
+            }
+        }else {
+            for (SortModel contact : mAllContactsList) {
+                if (contact.getNumber() != null && contact.getName() != null) {
+                    //姓名全匹配,姓名首字母简拼匹配,姓名全字母匹配
+                    if (contact.getName().toLowerCase(Locale.CHINESE).contains(str.toLowerCase(Locale.CHINESE))
+                            || contact.getSortKey().toLowerCase(Locale.CHINESE).replace(" ", "").contains(str.toLowerCase(Locale.CHINESE))
+                            || contact.getSortToken().simpleSpell.toLowerCase(Locale.CHINESE).contains(str.toLowerCase(Locale.CHINESE))
+                            || contact.getSortToken().wholeSpell.toLowerCase(Locale.CHINESE).contains(str.toLowerCase(Locale.CHINESE))) {
+                        if (!filterList.contains(contact)) {
+                            filterList.add(contact);
+                        }
+                    }
+                }
+            }
+        }
+        return filterList;
+    }
+
+    /**
+     * 获取我的客户列表
+     * @param userID
+     * @param token
+     * @param shopID
+     */
+    public void getMyClientList(String userID, String token, String shopID) {
+        NetRequest netRequest = new NetRequest(ProtocolUtil.getShopUserListUrl());
+        HashMap<String,String> bizMap = new HashMap<>();
+        bizMap.put("salesid", userID);
+        bizMap.put("token", token);
+        bizMap.put("shopid", shopID);
+        netRequest.setBizParamMap(bizMap);
+        NetRequestTask netRequestTask = new NetRequestTask(this, netRequest, NetResponse.class);
+        netRequestTask.methodType     = MethodType.POST;
+        netRequestTask.setNetRequestListener(new NetRequestListener() {
+            @Override
+            public void onNetworkRequestError(int errorCode, String errorMessage) {
+                DialogUtil.getInstance().cancelProgressDialog();
+                Log.i(TAG, "errorCode:" + errorCode);
+                Log.i(TAG, "errorMessage:" + errorMessage);
+                DialogUtil.getInstance().showToast(ContactsActivity.this, "网络访问失败，稍候再试。");
+            }
+
+            @Override
+            public void onNetworkRequestCancelled() {
+                DialogUtil.getInstance().cancelProgressDialog();
+            }
+
+            @Override
+            public void onNetworkResponseSucceed(NetResponse result) {
+                DialogUtil.getInstance().cancelProgressDialog();
+                Log.i(TAG, "result.rawResult:" + result.rawResult);
+                String jsonResult = result.rawResult;
+                if (result.rawResult.contains("set") || jsonResult.contains("err")) {
+
+                } else {
+//                    Gson gson = new Gson();
+//                    List<MyClientBean> myClientBeans = gson.fromJson(jsonResult,
+//                            new TypeToken<ArrayList<MyClientBean>>() {}.getType());
+
+                }
+            }
+
+            @Override
+            public void beforeNetworkRequestStart() {
+                //网络请求前
+            }
+        });
+        netRequestTask.isShowLoadingDialog = true;
+        netRequestTask.execute();
+    }
+
+    /**
+     * 获取本地联系人数据
+     */
+    public void getLocalContacts() {
+        DialogUtil.getInstance().showProgressDialog(ContactsActivity.this);
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
                     ContentResolver resolver = getApplicationContext().getContentResolver();
                     Cursor phoneCursor = resolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                                                        new String[]
-                                                        {
-                                                        ContactsContract.CommonDataKinds.Phone.CONTACT_ID,
-                                                        ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
-                                                        ContactsContract.CommonDataKinds.Phone.NUMBER,
-                                                        "sort_key"
-                                                        },
-                                                        null, null, "sort_key");
+                            new String[]
+                                    {
+                                            ContactsContract.CommonDataKinds.Phone.CONTACT_ID,
+                                            ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
+                                            ContactsContract.CommonDataKinds.Phone.NUMBER,
+                                            "sort_key"
+                                    },
+                            null, null, "sort_key");
 
                     if (phoneCursor == null || phoneCursor.getCount() == 0) {
                         Toast.makeText(getApplicationContext(), "未获得读取联系人权限 或 未获得联系人数据", Toast.LENGTH_SHORT).show();
@@ -257,6 +373,7 @@ public class ContactsActivity extends Activity{
                         public void run() {
                             Collections.sort(mAllContactsList, pinyinComparator);
                             mContactsAdapter.updateListView(mAllContactsList);
+                            DialogUtil.getInstance().cancelProgressDialog();
                         }
                     });
                 } catch (Exception e) {
@@ -265,42 +382,4 @@ public class ContactsActivity extends Activity{
             }
         }).start();
     }
-
-    /**
-     * 模糊查询
-     * @param str
-     * @return
-     */
-    public List<SortModel> search(String str) {
-        List<SortModel> filterList = new ArrayList<SortModel>();// 过滤后的list
-        //if (str.matches("^([0-9]|[/+])*$")) {// 正则表达式 匹配号码
-        if (str.matches("^([0-9]|[/+]).*")) {// 正则表达式 匹配以数字或者加号开头的字符串(包括了带空格及-分割的号码)
-            String simpleStr = str.replaceAll("\\-|\\s", "");
-            for (SortModel contact : mAllContactsList) {
-                if (contact.getNumber() != null && contact.getName() != null) {
-                    if (contact.getSimpleNumber().contains(simpleStr) || contact.getName().contains(str)) {
-                        if (!filterList.contains(contact)) {
-                            filterList.add(contact);
-                        }
-                    }
-                }
-            }
-        }else {
-            for (SortModel contact : mAllContactsList) {
-                if (contact.getNumber() != null && contact.getName() != null) {
-                    //姓名全匹配,姓名首字母简拼匹配,姓名全字母匹配
-                    if (contact.getName().toLowerCase(Locale.CHINESE).contains(str.toLowerCase(Locale.CHINESE))
-                            || contact.getSortKey().toLowerCase(Locale.CHINESE).replace(" ", "").contains(str.toLowerCase(Locale.CHINESE))
-                            || contact.getSortToken().simpleSpell.toLowerCase(Locale.CHINESE).contains(str.toLowerCase(Locale.CHINESE))
-                            || contact.getSortToken().wholeSpell.toLowerCase(Locale.CHINESE).contains(str.toLowerCase(Locale.CHINESE))) {
-                        if (!filterList.contains(contact)) {
-                            filterList.add(contact);
-                        }
-                    }
-                }
-            }
-        }
-        return filterList;
-    }
-
 }

@@ -164,7 +164,7 @@
         </activity>
 
         <activity
-            android:name=".activity.common.TagAddActivity"
+            android:name=".activity.set.TagAddActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/window_dialog_style">
@@ -177,6 +177,19 @@
             android:theme="@android:style/Theme.Translucent.NoTitleBar">
         </activity>
 
+        <activity
+            android:name=".activity.set.ClientSelectActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar">
+        </activity>
+
+        <activity
+            android:name=".activity.set.ClientBindActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar">
+        </activity>
 
         <!--IM消息服务-->
         <service android:name="com.zkjinshi.base.net.core.MessageService"
