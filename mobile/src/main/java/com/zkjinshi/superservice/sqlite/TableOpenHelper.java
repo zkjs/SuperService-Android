@@ -99,18 +99,6 @@ public class TableOpenHelper {
                     + " on_account      integer "   //是否挂账会员 0:挂账会员 1 非挂账会员
                     + " ) ";
 
-    /** 创建到店用户信息表 */
-    public static String CLIENT_LATEST_TBL_SQL =
-            " create table if not exists "
-                    + DBOpenHelper.CLIENT_LATEST_TBL
-                    + " ( "
-                    + " user_id     text primary key , "
-                    + " user_name   text, "
-                    + " timestamp   long, "
-                    + " shop_id     text, "
-                    + " loc_id      text "
-                    + " ) ";
-
     /** 创建区域信息表 */
     public static String ZONE_TBL_SQL =
             " create table if not exists "
@@ -127,6 +115,26 @@ public class TableOpenHelper {
                     + " remark      text "
                     + " ) ";
 
+    /** 创建到店信息表 */
+    public static String COMING_TBL_SQL =
+            " create table if not exists "
+                    + DBOpenHelper.COMING_TBL
+                    + " ( "
+                    + "  _id integer primary key autoincrement , "
+                    + " user_id text , "
+                    + " loc_id text, "
+                    + " vip text, "
+                    + " user_name text, "
+                    + " location text, "
+                    + " phone_num text, "
+                    + " room_type text, "
+                    + " check_in_date text, "
+                    + " check_out_date text "
+                    + " stay_days integer, "
+                    + " arrive_time long, "
+                    + " order_status integer "
+                    + " ) ";
+
     /**
      * 获取数据库所有表名
      * @return
@@ -138,7 +146,8 @@ public class TableOpenHelper {
                 DBOpenHelper.MEMBER_TBL,//成员表
                 DBOpenHelper.USER_TBL,//客户表
                 DBOpenHelper.CLIENT_TBL,//客户表
-                DBOpenHelper.CLIENT_LATEST_TBL,//到店通知客户表
+                DBOpenHelper.ZONE_TBL,//个人区域信息表
+                DBOpenHelper.COMING_TBL//到店信息表
         };
     }
 

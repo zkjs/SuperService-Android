@@ -19,6 +19,7 @@ import com.zkjinshi.superservice.sqlite.ChatRoomDBUtil;
 import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.view.CircleImageView;
 import com.zkjinshi.superservice.vo.ChatRoomVo;
+import com.zkjinshi.superservice.vo.ComingVo;
 import com.zkjinshi.superservice.vo.LatestClientVo;
 import com.zkjinshi.superservice.vo.MessageVo;
 import com.zkjinshi.superservice.vo.MimeType;
@@ -34,25 +35,25 @@ import java.util.ArrayList;
  */
 public class LocMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
-    private ArrayList<LatestClientVo> latestClientList;
+    private ArrayList<ComingVo> comingList;
     private Context context;
     private LayoutInflater inflater;
     private DisplayImageOptions options;
     private RecyclerItemClickListener itemClickListener;
 
-    public void setLatestClientList(ArrayList<LatestClientVo> latestClientList) {
-        if(null == latestClientList){
-            this.latestClientList = new ArrayList<LatestClientVo>();
+    public void setComingList(ArrayList<ComingVo> comingList) {
+        if(null == comingList){
+            this.comingList = new ArrayList<ComingVo>();
         }else{
-            this.latestClientList = latestClientList;
+            this.comingList = comingList;
         }
         notifyDataSetChanged();
     }
 
-    public LocMoreAdapter(Context context,ArrayList<LatestClientVo> messageList){
+    public LocMoreAdapter(Context context,ArrayList<ComingVo> comingList){
         this.context = context;
         this.inflater = LayoutInflater.from(context);
-        this.setLatestClientList(messageList);
+        this.setComingList(comingList);
         this.options = new DisplayImageOptions.Builder()
                 .showImageOnLoading(R.drawable.img_hotel_zhanwei)// 设置图片下载期间显示的图片
                 .showImageForEmptyUri(R.drawable.img_hotel_zhanwei)// 设置图片Uri为空或是错误的时候显示的图片
@@ -71,8 +72,8 @@ public class LocMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        LatestClientVo messageVo = latestClientList.get(position);
-        String userId = messageVo.getUserID();
+        ComingVo comingVo = comingList.get(position);
+        String userId = comingVo.getUserId();
         if(!TextUtils.isEmpty(userId)){
             String imageUrl = Constants.GET_USER_AVATAR + userId + ".jpg";
             if(!TextUtils.isEmpty(imageUrl)){
@@ -90,7 +91,7 @@ public class LocMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     @Override
     public int getItemCount() {
-        return latestClientList.size();
+        return comingList.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{

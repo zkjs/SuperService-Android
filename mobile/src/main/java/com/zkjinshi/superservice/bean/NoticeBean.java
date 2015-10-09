@@ -14,6 +14,7 @@ public class NoticeBean extends BaseBean {
     private String phone;
     private String qq;
     private String birthday;
+    private String user_level;
     private BookOrderBean order;
     private int order_count;
 
@@ -79,5 +80,13 @@ public class NoticeBean extends BaseBean {
 
     public void setOrder_count(int order_count) {
         this.order_count = order_count;
+    }
+
+    public String getUser_level() {
+        return user_level;
+    }
+
+    public void setUser_level(String user_level) {
+        this.user_level = user_level;
     }
 }

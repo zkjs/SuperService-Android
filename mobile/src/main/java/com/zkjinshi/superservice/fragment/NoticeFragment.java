@@ -1,16 +1,15 @@
 package com.zkjinshi.superservice.fragment;
 
 import android.app.Activity;
-import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,23 +18,34 @@ import com.google.gson.Gson;
 import com.zkjinshi.base.net.observer.IMessageObserver;
 import com.zkjinshi.base.net.observer.MessageSubject;
 import com.zkjinshi.base.net.protocol.ProtocolMSG;
+import com.zkjinshi.base.util.TimeUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.adapter.LocMoreAdapter;
 import com.zkjinshi.superservice.adapter.LocNotificationAdapter;
+import com.zkjinshi.superservice.bean.BookOrderBean;
+import com.zkjinshi.superservice.bean.NoticeBean;
 import com.zkjinshi.superservice.listener.RecyclerLoadMoreListener;
+import com.zkjinshi.superservice.net.MethodType;
+import com.zkjinshi.superservice.net.NetRequest;
+import com.zkjinshi.superservice.net.NetRequestListener;
+import com.zkjinshi.superservice.net.NetRequestTask;
+import com.zkjinshi.superservice.net.NetResponse;
+import com.zkjinshi.superservice.sqlite.ComingDBUtil;
+import com.zkjinshi.superservice.sqlite.ZoneDBUtil;
+import com.zkjinshi.superservice.utils.CacheUtil;
+import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.view.CircleStatusView;
+import com.zkjinshi.superservice.vo.ComingVo;
 import com.zkjinshi.superservice.vo.LatestClientVo;
 import com.zkjinshi.superservice.entity.MsgPushTriggerLocNotificationM2S;
-import com.zkjinshi.superservice.sqlite.LatestClientDBUtil;
 import com.zkjinshi.superservice.test.LatestClientBiz;
-import com.zkjinshi.superservice.view.CircleImageView;
+import com.zkjinshi.superservice.vo.ZoneVo;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.HashMap;
 
 
 /**
@@ -47,37 +57,22 @@ import java.util.Random;
  */
 public class NoticeFragment extends Fragment implements IMessageObserver{
 
-    private final static int REFRESH_UI = 0x00;
+    public static final String TAG = "NoticeFragment";
 
-    private Activity mActivity;
-    private RecyclerView mRcvNotice,moreRecyclerView;
-    private LinearLayoutManager mLayoutManager;
+    private Activity activity;
+    private RecyclerView notityRecyclerView,moreRecyclerView;
+    private LinearLayoutManager notifyLayoutManager;
     private LinearLayoutManager moreLayoutManager;
-    private ArrayList<LatestClientVo> mLatestClients;
     private LocNotificationAdapter mNotificationAdapter;
     private LocMoreAdapter locMoreAdapter;
     private CircleStatusView moreStatsuView;
     private SwipeRefreshLayout swipeRefreshLayout;
+    private ComingVo comingVo;
+    private ArrayList<ComingVo> comingList;
 
     public static NoticeFragment newInstance() {
         return new NoticeFragment();
     }
-
-    private Handler handler = new Handler(){
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            switch (msg.what) {
-                case REFRESH_UI :
-                    LatestClientVo clientBean = (LatestClientVo) msg.obj;
-                    if(null != clientBean){
-                        mLatestClients.add(clientBean);
-                        mNotificationAdapter.setData(mLatestClients);
-                    }
-                break;
-            }
-        }
-    };
 
     @Nullable
     @Override
@@ -88,24 +83,23 @@ public class NoticeFragment extends Fragment implements IMessageObserver{
     }
 
     private void initView(View view){
-        mRcvNotice      = (RecyclerView) view.findViewById(R.id.rcv_notice);
+        notityRecyclerView = (RecyclerView) view.findViewById(R.id.rcv_notice);
         moreRecyclerView = (RecyclerView)view.findViewById(R.id.rcv_more);
         moreStatsuView = (CircleStatusView)view.findViewById(R.id.notice_more_cv_status);
         swipeRefreshLayout = (SwipeRefreshLayout)view.findViewById(R.id.srl_notice);
     }
 
     private void initData() {
-        mActivity = this.getActivity();
-        mLatestClients       = LatestClientBiz.getLatestClients();
-        mNotificationAdapter = new LocNotificationAdapter(mActivity, mLatestClients);
-        mRcvNotice.setAdapter(mNotificationAdapter);
-        mRcvNotice.setHasFixedSize(true);
-        mLayoutManager = new LinearLayoutManager(mActivity);
-        mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        mRcvNotice.setLayoutManager(mLayoutManager);
+        activity = this.getActivity();
+        mNotificationAdapter = new LocNotificationAdapter(activity, comingList);
+        notityRecyclerView.setAdapter(mNotificationAdapter);
+        notityRecyclerView.setHasFixedSize(true);
+        notifyLayoutManager = new LinearLayoutManager(activity);
+        notifyLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        notityRecyclerView.setLayoutManager(notifyLayoutManager);
 
-        locMoreAdapter = new LocMoreAdapter(mActivity,mLatestClients);
-        moreLayoutManager = new LinearLayoutManager(mActivity);
+        locMoreAdapter = new LocMoreAdapter(activity,comingList);
+        moreLayoutManager = new LinearLayoutManager(activity);
         moreLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         moreRecyclerView.setLayoutManager(moreLayoutManager);
         moreRecyclerView.setAdapter(locMoreAdapter);
@@ -185,19 +179,109 @@ public class NoticeFragment extends Fragment implements IMessageObserver{
                 }
                 //1、查询数据库，重新获取数据
                 MsgPushTriggerLocNotificationM2S msgLocNotification = gson.fromJson(message,
-                                                    MsgPushTriggerLocNotificationM2S.class);
-                String userID = msgLocNotification.getUserid();
-                if(!TextUtils.isEmpty(userID)){
-                    LatestClientVo clientBean = LatestClientDBUtil.getInstance().queryLatestClientByUserID(userID);
-                    //2、根据查询数据刷新界面
-                    Message msg = Message.obtain();
-                    msg.what    = REFRESH_UI;
-                    msg.obj     = clientBean;
-                    handler.sendMessage(msg);
+                        MsgPushTriggerLocNotificationM2S.class);
+                if(null != msgLocNotification){
+                    String userId = msgLocNotification.getUserid();
+                    String shopId = msgLocNotification.getShopid();
+                    String locId = msgLocNotification.getLocid();
+                    String userName = msgLocNotification.getUsername();
+                    ZoneVo zoneVo = ZoneDBUtil.getInstance().queryZoneByLocId(locId);
+                    if(null != zoneVo){
+                        comingVo = new ComingVo();
+                        comingVo.setLocId(locId);
+                        comingVo.setUserId(userId);
+                        comingVo.setArriveTime(System.currentTimeMillis());
+                        String location = zoneVo.getLocDesc();
+                        if(!TextUtils.isEmpty(location)){
+                            comingVo.setLocation(location);
+                        }
+                        if(!TextUtils.isEmpty(userName)){
+                            comingVo.setUserName(userName);
+                        }
+                        if(!TextUtils.isEmpty(userId) && !TextUtils.isEmpty(shopId)){
+                            NetRequest netRequest = new NetRequest(ProtocolUtil.getSempNoticeUrl());
+                            HashMap<String,String> bizMap = new HashMap<String,String>();
+                            bizMap.put("salesid", CacheUtil.getInstance().getUserId());
+                            bizMap.put("token", CacheUtil.getInstance().getToken());
+                            bizMap.put("uid", userId);
+                            bizMap.put("shopid", shopId);
+                            netRequest.setBizParamMap(bizMap);
+                            NetRequestTask netRequestTask = new NetRequestTask(getActivity(),netRequest, NetResponse.class);
+                            netRequestTask.methodType = MethodType.POST;
+                            netRequestTask.setNetRequestListener(new NetRequestListener() {
+                                @Override
+                                public void onNetworkRequestError(int errorCode, String errorMessage) {
+                                    Log.i(TAG, "errorCode:" + errorCode);
+                                    Log.i(TAG, "errorMessage:" + errorMessage);
+                                }
+
+                                @Override
+                                public void onNetworkRequestCancelled() {
+
+                                }
+
+                                @Override
+                                public void onNetworkResponseSucceed(NetResponse result) {
+                                    Log.i(TAG, "result.rawResult:" + result.rawResult);
+                                    try {
+                                        NoticeBean noticeBean = new Gson().fromJson(result.rawResult, NoticeBean.class);
+                                        if (null != noticeBean && noticeBean.isSet()) {
+                                            String vip = noticeBean.getUser_level();
+                                            if (!TextUtils.isEmpty(vip)) {
+                                                comingVo.setVip(vip);
+                                            }
+                                            String phoneNum = noticeBean.getPhone();
+                                            if (!TextUtils.isEmpty(phoneNum)) {
+                                                comingVo.setPhoneNum(phoneNum);
+                                            }
+                                            BookOrderBean bookOrderBean = noticeBean.getOrder();
+                                            if (null != bookOrderBean) {
+                                                String roomType = bookOrderBean.getRoomType();
+                                                if (!TextUtils.isEmpty(roomType)) {
+                                                    comingVo.setRoomType(roomType);
+                                                }
+                                                String checkInDate = bookOrderBean.getArrivalDate();
+                                                String checkOutDate = bookOrderBean.getDepartureDate();
+                                                if (!TextUtils.isEmpty(checkInDate)) {
+                                                    comingVo.setCheckInDate(checkInDate);
+                                                }
+                                                if (!TextUtils.isEmpty(checkOutDate)) {
+                                                    comingVo.setCheckOutDate(checkOutDate);
+                                                }
+                                                String orderStatus = bookOrderBean.getStatus();
+                                                if (!TextUtils.isEmpty(orderStatus)) {
+                                                    comingVo.setOrderStatus(Integer.parseInt(orderStatus));
+                                                }
+                                                if (!TextUtils.isEmpty(checkInDate) && !TextUtils.isEmpty(checkOutDate)) {
+                                                    int stayDays = TimeUtil.daysBetween(checkInDate, checkOutDate);
+                                                    comingVo.setStayDays(stayDays);
+                                                }
+                                            }
+                                            if (null != comingVo) {
+                                                ComingDBUtil.getInstance().addComing(comingVo);
+                                            }
+                                        }
+                                    } catch (Exception e) {
+                                        Log.e(TAG, e.getMessage());
+                                    }
+
+                                }
+
+                                @Override
+                                public void beforeNetworkRequestStart() {
+
+                                }
+                            });
+                            netRequestTask.isShowLoadingDialog = true;
+                            netRequestTask.execute();
+                        }
+                    }
+
                 }
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
+
 }

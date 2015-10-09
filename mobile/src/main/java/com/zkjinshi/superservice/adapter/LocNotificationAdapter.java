@@ -2,7 +2,6 @@ package com.zkjinshi.superservice.adapter;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.res.TypedArray;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -22,6 +21,7 @@ import com.zkjinshi.superservice.listener.RecyclerItemClickListener;
 import com.zkjinshi.superservice.listener.RecyclerLoadMoreListener;
 import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.view.CircleStatusView;
+import com.zkjinshi.superservice.vo.ComingVo;
 import com.zkjinshi.superservice.vo.LatestClientVo;
 import com.zkjinshi.superservice.view.CircleImageView;
 
@@ -36,17 +36,26 @@ import java.util.List;
  */
 public class LocNotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private Context mActivity;
+    private Context context;
 
-    private List<LatestClientVo>  mList;
+    private  ArrayList<ComingVo> comingList;
     private DisplayImageOptions     options;
     private RecyclerItemClickListener itemClickListener;
     private RecyclerLoadMoreListener loadMoreListener;
 
-    public LocNotificationAdapter(Activity activity, List<LatestClientVo> list) {
+    public void setComingList(ArrayList<ComingVo> comingList) {
+        if(null ==  comingList){
+            this.comingList = new ArrayList<ComingVo>();
+        }else{
+            this.comingList = comingList;
+        }
+        notifyDataSetChanged();
+    }
 
-        this.mActivity = activity;
-        this.mList     = list;
+    public LocNotificationAdapter(Activity activity, ArrayList<ComingVo> comingList) {
+
+        this.context = activity;
+        this.setComingList(comingList);
         this.options = new DisplayImageOptions.Builder()
                 .showImageOnLoading(R.drawable.img_hotel_zhanwei)// 设置图片下载期间显示的图片
                 .showImageForEmptyUri(R.drawable.img_hotel_zhanwei)// 设置图片Uri为空或是错误的时候显示的图片
@@ -58,59 +67,65 @@ public class LocNotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mActivity).inflate(R.layout.item_loc_notification, null);
+        View view = LayoutInflater.from(context).inflate(R.layout.item_loc_notification, null);
         NoticeViewHolder localHolder = new NoticeViewHolder(view);
         return localHolder;
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        LatestClientVo latestClientVo = mList.get(position);
+        ComingVo comingVo = comingList.get(position);
 
-        String userId = latestClientVo.getUserID();
+        String userId = comingVo.getUserId();
         String imageUrl = Constants.GET_USER_AVATAR + userId + ".jpg";
         if(!TextUtils.isEmpty(imageUrl)){
             ImageLoader.getInstance().displayImage(imageUrl, ((NoticeViewHolder) holder).civClientAvatar, options);
         }
-        //((NoticeViewHolder) holder).tvVip.setText("VIP1");
-        ((NoticeViewHolder) holder).tvClientName.setText(latestClientVo.getUserName());
+        String vip = comingVo.getVip();
+        if(!TextUtils.isEmpty(vip)){
+            ((NoticeViewHolder) holder).tvVip.setText("VIP"+vip);
+        }
+        String userName = comingVo.getUserName();
+        if(!TextUtils.isEmpty(userName)){
+            ((NoticeViewHolder) holder).tvClientName.setText(userName);
+        }
         //((NoticeViewHolder) holder).tvClientInfo.setText(latestClientVo.getUserID());
         //((NoticeViewHolder) holder).tvClientNotice.setText("VIP#");
         //((NoticeViewHolder) holder).tvTodo.setText("VIP#");
         //((NoticeViewHolder) holder).tvOrderInfo.setText("VIP#");
-        ((NoticeViewHolder) holder).tvTimeInfo.setText(TimeUtil.getChatTime(latestClientVo.getTimeStamp()));
+        ((NoticeViewHolder) holder).tvTimeInfo.setText(TimeUtil.getChatTime(comingVo.getArriveTime()));
 
         ((NoticeViewHolder) holder).ivDianHua.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DialogUtil.getInstance().showToast(mActivity, "ivDianHua onClick");
+                DialogUtil.getInstance().showToast(context, "ivDianHua onClick");
             }
         });
 
         ((NoticeViewHolder) holder).ivDuiHua.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DialogUtil.getInstance().showToast(mActivity, "ivDuiHua onClick");
+                DialogUtil.getInstance().showToast(context, "ivDuiHua onClick");
             }
         });
 
         ((NoticeViewHolder) holder).ivFenXiang.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DialogUtil.getInstance().showToast(mActivity, "ivFenXiang onClick");
+                DialogUtil.getInstance().showToast(context, "ivFenXiang onClick");
             }
         });
         LinearLayout.LayoutParams contentLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         if(position == 0){
-            contentLayoutParams.setMargins(0,DisplayUtil.dip2px(mActivity,12),DisplayUtil.dip2px(mActivity,8),DisplayUtil.dip2px(mActivity,6));
+            contentLayoutParams.setMargins(0,DisplayUtil.dip2px(context,12),DisplayUtil.dip2px(context,8),DisplayUtil.dip2px(context,6));
         }else if(position == getItemCount()-1){
-            contentLayoutParams.setMargins(0, DisplayUtil.dip2px(mActivity, 6), DisplayUtil.dip2px(mActivity, 8), DisplayUtil.dip2px(mActivity, 6));
+            contentLayoutParams.setMargins(0, DisplayUtil.dip2px(context, 6), DisplayUtil.dip2px(context, 8), DisplayUtil.dip2px(context, 6));
         }else{
-            contentLayoutParams.setMargins(0, DisplayUtil.dip2px(mActivity, 6), DisplayUtil.dip2px(mActivity, 8), DisplayUtil.dip2px(mActivity, 6));
+            contentLayoutParams.setMargins(0, DisplayUtil.dip2px(context, 6), DisplayUtil.dip2px(context, 8), DisplayUtil.dip2px(context, 6));
         }
         ((NoticeViewHolder) holder).contentLayout.setLayoutParams(contentLayoutParams);
         if(null != loadMoreListener){
-            if (position == mList.size() - 1) {
+            if (position == comingList.size() - 1) {
                 loadMoreListener.loadMore();
             }
         }
@@ -118,7 +133,7 @@ public class LocNotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
     @Override
     public int getItemCount() {
-        return mList.size();
+        return comingList.size();
     }
 
     public class NoticeViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
@@ -163,15 +178,6 @@ public class LocNotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                 itemClickListener.onItemClick(v,getAdapterPosition());
             }
         }
-    }
-
-    public void setData(List<LatestClientVo> latestClientBeans) {
-        if (null == latestClientBeans) {
-            this.mList = new ArrayList<>();
-        } else {
-            this.mList = latestClientBeans;
-        }
-        notifyDataSetChanged();
     }
 
     public void setOnItemClickListener(RecyclerItemClickListener itemClickListener) {
