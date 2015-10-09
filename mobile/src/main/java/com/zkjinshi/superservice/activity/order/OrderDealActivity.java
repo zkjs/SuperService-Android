@@ -402,7 +402,7 @@ public class OrderDealActivity extends Activity {
                     return;
                 }
                 Intent intent = new Intent(OrderDealActivity.this, OrderPayActivity.class);
-                intent.putExtra("payment", orderDetailBean.getRoom().getPayment());
+                intent.putExtra("orderDetailBean", orderDetailBean);
                 startActivityForResult(intent, PAY_REQUEST_CODE);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }

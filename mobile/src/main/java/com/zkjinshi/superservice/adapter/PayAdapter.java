@@ -1,53 +1,49 @@
 package com.zkjinshi.superservice.adapter;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
+
 import android.widget.ImageView;
-import android.widget.RadioButton;
 import android.widget.TextView;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
+
 import com.zkjinshi.superservice.R;
-import com.zkjinshi.superservice.bean.GoodBean;
-import com.zkjinshi.superservice.utils.ProtocolUtil;
+
+import com.zkjinshi.superservice.bean.PayBean;
+
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+
 
 /**
- * 商品列表adapter
  * 开发者：dujiande
- * 日期：2015/9/30
+ * 日期：2015/10/9
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class GoodAdapter extends BaseAdapter{
-    private final static String TAG = GoodAdapter.class.getSimpleName();
+public class PayAdapter  extends BaseAdapter{
+
+    private final static String TAG = BaseAdapter.class.getSimpleName();
 
     private LayoutInflater mInflater;//得到一个LayoutInfalter对象用来导入布局
-    private ArrayList<GoodBean> goodList = new ArrayList<GoodBean>();
+    private ArrayList<PayBean> payList = new ArrayList<PayBean>();
     private int checkid = 0;
 
-    public GoodAdapter(Context context,ArrayList<GoodBean> goodList, int checkid) {
+    public PayAdapter(Context context, ArrayList<PayBean> payList, int checkid) {
         this.mInflater = LayoutInflater.from(context);
-        this.goodList = goodList;
+        this.payList = payList;
         this.checkid = checkid;
     }
 
-    public GoodBean getGoodByPosition(int position){
-        return goodList.get(position);
+    public PayBean gePayByPosition(int position){
+        return payList.get(position);
     }
 
     public void setCheckidByPosition(int position) {
-        this.checkid = goodList.get(position).getId();
+        this.checkid = payList.get(position).getPay_id();
     }
 
     private boolean ischecked(int id){
@@ -56,7 +52,7 @@ public class GoodAdapter extends BaseAdapter{
 
     @Override
     public int getCount() {
-        return goodList.size();
+        return payList.size();
     }
 
     @Override
@@ -73,24 +69,22 @@ public class GoodAdapter extends BaseAdapter{
     public View getView(final int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
         if (convertView == null) {
-            convertView = mInflater.inflate(R.layout.good_item, null);
+            convertView = mInflater.inflate(R.layout.item_pay, null);
             holder = new ViewHolder();
-            holder.img = (ImageView)convertView.findViewById(R.id.zone_img_iv);
-            holder.name = (TextView)convertView.findViewById(R.id.zone_name_tv);
-            holder.icon      = (ImageView)convertView.findViewById(R.id.icon);
+            holder.img = (ImageView)convertView.findViewById(R.id.iv_img);
+            holder.name = (TextView)convertView.findViewById(R.id.tv_name);
             convertView.setTag(holder);//绑定ViewHolder对象
         }else{
             holder = (ViewHolder)convertView.getTag();//取出ViewHolder对象
         }
-        holder.name.setText(goodList.get(position).getRoom() + goodList.get(position).getType());
-        ImageLoader.getInstance().displayImage(ProtocolUtil.getImgUrl(goodList.get(position).getImgurl()),holder.img);
+        holder.name.setText(payList.get(position).getPay_name());
 
-        int id = goodList.get(position).getId();
+        int id = payList.get(position).getPay_id();
         boolean c = ischecked(id);
         if(c){
-            holder.icon.setImageResource(R.drawable.ic_jia_pre);
+            holder.img.setImageResource(R.drawable.ic_xuankuang_pre);
         }else{
-            holder.icon.setImageResource(R.drawable.ic_jia_nor);
+            holder.img.setImageResource(R.drawable.ic_xuankuang_nor);
         }
         return convertView;
     }
@@ -112,7 +106,6 @@ public class GoodAdapter extends BaseAdapter{
     public final class ViewHolder{
         public ImageView img;
         public TextView  name;
-        public ImageView icon;
     }
 
 

@@ -40,6 +40,7 @@ public class BookOrderBean implements Serializable {
     private String room_rate;//房价
     private String company;//公司名
     private String payment;//付款方式
+    private String guestid;
     private String guest;//预定人
     private String guesttel;//预定人电话
     private String status;//状态 0:未确认生效 1:取消状态 2:确认成功,3:交易完成,4:推迟
@@ -50,6 +51,14 @@ public class BookOrderBean implements Serializable {
     private String content;//默认发送订单提示消息内容
     private String image;//酒店对应图片后缀
     private String manInStay;  //入住的人，如果多个人，用逗号隔开
+
+    public String getGuestid() {
+        return guestid;
+    }
+
+    public void setGuestid(String guestid) {
+        this.guestid = guestid;
+    }
 
     public String getManInStay() {
         return manInStay;

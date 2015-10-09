@@ -56,6 +56,7 @@
                 android:orientation="vertical"
                 android:gravity="center_vertical">
                     <TextView
+                        android:id="@+id/tv_username"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="吴媛媛"
@@ -63,6 +64,7 @@
                         android:textColor="#101010"/>
 
                 <TextView
+                    android:id="@+id/tv_user_info"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="VIP3  |  来店18次 | 16次订单"
@@ -91,6 +93,7 @@
                 android:textColor="#101010"/>
 
             <TextView
+                android:id="@+id/order_text"
                 android:gravity="center_vertical"
                 android:layout_width="300dp"
                 android:layout_height="50dp"
@@ -111,42 +114,25 @@
             android:layout_marginTop="10dp"
             android:id="@+id/order_rate" />
 
-        <RadioGroup
+        <ListView
             android:layout_width="match_parent"
-            android:layout_height="150dp">
-                <RadioButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="挂账"
-                    android:textSize="14sp"
-                    android:textColor="#101010"
-                    />
-            <RadioButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="到店支付"
-                android:textSize="14sp"
-                android:textColor="#101010"
-                />
-            <RadioButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="在线支付"
-                android:textSize="14sp"
-                android:textColor="#101010"
-                />
-        </RadioGroup>
+            android:layout_height="150dip"
+            android:fadingEdge="none"
+            android:divider="#f0edf0"
+            android:dividerHeight="0dp"
+            android:fadeScrollbars="true"
+            android:id="@+id/pay_listview"/>
 
         <EditText
             android:padding="5dp"
             android:gravity="left|top"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="68dp"
             style="@style/inputStyle"
             android:inputType="text"
-            android:hint="如有备注，在此说明"
-            android:layout_marginTop="10dp"
-            android:id="@+id/order_remark" />
+            android:hint="定价说明"
+            android:layout_marginTop="2dp"
+            android:id="@+id/price_remark" />
 
     </LinearLayout>
 

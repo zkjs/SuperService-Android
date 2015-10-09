@@ -101,6 +101,12 @@ public class ProtocolUtil {
         return ConfigUtil.getInst().getHttpDomain()+"semp/paylist";
     }
 
+    /**
+     * 到店通知查询用户区域/个人信息
+     */
+    public static String getSempNoticeUrl(){
+        return ConfigUtil.getInst().getHttpDomain()+"semp/notice";
+    }
 
 
 
@@ -122,7 +128,14 @@ public class ProtocolUtil {
         return ConfigUtil.getInst().getHttpDomain()+imageUrl;
     }
 
-
+    /**
+     * 获得用户头像
+     * @param userid
+     * @return
+     */
+    public static String getAvatarUrl(String userid){
+        return ConfigUtil.getInst().getHttpDomain()+"uploads/users/"+userid+".jpg";
+    }
 
 
 }
