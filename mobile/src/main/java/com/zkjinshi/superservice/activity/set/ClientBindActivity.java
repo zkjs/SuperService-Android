@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -31,6 +32,9 @@ import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.view.CircleImageView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.HashMap;
 import java.util.List;
 
@@ -39,19 +43,19 @@ import me.kaede.tagview.Tag;
 import me.kaede.tagview.TagView;
 
 /**
- * 客人详细信息
+ * 客人绑定服务员操作
  * 开发者：vincent
  * 日期：2015/10/5
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class ClientDetailActivity extends Activity {
+public class ClientBindActivity extends Activity {
 
-    private final static String TAG = ClientDetailActivity.class.getSimpleName();
+    private final static String TAG = ClientBindActivity.class.getSimpleName();
 
-    private String      mPhoneNumber;
-    private String      mUserID;
-    private String      mToken;
+    private String mUserID;
+    private String mToken;
+    private String mShopID;
 
     private ImageButton mIbtnBack;
     private ImageButton mIbtnDianhua;
@@ -63,8 +67,8 @@ public class ClientDetailActivity extends Activity {
     private TextView    mTvRecordTimes;
     private TagView     mTvTagPreference;
     private TagView     mTvTagPrivilege;
-    private TagView     mTvTagClient;
-    private EditText    mEtRemark;
+    private Button      mBtnConfirm;
+    private Button      mBtnCancell;
 
     private CircleImageView  mCivMemberAvatar;
     private ClientDetailBean mClient;
@@ -72,7 +76,7 @@ public class ClientDetailActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_client_detail);
+        setContentView(R.layout.activity_client_bind);
 
         initView();
         initData();
@@ -91,90 +95,18 @@ public class ClientDetailActivity extends Activity {
         mTvRecordTimes   = (TextView)        findViewById(R.id.tv_record_times);
         mTvTagPreference = (TagView)         findViewById(R.id.tv_preference_tag);
         mTvTagPrivilege  = (TagView)         findViewById(R.id.tv_privilege_tag);
-        mTvTagClient     = (TagView)         findViewById(R.id.tv_client_tag);
-        mEtRemark        = (EditText)        findViewById(R.id.et_remark);
+        mBtnConfirm      = (Button)         findViewById(R.id.btn_confirm);
+        mBtnCancell      = (Button)         findViewById(R.id.btn_cancel);
     }
 
     private void initData() {
-        mPhoneNumber  = getIntent().getStringExtra("phone_number");
+
         mUserID = CacheUtil.getInstance().getUserId();
         mToken  = CacheUtil.getInstance().getToken();
+        mShopID = CacheUtil.getInstance().getShopID();
 
-        DialogUtil.getInstance().showProgressDialog(ClientDetailActivity.this);
-        getClientDetail(mPhoneNumber);
-    }
-
-    private void getClientDetail(String mPhoneNumber) {
-        NetRequest netRequest = new NetRequest(ProtocolUtil.getClientDetailUrl());
-        HashMap<String,String> bizMap = new HashMap<>();
-        bizMap.put("empid", mUserID);
-        bizMap.put("token", mToken);
-        bizMap.put("phone", mPhoneNumber);
-        bizMap.put("set", "9");
-        netRequest.setBizParamMap(bizMap);
-        NetRequestTask netRequestTask = new NetRequestTask(this, netRequest, NetResponse.class);
-        netRequestTask.methodType = MethodType.POST;
-        netRequestTask.setNetRequestListener(new NetRequestListener() {
-            @Override
-            public void onNetworkRequestError(int errorCode, String errorMessage) {
-                Log.i(TAG, "errorCode:" + errorCode);
-                Log.i(TAG, "errorMessage:" + errorMessage);
-
-                //网络请求异常
-                DialogUtil.getInstance().cancelProgressDialog();
-                ClientDetailActivity.this.finish();
-                DialogUtil.getInstance().showToast(ClientDetailActivity.this, "网络异常");
-            }
-
-            @Override
-            public void onNetworkRequestCancelled() {
-                DialogUtil.getInstance().cancelProgressDialog();
-            }
-
-            @Override
-            public void onNetworkResponseSucceed(NetResponse result) {
-                Log.i(TAG, "result.rawResult:" + result.rawResult);
-                DialogUtil.getInstance().cancelProgressDialog();
-                String jsonResult = result.rawResult;
-                if (jsonResult.contains("false") || jsonResult.trim().contains("err")) {
-                    DialogUtil.getInstance().showToast(ClientDetailActivity.this, "验证不通过，请退出后重新登录。");
-                } else {
-                    Gson gson = new Gson();
-                    mClient = gson.fromJson(jsonResult, ClientDetailBean.class);
-                    showClient(mClient);
-                }
-            }
-
-            @Override
-            public void beforeNetworkRequestStart() {
-                //网络请求前
-            }
-        });
-        netRequestTask.isShowLoadingDialog = true;
-        netRequestTask.execute();
-    }
-
-    /**
-     * 邀请对话框
-     */
-    private void showInviteDialog() {
-        AlertDialog.Builder builder=new AlertDialog.Builder(this);
-        builder.setTitle(getString(R.string.app_name));
-        builder.setMessage("此用户尚未成为会员？邀请当前用户加入?");
-        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() { //设置确定按钮
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-                //TODO: 发送短信邀请
-            }
-        });
-        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() { //设置取消按钮
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-        builder.create().show();
+        mClient = (ClientDetailBean) getIntent().getSerializableExtra("client");
+        showClient(mClient);
     }
 
     /**
@@ -206,31 +138,23 @@ public class ClientDetailActivity extends Activity {
         //TODO: 1.客户偏好标签处理
         //TODO: 2.特权标签处理
 
-        //3. 客户信息标签处理
-        final List<ClientDetailBean.ClientTag> tags = client.getTags();
-        if(null != tags && !tags.isEmpty()){
-            for(ClientDetailBean.ClientTag clientTag : tags){
-                mTvTagClient.addTag(createTag(clientTag.tagid, clientTag.tag, null));
-            }
-            mTvTagClient.addTag(createTag("     +     "));
-        }
     }
 
     private void initListener() {
         mIbtnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ClientDetailActivity.this.finish();
+                ClientBindActivity.this.finish();
             }
         });
 
         mIbtnDianhua.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!TextUtils.isEmpty(mPhoneNumber)){
+                if (!TextUtils.isEmpty(mClient.getPhone())) {
                     //打电话
-                    Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + mPhoneNumber));
-                    ClientDetailActivity.this.startActivity(intent);
+                    Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + mClient.getPhone()));
+                    ClientBindActivity.this.startActivity(intent);
                 }
             }
         });
@@ -239,24 +163,95 @@ public class ClientDetailActivity extends Activity {
             @Override
             public void onClick(View v) {
                 //TODO: 发起聊天
-                DialogUtil.getInstance().showToast(ClientDetailActivity.this, "会话聊天");
+                DialogUtil.getInstance().showToast(ClientBindActivity.this, "会话聊天");
             }
         });
 
-        mTvTagClient.setOnTagClickListener(new OnTagClickListener() {
+        mBtnConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onTagClick(Tag tag, int position) {
-                //TODO: 判断此服务员是否有权限添加标签
-                if(mClient != null){
-                    if(!TextUtils.isEmpty(tag.text) && tag.text.trim().equals("+")) {
-                        //进入添加标签界面
-                        Intent addNewTag = new Intent(ClientDetailActivity.this, TagAddActivity.class);
-                        addNewTag.putExtra("phone_number", mPhoneNumber);
-                        ClientDetailActivity.this.startActivity(addNewTag);
-                    }
+            public void onClick(View v) {
+                if (null != mClient) {
+                    //绑定客户
+                    bindClient(mUserID, mToken, mShopID, mClient);
                 }
             }
         });
+
+        mBtnCancell.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ClientBindActivity.this.finish();
+            }
+        });
+    }
+
+    /**
+     * * 为服务员绑定客户
+     * @param userID
+     * @param token
+     * @param shopID
+     * @param mClient
+     */
+    private void bindClient(String userID, String token, String shopID, ClientDetailBean mClient) {
+        NetRequest netRequest = new NetRequest(ProtocolUtil.getAddUserUrl());
+        HashMap<String,String> bizMap = new HashMap<>();
+        bizMap.put("salesid", userID);
+        bizMap.put("token", token);
+        bizMap.put("shopid", shopID);
+        bizMap.put("phone", mClient.getPhone());
+        bizMap.put("username", mClient.getUsername());
+        bizMap.put("position", mClient.getPosition());
+        bizMap.put("company", mClient.getCompany());
+        bizMap.put("other_desc", "");
+        bizMap.put("is_bill", mClient.getIs_bill() + "");
+        netRequest.setBizParamMap(bizMap);
+        NetRequestTask netRequestTask = new NetRequestTask(this, netRequest, NetResponse.class);
+        netRequestTask.methodType = MethodType.POST;
+        netRequestTask.setNetRequestListener(new NetRequestListener() {
+            @Override
+            public void onNetworkRequestError(int errorCode, String errorMessage) {
+                Log.i(TAG, "errorCode:" + errorCode);
+                Log.i(TAG, "errorMessage:" + errorMessage);
+                //网络请求异常
+                DialogUtil.getInstance().cancelProgressDialog();
+                ClientBindActivity.this.finish();
+                DialogUtil.getInstance().showToast(ClientBindActivity.this, "网络异常");
+            }
+
+            @Override
+            public void onNetworkRequestCancelled() {
+                DialogUtil.getInstance().cancelProgressDialog();
+            }
+
+            @Override
+            public void onNetworkResponseSucceed(NetResponse result) {
+                Log.i(TAG, "result.rawResult:" + result.rawResult);
+                DialogUtil.getInstance().cancelProgressDialog();
+                String jsonResult = result.rawResult;
+                try {
+                    JSONObject jsonObject = new JSONObject(jsonResult);
+                    if(jsonObject.getBoolean("set")){
+                        DialogUtil.getInstance().showToast(ClientBindActivity.this, "用户绑定成功！");
+                    } else {
+                        int errCode = jsonObject.getInt("err");
+                        //验证没通过
+                        if (300 == errCode) {
+                            DialogUtil.getInstance().showToast(ClientBindActivity.this,
+                                    "此用户已被绑定，请解除绑定后重新绑定！");
+                        }
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void beforeNetworkRequestStart() {
+                //网络请求前
+            }
+        });
+        netRequestTask.isShowLoadingDialog = true;
+        netRequestTask.execute();
     }
 
     /**

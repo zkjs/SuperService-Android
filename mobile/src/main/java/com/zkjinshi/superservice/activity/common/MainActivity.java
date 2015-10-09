@@ -25,6 +25,7 @@ import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.base.util.ImageUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.set.ContactsActivity;
+import com.zkjinshi.superservice.activity.set.TeamContactsActivity;
 import com.zkjinshi.superservice.bean.BaseBean;
 import com.zkjinshi.superservice.listener.MessageListener;
 import com.zkjinshi.superservice.net.MethodType;
@@ -121,11 +122,13 @@ public class MainActivity extends AppCompatActivity {
                 startActivityForResult(intent, REQUEST_IMAGE);
             }
         });
+
         //团队联系人点击事件
         findViewById(R.id.team_tv).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent myTeamContacts = new Intent(MainActivity.this, TeamContactsActivity.class);
+                MainActivity.this.startActivity(myTeamContacts);
             }
         });
 
