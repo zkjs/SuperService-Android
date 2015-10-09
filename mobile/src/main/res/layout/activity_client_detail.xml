@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:background="@color/white"
     android:layout_height="match_parent">
@@ -199,13 +200,19 @@
                 android:textSize="16sp"
                 android:layout_height="wrap_content" />
 
-            <GridView
-                android:id="@+id/gv_preference_info"
-                android:layout_width="wrap_content"
+            <me.kaede.tagview.TagView
+                android:id="@+id/tv_preference_tag"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:numColumns="3" >
+                android:padding="10dp"
+                app:lineMargin="5dp"
+                app:tagMargin="3dp"
+                app:textPaddingBottom="3dp"
+                app:textPaddingLeft="10dp"
+                app:textPaddingRight="10dp"
+                app:textPaddingTop="3dp">
+            </me.kaede.tagview.TagView>
 
-            </GridView>
         </LinearLayout>
 
         <LinearLayout
@@ -222,13 +229,19 @@
                 android:textSize="16sp"
                 android:layout_height="wrap_content" />
 
-            <GridView
-                android:id="@+id/gv_privilege_info"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:numColumns="3" >
+                <me.kaede.tagview.TagView
+                    android:padding="10dp"
+                    android:id="@+id/tv_privilege_tag"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:lineMargin="5dp"
+                    app:tagMargin="3dp"
+                    app:textPaddingBottom="3dp"
+                    app:textPaddingLeft="10dp"
+                    app:textPaddingRight="10dp"
+                    app:textPaddingTop="3dp">
+                </me.kaede.tagview.TagView>
                 
-            </GridView>
         </LinearLayout>
         
         <TextView
@@ -254,22 +267,30 @@
                 android:textSize="16sp"
                 android:layout_height="wrap_content" />
 
-            <GridView
-                android:id="@+id/gv_tags"
-                android:layout_width="wrap_content"
+            <me.kaede.tagview.TagView
+                android:id="@+id/tv_client_tag"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:numColumns="3" >
-            </GridView>
+                android:padding="10dp"
+                app:lineMargin="5dp"
+                app:tagMargin="3dp"
+                app:textPaddingBottom="3dp"
+                app:textPaddingLeft="10dp"
+                app:textPaddingRight="10dp"
+                app:textPaddingTop="3dp">
+            </me.kaede.tagview.TagView>
+
         </LinearLayout>
         <RelativeLayout
+            android:padding="10dp"
             android:focusable="true"
             android:focusableInTouchMode="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <TextView
+                android:paddingRight="10dp"
                 android:id="@+id/tv_remark"
-                android:padding="10dp"
                 android:layout_width="wrap_content"
                 android:text="@string/remark"
                 android:textColor="@color/grayB8B8B8"
@@ -277,13 +298,17 @@
                 android:layout_height="wrap_content" />
 
             <EditText
-                android:padding="10dp"
-                android:layout_toRightOf="@id/tv_remark"
                 android:id="@+id/et_remark"
+                android:layout_toRightOf="@id/tv_remark"
+                android:layout_height="60dp"
+                android:hint="如有备注，在此说明"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:maxLines="3"
-                android:lines="3"/>
+                android:padding="5dp"
+                android:gravity="left|top"
+                style="@style/inputStyle"
+                android:inputType="text"
+                android:maxLines="3"/>
+
         </RelativeLayout>
 
     </LinearLayout>

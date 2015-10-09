@@ -1,7 +1,9 @@
 package com.zkjinshi.superservice.activity.set;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ContentResolver;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -190,6 +192,7 @@ public class ContactsActivity extends Activity{
                 Intent clientDetail = new Intent(ContactsActivity.this, ClientDetailActivity.class);
                 clientDetail.putExtra("phone_number", phoneNumber);
                 ContactsActivity.this.startActivity(clientDetail);
+
             }
         });
     }

@@ -19,10 +19,11 @@ public class ClientDetailBean {
     private String    company;
     private String    card_no;
     private int       is_bill;
-    private List<Tag> tags;
     private int       order_count;
 
-    public class Tag {
+    private List<ClientTag>     tags;
+
+    public class ClientTag{
         public int    tagid;
         public String tag;
     }
@@ -91,11 +92,11 @@ public class ClientDetailBean {
         this.is_bill = is_bill;
     }
 
-    public List<Tag> getTags() {
+    public List<ClientTag> getTags() {
         return tags;
     }
 
-    public void setTags(List<Tag> tags) {
+    public void setTags(List<ClientTag> tags) {
         this.tags = tags;
     }
 
