@@ -15,6 +15,7 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.base.util.DisplayUtil;
+import com.zkjinshi.base.util.IntentUtil;
 import com.zkjinshi.base.util.TimeUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.listener.RecyclerItemClickListener;
@@ -89,30 +90,39 @@ public class LocNotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         if(!TextUtils.isEmpty(userName)){
             ((NoticeViewHolder) holder).tvClientName.setText(userName);
         }
-        //((NoticeViewHolder) holder).tvClientInfo.setText(latestClientVo.getUserID());
-        //((NoticeViewHolder) holder).tvClientNotice.setText("VIP#");
-        //((NoticeViewHolder) holder).tvTodo.setText("VIP#");
-        //((NoticeViewHolder) holder).tvOrderInfo.setText("VIP#");
+        String location = comingVo.getLocation();
+        if(!TextUtils.isEmpty(location)){
+            ((NoticeViewHolder) holder).tvClientInfo.setText("到达"+location);
+        }
+        String roomType = comingVo.getRoomType();
+        int stayDays = comingVo.getStayDays();
+        String checkInDate = comingVo.getCheckInDate();
+        if(!TextUtils.isEmpty(roomType)){
+            ((NoticeViewHolder) holder).tvClientNotice.setText("需要办理入住手续");
+            ((NoticeViewHolder) holder).tvOrderInfo.setText(roomType+"|"+stayDays+"晚|"+checkInDate+"入住");
+        }else{
+            ((NoticeViewHolder) holder).tvOrderInfo.setText("无订单信息");
+        }
+        ((NoticeViewHolder) holder).tvTodo.setText("请做好迎接");
         ((NoticeViewHolder) holder).tvTimeInfo.setText(TimeUtil.getChatTime(comingVo.getArriveTime()));
-
+        final String phoneNum = comingVo.getPhoneNum();
         ((NoticeViewHolder) holder).ivDianHua.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DialogUtil.getInstance().showToast(context, "ivDianHua onClick");
+                IntentUtil.callPhone(context,phoneNum);
             }
         });
-
         ((NoticeViewHolder) holder).ivDuiHua.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DialogUtil.getInstance().showToast(context, "ivDuiHua onClick");
+                IntentUtil.startSendMessage("",phoneNum,context);
             }
         });
 
         ((NoticeViewHolder) holder).ivFenXiang.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DialogUtil.getInstance().showToast(context, "ivFenXiang onClick");
+                IntentUtil.startSendMessage("", phoneNum, context);
             }
         });
         LinearLayout.LayoutParams contentLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);

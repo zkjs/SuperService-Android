@@ -18,8 +18,10 @@ import com.google.gson.Gson;
 import com.zkjinshi.base.net.observer.IMessageObserver;
 import com.zkjinshi.base.net.observer.MessageSubject;
 import com.zkjinshi.base.net.protocol.ProtocolMSG;
+import com.zkjinshi.base.util.NetWorkUtil;
 import com.zkjinshi.base.util.TimeUtil;
 import com.zkjinshi.superservice.R;
+import com.zkjinshi.superservice.adapter.ChatAdapter;
 import com.zkjinshi.superservice.adapter.LocMoreAdapter;
 import com.zkjinshi.superservice.adapter.LocNotificationAdapter;
 import com.zkjinshi.superservice.bean.BookOrderBean;
@@ -31,21 +33,23 @@ import com.zkjinshi.superservice.net.NetRequestListener;
 import com.zkjinshi.superservice.net.NetRequestTask;
 import com.zkjinshi.superservice.net.NetResponse;
 import com.zkjinshi.superservice.sqlite.ComingDBUtil;
+import com.zkjinshi.superservice.sqlite.MessageDBUtil;
 import com.zkjinshi.superservice.sqlite.ZoneDBUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.view.CircleStatusView;
 import com.zkjinshi.superservice.vo.ComingVo;
-import com.zkjinshi.superservice.vo.LatestClientVo;
 import com.zkjinshi.superservice.entity.MsgPushTriggerLocNotificationM2S;
-import com.zkjinshi.superservice.test.LatestClientBiz;
+import com.zkjinshi.superservice.vo.MessageVo;
 import com.zkjinshi.superservice.vo.ZoneVo;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 
 
 /**
@@ -59,6 +63,9 @@ public class NoticeFragment extends Fragment implements IMessageObserver{
 
     public static final String TAG = "NoticeFragment";
 
+    public static final int NOTICE_PAGE_SIZE = 5;
+    public static final int REQUEST_PAGE_SIZE = 10;
+
     private Activity activity;
     private RecyclerView notityRecyclerView,moreRecyclerView;
     private LinearLayoutManager notifyLayoutManager;
@@ -68,7 +75,9 @@ public class NoticeFragment extends Fragment implements IMessageObserver{
     private CircleStatusView moreStatsuView;
     private SwipeRefreshLayout swipeRefreshLayout;
     private ComingVo comingVo;
-    private ArrayList<ComingVo> comingList = new ArrayList<ComingVo>();
+    private ArrayList<ComingVo> notifyComingList = new ArrayList<ComingVo>();
+    private ArrayList<ComingVo> moreComingList = new ArrayList<ComingVo>();
+    private ArrayList<ComingVo> requestComingList = new ArrayList<ComingVo>();
 
     public static NoticeFragment newInstance() {
         return new NoticeFragment();
@@ -90,21 +99,23 @@ public class NoticeFragment extends Fragment implements IMessageObserver{
     }
 
     private void initData() {
+
         activity = this.getActivity();
-        mNotificationAdapter = new LocNotificationAdapter(activity, comingList);
+        mNotificationAdapter = new LocNotificationAdapter(activity, notifyComingList);
         notityRecyclerView.setAdapter(mNotificationAdapter);
         notityRecyclerView.setHasFixedSize(true);
         notifyLayoutManager = new LinearLayoutManager(activity);
         notifyLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         notityRecyclerView.setLayoutManager(notifyLayoutManager);
 
-        locMoreAdapter = new LocMoreAdapter(activity,comingList);
+        locMoreAdapter = new LocMoreAdapter(activity, moreComingList);
         moreLayoutManager = new LinearLayoutManager(activity);
         moreLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         moreRecyclerView.setLayoutManager(moreLayoutManager);
         moreRecyclerView.setAdapter(locMoreAdapter);
         moreStatsuView.setStatus(CircleStatusView.CircleStatus.STATUS_MORE);
         moreStatsuView.invalidate();
+        queryPageMessages(REQUEST_PAGE_SIZE,System.currentTimeMillis(),true);
     }
 
     private void initListeners(){
@@ -259,6 +270,8 @@ public class NoticeFragment extends Fragment implements IMessageObserver{
                                             }
                                             if (null != comingVo) {
                                                 ComingDBUtil.getInstance().addComing(comingVo);
+                                                notifyComingList.add(comingVo);
+                                                mNotificationAdapter.setComingList(notifyComingList);
                                             }
                                         }
                                     } catch (Exception e) {
@@ -283,5 +296,47 @@ public class NoticeFragment extends Fragment implements IMessageObserver{
             e.printStackTrace();
         }
     }
+
+    public void queryPageMessages(final int limitSize, final long lastSendTime, final boolean isFirstTime) {
+        int  localCount;
+        requestComingList = new ArrayList<ComingVo>();
+        requestComingList = ComingDBUtil.getInstance().queryComingList(lastSendTime,limitSize,isFirstTime);
+        Collections.reverse(requestComingList);
+        localCount = requestComingList.size();
+        if (localCount > 0) {
+            if (null == notifyComingList) {
+                notifyComingList = new ArrayList<>();
+            }
+            if (requestComingList.size() > NOTICE_PAGE_SIZE) {
+                moreComingList = appendRange(requestComingList,NOTICE_PAGE_SIZE,requestComingList.size());
+                removeRange(requestComingList, 0, NOTICE_PAGE_SIZE);
+            }else{
+                moreComingList = new ArrayList<ComingVo>();
+            }
+            notifyComingList.addAll(requestComingList);
+            mNotificationAdapter.setComingList(notifyComingList);
+            locMoreAdapter.setComingList(moreComingList);
+            if (null != swipeRefreshLayout) {
+               swipeRefreshLayout.setRefreshing(false);
+            }
+        }
+    }
+
+    public void removeRange(ArrayList<ComingVo> requestMessageList,
+                            int fromIndex, int toIndex) {
+        for (int i = fromIndex; i < toIndex; i++) {
+            requestMessageList.remove(fromIndex);
+        }
+    }
+
+    public ArrayList<ComingVo> appendRange(ArrayList<ComingVo> requestMessageList,
+                            int fromIndex, int toIndex) {
+        moreComingList =  new ArrayList<ComingVo>();
+        for (int i = fromIndex-1; i < toIndex; i++) {
+            moreComingList.add(requestMessageList.get(i));
+        }
+        return moreComingList;
+    }
+
 
 }

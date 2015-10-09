@@ -129,7 +129,7 @@ public class TableOpenHelper {
                     + " phone_num text, "
                     + " room_type text, "
                     + " check_in_date text, "
-                    + " check_out_date text "
+                    + " check_out_date text, "
                     + " stay_days integer, "
                     + " arrive_time long, "
                     + " order_status integer "
