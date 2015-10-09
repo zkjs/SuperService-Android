@@ -141,13 +141,6 @@ public class MessageListener extends Handler implements IMessageListener {
                 LogUtil.getInstance().info(LogLevel.INFO, "用户到店通知");
                 MsgPushTriggerLocNotificationM2S msgLocNotification = gson.fromJson(message,
                                                     MsgPushTriggerLocNotificationM2S.class);
-                //对到店通知进行数据库插入操作
-                long addResult = LatestClientDBUtil.getInstance().addLatestClient(msgLocNotification);
-                if(addResult > 0){
-                    LogUtil.getInstance().info(LogLevel.INFO, "添加到店用户成功:"+ msgLocNotification.toString());
-                } else {
-                    LogUtil.getInstance().info(LogLevel.INFO, "添加到店用户失败");
-                }
                 NotificationHelper.getInstance().showNotification(ServiceApplication.getContext(), msgLocNotification);
             }
 

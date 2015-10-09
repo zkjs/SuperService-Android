@@ -68,7 +68,7 @@ public class NoticeFragment extends Fragment implements IMessageObserver{
     private CircleStatusView moreStatsuView;
     private SwipeRefreshLayout swipeRefreshLayout;
     private ComingVo comingVo;
-    private ArrayList<ComingVo> comingList;
+    private ArrayList<ComingVo> comingList = new ArrayList<ComingVo>();
 
     public static NoticeFragment newInstance() {
         return new NoticeFragment();
