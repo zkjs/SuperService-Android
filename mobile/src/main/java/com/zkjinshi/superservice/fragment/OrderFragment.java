@@ -1,8 +1,10 @@
 package com.zkjinshi.superservice.fragment;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -17,6 +19,7 @@ import com.zkjinshi.superservice.adapter.OrderAdapter;
 import com.zkjinshi.superservice.adapter.ZoneAdapter;
 import com.zkjinshi.superservice.bean.OrderBean;
 import com.zkjinshi.superservice.bean.ZoneBean;
+import com.zkjinshi.superservice.listener.RecyclerLoadMoreListener;
 import com.zkjinshi.superservice.net.MethodType;
 import com.zkjinshi.superservice.net.NetRequest;
 import com.zkjinshi.superservice.net.NetRequestListener;
@@ -25,6 +28,7 @@ import com.zkjinshi.superservice.net.NetResponse;
 import com.zkjinshi.superservice.sqlite.UserDBUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
+import com.zkjinshi.superservice.view.CircleStatusView;
 import com.zkjinshi.superservice.view.zoomview.ImageViewTouchBase;
 import com.zkjinshi.superservice.vo.UserVo;
 
@@ -33,7 +37,7 @@ import java.util.HashMap;
 
 /**
  * 订单处理Fragment页面
- * 开发者：JimmyZhang
+ * 开发者：杜健德
  * 日期：2015/9/23
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
@@ -45,6 +49,9 @@ public class OrderFragment extends Fragment{
     private RecyclerView rcyOrder;
     private RecyclerView rcyOrderDone;
     private UserVo userVo;
+    private CircleStatusView moreStatsuView;
+    private SwipeRefreshLayout swipeRefreshLayout;
+    OrderAdapter orderAdapter;
 
     public static OrderFragment newInstance() {
         return new OrderFragment();
@@ -54,14 +61,53 @@ public class OrderFragment extends Fragment{
         rcyOrder = (RecyclerView) view.findViewById(R.id.rcv_order);
         rcyOrderDone = (RecyclerView)view.findViewById(R.id.rcv_order_done);
 
+        moreStatsuView = (CircleStatusView)view.findViewById(R.id.csv_more);
+        swipeRefreshLayout = (SwipeRefreshLayout)view.findViewById(R.id.srl_order);
+
         rcyOrder.setHasFixedSize(true);
         rcyOrder.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         rcyOrderDone.setHasFixedSize(true);
         rcyOrderDone.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
 
+        moreStatsuView.setStatus(CircleStatusView.CircleStatus.STATUS_MORE);
+        moreStatsuView.invalidate();
+
         loadOrderList();
+
+
     }
+
+    private void initListeners(){
+
+        //下拉刷新
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+                }, 3000);
+            }
+        });
+
+        //自动加载更多
+        orderAdapter.setOnLoadMoreListener(new RecyclerLoadMoreListener() {
+            @Override
+            public void loadMore() {
+                swipeRefreshLayout.setRefreshing(true);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+                }, 3000);
+            }
+        });
+    }
+
 
     private void loadOrderList() {
         userVo = UserDBUtil.getInstance().queryUserById(CacheUtil.getInstance().getUserId());
@@ -103,8 +149,9 @@ public class OrderFragment extends Fragment{
                     }
 
 
-                    OrderAdapter orderAdapter = new OrderAdapter(orderList);
+                    orderAdapter = new OrderAdapter(orderList);
                     rcyOrder.setAdapter(orderAdapter);
+                    initListeners();
                 }catch (Exception e){
                     Log.e(TAG,e.getMessage());
                 }

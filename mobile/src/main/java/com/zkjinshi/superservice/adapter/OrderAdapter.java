@@ -1,5 +1,6 @@
 package com.zkjinshi.superservice.adapter;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,8 +9,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.zkjinshi.base.util.DisplayUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.bean.OrderBean;
+import com.zkjinshi.superservice.listener.RecyclerLoadMoreListener;
 import com.zkjinshi.superservice.view.CircleImageView;
 import com.zkjinshi.superservice.view.CircleStatusView;
 
@@ -26,14 +29,16 @@ public class OrderAdapter extends RecyclerView.Adapter{
     private static final String TAG = OrderAdapter.class.getSimpleName();
 
     private ArrayList<OrderBean> dataList;
-
+    private RecyclerLoadMoreListener loadMoreListener;
+    private Context context;
     public OrderAdapter(ArrayList<OrderBean> dataList) {
         this.dataList = dataList;
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_order, null);
+        context = parent.getContext();
+        View view = LayoutInflater.from(context).inflate(R.layout.item_order, null);
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         view.setLayoutParams(lp);
         return new OrderViewHolder(view);
@@ -62,6 +67,20 @@ public class OrderAdapter extends RecyclerView.Adapter{
 //            orderStatusStr = "已删除订单";
 //        }
 //        holder.name.setText(orderBean.getGuest()+orderStatusStr);
+        LinearLayout.LayoutParams contentLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        if(position == 0){
+            contentLayoutParams.setMargins(0, DisplayUtil.dip2px(context, 12),DisplayUtil.dip2px(context,8),DisplayUtil.dip2px(context,6));
+        }else if(position == getItemCount()-1){
+            contentLayoutParams.setMargins(0, DisplayUtil.dip2px(context, 6), DisplayUtil.dip2px(context, 8), DisplayUtil.dip2px(context, 6));
+        }else{
+            contentLayoutParams.setMargins(0, DisplayUtil.dip2px(context, 6), DisplayUtil.dip2px(context, 8), DisplayUtil.dip2px(context, 6));
+        }
+        holder.contentLayout.setLayoutParams(contentLayoutParams);
+        if(null != loadMoreListener){
+            if (position == dataList.size() - 1) {
+                loadMoreListener.loadMore();
+            }
+        }
     }
 
     @Override
@@ -83,6 +102,7 @@ public class OrderAdapter extends RecyclerView.Adapter{
         public ImageView tel;
         public ImageView chat;
         public ImageView share;
+        LinearLayout contentLayout;
 
         public OrderViewHolder(View itemView) {
             super(itemView);
@@ -96,6 +116,7 @@ public class OrderAdapter extends RecyclerView.Adapter{
             tel = (ImageView)itemView.findViewById(R.id.iv_tel);
             chat = (ImageView)itemView.findViewById(R.id.iv_chat);
             share = (ImageView)itemView.findViewById(R.id.iv_share);
+            contentLayout = (LinearLayout)itemView.findViewById(R.id.content_layout);
 
             order.setOnClickListener(this);
             tel.setOnClickListener(this);
@@ -121,6 +142,8 @@ public class OrderAdapter extends RecyclerView.Adapter{
         }
     }
 
-
+    public void setOnLoadMoreListener(RecyclerLoadMoreListener loadMoreListener){
+        this.loadMoreListener = loadMoreListener;
+    }
 
 }
