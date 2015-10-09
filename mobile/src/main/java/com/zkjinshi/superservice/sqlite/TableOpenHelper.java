@@ -61,8 +61,8 @@ public class TableOpenHelper {
             "create table if not exists "
                     + DBOpenHelper.MEMBER_TBL
                     + "("
+                    + " userid text primary key , "//用户ID
                     + " session_id text , "
-                    + " userid text, "//用户ID
                     + " logintype integer, "//用户类型 0:app用户  1:商家员工 默认为:0
                     + " shopid text, "//商家ID
                     + " empid text, "//员工ID
@@ -104,11 +104,27 @@ public class TableOpenHelper {
             " create table if not exists "
                     + DBOpenHelper.CLIENT_LATEST_TBL
                     + " ( "
-                    + " user_id     text, "
+                    + " user_id     text primary key , "
                     + " user_name   text, "
                     + " timestamp   long, "
                     + " shop_id     text, "
                     + " loc_id      text "
+                    + " ) ";
+
+    /** 创建区域信息表 */
+    public static String ZONE_TBL_SQL =
+            " create table if not exists "
+                    + DBOpenHelper.ZONE_TBL
+                    + " ( "
+                    + " loc_id  integer primary key, "
+                    + " shop_id   text, "
+                    + " sensor_id   integer, "
+                    + " uuid      text, "
+                    + " major     integer, "
+                    + " minior   integer, "
+                    + " locdesc   text, "
+                    + " status     integer, "
+                    + " remark      text "
                     + " ) ";
 
     /**
