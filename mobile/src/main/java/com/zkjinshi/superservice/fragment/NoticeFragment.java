@@ -218,7 +218,7 @@ public class NoticeFragment extends Fragment implements IMessageObserver{
                             bizMap.put("shopid", shopId);
                             netRequest.setBizParamMap(bizMap);
                             NetRequestTask netRequestTask = new NetRequestTask(getActivity(),netRequest, NetResponse.class);
-                            netRequestTask.methodType = MethodType.POST;
+                            netRequestTask.methodType = MethodType.PUSH;
                             netRequestTask.setNetRequestListener(new NetRequestListener() {
                                 @Override
                                 public void onNetworkRequestError(int errorCode, String errorMessage) {
@@ -309,7 +309,7 @@ public class NoticeFragment extends Fragment implements IMessageObserver{
             }
             if (requestComingList.size() > NOTICE_PAGE_SIZE) {
                 moreComingList = appendRange(requestComingList,NOTICE_PAGE_SIZE,requestComingList.size());
-                removeRange(requestComingList, 0, NOTICE_PAGE_SIZE);
+                removeRange(requestComingList, NOTICE_PAGE_SIZE, requestComingList.size());
             }else{
                 moreComingList = new ArrayList<ComingVo>();
             }
@@ -332,7 +332,7 @@ public class NoticeFragment extends Fragment implements IMessageObserver{
     public ArrayList<ComingVo> appendRange(ArrayList<ComingVo> requestMessageList,
                             int fromIndex, int toIndex) {
         moreComingList =  new ArrayList<ComingVo>();
-        for (int i = fromIndex-1; i < toIndex; i++) {
+        for (int i = fromIndex; i < toIndex; i++) {
             moreComingList.add(requestMessageList.get(i));
         }
         return moreComingList;
