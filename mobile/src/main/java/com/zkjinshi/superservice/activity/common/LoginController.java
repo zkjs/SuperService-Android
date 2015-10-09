@@ -84,6 +84,8 @@ public class LoginController {
                     CacheUtil.getInstance().setUserId(sempLoginbean.getSalesid());
                     CacheUtil.getInstance().setUserPhone(phone);
                     CacheUtil.getInstance().setUserName(sempLoginbean.getName());
+                    CacheUtil.getInstance().setShopID(sempLoginbean.getShopid());
+
                     DBOpenHelper.DB_NAME = sempLoginbean.getSalesid() + ".db";
                     UserVo userVo = UserFactory.getInstance().buildUserVo(sempLoginbean);
                     UserDBUtil.getInstance().addUser(userVo);

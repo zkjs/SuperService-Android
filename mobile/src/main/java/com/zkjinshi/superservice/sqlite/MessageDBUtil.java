@@ -194,6 +194,7 @@ public class MessageDBUtil {
                     e.printStackTrace();
                 }
                 if(id == -1){
+                    messageId = ""+ msgText.getSrvmsgid();
                     id = database.update(DBOpenHelper.MESSAGE_TBL, values, " message_id = ? ", new String[]{messageId});
                 }
             }
@@ -398,10 +399,7 @@ public class MessageDBUtil {
                         messageList.add(message);
                     }
                 }
-                LogUtil.getInstance().info(LogLevel.INFO,TAG+".queryHistoryMessageList->"+messageList);
-
             } catch (Exception e) {
-                LogUtil.getInstance().info(LogLevel.ERROR,TAG+".queryHistoryMessageList->"+e.getMessage());
                 e.printStackTrace();
             } finally {
 

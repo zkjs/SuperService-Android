@@ -46,5 +46,9 @@
     <string name="remark">备注</string>
     <string name="cancel">取消</string>
     <string name="save">保存</string>
+    <string name="please_input_the_tag_you_want">请输入您需要添加的标签内容！</string>
+    <string name="add_tag_successed">添加标签成功</string>
+    <string name="add_tag_failed">添加标签失败</string>
+    <string name="my_teams">我的团队</string>
 
 </resources>

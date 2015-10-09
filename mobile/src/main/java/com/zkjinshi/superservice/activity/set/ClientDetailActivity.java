@@ -1,8 +1,13 @@
 package com.zkjinshi.superservice.activity.set;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.DownloadManager;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -50,6 +55,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import me.kaede.tagview.OnTagClickListener;
+import me.kaede.tagview.Tag;
+import me.kaede.tagview.TagView;
+
 /**
  * 客人详细信息
  * 开发者：vincent
@@ -71,9 +80,9 @@ public class ClientDetailActivity extends Activity {
     private TextView    mTvMemberLevel;
     private TextView    mTvMemberType;
     private TextView    mTvRecordTimes;
-    private GridView    mGvPreference;
-    private GridView    mGvPrivilegeInfo;
-    private GridView    mGvTags;
+    private TagView     mTvTagPreference;
+    private TagView     mTvTagPrivilege;
+    private TagView     mTvTagClient;
     private EditText    mEtRemark;
 
     private CircleImageView mCivMemberAvatar;
@@ -98,9 +107,9 @@ public class ClientDetailActivity extends Activity {
         mIbtnDuiHua      = (ImageButton)     findViewById(R.id.ibtn_duihua);
         mTvMemberType    = (TextView)        findViewById(R.id.tv_member_type);
         mTvRecordTimes   = (TextView)        findViewById(R.id.tv_record_times);
-        mGvPreference    = (GridView)        findViewById(R.id.gv_preference_info);
-        mGvPrivilegeInfo = (GridView)        findViewById(R.id.gv_privilege_info);
-        mGvTags          = (GridView)        findViewById(R.id.gv_tags);
+        mTvTagPreference = (TagView)         findViewById(R.id.tv_preference_tag);
+        mTvTagPrivilege  = (TagView)         findViewById(R.id.tv_privilege_tag);
+        mTvTagClient     = (TagView)         findViewById(R.id.tv_client_tag);
         mEtRemark        = (EditText)        findViewById(R.id.et_remark);
     }
 
@@ -129,25 +138,28 @@ public class ClientDetailActivity extends Activity {
                 Log.i(TAG, "errorCode:" + errorCode);
                 Log.i(TAG, "errorMessage:" + errorMessage);
                 //网络请求异常
-                DialogUtil.getInstance().showToast(ClientDetailActivity.this, "获取用户详细信息失败");
-                ClientDetailActivity.this.finish();
                 DialogUtil.getInstance().cancelProgressDialog();
+                ClientDetailActivity.this.finish();
+                DialogUtil.getInstance().showToast(ClientDetailActivity.this, "网络异常");
             }
 
             @Override
             public void onNetworkRequestCancelled() {
-
+                DialogUtil.getInstance().cancelProgressDialog();
             }
 
             @Override
             public void onNetworkResponseSucceed(NetResponse result) {
                 Log.i(TAG, "result.rawResult:" + result.rawResult);
-                LogUtil.getInstance().info(LogLevel.INFO, "result:" + result.rawResult);
-                Gson gson = new Gson();
-                ClientDetailBean client = gson.fromJson(result.rawResult, ClientDetailBean.class);
                 DialogUtil.getInstance().cancelProgressDialog();
-                //显示用户详细信息
-                showClient(client);
+                String jsonResult = result.rawResult;
+                if (jsonResult.contains("false") || jsonResult.trim().contains("err")) {
+                    DialogUtil.getInstance().showToast(ClientDetailActivity.this, "验证不通过，请退出后重新登录。");
+                } else {
+                    Gson gson = new Gson();
+                    ClientDetailBean client = gson.fromJson(jsonResult, ClientDetailBean.class);
+                    showClient(client);
+                }
             }
 
             @Override
@@ -157,6 +169,29 @@ public class ClientDetailActivity extends Activity {
         });
         netRequestTask.isShowLoadingDialog = true;
         netRequestTask.execute();
+    }
+
+    /**
+     * 邀请对话框
+     */
+    private void showInviteDialog() {
+        AlertDialog.Builder builder=new AlertDialog.Builder(this);
+        builder.setTitle(getString(R.string.app_name));
+        builder.setMessage("此用户尚未成为会员？邀请当前用户加入?");
+        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() { //设置确定按钮
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                //TODO: 发送短信邀请
+            }
+        });
+        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() { //设置取消按钮
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.create().show();
     }
 
     /**
@@ -183,49 +218,18 @@ public class ClientDetailActivity extends Activity {
         } else {
             mTvMemberType.setText(getString(R.string.not_debt_member));
         }
-        mTvRecordTimes.setText(client.getOrder_count()+"");
-        final List<ClientDetailBean.Tag> tags = client.getTags();
+        mTvRecordTimes.setText(client.getOrder_count() + "");
 
+        //TODO: 1.客户偏好标签处理
+        //TODO: 2.特权标签处理
+
+        //3. 客户信息标签处理
+        final List<ClientDetailBean.ClientTag> tags = client.getTags();
         if(null != tags && !tags.isEmpty()){
-            ClientDetailBean.Tag tag = new ClientDetailBean().new Tag();
-            tag.tag = "add";
-            tags.add(tag);
-            mGvTags.setAdapter(new BaseAdapter() {
-                @Override
-                public int getCount() {
-                    return tags.size();
-                }
-
-                @Override
-                public Object getItem(int position) {
-                    return null;
-                }
-
-                @Override
-                public long getItemId(int position) {
-                    return 0;
-                }
-
-                @Override
-                public View getView(int position, View convertView, ViewGroup parent) {
-                    TextView text = new TextView(ClientDetailActivity.this);
-                    text.setText(tags.get(position).tag);
-                    text.setGravity(Gravity.CENTER);
-                    return text;
-                }
-            });
-
-            mGvTags.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    if (position == tags.size()-1) {
-                        //TODO:
-                        Intent addNewTag= new Intent(ClientDetailActivity.this, TagAddActivity.class);
-                        ClientDetailActivity.this.startActivity(addNewTag);
-                    }
-                }
-            });
-
+            for(ClientDetailBean.ClientTag clientTag : tags){
+                mTvTagClient.addTag(createTag(clientTag.tagid, clientTag.tag, null));
+            }
+            mTvTagClient.addTag(createTag("     +     "));
         }
     }
 
@@ -240,7 +244,11 @@ public class ClientDetailActivity extends Activity {
         mIbtnDianhua.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               //TODO: 打电话
+                if(!TextUtils.isEmpty(mPhoneNumber)){
+                    //打电话
+                    Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + mPhoneNumber));
+                    ClientDetailActivity.this.startActivity(intent);
+                }
             }
         });
 
@@ -248,9 +256,49 @@ public class ClientDetailActivity extends Activity {
             @Override
             public void onClick(View v) {
                 //TODO: 发起聊天
+                DialogUtil.getInstance().showToast(ClientDetailActivity.this, "会话聊天");
             }
         });
 
+        mTvTagClient.setOnTagClickListener(new OnTagClickListener() {
+            @Override
+            public void onTagClick(Tag tag, int position) {
+                if(!TextUtils.isEmpty(tag.text) && tag.text.trim().equals("+")) {
+                    //进入添加标签界面
+                    Intent addNewTag = new Intent(ClientDetailActivity.this, TagAddActivity.class);
+                    addNewTag.putExtra("phone_number", mPhoneNumber);
+                    ClientDetailActivity.this.startActivity(addNewTag);
+                }
+            }
+        });
+    }
 
+    /**
+     * 创建新Tag
+     * @param tagstr
+     * @return
+     */
+    private Tag createTag(String tagstr){
+        return createTag(tagstr, null);
+    }
+
+    private Tag createTag(String tagstr, Drawable background){
+        return createTag(0, tagstr, background);
+    }
+
+    private Tag createTag(int id, String tagstr, Drawable background){
+        Tag tag = new Tag(id, tagstr);
+        tag.tagTextColor         = Color.BLACK;
+        tag.layoutColor          = Color.WHITE;
+        tag.layoutColorPress     = Color.parseColor("#DDDDDD");
+        tag.background           = background;
+        tag.radius               = 40f;
+        tag.tagTextSize          = 18f;
+        tag.layoutBorderSize     = 1f;
+        tag.layoutBorderColor    = Color.parseColor("#bbbbbb");
+        tag.deleteIndicatorColor = Color.parseColor("#ff0000");
+        tag.deleteIndicatorSize  = 18f;
+        tag.isDeletable          = false;
+        return tag;
     }
 }

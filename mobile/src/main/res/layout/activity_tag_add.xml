@@ -8,17 +8,18 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="20dp"
-        android:background="@android:color/white">
+        android:padding="20dp">
 
         <EditText
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:hint="输入你的需要添加的标签"
+            android:hint="请输入标签"
             android:textColor="@color/black"
             android:textSize="16sp"
+            android:singleLine="true"
+            android:maxLength="10"
             android:textColorHint="@color/grayB8B8B8"
-            android:background="@android:color/transparent"
+            android:background="@android:color/white"
             android:id="@+id/et_input_tag" />
 
         <Button

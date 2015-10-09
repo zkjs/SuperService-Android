@@ -31,6 +31,7 @@ import com.zkjinshi.superservice.net.NetResponse;
 import com.zkjinshi.superservice.sqlite.DBOpenHelper;
 import com.zkjinshi.superservice.sqlite.UserDBUtil;
 
+import com.zkjinshi.superservice.sqlite.ZoneDBUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.view.RefreshLayout;
@@ -105,6 +106,7 @@ public class ZoneActivity extends Activity implements SwipeRefreshLayout.OnRefre
                 ArrayList<ZoneBean> zoneList = new Gson().fromJson(result.rawResult, new TypeToken< ArrayList<ZoneBean>>(){}.getType());
                 zoneAdapter = new ZoneAdapter(ZoneActivity.this, zoneList);
                 zoneLv.setAdapter(zoneAdapter);
+                ZoneDBUtil.getInstance().batchAddZone(zoneList);
             }
 
             @Override

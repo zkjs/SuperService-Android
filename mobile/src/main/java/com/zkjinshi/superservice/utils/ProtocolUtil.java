@@ -94,6 +94,14 @@ public class ProtocolUtil {
     }
 
     /**
+     * 会员信息 获取客人详细信息
+     * @return
+     */
+    public static String getAddTagUrl(){
+        return ConfigUtil.getInst().getHttpDomain()+"semp/addtag";
+    }
+
+    /**
      * 支付方式列表
      * @return
      */

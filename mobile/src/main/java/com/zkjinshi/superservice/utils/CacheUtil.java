@@ -306,4 +306,20 @@ public class CacheUtil {
 		sp.edit().putBoolean("voice_too_short", voiceTooShort).commit();
 	}
 
+	public void setShopID(String shopID) {
+		if (null == context) {
+			return;
+		}
+		SharedPreferences sp = context.getSharedPreferences(SVIP_CACHE, Context.MODE_PRIVATE);
+		sp.edit().putString("shop_id", shopID).commit();
+	}
+
+	public String getShopID() {
+		if (null == context) {
+			return null;
+		}
+		SharedPreferences sp = context.getSharedPreferences(SVIP_CACHE, Context.MODE_PRIVATE);
+		return sp.getString("shop_id", null);
+	}
+
 }
