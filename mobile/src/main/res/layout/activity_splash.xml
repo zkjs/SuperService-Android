@@ -7,6 +7,7 @@
     android:background="#ffffff">
 
     <TextView android:text="启动页面" android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:id="@+id/tv_start_text" />
 
 </RelativeLayout>

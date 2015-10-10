@@ -1,5 +1,6 @@
 package com.zkjinshi.superservice.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -14,7 +15,9 @@ import android.view.ViewGroup;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
+import com.zkjinshi.superservice.activity.common.LoginActivity;
 import com.zkjinshi.superservice.adapter.OrderAdapter;
 import com.zkjinshi.superservice.bean.BaseBean;
 import com.zkjinshi.superservice.bean.OrderBean;
@@ -171,7 +174,15 @@ public class OrderFragment extends Fragment{
                     }
                 }catch (Exception e){
                     Log.e(TAG,e.getMessage());
-                    //BaseBean baseBean = new Gson().fromJson()
+                    BaseBean baseBean = new Gson().fromJson(result.rawResult,BaseBean.class);
+                    if(baseBean!= null && baseBean.isSet() && baseBean.getErr().equals("400")){
+                        DialogUtil.getInstance().showToast(getActivity(),"Token 失效，请重新登录");
+                        CacheUtil.getInstance().setLogin(false);
+                        Intent intent = new Intent(getActivity(),LoginActivity.class);
+                        getActivity().startActivity(intent);
+                        getActivity().finish();
+
+                    }
                 }
 
             }

@@ -35,4 +35,5 @@ dependencies {
     compile project(':Cloud_TagView')
     compile project(':CalendarListview')
     compile project(':library.FileChoser')
+    compile files('libs/jxl.jar')
 }
