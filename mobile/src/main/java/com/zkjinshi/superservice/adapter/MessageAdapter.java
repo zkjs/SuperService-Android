@@ -13,7 +13,6 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.zkjinshi.base.util.TimeUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.listener.RecyclerItemClickListener;
-import com.zkjinshi.superservice.listener.RecyclerLoadMoreListener;
 import com.zkjinshi.superservice.sqlite.ChatRoomDBUtil;
 import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.view.CircleImageView;
@@ -37,7 +36,6 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private LayoutInflater inflater;
     private DisplayImageOptions options;
     private RecyclerItemClickListener itemClickListener;
-    private RecyclerLoadMoreListener loadMoreListener;
 
     public void setMessageList(ArrayList<MessageVo> messageList) {
         if(null ==  messageList){
@@ -117,11 +115,6 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             ((ViewHolder)holder).noticeCountTv.setVisibility(View.VISIBLE);
             ((ViewHolder)holder).noticeCountTv.setText(notifyCount+"");
         }
-        if(null != loadMoreListener){
-            if (position == messageList.size() - 1) {
-                loadMoreListener.loadMore();
-            }
-        }
     }
 
     @Override
@@ -153,9 +146,5 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     public void setOnItemClickListener(RecyclerItemClickListener itemClickListener) {
         this.itemClickListener = itemClickListener;
-    }
-
-    public void setOnLoadMoreListener(RecyclerLoadMoreListener loadMoreListener){
-        this.loadMoreListener = loadMoreListener;
     }
 }

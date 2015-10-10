@@ -13,21 +13,17 @@ import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.base.util.DisplayUtil;
 import com.zkjinshi.base.util.IntentUtil;
 import com.zkjinshi.base.util.TimeUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.listener.RecyclerItemClickListener;
-import com.zkjinshi.superservice.listener.RecyclerLoadMoreListener;
 import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.view.CircleStatusView;
 import com.zkjinshi.superservice.vo.ComingVo;
-import com.zkjinshi.superservice.vo.LatestClientVo;
 import com.zkjinshi.superservice.view.CircleImageView;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * 开发者：vincent
@@ -42,7 +38,6 @@ public class LocNotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     private  ArrayList<ComingVo> comingList;
     private DisplayImageOptions     options;
     private RecyclerItemClickListener itemClickListener;
-    private RecyclerLoadMoreListener loadMoreListener;
 
     public void setComingList(ArrayList<ComingVo> comingList) {
         if(null ==  comingList){
@@ -134,11 +129,6 @@ public class LocNotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             contentLayoutParams.setMargins(0, DisplayUtil.dip2px(context, 6), DisplayUtil.dip2px(context, 8), DisplayUtil.dip2px(context, 6));
         }
         ((NoticeViewHolder) holder).contentLayout.setLayoutParams(contentLayoutParams);
-        if(null != loadMoreListener){
-            if (position == comingList.size() - 1) {
-                loadMoreListener.loadMore();
-            }
-        }
     }
 
     @Override
@@ -194,7 +184,4 @@ public class LocNotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         this.itemClickListener = itemClickListener;
     }
 
-    public void setOnLoadMoreListener(RecyclerLoadMoreListener loadMoreListener){
-        this.loadMoreListener = loadMoreListener;
-    }
 }

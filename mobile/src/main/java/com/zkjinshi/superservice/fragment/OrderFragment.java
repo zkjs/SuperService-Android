@@ -12,14 +12,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.adapter.OrderAdapter;
-import com.zkjinshi.superservice.adapter.ZoneAdapter;
 import com.zkjinshi.superservice.bean.OrderBean;
-import com.zkjinshi.superservice.bean.ZoneBean;
-import com.zkjinshi.superservice.listener.RecyclerLoadMoreListener;
 import com.zkjinshi.superservice.net.MethodType;
 import com.zkjinshi.superservice.net.NetRequest;
 import com.zkjinshi.superservice.net.NetRequestListener;
@@ -29,7 +24,6 @@ import com.zkjinshi.superservice.sqlite.UserDBUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.view.CircleStatusView;
-import com.zkjinshi.superservice.view.zoomview.ImageViewTouchBase;
 import com.zkjinshi.superservice.vo.UserVo;
 
 import java.util.ArrayList;
