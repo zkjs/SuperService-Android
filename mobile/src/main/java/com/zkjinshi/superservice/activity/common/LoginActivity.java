@@ -64,7 +64,7 @@ public class LoginActivity extends Activity implements VerifyPhoneControler.Succ
         //VerifyPhoneControler.getInstance().setSuccessCallBack(this);
 
         //测试跳转用的
-        inputEt.setText("14000800920");//18912345678
+        inputEt.setText("14000800924");//18912345678
         loginBtn.setEnabled(true);
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
