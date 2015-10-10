@@ -90,12 +90,37 @@ public class OrderFragment extends Fragment{
         });
 
         //自动加载更多
-        orderAdapter.setOnLoadMoreListener(new RecyclerLoadMoreListener() {
+        rcyOrder.addOnScrollListener(new RecyclerView.OnScrollListener() {
+
+            boolean isSlidingToLast = false;
+
             @Override
-            public void loadMore() {
-                orderAdapter.isLoadingMore = true;
-                swipeRefreshLayout.setRefreshing(true);
-                loadOrderList(orderAdapter.getCurrentPage()+1);
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                LinearLayoutManager linearLayoutManager = (LinearLayoutManager)recyclerView.getLayoutManager();
+                if(newState == RecyclerView.SCROLL_STATE_IDLE){
+                    int lastVisibleItem = linearLayoutManager.findLastCompletelyVisibleItemPosition();
+                    int totalItemCount = linearLayoutManager.getItemCount();
+                    if (lastVisibleItem == (totalItemCount -1) && isSlidingToLast) {
+                        //加载更多功能的代码
+                        swipeRefreshLayout.setRefreshing(true);
+                        loadOrderList(orderAdapter.getCurrentPage()+1);
+
+                    }
+                }
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                //dx用来判断横向滑动方向，dy用来判断纵向滑动方向
+                if(dy > 0){
+                    //大于0表示，正在向右滚动
+                    isSlidingToLast = true;
+                }else{
+                    //小于等于0 表示停止或向左滚动
+                    isSlidingToLast = false;
+                }
             }
         });
 
@@ -141,7 +166,6 @@ public class OrderFragment extends Fragment{
                     }else{
                         orderAdapter.loadMoreAction(orderList);
                         swipeRefreshLayout.setRefreshing(false);
-                        orderAdapter.isLoadingMore = false;
                     }
                 }catch (Exception e){
                     Log.e(TAG,e.getMessage());
@@ -154,7 +178,7 @@ public class OrderFragment extends Fragment{
 
             }
         });
-        netRequestTask.isShowLoadingDialog = true;
+        netRequestTask.isShowLoadingDialog = false;
         netRequestTask.execute();
     }
 

@@ -36,11 +36,8 @@ import java.util.Date;
 public class OrderAdapter extends RecyclerView.Adapter {
 
     private static final String TAG = OrderAdapter.class.getSimpleName();
-
-    public boolean isLoadingMore = false;
     private int currentPage = 0;
     private ArrayList<OrderBean> dataList;
-    private RecyclerLoadMoreListener loadMoreListener;
     private Context context;
 
     public int getCurrentPage() {
@@ -154,11 +151,7 @@ public class OrderAdapter extends RecyclerView.Adapter {
             contentLayoutParams.setMargins(0, DisplayUtil.dip2px(context, 6), DisplayUtil.dip2px(context, 8), DisplayUtil.dip2px(context, 6));
         }
         holder.contentLayout.setLayoutParams(contentLayoutParams);
-//            if(null != loadMoreListener){
-//                if (!isLoadingMore && position == dataList.size() - 1) {
-//                    loadMoreListener.loadMore();
-//                }
-//            }
+
 
     }
 
@@ -228,8 +221,6 @@ public class OrderAdapter extends RecyclerView.Adapter {
         }
     }
 
-    public void setOnLoadMoreListener(RecyclerLoadMoreListener loadMoreListener){
-        this.loadMoreListener = loadMoreListener;
-    }
+
 
 }
