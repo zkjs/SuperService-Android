@@ -35,32 +35,59 @@ import java.util.Date;
 public class OrderAdapter extends RecyclerView.Adapter {
 
     private static final String TAG = OrderAdapter.class.getSimpleName();
-    private int currentPage = 0;
+
+    private long lastTimeStamp = 0; //最后一条的时间戳
+    private int pagedata = 4;     //每页多少条 默认10条
+
     private ArrayList<OrderBean> dataList;
     private Context context;
 
-    public int getCurrentPage() {
-        return currentPage;
+    public int getPagedata() {
+        return pagedata;
     }
 
-    public void setCurrentPage(int currentPage) {
-        this.currentPage = currentPage;
+    public void setPagedata(int pagedata) {
+        this.pagedata = pagedata;
+    }
+
+    public long getLastTimeStamp() {
+        return lastTimeStamp;
+    }
+
+    public void setLastTimeStamp(long lastTimeStamp) {
+        this.lastTimeStamp = lastTimeStamp;
     }
 
     public OrderAdapter(ArrayList<OrderBean> dataList) {
         this.dataList = dataList;
     }
 
+    public ArrayList<OrderBean> getDataList() {
+        return dataList;
+    }
+
+    public void setDataList(ArrayList<OrderBean> dataList) {
+        this.dataList = dataList;
+    }
+
     public void refreshingAction( ArrayList<OrderBean> dataList){
         this.dataList = dataList;
+        int count = dataList.size();
+        if(count > 0){
+            lastTimeStamp = TimeUtil.timeStrToTimeStamp(dataList.get(count-1).getCreated());
+        }
         notifyDataSetChanged();
-        currentPage = 1;
+
     }
 
     public void loadMoreAction(ArrayList<OrderBean> dataList){
-        this.dataList.addAll(dataList);
-        notifyDataSetChanged();
-        currentPage++;
+        int index = this.dataList.size();
+        int count = dataList.size();
+        if(count > 0){
+            this.dataList.addAll(dataList);
+            notifyItemRangeInserted(index, count);
+            lastTimeStamp = TimeUtil.timeStrToTimeStamp(dataList.get(count-1).getCreated());
+        }
     }
 
     @Override
@@ -102,7 +129,7 @@ public class OrderAdapter extends RecyclerView.Adapter {
         }else if(orderStatus.equals("5")){
             orderStatusStr = "已删除订单";
         }
-        holder.name.setText(orderBean.getGuest()+orderStatusStr);
+        holder.name.setText(orderBean.getGuest()+"   "+orderStatusStr);
 
         try{
             SimpleDateFormat mSimpleFormat  = new SimpleDateFormat("yyyy-MM-dd");
@@ -150,6 +177,8 @@ public class OrderAdapter extends RecyclerView.Adapter {
             contentLayoutParams.setMargins(0, DisplayUtil.dip2px(context, 6), DisplayUtil.dip2px(context, 8), DisplayUtil.dip2px(context, 6));
         }
         holder.contentLayout.setLayoutParams(contentLayoutParams);
+        String timeStr = TimeUtil.getChatTime(orderBean.getCreated());
+        holder.time.setText(timeStr);
 
 
     }
@@ -158,6 +187,8 @@ public class OrderAdapter extends RecyclerView.Adapter {
     public int getItemCount() {
         return dataList.size();
     }
+
+
 
     class OrderViewHolder extends  RecyclerView.ViewHolder implements View.OnClickListener{
 

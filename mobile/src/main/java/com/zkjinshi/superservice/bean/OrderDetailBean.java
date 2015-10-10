@@ -22,7 +22,11 @@ public class OrderDetailBean implements Serializable {
     private String user_applevel;
     private String user_shoplevel;
 
+
+
     private String content;
+
+
 
     public String getContent() {
         return content;

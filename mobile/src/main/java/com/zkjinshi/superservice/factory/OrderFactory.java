@@ -1,5 +1,8 @@
 package com.zkjinshi.superservice.factory;
 
+import android.text.TextUtils;
+import android.util.Log;
+
 import com.zkjinshi.superservice.bean.BookOrderBean;
 import com.zkjinshi.superservice.bean.OrderDetailBean;
 import com.zkjinshi.superservice.bean.OrderInvoiceBean;
@@ -38,7 +41,6 @@ public class OrderFactory {
         OrderDetailBean orderDetailBean = new OrderDetailBean();
 
         OrderRoomBean orderRoomBean = new OrderRoomBean();
-        orderRoomBean.setUserid(bookOrderBean.getUserID());
         orderRoomBean.setShopid(bookOrderBean.getShopID());
         orderRoomBean.setGuestid(bookOrderBean.getUserID());
         orderRoomBean.setGuest(bookOrderBean.getGuest());
@@ -54,7 +56,16 @@ public class OrderFactory {
         orderRoomBean.setImgurl(bookOrderBean.getImage());
         orderRoomBean.setStatus(bookOrderBean.getStatus());
         orderRoomBean.setRemark(bookOrderBean.getRemark());
-        orderRoomBean.setPayment(bookOrderBean.getPayment());
+
+        if(!TextUtils.isEmpty(bookOrderBean.getPayment())){
+            try{
+                int id = Integer.parseInt(bookOrderBean.getPayment());
+                orderRoomBean.setPay_id(id);
+            }catch (Exception e){
+                Log.e("OrderFactory",e.getMessage());
+            }
+        }
+
         orderRoomBean.setPay_status(bookOrderBean.getTradeStatus());
 
         orderDetailBean.setRoom(orderRoomBean);

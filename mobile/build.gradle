@@ -35,4 +35,5 @@ dependencies {
     compile project(':ZKJinShiBaseClass')
     compile project(':Cloud_TagView')
     compile project(':CalendarListview')
+    compile files('libs/tm-extractors-0.4.jar')
 }

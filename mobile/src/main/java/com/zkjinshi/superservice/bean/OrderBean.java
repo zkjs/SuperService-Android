@@ -27,6 +27,14 @@ public class OrderBean  implements Serializable {
     private String pay_status;
     private String created;
 
+    public String getCreated() {
+        return created;
+    }
+
+    public void setCreated(String created) {
+        this.created = created;
+    }
+
     public String getReservation_no() {
         return reservation_no;
     }
@@ -139,11 +147,5 @@ public class OrderBean  implements Serializable {
         this.pay_status = pay_status;
     }
 
-    public String getCreated() {
-        return created;
-    }
 
-    public void setCreated(String created) {
-        this.created = created;
-    }
 }

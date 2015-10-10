@@ -107,7 +107,7 @@ public class OrderDealActivity extends Activity {
             isBooking = false;
             reservationNo = getIntent().getStringExtra("reservation_no");
             if(!TextUtils.isEmpty(reservationNo)){
-                loadPayList();
+                loadOrder();
             }
 
         }else{
@@ -118,53 +118,7 @@ public class OrderDealActivity extends Activity {
         initListener();
     }
 
-    /**
-     * 加载支付方式
-     */
-    private void loadPayList(){
-        String url = ProtocolUtil.getSempPayListUrl();
-        Log.i(TAG,url);
-        NetRequest netRequest = new NetRequest(url);
-        HashMap<String,String> bizMap = new HashMap<String,String>();
-        bizMap.put("salesid", CacheUtil.getInstance().getUserId());
-        bizMap.put("token", CacheUtil.getInstance().getToken());
-        bizMap.put("shopid", userVo.getShopId());
-        netRequest.setBizParamMap(bizMap);
-        NetRequestTask netRequestTask = new NetRequestTask(this,netRequest, NetResponse.class);
-        netRequestTask.methodType = MethodType.PUSH;
-        netRequestTask.setNetRequestListener(new NetRequestListener() {
-            @Override
-            public void onNetworkRequestError(int errorCode, String errorMessage) {
-                Log.i(TAG, "errorCode:" + errorCode);
-                Log.i(TAG, "errorMessage:" + errorMessage);
-            }
 
-            @Override
-            public void onNetworkRequestCancelled() {
-
-            }
-
-            @Override
-            public void onNetworkResponseSucceed(NetResponse result) {
-                Log.i(TAG, "result.rawResult:" + result.rawResult);
-                try {
-                    payBeans = new Gson().fromJson(result.rawResult, new TypeToken<ArrayList<PayBean>>() {
-                    }.getType());
-                    loadOrder();
-                } catch (Exception e) {
-                    Log.e(TAG, e.getMessage());
-                }
-
-            }
-
-            @Override
-            public void beforeNetworkRequestStart() {
-
-            }
-        });
-        netRequestTask.isShowLoadingDialog = true;
-        netRequestTask.execute();
-    }
     /*
     加载订单
      */
@@ -276,29 +230,14 @@ public class OrderDealActivity extends Activity {
         }
         mIusvPayType.setTextTitle(rate);
 
-        String payType = orderDetailBean.getRoom().getPayment();
+        String payType = orderDetailBean.getRoom().getPay_name();
         if(TextUtils.isEmpty(payType)){
             payType = "未设定";
-        }else{
-            payType = getPayName(payType);
         }
         mIusvPayType.setTextContent2(payType);
     }
 
-    //获取支付方式名字
-    public String getPayName(String id){
-        String payName = "未设定";
-        if(payBeans != null){
-            for(PayBean payBean : payBeans){
-                if(payBean.getPay_id() == Integer.parseInt(id)){
-                    payName = payBean.getPay_name();
-                    break;
-                }
-            }
-        }
 
-        return payName;
-    }
 
     //初始化订单状态的显示
     private void initOrderStatus() {
@@ -355,7 +294,7 @@ public class OrderDealActivity extends Activity {
                 if(orderDetailBean == null){
                     return;
                 }
-                if(TextUtils.isEmpty(orderDetailBean.getRoom().getPayment())){
+                if(TextUtils.isEmpty(orderDetailBean.getRoom().getPay_name())){
                     DialogUtil.getInstance().showToast(OrderDealActivity.this, "请选择支付方式。");
                     return;
                 }
@@ -426,7 +365,7 @@ public class OrderDealActivity extends Activity {
         bizMap.put("empid",CacheUtil.getInstance().getUserId());
         bizMap.put("token",CacheUtil.getInstance().getToken());
         bizMap.put("shopid",orderDetailBean.getRoom().getShopid());
-        bizMap.put("userid",orderDetailBean.getRoom().getUserid());
+        bizMap.put("userid",orderDetailBean.getRoom().getGuestid());
 
         bizMap.put("guest",orderDetailBean.getRoom().getGuest());
         bizMap.put("fullname",orderDetailBean.getRoom().getFullname());
@@ -438,7 +377,7 @@ public class OrderDealActivity extends Activity {
         bizMap.put("departure_date",orderDetailBean.getRoom().getDeparture_date());
         bizMap.put("room_rate",orderDetailBean.getRoom().getRoom_rate());
         bizMap.put("status","0");
-        bizMap.put("payment",orderDetailBean.getRoom().getPayment());
+        bizMap.put("payment",orderDetailBean.getRoom().getPay_id()+"");
 
         netRequest.setBizParamMap(bizMap);
         NetRequestTask netRequestTask = new NetRequestTask(this,netRequest, NetResponse.class);
@@ -522,7 +461,8 @@ public class OrderDealActivity extends Activity {
 
                     orderDetailBean.getRoom().setGuest(guest);
                     orderDetailBean.getRoom().setRoom_rate(room_rate);
-                    orderDetailBean.getRoom().setPayment(payment);
+                    orderDetailBean.getRoom().setPay_id(Integer.parseInt(payment));
+                    orderDetailBean.getRoom().setPay_name(payment_name);
                     mIusvPayType.setTextTitle("￥" + room_rate);
                     mIusvPayType.setTextContent2(payment_name);
 

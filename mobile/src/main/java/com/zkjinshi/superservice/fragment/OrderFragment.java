@@ -16,6 +16,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.adapter.OrderAdapter;
+import com.zkjinshi.superservice.bean.BaseBean;
 import com.zkjinshi.superservice.bean.OrderBean;
 import com.zkjinshi.superservice.net.MethodType;
 import com.zkjinshi.superservice.net.NetRequest;
@@ -72,7 +73,8 @@ public class OrderFragment extends Fragment{
         moreStatsuView.setStatus(CircleStatusView.CircleStatus.STATUS_MORE);
         moreStatsuView.invalidate();
 
-        loadOrderList(1);
+        swipeRefreshLayout.setRefreshing(true);
+        loadOrderList(0);
     }
 
     private void initListeners(){
@@ -81,7 +83,7 @@ public class OrderFragment extends Fragment{
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                loadOrderList(1);
+                loadOrderList(0);
             }
         });
 
@@ -100,8 +102,7 @@ public class OrderFragment extends Fragment{
                     if (lastVisibleItem == (totalItemCount -1) && isSlidingToLast) {
                         //加载更多功能的代码
                         swipeRefreshLayout.setRefreshing(true);
-                        loadOrderList(orderAdapter.getCurrentPage()+1);
-
+                        loadOrderList(orderAdapter.getLastTimeStamp());
                     }
                 }
             }
@@ -124,7 +125,7 @@ public class OrderFragment extends Fragment{
     }
 
 
-    private void loadOrderList(final int page) {
+    private void loadOrderList(final long lastTimeStamp) {
         userVo = UserDBUtil.getInstance().queryUserById(CacheUtil.getInstance().getUserId());
         String url = ProtocolUtil.getSempOrderUrl();
         Log.i(TAG,url);
@@ -134,8 +135,13 @@ public class OrderFragment extends Fragment{
         bizMap.put("token",userVo.getToken());
         bizMap.put("shopid",userVo.getShopId());
         bizMap.put("status","0,1,2,3,4,5");
-        bizMap.put("page",page+"");
-        bizMap.put("pagedata","10");
+        if(lastTimeStamp == 0){
+            bizMap.put("page","1");
+        }else{
+            bizMap.put("pagetime",""+lastTimeStamp);
+        }
+
+        bizMap.put("pagedata",""+orderAdapter.getPagedata());
         netRequest.setBizParamMap(bizMap);
         NetRequestTask netRequestTask = new NetRequestTask(getActivity(),netRequest, NetResponse.class);
         netRequestTask.methodType = MethodType.PUSH;
@@ -156,7 +162,7 @@ public class OrderFragment extends Fragment{
                 Log.i(TAG, "result.rawResult:" + result.rawResult);
                 try{
                     ArrayList<OrderBean> orderList = new Gson().fromJson(result.rawResult, new TypeToken< ArrayList<OrderBean>>(){}.getType());
-                    if(page == 1){
+                    if(lastTimeStamp == 0){
                         orderAdapter.refreshingAction(orderList);
                         swipeRefreshLayout.setRefreshing(false);
                     }else{
@@ -165,6 +171,7 @@ public class OrderFragment extends Fragment{
                     }
                 }catch (Exception e){
                     Log.e(TAG,e.getMessage());
+                    //BaseBean baseBean = new Gson().fromJson()
                 }
 
             }

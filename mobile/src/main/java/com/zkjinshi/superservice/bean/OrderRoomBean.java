@@ -14,7 +14,6 @@ import java.io.Serializable;
 public class OrderRoomBean implements Serializable {
 
     private String  reservation_no;// 预定单号
-    private String  userid ;//用户id
     private String  shopid ;//商家id int
     private String guestid;
     private String guest;
@@ -32,14 +31,23 @@ public class OrderRoomBean implements Serializable {
     private String  pay_status;// 支付状态 0未支付,1已支付,3支付一部分,4已退款, 5已挂账   int
     private String imgurl;
 
-    private String payment;//付款方式
+    private int pay_id;          //支付方式ID
+    private String pay_name;     //支付方式名称
 
-    public String getPayment() {
-        return payment;
+    public int getPay_id() {
+        return pay_id;
     }
 
-    public void setPayment(String payment) {
-        this.payment = payment;
+    public void setPay_id(int pay_id) {
+        this.pay_id = pay_id;
+    }
+
+    public String getPay_name() {
+        return pay_name;
+    }
+
+    public void setPay_name(String pay_name) {
+        this.pay_name = pay_name;
     }
 
     public String getGuestid() {
@@ -88,14 +96,6 @@ public class OrderRoomBean implements Serializable {
 
     public void setReservation_no(String reservation_no) {
         this.reservation_no = reservation_no;
-    }
-
-    public String getUserid() {
-        return userid;
-    }
-
-    public void setUserid(String userid) {
-        this.userid = userid;
     }
 
     public String getShopid() {

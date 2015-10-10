@@ -90,11 +90,7 @@ public class OrderPayActivity  extends Activity implements AdapterView.OnItemCli
     }
 
     private void initData() {
-        if(!TextUtils.isEmpty(orderDetailBean.getRoom().getPayment())){
-            selelectId = Integer.parseInt(orderDetailBean.getRoom().getPayment());
-        }else{
-            selelectId = 0;
-        }
+        selelectId = orderDetailBean.getRoom().getPay_id();
         usernameTv.setText(orderDetailBean.getRoom().getGuest());
         ImageLoader.getInstance().displayImage(ProtocolUtil.getAvatarUrl(orderDetailBean.getRoom().getGuestid()), avatarCiv);
 
