@@ -22,7 +22,7 @@ public class OrderBean  implements Serializable {
     private String room_typeid;
     private String guest;
     private String nologin;
-    private String rooms;
+    private int rooms;
     private String status;
     private String pay_status;
     private String created;
@@ -115,11 +115,11 @@ public class OrderBean  implements Serializable {
         this.nologin = nologin;
     }
 
-    public String getRooms() {
+    public int getRooms() {
         return rooms;
     }
 
-    public void setRooms(String rooms) {
+    public void setRooms(int rooms) {
         this.rooms = rooms;
     }
 

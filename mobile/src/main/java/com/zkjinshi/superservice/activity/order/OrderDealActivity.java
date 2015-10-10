@@ -9,30 +9,30 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.zkjinshi.base.net.core.WebSocketManager;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.base.util.TimeUtil;
 import com.zkjinshi.superservice.R;
-import com.zkjinshi.superservice.adapter.OrderAdapter;
 import com.zkjinshi.superservice.bean.AddOrderBean;
 import com.zkjinshi.superservice.bean.GoodBean;
-import com.zkjinshi.superservice.bean.OrderBean;
 import com.zkjinshi.superservice.bean.OrderDetailBean;
 import com.zkjinshi.superservice.bean.OrderInvoiceBean;
 import com.zkjinshi.superservice.bean.OrderPrivilegeBean;
 import com.zkjinshi.superservice.bean.OrderRoomTagBean;
 import com.zkjinshi.superservice.bean.OrderUsersBean;
 import com.zkjinshi.superservice.bean.PayBean;
+import com.zkjinshi.superservice.entity.MsgUserDefine;
 import com.zkjinshi.superservice.net.MethodType;
 import com.zkjinshi.superservice.net.NetRequest;
 import com.zkjinshi.superservice.net.NetRequestListener;
 import com.zkjinshi.superservice.net.NetRequestTask;
 import com.zkjinshi.superservice.net.NetResponse;
+import com.zkjinshi.superservice.request.MsgUserDefineTool;
 import com.zkjinshi.superservice.sqlite.DBOpenHelper;
 import com.zkjinshi.superservice.sqlite.UserDBUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
@@ -70,7 +70,7 @@ public class OrderDealActivity extends Activity {
     private TagView mRoomTagView;
     private TagView mServiceTagView;
 
-    private ItemUserSettingView mIusvPlayType;
+    private ItemUserSettingView mIusvPayType;
     private ItemUserSettingView mIusvRoomNumber;
     private TextView mTvTicket;
     private TextView mTvRemark;
@@ -131,7 +131,7 @@ public class OrderDealActivity extends Activity {
         bizMap.put("shopid", userVo.getShopId());
         netRequest.setBizParamMap(bizMap);
         NetRequestTask netRequestTask = new NetRequestTask(this,netRequest, NetResponse.class);
-        netRequestTask.methodType = MethodType.POST;
+        netRequestTask.methodType = MethodType.PUSH;
         netRequestTask.setNetRequestListener(new NetRequestListener() {
             @Override
             public void onNetworkRequestError(int errorCode, String errorMessage) {
@@ -178,7 +178,7 @@ public class OrderDealActivity extends Activity {
         bizMap.put("reservation_no", reservationNo);
         netRequest.setBizParamMap(bizMap);
         NetRequestTask netRequestTask = new NetRequestTask(this,netRequest, NetResponse.class);
-        netRequestTask.methodType = MethodType.POST;
+        netRequestTask.methodType = MethodType.PUSH;
         netRequestTask.setNetRequestListener(new NetRequestListener() {
             @Override
             public void onNetworkRequestError(int errorCode, String errorMessage) {
@@ -224,8 +224,8 @@ public class OrderDealActivity extends Activity {
         mIusvRoomNumber = (ItemUserSettingView)findViewById(R.id.aod_room_number);
         addRightIcon(mIusvRoomNumber);
 
-        mIusvPlayType  = (ItemUserSettingView)findViewById(R.id.pay_type);
-        addRightIcon(mIusvPlayType);
+        mIusvPayType = (ItemUserSettingView)findViewById(R.id.pay_type);
+        addRightIcon(mIusvPayType);
         customerList = new ArrayList<ItemUserSettingView>();
         int[] customerIds = {R.id.aod_customer1,R.id.aod_customer2,R.id.aod_customer3};
         for(int i=0;i<customerIds.length;i++){
@@ -274,7 +274,7 @@ public class OrderDealActivity extends Activity {
         }else{
             rate = "￥"+rate;
         }
-        mIusvPlayType.setTextTitle(rate);
+        mIusvPayType.setTextTitle(rate);
 
         String payType = orderDetailBean.getRoom().getPayment();
         if(TextUtils.isEmpty(payType)){
@@ -282,7 +282,7 @@ public class OrderDealActivity extends Activity {
         }else{
             payType = getPayName(payType);
         }
-        mIusvPlayType.setTextContent2(payType);
+        mIusvPayType.setTextContent2(payType);
     }
 
     //获取支付方式名字
@@ -353,6 +353,14 @@ public class OrderDealActivity extends Activity {
             @Override
             public void onClick(View view) {
                 if(orderDetailBean == null){
+                    return;
+                }
+                if(TextUtils.isEmpty(orderDetailBean.getRoom().getPayment())){
+                    DialogUtil.getInstance().showToast(OrderDealActivity.this, "请选择支付方式。");
+                    return;
+                }
+                if(TextUtils.isEmpty(orderDetailBean.getRoom().getRoom_rate())){
+                    DialogUtil.getInstance().showToast(OrderDealActivity.this, "请输入金额。");
                     return;
                 }
                 addOrder();
@@ -430,12 +438,11 @@ public class OrderDealActivity extends Activity {
         bizMap.put("departure_date",orderDetailBean.getRoom().getDeparture_date());
         bizMap.put("room_rate",orderDetailBean.getRoom().getRoom_rate());
         bizMap.put("status","0");
-        if(!TextUtils.isEmpty(orderDetailBean.getRoom().getPayment()))
         bizMap.put("payment",orderDetailBean.getRoom().getPayment());
 
         netRequest.setBizParamMap(bizMap);
         NetRequestTask netRequestTask = new NetRequestTask(this,netRequest, NetResponse.class);
-        netRequestTask.methodType = MethodType.POST;
+        netRequestTask.methodType = MethodType.PUSH;
         netRequestTask.setNetRequestListener(new NetRequestListener() {
             @Override
             public void onNetworkRequestError(int errorCode, String errorMessage) {
@@ -454,10 +461,22 @@ public class OrderDealActivity extends Activity {
                 try {
                     AddOrderBean addOrderBean = new Gson().fromJson(result.rawResult, AddOrderBean.class);
                     if(addOrderBean.isSet()){
-                        DialogUtil.getInstance().showToast(OrderDealActivity.this,"订单添加成功。订单号是："+addOrderBean.getReservation_no());
+                        DialogUtil.getInstance().showToast(OrderDealActivity.this,"订单添加成功。\n订单号是："+addOrderBean.getReservation_no());
+                        //确认成功订单，发送IM消息
+                        MsgUserDefine msgUserDefine = MsgUserDefineTool.buildSuccMsgUserDefine(
+                                CacheUtil.getInstance().getUserId(),
+                                orderDetailBean.getRoom().getGuestid(),
+                                addOrderBean.getReservation_no(),
+                                orderDetailBean.getRoom().getShopid()
+                        );
+                        Gson gson = new Gson();
+                        String jsonMsg = gson.toJson(msgUserDefine);
+                        WebSocketManager.getInstance().sendMessage(jsonMsg);
                         finish();
                     }else{
                         DialogUtil.getInstance().showToast(OrderDealActivity.this,"订单添加失败");
+                        //确认失败订单，发送IM消息
+                        MsgUserDefineTool.buildFailMsgUserDefine( CacheUtil.getInstance().getUserId(),  orderDetailBean.getRoom().getGuestid());
                         Log.e(TAG,addOrderBean.getErr());
                     }
                 } catch (Exception e) {
@@ -492,6 +511,21 @@ public class OrderDealActivity extends Activity {
                     orderDetailBean.getRoom().setRoom_typeid(selelectId);
                     orderDetailBean.getRoom().setRoom_type(goodBean.getRoom() + goodBean.getType());
                     notifyRoomNumberChange();
+                }
+            }else if(PAY_REQUEST_CODE == requestCode){
+                if(null != data){
+                    String room_rate = data.getStringExtra("room_rate");
+                    String payment = data.getStringExtra("payment");
+                    String payment_name = data.getStringExtra("payment_name");
+                    String reason = data.getStringExtra("reason");
+                    String guest = data.getStringExtra("guest");
+
+                    orderDetailBean.getRoom().setGuest(guest);
+                    orderDetailBean.getRoom().setRoom_rate(room_rate);
+                    orderDetailBean.getRoom().setPayment(payment);
+                    mIusvPayType.setTextTitle("￥" + room_rate);
+                    mIusvPayType.setTextContent2(payment_name);
+
                 }
             }
         }

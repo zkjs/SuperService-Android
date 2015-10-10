@@ -66,6 +66,9 @@ public class OrderFragment extends Fragment{
 
         rcyOrder.setHasFixedSize(true);
         rcyOrder.setLayoutManager(new LinearLayoutManager(getActivity()));
+        orderAdapter = new OrderAdapter(new ArrayList<OrderBean>());
+        rcyOrder.setAdapter(orderAdapter);
+        initListeners();
 
         rcyOrderDone.setHasFixedSize(true);
         rcyOrderDone.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
@@ -73,9 +76,7 @@ public class OrderFragment extends Fragment{
         moreStatsuView.setStatus(CircleStatusView.CircleStatus.STATUS_MORE);
         moreStatsuView.invalidate();
 
-        loadOrderList();
-
-
+        loadOrderList(1);
     }
 
     private void initListeners(){
@@ -84,12 +85,7 @@ public class OrderFragment extends Fragment{
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        swipeRefreshLayout.setRefreshing(false);
-                    }
-                }, 3000);
+                loadOrderList(1);
             }
         });
 
@@ -97,19 +93,17 @@ public class OrderFragment extends Fragment{
         orderAdapter.setOnLoadMoreListener(new RecyclerLoadMoreListener() {
             @Override
             public void loadMore() {
+                orderAdapter.isLoadingMore = true;
                 swipeRefreshLayout.setRefreshing(true);
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        swipeRefreshLayout.setRefreshing(false);
-                    }
-                }, 3000);
+                loadOrderList(orderAdapter.getCurrentPage()+1);
             }
         });
+
+
     }
 
 
-    private void loadOrderList() {
+    private void loadOrderList(final int page) {
         userVo = UserDBUtil.getInstance().queryUserById(CacheUtil.getInstance().getUserId());
         String url = ProtocolUtil.getSempOrderUrl();
         Log.i(TAG,url);
@@ -118,12 +112,12 @@ public class OrderFragment extends Fragment{
         bizMap.put("salesid",userVo.getUserId());
         bizMap.put("token",userVo.getToken());
         bizMap.put("shopid",userVo.getShopId());
-        bizMap.put("status","0");
-        bizMap.put("page","1");
+        bizMap.put("status","0,1,2,3,4,5");
+        bizMap.put("page",page+"");
         bizMap.put("pagedata","10");
         netRequest.setBizParamMap(bizMap);
         NetRequestTask netRequestTask = new NetRequestTask(getActivity(),netRequest, NetResponse.class);
-        netRequestTask.methodType = MethodType.POST;
+        netRequestTask.methodType = MethodType.PUSH;
         netRequestTask.setNetRequestListener(new NetRequestListener() {
             @Override
             public void onNetworkRequestError(int errorCode, String errorMessage) {
@@ -140,18 +134,15 @@ public class OrderFragment extends Fragment{
             public void onNetworkResponseSucceed(NetResponse result) {
                 Log.i(TAG, "result.rawResult:" + result.rawResult);
                 try{
-                    //ArrayList<OrderBean> orderList = new Gson().fromJson(result.rawResult, new TypeToken< ArrayList<OrderBean>>(){}.getType());
-                    //test
-                    ArrayList<OrderBean> orderList = new ArrayList<OrderBean>();
-                    for(int i=0;i<10;i++){
-                        OrderBean orderBean = new OrderBean();
-                        orderList.add(orderBean);
+                    ArrayList<OrderBean> orderList = new Gson().fromJson(result.rawResult, new TypeToken< ArrayList<OrderBean>>(){}.getType());
+                    if(page == 1){
+                        orderAdapter.refreshingAction(orderList);
+                        swipeRefreshLayout.setRefreshing(false);
+                    }else{
+                        orderAdapter.loadMoreAction(orderList);
+                        swipeRefreshLayout.setRefreshing(false);
+                        orderAdapter.isLoadingMore = false;
                     }
-
-
-                    orderAdapter = new OrderAdapter(orderList);
-                    rcyOrder.setAdapter(orderAdapter);
-                    initListeners();
                 }catch (Exception e){
                     Log.e(TAG,e.getMessage());
                 }

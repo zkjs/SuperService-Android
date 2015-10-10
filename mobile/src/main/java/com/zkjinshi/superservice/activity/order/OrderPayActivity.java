@@ -1,6 +1,7 @@
 package com.zkjinshi.superservice.activity.order;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -59,7 +60,7 @@ public class OrderPayActivity  extends Activity implements AdapterView.OnItemCli
     private ArrayList<PayBean> payBeanList;
     private PayAdapter payAdapter;
     private PayBean selectPay;
-    private int selelectId;
+    private int selelectId = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,7 +96,7 @@ public class OrderPayActivity  extends Activity implements AdapterView.OnItemCli
             selelectId = 0;
         }
         usernameTv.setText(orderDetailBean.getRoom().getGuest());
-        ImageLoader.getInstance().displayImage(ProtocolUtil.getAvatarUrl(orderDetailBean.getRoom().getUserid()), avatarCiv);
+        ImageLoader.getInstance().displayImage(ProtocolUtil.getAvatarUrl(orderDetailBean.getRoom().getGuestid()), avatarCiv);
 
         try{
             SimpleDateFormat mSimpleFormat  = new SimpleDateFormat("yyyy-MM-dd");
@@ -143,10 +144,24 @@ public class OrderPayActivity  extends Activity implements AdapterView.OnItemCli
         findViewById(R.id.go_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               if(selelectId == 0){
-                   DialogUtil.getInstance().showToast(OrderPayActivity.this,"请选择支付方式。");
-                   return;
-               }
+                if (selelectId == 0) {
+                    DialogUtil.getInstance().showToast(OrderPayActivity.this, "请选择支付方式。");
+                    return;
+                }
+                if (TextUtils.isEmpty(priceEt.getText().toString())) {
+                    DialogUtil.getInstance().showToast(OrderPayActivity.this, "请输入金额。");
+                    return;
+                }
+
+                Intent data = new Intent();
+                data.putExtra("room_rate", priceEt.getText().toString());
+                data.putExtra("payment", selelectId+"");
+                data.putExtra("payment_name", getPayName(selelectId+""));
+                data.putExtra("reason", priceReasonEt.getText().toString());
+                data.putExtra("guest",usernameTv.getText().toString());
+                setResult(RESULT_OK, data);
+                finish();
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
 
             }
         });
@@ -162,11 +177,11 @@ public class OrderPayActivity  extends Activity implements AdapterView.OnItemCli
         HashMap<String,String> bizMap = new HashMap<String,String>();
         bizMap.put("salesid", CacheUtil.getInstance().getUserId());
         bizMap.put("token", CacheUtil.getInstance().getToken());
-        bizMap.put("uid", orderDetailBean.getRoom().getUserid());
+        bizMap.put("uid", orderDetailBean.getRoom().getGuestid());
         bizMap.put("shopid", orderDetailBean.getRoom().getShopid());
         netRequest.setBizParamMap(bizMap);
         NetRequestTask netRequestTask = new NetRequestTask(this,netRequest, NetResponse.class);
-        netRequestTask.methodType = MethodType.POST;
+        netRequestTask.methodType = MethodType.PUSH;
         netRequestTask.setNetRequestListener(new NetRequestListener() {
             @Override
             public void onNetworkRequestError(int errorCode, String errorMessage) {
@@ -184,10 +199,10 @@ public class OrderPayActivity  extends Activity implements AdapterView.OnItemCli
                 Log.i(TAG, "result.rawResult:" + result.rawResult);
                 try {
                     NoticeBean noticeBean = new Gson().fromJson(result.rawResult,NoticeBean.class);
-                    if(noticeBean.isSet()){
+                    if(noticeBean != null && noticeBean.isSet()){
                         usernameTv.setText(noticeBean.getUsername());
                         userInfoTv.setText(noticeBean.getOrder_count()+"次订单");
-                    }else{
+                    }else if(noticeBean != null ){
                         Log.e(TAG, noticeBean.getErr());
                     }
 
@@ -220,7 +235,7 @@ public class OrderPayActivity  extends Activity implements AdapterView.OnItemCli
         bizMap.put("shopid", orderDetailBean.getRoom().getShopid());
         netRequest.setBizParamMap(bizMap);
         NetRequestTask netRequestTask = new NetRequestTask(this,netRequest, NetResponse.class);
-        netRequestTask.methodType = MethodType.POST;
+        netRequestTask.methodType = MethodType.PUSH;
         netRequestTask.setNetRequestListener(new NetRequestListener() {
             @Override
             public void onNetworkRequestError(int errorCode, String errorMessage) {
@@ -257,12 +272,28 @@ public class OrderPayActivity  extends Activity implements AdapterView.OnItemCli
         netRequestTask.execute();
     }
 
+    //获取支付方式名字
+    public String getPayName(String id){
+        String payName = "未设定";
+        if(payBeanList != null){
+            for(PayBean payBean : payBeanList){
+                if(payBean.getPay_id() == Integer.parseInt(id)){
+                    payName = payBean.getPay_name();
+                    break;
+                }
+            }
+        }
+
+        return payName;
+    }
+
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-        Log.e(TAG, "positoin" + position);
+
         payAdapter.setCheckidByPosition(position);
         payAdapter.notifyDataSetChanged();
         selectPay = payAdapter.gePayByPosition(position);
         selelectId = selectPay.getPay_id();
+        Log.i(TAG, "selelectId" + selelectId);
     }
 }

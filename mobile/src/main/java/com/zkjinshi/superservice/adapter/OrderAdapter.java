@@ -1,7 +1,10 @@
 package com.zkjinshi.superservice.adapter;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,14 +12,20 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.zkjinshi.base.util.DisplayUtil;
+import com.zkjinshi.base.util.TimeUtil;
 import com.zkjinshi.superservice.R;
+import com.zkjinshi.superservice.activity.order.OrderDealActivity;
 import com.zkjinshi.superservice.bean.OrderBean;
 import com.zkjinshi.superservice.listener.RecyclerLoadMoreListener;
+import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.view.CircleImageView;
 import com.zkjinshi.superservice.view.CircleStatusView;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * 开发者：dujiande
@@ -24,15 +33,38 @@ import java.util.ArrayList;
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class OrderAdapter extends RecyclerView.Adapter{
+public class OrderAdapter extends RecyclerView.Adapter {
 
     private static final String TAG = OrderAdapter.class.getSimpleName();
 
+    public boolean isLoadingMore = false;
+    private int currentPage = 0;
     private ArrayList<OrderBean> dataList;
     private RecyclerLoadMoreListener loadMoreListener;
     private Context context;
+
+    public int getCurrentPage() {
+        return currentPage;
+    }
+
+    public void setCurrentPage(int currentPage) {
+        this.currentPage = currentPage;
+    }
+
     public OrderAdapter(ArrayList<OrderBean> dataList) {
         this.dataList = dataList;
+    }
+
+    public void refreshingAction( ArrayList<OrderBean> dataList){
+        this.dataList = dataList;
+        notifyDataSetChanged();
+        currentPage = 1;
+    }
+
+    public void loadMoreAction(ArrayList<OrderBean> dataList){
+        this.dataList.addAll(dataList);
+        notifyDataSetChanged();
+        currentPage++;
     }
 
     @Override
@@ -51,22 +83,68 @@ public class OrderAdapter extends RecyclerView.Adapter{
         OrderBean orderBean = dataList.get(position);
 
         //默认0可取消订单 1已取消订单 2已确认订单 3已经完成的订单 4正在入住中 5已删除订单
-//        String orderStatus = orderBean.getStatus();
-//        String orderStatusStr = "";
-//        if(orderStatus.equals("0")){
-//            orderStatusStr = "已提交订单";
-//        }else if(orderStatus.equals("1")){
-//            orderStatusStr = "已取消订单";
-//        }else if(orderStatus.equals("2")){
-//            orderStatusStr = "已确认订单";
-//        }else if(orderStatus.equals("3")){
-//            orderStatusStr = "已完成订单";
-//        }else if(orderStatus.equals("4")){
-//            orderStatusStr = "正在入住中";
-//        }else if(orderStatus.equals("5")){
-//            orderStatusStr = "已删除订单";
-//        }
-//        holder.name.setText(orderBean.getGuest()+orderStatusStr);
+        String orderStatus = orderBean.getStatus();
+        String orderStatusStr = "";
+        if(orderStatus.equals("0")){
+            orderStatusStr = "已提交订单";
+        }else if(orderStatus.equals("1")){
+            holder.leftIcon.setStatus(CircleStatusView.CircleStatus.STATUS_LOADING);
+            holder.leftIcon.invalidate();
+            orderStatusStr = "已取消订单";
+        }else if(orderStatus.equals("2")){
+            holder.leftIcon.setStatus(CircleStatusView.CircleStatus.STATUS_FINISH);
+            holder.leftIcon.invalidate();
+            orderStatusStr = "已确认订单";
+        }else if(orderStatus.equals("3")){
+            holder.leftIcon.setStatus(CircleStatusView.CircleStatus.STATUS_FINISH);
+            holder.leftIcon.invalidate();
+            orderStatusStr = "已完成订单";
+        }else if(orderStatus.equals("4")){
+            holder.leftIcon.setStatus(CircleStatusView.CircleStatus.STATUS_FINISH);
+            holder.leftIcon.invalidate();
+            orderStatusStr = "正在入住中";
+        }else if(orderStatus.equals("5")){
+            orderStatusStr = "已删除订单";
+        }
+        holder.name.setText(orderBean.getGuest()+orderStatusStr);
+
+        try{
+            SimpleDateFormat mSimpleFormat  = new SimpleDateFormat("yyyy-MM-dd");
+            SimpleDateFormat mChineseFormat = new SimpleDateFormat("MM/dd");
+            Date arrivalDate =  mSimpleFormat.parse(orderBean.getArrival_date());
+            Date departureDate =  mSimpleFormat.parse(orderBean.getDeparture_date());
+            String arrivalStr = mChineseFormat.format(arrivalDate);
+            String departureStr = mChineseFormat.format(departureDate);
+            String roomType = orderBean.getRoom_type();
+            int roomNum = orderBean.getRooms();
+            int dayNum = TimeUtil.daysBetween(arrivalDate, departureDate);
+            holder.order.setText(roomType + "×" + roomNum + "|" + dayNum + "晚|" + arrivalStr + "-" + departureStr);
+
+        }catch (Exception e){
+            Log.e(TAG, e.getMessage());
+        }
+        holder.price.setText("￥"+orderBean.getRoom_rate());
+
+        //支付状态 0未支付,1已支付,3支付一部分,4已退款, 5已挂账
+        String payStatus = orderBean.getPay_status();
+        String payStatusStr = "";
+        if(payStatus.equals("0")){
+            payStatusStr = "未支付";
+        }else if(payStatus.equals("1")){
+            payStatusStr = "已支付";
+        }else if(payStatus.equals("2")){
+            payStatusStr = "";
+        }else if(payStatus.equals("3")){
+            payStatusStr = "支付一部分";
+        }else if(payStatus.equals("4")){
+            payStatusStr = "已退款";
+        }else if(payStatus.equals("5")){
+            payStatusStr = "已挂账";
+        }
+        holder.payStatus.setText(payStatusStr);
+        ImageLoader.getInstance().displayImage(ProtocolUtil.getAvatarUrl(orderBean.getUserid()), holder.avatar);
+
+
         LinearLayout.LayoutParams contentLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         if(position == 0){
             contentLayoutParams.setMargins(0, DisplayUtil.dip2px(context, 12),DisplayUtil.dip2px(context,8),DisplayUtil.dip2px(context,6));
@@ -76,11 +154,12 @@ public class OrderAdapter extends RecyclerView.Adapter{
             contentLayoutParams.setMargins(0, DisplayUtil.dip2px(context, 6), DisplayUtil.dip2px(context, 8), DisplayUtil.dip2px(context, 6));
         }
         holder.contentLayout.setLayoutParams(contentLayoutParams);
-        if(null != loadMoreListener){
-            if (position == dataList.size() - 1) {
-                loadMoreListener.loadMore();
-            }
-        }
+//            if(null != loadMoreListener){
+//                if (!isLoadingMore && position == dataList.size() - 1) {
+//                    loadMoreListener.loadMore();
+//                }
+//            }
+
     }
 
     @Override
@@ -122,6 +201,8 @@ public class OrderAdapter extends RecyclerView.Adapter{
             tel.setOnClickListener(this);
             chat.setOnClickListener(this);
             share.setOnClickListener(this);
+
+
         }
 
         @Override
@@ -130,6 +211,11 @@ public class OrderAdapter extends RecyclerView.Adapter{
 
             switch (view.getId()){
                 case R.id.tv_order:
+                    Intent intent = new Intent(context, OrderDealActivity.class);
+                    intent.putExtra("reservation_no", orderBean.getReservation_no());
+                    context.startActivity(intent);
+                    ((Activity)context).overridePendingTransition(R.anim.slide_in_right,
+                            R.anim.slide_out_left);
                     break;
                 case R.id.iv_tel:
                     break;

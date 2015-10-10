@@ -202,7 +202,7 @@ public class MainActivity extends AppCompatActivity {
         netRequest.setFileMap(fileMap);
 
         NetRequestTask netRequestTask = new NetRequestTask(this,netRequest, NetResponse.class);
-        netRequestTask.methodType = MethodType.POST;
+        netRequestTask.methodType = MethodType.PUSH;
         netRequestTask.setNetRequestListener(new NetRequestListener() {
             @Override
             public void onNetworkRequestError(int errorCode, String errorMessage) {

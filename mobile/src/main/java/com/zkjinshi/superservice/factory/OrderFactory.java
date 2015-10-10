@@ -40,6 +40,7 @@ public class OrderFactory {
         OrderRoomBean orderRoomBean = new OrderRoomBean();
         orderRoomBean.setUserid(bookOrderBean.getUserID());
         orderRoomBean.setShopid(bookOrderBean.getShopID());
+        orderRoomBean.setGuestid(bookOrderBean.getUserID());
         orderRoomBean.setGuest(bookOrderBean.getGuest());
         orderRoomBean.setGuesttel(bookOrderBean.getGuestTel());
         orderRoomBean.setCreated(bookOrderBean.getCreated());
