@@ -22,6 +22,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.bean.ClientDetailBean;
+//import com.zkjinshi.superservice.factory.UnRegClientFactory;
 import com.zkjinshi.superservice.factory.UnRegClientFactory;
 import com.zkjinshi.superservice.net.MethodType;
 import com.zkjinshi.superservice.net.NetRequest;

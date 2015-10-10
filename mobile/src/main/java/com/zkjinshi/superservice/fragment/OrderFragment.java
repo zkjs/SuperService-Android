@@ -91,8 +91,7 @@ public class OrderFragment extends Fragment{
         });
 
         //自动加载更多
-        rcyOrder.addOnScrollListener(new RecyclerView.OnScrollListener() {
-
+        rcyOrder.setOnScrollListener(new RecyclerView.OnScrollListener() {
             boolean isSlidingToLast = false;
 
             @Override
@@ -123,7 +122,6 @@ public class OrderFragment extends Fragment{
                 }
             }
         });
-
 
     }
 
