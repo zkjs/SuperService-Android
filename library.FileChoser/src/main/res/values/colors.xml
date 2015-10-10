@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="bg_item_select_color">#e6e6e6</color>
+    <color name="bg_item_normal_color">#f2f2f2</color>
+    <color name="bg_title_bar_color">#232936</color>
+    <color name="browser_file_dir_normal_text_color">#727682</color>
+    <color name="browser_file_dir_select_text_color">#01a0d8</color>
+</resources>

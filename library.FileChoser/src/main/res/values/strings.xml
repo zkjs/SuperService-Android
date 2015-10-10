@@ -1,0 +1,5 @@
+<resources>
+    <string name="check_all">全选</string>
+    <string name="cancel_delete">取消删除</string>
+    <string name="scan_dir">浏览目录</string>
+</resources>
