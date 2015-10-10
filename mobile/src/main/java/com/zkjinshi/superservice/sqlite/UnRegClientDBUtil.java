@@ -8,10 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import com.zkjinshi.base.log.LogLevel;
 import com.zkjinshi.base.log.LogUtil;
 import com.zkjinshi.superservice.ServiceApplication;
-import com.zkjinshi.superservice.factory.ChatRoomFactory;
-import com.zkjinshi.superservice.factory.ClientFactory;
 import com.zkjinshi.superservice.factory.UnRegClientFactory;
-import com.zkjinshi.superservice.vo.ChatRoomVo;
 import com.zkjinshi.superservice.vo.UnRegClientVo;
 
 import java.util.ArrayList;
