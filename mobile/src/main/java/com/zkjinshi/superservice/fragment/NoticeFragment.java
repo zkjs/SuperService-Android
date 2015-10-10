@@ -123,7 +123,7 @@ public class NoticeFragment extends Fragment implements IMessageObserver{
                     public void run() {
                         swipeRefreshLayout.setRefreshing(false);
                     }
-                }, 3000);
+                }, 2000);
             }
         });
 
@@ -141,12 +141,7 @@ public class NoticeFragment extends Fragment implements IMessageObserver{
                     int totalItemCount = linearLayoutManager.getItemCount();
                     if (lastVisibleItem == (totalItemCount -1) && isSlidingToLast) {
                         //加载更多功能的代码
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                swipeRefreshLayout.setRefreshing(false);
-                            }
-                        }, 3000);
+                        queryPageMessages(REQUEST_PAGE_SIZE, System.currentTimeMillis(),false);
                     }
                 }
             }
@@ -316,6 +311,9 @@ public class NoticeFragment extends Fragment implements IMessageObserver{
     }
 
     public void queryPageMessages(final int limitSize, final long lastSendTime, final boolean isFirstTime) {
+        if (null != swipeRefreshLayout) {
+            swipeRefreshLayout.setRefreshing(true);
+        }
         int  localCount;
         requestComingList = new ArrayList<ComingVo>();
         requestComingList = ComingDBUtil.getInstance().queryComingList(lastSendTime,limitSize,isFirstTime);
@@ -334,9 +332,9 @@ public class NoticeFragment extends Fragment implements IMessageObserver{
             notifyComingList.addAll(requestComingList);
             mNotificationAdapter.setComingList(notifyComingList);
             locMoreAdapter.setComingList(moreComingList);
-            if (null != swipeRefreshLayout) {
-               swipeRefreshLayout.setRefreshing(false);
-            }
+        }
+        if (null != swipeRefreshLayout) {
+            swipeRefreshLayout.setRefreshing(false);
         }
     }
 
