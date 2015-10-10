@@ -53,5 +53,7 @@
     <string name="client_select">客户查询</string>
     <string name="please_input_the_phone_number">请输入手机号码</string>
     <string name="member_bind">会员绑定</string>
+    <string name="member_type">客户类型</string>
+    <string name="not_check_yet">尚未选择</string>
 
 </resources>

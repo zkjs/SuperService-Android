@@ -1,7 +1,6 @@
 package com.zkjinshi.superservice.activity.set;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -9,17 +8,15 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.TextView;
+
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
-import com.zkjinshi.superservice.sqlite.ClientDBUtil;
-import com.zkjinshi.superservice.utils.CacheUtil;
-import com.zkjinshi.superservice.view.CircleImageView;
-import com.zkjinshi.superservice.vo.ClientVo;
-import com.zkjinshi.superservice.vo.OnAccountStatus;
-
-import org.w3c.dom.Text;
+import com.zkjinshi.superservice.sqlite.UnRegClientDBUtil;
+import com.zkjinshi.superservice.vo.IsBill;
+import com.zkjinshi.superservice.vo.UnRegClientVo;
 
 /**
  * 新增客户联系人
@@ -32,17 +29,20 @@ public class ClientAddActivity extends Activity {
 
     private final static String TAG = ClientAddActivity.class.getSimpleName();
 
-    private final static int CLIENT_ADD_RESULT = 0x00;
+    private final static int CLIENT_ADD_RESULT    = 0x00;
+    private final static int CLIENT_UPDATE_RESULT = 0x01;
 
-    private CircleImageView mCivClientAvatar;
+    private UnRegClientVo   mUnRegClient;
+    private ImageButton     mIbtnBack;
     private EditText        mEtClientName;
-    private EditText        mEtClientPhone;
+    private TextView        mTvClientPhone;
     private EditText        mEtClientCompany;
     private EditText        mEtClientPosition;
+    private EditText        mEtClientRemark;
     private CheckBox        mCbMemberOnAccount;
     private Button          mBtnConfirm;
 
-    private ClientVo        mClientVo;
+    private String          mPhoneNumber;
 
     private Handler handler = new Handler(){
         @Override
@@ -50,12 +50,24 @@ public class ClientAddActivity extends Activity {
             super.handleMessage(msg);
             switch (msg.what) {
                 case CLIENT_ADD_RESULT:
-                    Bundle bundle = msg.getData();
-                    long addResult = bundle.getLong("add_result");
+                    Bundle addBundle = msg.getData();
+                    long addResult   = addBundle.getLong("add_result");
                     if(addResult > 0){
                         DialogUtil.getInstance().showToast(ClientAddActivity.this, "添加新客户成功!");
+                        ClientAddActivity.this.finish();
                     } else {
-                        DialogUtil.getInstance().showToast(ClientAddActivity.this, "添加失败! 请重新添加");
+                        DialogUtil.getInstance().showToast(ClientAddActivity.this, "添加失败! 请重试");
+                    }
+                    break ;
+
+                case CLIENT_UPDATE_RESULT:
+                    Bundle updateBundle = msg.getData();
+                    long updateResult = updateBundle.getLong("update_result");
+                    if(updateResult > 0){
+                        DialogUtil.getInstance().showToast(ClientAddActivity.this, "更新客户信息成功!");
+                        ClientAddActivity.this.finish();
+                    } else {
+                        DialogUtil.getInstance().showToast(ClientAddActivity.this, "更新失败! 请重试");
                     }
                     break ;
             }
@@ -73,102 +85,105 @@ public class ClientAddActivity extends Activity {
     }
 
     private void initView() {
-
-        mCivClientAvatar    = (CircleImageView) findViewById(R.id.civ_client_avatar);
+        mIbtnBack           = (ImageButton) findViewById(R.id.ibtn_back);
         mEtClientName       = (EditText) findViewById(R.id.et_client_name);
-        mEtClientPhone      = (EditText) findViewById(R.id.et_client_phone);
+        mTvClientPhone      = (TextView) findViewById(R.id.tv_client_phone);
         mEtClientCompany    = (EditText) findViewById(R.id.et_client_company);
         mEtClientPosition   = (EditText) findViewById(R.id.et_client_position);
+        mEtClientRemark     = (EditText) findViewById(R.id.et_client_remark);
         mCbMemberOnAccount  = (CheckBox) findViewById(R.id.cb_member_on_account);
         mBtnConfirm         = (Button) findViewById(R.id.btn_confirm);
     }
 
     private void initData() {
-        String phoneNumber = getIntent().getStringExtra("phone_number");
-        if(!TextUtils.isEmpty(phoneNumber)){
-            mEtClientPhone.setText(phoneNumber);
+        mPhoneNumber = getIntent().getStringExtra("phone_number");
+        if(!TextUtils.isEmpty(mPhoneNumber)){
+            mTvClientPhone.setText(mPhoneNumber);
         }
-        mClientVo = new ClientVo();
-        mClientVo.setOnAccount(OnAccountStatus.ISONACCOUNT);
-        CacheUtil.getInstance().init(this);
-        AvatarChooseController.getInstance().init(this);
+        if(UnRegClientDBUtil.getInstance().isUnRegClientExistByPhone(mPhoneNumber)){
+            UnRegClientVo unRegClient = UnRegClientDBUtil.getInstance().findUnRegClientByPhone(mPhoneNumber);
+            showUnRegClient(unRegClient);
+        }
+    }
 
-        getIntent().getStringExtra("phone_number");
+    /**
+     * 显示当前信息
+     * @param unRegClient
+     */
+    private void showUnRegClient(UnRegClientVo unRegClient) {
+        mEtClientName.setText(unRegClient.getUsername());
+        mEtClientCompany.setText(unRegClient.getCompany());
+        mEtClientPosition.setText(unRegClient.getPosition());
+        mEtClientRemark.setText(unRegClient.getOther_desc());
+        if(unRegClient.getIs_bill() == IsBill.ISONACCOUNT.getValue()){
+            mCbMemberOnAccount.setChecked(true);
+        }else {
+            mCbMemberOnAccount.setChecked(false);
+        }
     }
 
     private void initListener() {
-        mCivClientAvatar.setOnClickListener(new View.OnClickListener() {
+        //返回上一页
+        mIbtnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //弹出图片选项 1.相册 2. 拍照
-                AvatarChooseController.getInstance().showChoosePhotoDialog();
-            }
-        });
-
-        mCbMemberOnAccount.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    mClientVo.setOnAccount(OnAccountStatus.ISONACCOUNT);
-                } else {
-                    mClientVo.setOnAccount(OnAccountStatus.NOTONACCOUNT);
-                }
+                ClientAddActivity.this.finish();
             }
         });
 
         mBtnConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO 1.check the must input data
-                checkInput();
-                mClientVo.setClientID(System.currentTimeMillis() + "");//临时客户ID，服务器获取后更新
-                //TODO 2. add the client into the db by http request
-                //TODO 3.add to local db
-                long addResult = ClientDBUtil.getInstance().addClient(mClientVo);
-                Message msg = Message.obtain();
-                msg.what = CLIENT_ADD_RESULT;
-                Bundle bundle = new Bundle();
-                bundle.putLong("add_result", addResult);
-                msg.setData(bundle);
-                handler.sendMessage(msg);
+                String clientName = mEtClientName.getText().toString().trim();
+                if(TextUtils.isEmpty(clientName)){
+                    DialogUtil.getInstance().showToast(ClientAddActivity.this, getString(R.string.name) +
+                                                       getString(R.string.not_input_yet));
+                    return ;
+                }
+                String clientCompany  = mEtClientCompany.getText().toString();
+                String clientPosition = mEtClientPosition.getText().toString();
+                String clientRemark   = mEtClientRemark.getText().toString();
+                int  isBill;
+                if(!mCbMemberOnAccount.isChecked()){
+                    isBill = IsBill.NOTONACCOUNT.getValue();
+                }else {
+                    isBill = IsBill.ISONACCOUNT.getValue();
+                }
+                mUnRegClient = new UnRegClientVo();
+                mUnRegClient.setPhone(mPhoneNumber);
+                mUnRegClient.setUsername(clientName);
+                mUnRegClient.setCompany(clientCompany);
+                mUnRegClient.setPosition(clientPosition);
+                mUnRegClient.setOther_desc(clientRemark);
+                mUnRegClient.setIs_bill(isBill);
+                addNewClient(mUnRegClient);
             }
         });
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        AvatarChooseController.getInstance().onActivityResult(requestCode, resultCode, data, mCivClientAvatar);
+    /**
+     * 添加尚未注册的用户
+     * @param unRegClientVoclient
+     */
+    private void addNewClient(UnRegClientVo unRegClientVoclient) {
+        // 1.add the unregister client to local db
+        if(!UnRegClientDBUtil.getInstance().isUnRegClientExistByPhone(unRegClientVoclient.getPhone())){
+            long addResult = UnRegClientDBUtil.getInstance().addUnRegClient(unRegClientVoclient);
+            Message msg = Message.obtain();
+            msg.what = CLIENT_ADD_RESULT;
+            Bundle bundle = new Bundle();
+            bundle.putLong("add_result", addResult);
+            msg.setData(bundle);
+            handler.sendMessage(msg);
+        } else {
+            long updateResult = UnRegClientDBUtil.getInstance().updateUnRegClient(unRegClientVoclient);
+            Message msg = Message.obtain();
+            msg.what = CLIENT_UPDATE_RESULT;
+            Bundle bundle = new Bundle();
+            bundle.putLong("update_result", updateResult);
+            msg.setData(bundle);
+            handler.sendMessage(msg);
+        }
+
     }
-
-    /** check the must input data */
-    private void checkInput() {
-
-        String clientName = mEtClientName.getText().toString();
-        if(TextUtils.isEmpty(clientName)){
-            DialogUtil.getInstance().showToast(ClientAddActivity.this, getString(R.string.name) +
-                                               getString(R.string.not_input_yet));
-            return ;
-        }
-        mClientVo.setClientName(clientName);
-
-        String clientPhone = mEtClientPhone.getText().toString();
-        if(TextUtils.isEmpty(clientPhone)){
-            DialogUtil.getInstance().showToast(ClientAddActivity.this, getString(R.string.phone) +
-                                               getString(R.string.not_input_yet));
-            return ;
-        }
-        mClientVo.setClientPhone(clientPhone);
-
-        String clientCompany = mEtClientCompany.getText().toString();
-        if(!TextUtils.isEmpty(clientCompany)){
-            mClientVo.setClientCompany(clientCompany);
-        }
-
-        String clientPosition = mEtClientPosition.getText().toString();
-        if(!TextUtils.isEmpty(clientPosition)){
-            mClientVo.setClientPosition(clientPosition);
-        }
-    }
-
 }

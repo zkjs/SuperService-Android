@@ -6,12 +6,12 @@ package com.zkjinshi.superservice.vo;
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public enum OnAccountStatus {
+public enum IsBill {
 
     ISONACCOUNT(0),
     NOTONACCOUNT(1);
 
-    private OnAccountStatus(int value){
+    private IsBill(int value){
         this.value = value;
     }
     private int value;

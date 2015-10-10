@@ -89,14 +89,25 @@ public class TableOpenHelper {
             " create table if not exists "
                     + DBOpenHelper.CLIENT_TBL
                     + " ( "
-                    + " client_id       text primary key, " //主键
-                    + " client_name     text, " //客户姓名
-                    + " client_phone    text, " //客户手机
-                    + " avatar_name     text, " //图片名称
-                    + " avatar_url      text, " //图片url
-                    + " client_company  text, " //客户公司
-                    + " client_position text, " //客户职位
-                    + " on_account      integer "   //是否挂账会员 0:挂账会员 1 非挂账会员
+                    + " userid        text primary key, "
+                    + " id            int, "
+                    + " shopid        text, "
+                    + " salesid       text, "
+                    + " user_level    int, "
+                    + " level_desc    text, "
+                    + " card_no       text, "
+                    + " is_special    text, "
+                    + " nationality   text, "
+                    + " like_desc     text, "
+                    + " taboo_desc    text, "
+                    + " other_desc    text, "
+                    + " created       text, "
+                    + " modified      text, "
+                    + " username      text, "
+                    + " phone         text, "
+                    + " company       text, "
+                    + " position      text, "
+                    + " is_bill       int"
                     + " ) ";
 
     /** 创建区域信息表 */
@@ -134,6 +145,20 @@ public class TableOpenHelper {
                     + " arrive_time long, "
                     + " order_status integer "
                     + " ) ";
+    /**
+     * 未注册的本地联系人数据表
+     */
+    public final static String UNREG_CLIENT_TBL_SQL =
+            " create table if not exists "
+                    + DBOpenHelper.UNREG_CLIENT_TBL
+                    + " ( "
+                    + " phone         text primary key, "
+                    + " username      text, "
+                    + " position      text, "
+                    + " company       text, "
+                    + " other_desc    text, "
+                    + " is_bill       int "
+                    + " ) ";
 
     /**
      * 获取数据库所有表名
@@ -144,7 +169,7 @@ public class TableOpenHelper {
                 DBOpenHelper.MESSAGE_TBL,//消息表
                 DBOpenHelper.CHAT_ROOM_TBL,//聊天室表
                 DBOpenHelper.MEMBER_TBL,//成员表
-                DBOpenHelper.USER_TBL,//客户表
+                DBOpenHelper.USER_TBL,//app用户表
                 DBOpenHelper.CLIENT_TBL,//客户表
                 DBOpenHelper.ZONE_TBL,//个人区域信息表
                 DBOpenHelper.COMING_TBL//到店信息表

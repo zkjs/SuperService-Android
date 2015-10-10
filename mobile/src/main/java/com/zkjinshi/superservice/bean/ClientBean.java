@@ -1,13 +1,13 @@
 package com.zkjinshi.superservice.bean;
 
 /**
- * 我的客户实体类
+ * 客户实体类
  * 开发者：vincent
  * 日期：2015/10/9
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class MyClientBean {
+public class ClientBean {
 
     private int    id;
     private String userid;
@@ -28,6 +28,14 @@ public class MyClientBean {
     private String company;
     private String position;
     private int    is_bill;
+
+    public int getUser_level() {
+        return user_level;
+    }
+
+    public void setUser_level(int user_level) {
+        this.user_level = user_level;
+    }
 
     public int getId() {
         return id;
@@ -59,14 +67,6 @@ public class MyClientBean {
 
     public void setSalesid(String salesid) {
         this.salesid = salesid;
-    }
-
-    public int getUser_level() {
-        return user_level;
-    }
-
-    public void setUser_level(int user_level) {
-        this.user_level = user_level;
     }
 
     public String getLevel_desc() {
@@ -180,4 +180,5 @@ public class MyClientBean {
     public void setIs_bill(int is_bill) {
         this.is_bill = is_bill;
     }
+
 }

@@ -22,15 +22,19 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.bean.ClientDetailBean;
+import com.zkjinshi.superservice.factory.UnRegClientFactory;
 import com.zkjinshi.superservice.net.MethodType;
 import com.zkjinshi.superservice.net.NetRequest;
 import com.zkjinshi.superservice.net.NetRequestListener;
 import com.zkjinshi.superservice.net.NetRequestTask;
 import com.zkjinshi.superservice.net.NetResponse;
+import com.zkjinshi.superservice.sqlite.ClientDBUtil;
+import com.zkjinshi.superservice.sqlite.UnRegClientDBUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.view.CircleImageView;
+import com.zkjinshi.superservice.vo.UnRegClientVo;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -137,7 +141,6 @@ public class ClientBindActivity extends Activity {
 
         //TODO: 1.客户偏好标签处理
         //TODO: 2.特权标签处理
-
     }
 
     private void initListener() {
@@ -206,7 +209,7 @@ public class ClientBindActivity extends Activity {
         bizMap.put("is_bill", mClient.getIs_bill() + "");
         netRequest.setBizParamMap(bizMap);
         NetRequestTask netRequestTask = new NetRequestTask(this, netRequest, NetResponse.class);
-        netRequestTask.methodType = MethodType.POST;
+        netRequestTask.methodType = MethodType.PUSH;
         netRequestTask.setNetRequestListener(new NetRequestListener() {
             @Override
             public void onNetworkRequestError(int errorCode, String errorMessage) {
@@ -231,13 +234,14 @@ public class ClientBindActivity extends Activity {
                 try {
                     JSONObject jsonObject = new JSONObject(jsonResult);
                     if(jsonObject.getBoolean("set")){
-                        DialogUtil.getInstance().showToast(ClientBindActivity.this, "用户绑定成功！");
+                        //TODO add to local db
+                        showSuccessDialog();
                     } else {
+                        //TODO add to local db without salesid
                         int errCode = jsonObject.getInt("err");
                         //验证没通过
                         if (300 == errCode) {
-                            DialogUtil.getInstance().showToast(ClientBindActivity.this,
-                                    "此用户已被绑定，请解除绑定后重新绑定！");
+                            showFailedDialog();
                         }
                     }
                 } catch (JSONException e) {
@@ -252,6 +256,67 @@ public class ClientBindActivity extends Activity {
         });
         netRequestTask.isShowLoadingDialog = true;
         netRequestTask.execute();
+    }
+
+    /**
+     * 邀请对话框
+     */
+    private void showSuccessDialog() {
+        AlertDialog.Builder builder=new AlertDialog.Builder(this);
+        builder.setTitle(getString(R.string.app_name));
+        builder.setMessage("绑定当前用户成功！继续绑定？");
+        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() { //设置确定按钮
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                ClientBindActivity.this.finish();
+            }
+        });
+        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() { //设置取消按钮
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                ClientBindActivity.this.finish();
+            }
+        });
+        builder.create().show();
+    }
+
+    /**
+     * 邀请对话框
+     */
+    private void showFailedDialog() {
+        AlertDialog.Builder builder=new AlertDialog.Builder(this);
+        builder.setTitle(getString(R.string.app_name));
+        builder.setMessage("此用户已被绑定，只能添加为本地联系人。确认添加？");
+        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() { //设置确定按钮
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                String phone = mClient.getPhone();
+                UnRegClientVo unRegClient = UnRegClientFactory.getInstance().buildUnRegClientByClientDetailBean(mClient);
+                if(!UnRegClientDBUtil.getInstance().isUnRegClientExistByPhone(phone)){
+                    long addResult = UnRegClientDBUtil.getInstance().addUnRegClient(unRegClient);
+                    if(addResult > 0){
+                        DialogUtil.getInstance().showToast(ClientBindActivity.this, "添加为本地联系人成功！");
+                    }
+                }else {
+                    long updateResult =UnRegClientDBUtil.getInstance().updateUnRegClient(unRegClient);
+                    if(updateResult > 0){
+                        DialogUtil.getInstance().showToast(ClientBindActivity.this, "更新本地联系人成功！");
+                    }
+                }
+                ClientBindActivity.this.finish();
+            }
+        });
+        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() { //设置取消按钮
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                ClientBindActivity.this.finish();
+            }
+        });
+        builder.create().show();
     }
 
     /**

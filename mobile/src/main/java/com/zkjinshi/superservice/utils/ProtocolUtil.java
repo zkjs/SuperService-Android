@@ -168,6 +168,14 @@ public class ProtocolUtil {
     public static String getAvatarUrl(String userid){
         return ConfigUtil.getInst().getHttpDomain()+"uploads/users/"+userid+".jpg";
     }
+    /**
+     * 获得用户头像
+     * @param shopID
+     * @return
+     */
+    public static String getShopLogoUrl(String shopID){
+        return ConfigUtil.getInst().getHttpDomain()+"uploads/shops/"+ shopID +".png";
+    }
 
 
 }

@@ -9,33 +9,26 @@ package com.zkjinshi.superservice.bean;
  */
 public class TeamContactBean {
 
-    private String userid;
-    private String username;
-    private int    sex; // 0 女 1 男
+    private String name;
     private String phone;
+    private String roleid;
+    private String role_name ;
+    private String salesid;
 
-    public String getUserid() {
-        return userid;
+    public String getName() {
+        return name;
     }
 
-    public void setUserid(String userid) {
-        this.userid = userid;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getUsername() {
-        return username;
+    public String getSalesid() {
+        return salesid;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public int getSex() {
-        return sex;
-    }
-
-    public void setSex(int sex) {
-        this.sex = sex;
+    public void setSalesid(String salesid) {
+        this.salesid = salesid;
     }
 
     public String getPhone() {
@@ -45,4 +38,21 @@ public class TeamContactBean {
     public void setPhone(String phone) {
         this.phone = phone;
     }
+
+    public String getRole_name() {
+        return role_name;
+    }
+
+    public void setRole_name(String role_name) {
+        this.role_name = role_name;
+    }
+
+    public String getRole_id() {
+        return roleid;
+    }
+
+    public void setRole_id(String roleid) {
+        this.roleid = roleid;
+    }
 }
+

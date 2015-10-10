@@ -322,4 +322,20 @@ public class CacheUtil {
 		return sp.getString("shop_id", null);
 	}
 
+	public void setShopFullName(String shopFullName) {
+		if (null == context) {
+			return;
+		}
+		SharedPreferences sp = context.getSharedPreferences(SVIP_CACHE, Context.MODE_PRIVATE);
+		sp.edit().putString("shop_full_name", shopFullName).commit();
+	}
+
+	public String getShopFullName() {
+		if (null == context) {
+			return null;
+		}
+		SharedPreferences sp = context.getSharedPreferences(SVIP_CACHE, Context.MODE_PRIVATE);
+		return sp.getString("shop_full_name", null);
+	}
+
 }

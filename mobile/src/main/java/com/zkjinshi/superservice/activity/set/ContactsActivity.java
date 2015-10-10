@@ -1,12 +1,12 @@
 package com.zkjinshi.superservice.activity.set;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.ContentResolver;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.ContactsContract;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -23,12 +23,10 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.zkjinshi.base.log.LogUtil;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.adapter.ContactsSortAdapter;
-import com.zkjinshi.superservice.bean.MyClientBean;
-import com.zkjinshi.superservice.bean.TeamContactBean;
+import com.zkjinshi.superservice.bean.ClientBean;
 import com.zkjinshi.superservice.factory.SortModelFactory;
 import com.zkjinshi.superservice.listener.RecyclerItemClickListener;
 import com.zkjinshi.superservice.net.MethodType;
@@ -36,14 +34,12 @@ import com.zkjinshi.superservice.net.NetRequest;
 import com.zkjinshi.superservice.net.NetRequestListener;
 import com.zkjinshi.superservice.net.NetRequestTask;
 import com.zkjinshi.superservice.net.NetResponse;
-import com.zkjinshi.superservice.sqlite.ClientDBUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.CharacterParser;
 import com.zkjinshi.superservice.utils.PinyinComparator;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.utils.SortKeyUtil;
 import com.zkjinshi.superservice.view.SideBar;
-import com.zkjinshi.superservice.vo.ClientVo;
 import com.zkjinshi.superservice.vo.ContactType;
 import com.zkjinshi.superservice.vo.SortModel;
 
@@ -64,6 +60,8 @@ public class ContactsActivity extends Activity{
 
     private final static String TAG = ContactsActivity.class.getSimpleName();
 
+    private final static int REFRESH_SORTMODELS = 0X01;//刷新界面显示
+
     private String mUserID;
     private String mToken;
     private String mShopID;
@@ -81,8 +79,19 @@ public class ContactsActivity extends Activity{
     private List<SortModel>      mAllContactsList;
     private PinyinComparator     pinyinComparator;
     private ContactsSortAdapter  mContactsAdapter;
-//    private Object myUserList;
-//    private Object localContacts;
+
+    private Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch(msg.what){
+                case REFRESH_SORTMODELS:
+                    mContactsAdapter.updateListView(mAllContactsList);
+                    break;
+
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -264,6 +273,7 @@ public class ContactsActivity extends Activity{
      * @param shopID
      */
     public void getMyClientList(String userID, String token, String shopID) {
+        DialogUtil.getInstance().showProgressDialog(ContactsActivity.this);
         NetRequest netRequest = new NetRequest(ProtocolUtil.getShopUserListUrl());
         HashMap<String,String> bizMap = new HashMap<>();
         bizMap.put("salesid", userID);
@@ -271,7 +281,7 @@ public class ContactsActivity extends Activity{
         bizMap.put("shopid", shopID);
         netRequest.setBizParamMap(bizMap);
         NetRequestTask netRequestTask = new NetRequestTask(this, netRequest, NetResponse.class);
-        netRequestTask.methodType     = MethodType.POST;
+        netRequestTask.methodType     = MethodType.PUSH;
         netRequestTask.setNetRequestListener(new NetRequestListener() {
             @Override
             public void onNetworkRequestError(int errorCode, String errorMessage) {
@@ -292,12 +302,20 @@ public class ContactsActivity extends Activity{
                 Log.i(TAG, "result.rawResult:" + result.rawResult);
                 String jsonResult = result.rawResult;
                 if (result.rawResult.contains("set") || jsonResult.contains("err")) {
-
+                    //TODO: 获取客户列表失败请稍后再试
+                    DialogUtil.getInstance().showToast(ContactsActivity.this, "用户操作权限不够，请重新登录。");
                 } else {
-//                    Gson gson = new Gson();
-//                    List<MyClientBean> myClientBeans = gson.fromJson(jsonResult,
-//                            new TypeToken<ArrayList<MyClientBean>>() {}.getType());
+                    Gson gson = new Gson();
+                    List<ClientBean> clientBeans = gson.fromJson(jsonResult,
+                            new TypeToken<ArrayList<ClientBean>>() {}.getType());
+                    if(null != clientBeans && !clientBeans.isEmpty()){
+                        List<SortModel> sortModels = SortModelFactory.getInstance().convertMyClient2SortModels(clientBeans);
+                        mAllContactsList.addAll(sortModels);
 
+                        Message msg = Message.obtain();
+                        msg.what    = REFRESH_SORTMODELS;
+                        handler.sendMessage(msg);
+                    }
                 }
             }
 

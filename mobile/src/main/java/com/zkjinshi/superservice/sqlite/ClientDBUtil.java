@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import com.zkjinshi.base.log.LogLevel;
 import com.zkjinshi.base.log.LogUtil;
 import com.zkjinshi.superservice.ServiceApplication;
+import com.zkjinshi.superservice.bean.ClientBean;
 import com.zkjinshi.superservice.factory.ClientFactory;
 import com.zkjinshi.superservice.vo.ClientVo;
 
@@ -45,8 +46,8 @@ public class ClientDBUtil {
         helper   = new DBOpenHelper(mContext);
     }
 
-    public long addClient(ClientVo clientVo){
-        ContentValues values = ClientFactory.getInstance().buildAddContentValues(clientVo);
+    public long addClient(ClientBean client){
+        ContentValues values = ClientFactory.getInstance().buildAddContentValues(client);
         long addResult    = -1;
         SQLiteDatabase db = null;
         try {
@@ -65,9 +66,9 @@ public class ClientDBUtil {
     /**
      * 获取当前所有
      */
-    public List<ClientVo> queryAll() {
-        List<ClientVo> clientVos = new ArrayList<>();
-        ClientVo clientVo = null;
+    public List<ClientBean> queryAll() {
+        List<ClientBean> clientList = new ArrayList<>();
+        ClientBean client = null;
         SQLiteDatabase db = null;
         Cursor cursor = null;
         if (null != helper) {
@@ -76,8 +77,8 @@ public class ClientDBUtil {
                 cursor = db.query(DBOpenHelper.CLIENT_TBL, null, null, null, null, null, null);
                 if (cursor != null && cursor.getCount() > 0) {
                     while (cursor.moveToNext()) {
-                        clientVo = ClientFactory.getInstance().buildClientVo(cursor);
-                        clientVos.add(clientVo);
+                        client = ClientFactory.getInstance().buildclient(cursor);
+                        clientList.add(client);
                     }
                 }
             } catch (Exception e) {
@@ -92,6 +93,32 @@ public class ClientDBUtil {
                 }
             }
         }
-        return  clientVos;
+        return  clientList;
+    }
+
+    /**
+     * 根据UserID判断客户是否存在
+     * @return
+     */
+    public Boolean isClientExistByUserID(String userID) {
+        Cursor cursor = null;
+        SQLiteDatabase db = null;
+        try {
+            db = helper.getReadableDatabase();
+            cursor = db.rawQuery(" select * from " + DBOpenHelper.CLIENT_TBL + " where userid = ? ", new String[] { userID });
+            if(cursor.getCount() > 0){
+                return true;
+            }
+        } catch (Exception e) {
+            LogUtil.getInstance().info(LogLevel.ERROR, TAG + ".isClientExistByUserID->"+e.getMessage());
+            e.printStackTrace();
+        } finally{
+            if(null != db)
+                db.close();
+
+            if(null != cursor)
+                cursor.close();
+        }
+        return false;
     }
 }

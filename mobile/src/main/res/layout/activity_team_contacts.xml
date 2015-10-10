@@ -100,8 +100,8 @@
             android:textSize="30.0dip"
             android:visibility="invisible" />
 
-        <com.zkjinshi.superservice.view.SideBar
-            android:id="@+id/sb_sidebar"
+        <RelativeLayout
+            android:id="@+id/rl_side_bar"
             android:layout_width="30.0dip"
             android:layout_height="match_parent"
             android:layout_gravity="right|center" />
