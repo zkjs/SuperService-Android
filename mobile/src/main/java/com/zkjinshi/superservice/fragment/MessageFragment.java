@@ -113,20 +113,6 @@ public class MessageFragment extends Fragment  implements IMessageObserver {
                 }, 3000);
             }
         });
-
-        //自动加载更多
-        messageAdapter.setOnLoadMoreListener(new RecyclerLoadMoreListener() {
-            @Override
-            public void loadMore() {
-                swipeRefreshLayout.setRefreshing(true);
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        swipeRefreshLayout.setRefreshing(false);
-                    }
-                }, 3000);
-            }
-        });
     }
 
     @Nullable
