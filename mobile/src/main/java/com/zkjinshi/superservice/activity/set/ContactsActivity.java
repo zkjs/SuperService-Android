@@ -132,20 +132,13 @@ public class ContactsActivity extends Activity{
         mRcvContacts.setLayoutManager(mLayoutManager);
         mRcvContacts.setAdapter(mContactsAdapter);
 
-//        getLocalContacts();//本地联系人列表
-        getMyClientList(mUserID, mToken, mShopID);
-
-//        //TODO: 1.服务器获得最近联系人列表的客户列表
+        //TODO: 1.服务器获得最近 5位联系人列表的客户列表
 //        List<ClientVo> clientVos       = ClientDBUtil.getInstance().queryAll();
-//        if(!clientVos.isEmpty()){
-//            List<SortModel> sortModels = SortModelFactory.getInstance().convertClients2SortModels(clientVos);
-//            mAllContactsList = new ArrayList<>();
-//            mAllContactsList.addAll(sortModels);
-//
-//            //TODO:2.获得服务器最近联系人列表， 进入排序
-//            List<SortModel> latestSortModels = SortModelFactory.getInstance().getLatestSortModel(clientVos);
-//            mAllContactsList.addAll(latestSortModels);
-//        }
+//        List<SortModel> sortModels = SortModelFactory.getInstance().convertClients2SortModels(clientVos);
+//        mAllContactsList = new ArrayList<>();
+//        mAllContactsList.addAll(sortModels);
+
+        getMyClientList(mUserID, mToken, mShopID);
     }
 
     private void initListener() {

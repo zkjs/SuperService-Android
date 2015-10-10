@@ -46,7 +46,7 @@ public class TableOpenHelper {
                 + " shop_id text , "//商家id
                 + " chat_type int, " // 对应chatType 枚举类型
                 + " create_time long, "//创建聊天室时间
-                + " creater_id text, "//创建者id
+                + " create_id text, "//创建者id
                 + " image_url text, "//聊天室头像链接
                 + " title text, "//聊天室标题
                 + " last_action long, "//资料更新时间戳	更新聊天室群成员资料凭证

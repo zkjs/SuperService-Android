@@ -1,6 +1,5 @@
 package com.zkjinshi.superservice.activity.set;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,7 +9,6 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -19,7 +17,6 @@ import com.google.gson.reflect.TypeToken;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.base.util.DisplayUtil;
 import com.zkjinshi.superservice.R;
-import com.zkjinshi.superservice.adapter.ContactsSortAdapter;
 import com.zkjinshi.superservice.adapter.TeamContactsSortAdapter;
 import com.zkjinshi.superservice.bean.TeamContactBean;
 import com.zkjinshi.superservice.factory.SortModelFactory;
@@ -30,7 +27,6 @@ import com.zkjinshi.superservice.net.NetRequestTask;
 import com.zkjinshi.superservice.net.NetResponse;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.CharacterParser;
-import com.zkjinshi.superservice.utils.PinyinComparator;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.utils.SortKeyUtil;
 import com.zkjinshi.superservice.view.AutoSideBar;
@@ -38,7 +34,6 @@ import com.zkjinshi.superservice.vo.ContactType;
 import com.zkjinshi.superservice.vo.SortModel;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -116,6 +111,7 @@ public class TeamContactsActivity extends Activity{
         mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRvTeamContacts.setLayoutManager(mLayoutManager);
 
+        //TODO: 1.服务器获得最近 5位联系人列表的客户列表
         getTeamList(mUserID, mToken, mShopID);
     }
 

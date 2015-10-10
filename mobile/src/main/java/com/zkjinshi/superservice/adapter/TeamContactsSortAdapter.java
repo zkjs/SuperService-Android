@@ -1,6 +1,7 @@
 package com.zkjinshi.superservice.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -21,6 +22,7 @@ import com.zkjinshi.superservice.vo.SortModel;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 
 /**
  * 联系人适配器
@@ -43,11 +45,12 @@ public class TeamContactsSortAdapter extends RecyclerView.Adapter<RecyclerView.V
 
         this.mContext = mContext;
         this.mList    = list;
-
+        Random random = new Random();
+        int  randomColor = Color.rgb(random.nextInt(255), random.nextInt(255), random.nextInt(255));
         this.options = new DisplayImageOptions.Builder()
-                .showImageOnLoading(R.mipmap.ic_launcher)// 设置图片下载期间显示的图片
-                .showImageForEmptyUri(R.mipmap.ic_launcher)// 设置图片Uri为空或是错误的时候显示的图片
-                .showImageOnFail(R.mipmap.ic_launcher)// 设置图片加载或解码过程中发生错误显示的图片
+                .showImageOnLoading(randomColor)
+                .showImageForEmptyUri(randomColor)// 设置图片Uri为空或是错误的时候显示的图片
+                .showImageOnFail(randomColor)// 设置图片加载或解码过程中发生错误显示的图片
                 .cacheInMemory(true) // 设置下载的图片是否缓存在内存中
                 .cacheOnDisk(true) // 设置下载的图片是否缓存在SD卡中
                 .build();
@@ -73,10 +76,16 @@ public class TeamContactsSortAdapter extends RecyclerView.Adapter<RecyclerView.V
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.item_team_contact, null);
-        view.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                             LinearLayout.LayoutParams.WRAP_CONTENT));
-        ServerViewHolder serverHolder = new ServerViewHolder(view, mRecyclerItemClickListener);
+        View view = null;
+        ServerViewHolder serverHolder = null;
+        if(view == null){
+            view = LayoutInflater.from(mContext).inflate(R.layout.item_team_contact, null);
+            view.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                                                             LinearLayout.LayoutParams.WRAP_CONTENT));
+            serverHolder = new ServerViewHolder(view, mRecyclerItemClickListener);
+        } else {
+            serverHolder = (ServerViewHolder) view.getTag();
+        }
         return serverHolder;
     }
 

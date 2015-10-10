@@ -79,6 +79,9 @@ public class ContactsSortAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = null;
+        ServerViewHolder serverHolder = null;
+
 //        if(ContactType.LOCAL.getValue() == viewType){
 //            //本地联系人
 //            View view = LayoutInflater.from(mContext).inflate(R.layout.item_contact_local, null);
@@ -89,13 +92,18 @@ public class ContactsSortAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 //            return localHolder;
 //        } else {
             //服务器我的客人
-            View view = LayoutInflater.from(mContext).inflate(R.layout.item_contact_server, null);
+        //        }
+        if(view == null){
+            view = LayoutInflater.from(mContext).inflate(R.layout.item_contact_server, null);
             //设置条目宽度满足屏幕
             view.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT));
-            ServerViewHolder serverHolder = new ServerViewHolder(view, mRecyclerItemClickListener);
-            return serverHolder;
-//        }
+                                                              LinearLayout.LayoutParams.WRAP_CONTENT));
+            serverHolder = new ServerViewHolder(view, mRecyclerItemClickListener);
+        } else {
+            serverHolder = (ServerViewHolder) view.getTag();
+        }
+
+        return serverHolder;
     }
 
     @Override
