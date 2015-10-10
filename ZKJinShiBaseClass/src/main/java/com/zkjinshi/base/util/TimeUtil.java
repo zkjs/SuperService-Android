@@ -139,7 +139,6 @@ public class TimeUtil {
 			 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			 Date d = sdf.parse(timeStr);
 			 long timeStamp = d.getTime();
-			 timeStamp = timeStamp/1000;
 			return timeStamp;
 		 }catch (Exception e){
 			 Log.e("TimeUtil", e.getMessage());

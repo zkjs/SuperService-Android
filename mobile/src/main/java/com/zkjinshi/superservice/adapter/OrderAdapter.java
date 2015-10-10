@@ -75,6 +75,7 @@ public class OrderAdapter extends RecyclerView.Adapter {
         int count = dataList.size();
         if(count > 0){
             lastTimeStamp = TimeUtil.timeStrToTimeStamp(dataList.get(count-1).getCreated());
+            lastTimeStamp = lastTimeStamp/1000;
         }
         notifyDataSetChanged();
 
@@ -87,6 +88,7 @@ public class OrderAdapter extends RecyclerView.Adapter {
             this.dataList.addAll(dataList);
             notifyItemRangeInserted(index, count);
             lastTimeStamp = TimeUtil.timeStrToTimeStamp(dataList.get(count-1).getCreated());
+            lastTimeStamp = lastTimeStamp/1000;
         }
     }
 
@@ -166,7 +168,8 @@ public class OrderAdapter extends RecyclerView.Adapter {
         }
         holder.payStatus.setText(payStatusStr);
         ImageLoader.getInstance().displayImage(ProtocolUtil.getAvatarUrl(orderBean.getUserid()), holder.avatar);
-
+        String timeStr = TimeUtil.getChatTime(orderBean.getCreated());
+        holder.time.setText(timeStr);
 
         LinearLayout.LayoutParams contentLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         if(position == 0){
@@ -177,8 +180,7 @@ public class OrderAdapter extends RecyclerView.Adapter {
             contentLayoutParams.setMargins(0, DisplayUtil.dip2px(context, 6), DisplayUtil.dip2px(context, 8), DisplayUtil.dip2px(context, 6));
         }
         holder.contentLayout.setLayoutParams(contentLayoutParams);
-        String timeStr = TimeUtil.getChatTime(orderBean.getCreated());
-        holder.time.setText(timeStr);
+
 
 
     }
