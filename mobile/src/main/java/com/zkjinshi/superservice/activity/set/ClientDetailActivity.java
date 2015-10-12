@@ -65,6 +65,7 @@ public class ClientDetailActivity extends Activity {
     private TagView     mTvTagPrivilege;
     private TagView     mTvTagClient;
     private EditText    mEtRemark;
+    private TextView    mTvExclusiceServer;
 
     private CircleImageView  mCivMemberAvatar;
     private ClientDetailBean mClient;
@@ -93,6 +94,8 @@ public class ClientDetailActivity extends Activity {
         mTvTagPrivilege  = (TagView)         findViewById(R.id.tv_privilege_tag);
         mTvTagClient     = (TagView)         findViewById(R.id.tv_client_tag);
         mEtRemark        = (EditText)        findViewById(R.id.et_remark);
+        mTvExclusiceServer = (TextView)      findViewById(R.id.tv_exclusive_server);
+
     }
 
     private void initData() {

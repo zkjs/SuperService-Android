@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -27,6 +28,7 @@ import com.zkjinshi.superservice.net.NetRequest;
 import com.zkjinshi.superservice.net.NetRequestListener;
 import com.zkjinshi.superservice.net.NetRequestTask;
 import com.zkjinshi.superservice.net.NetResponse;
+import com.zkjinshi.superservice.sqlite.ClientDBUtil;
 import com.zkjinshi.superservice.sqlite.UnRegClientDBUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.Constants;
@@ -169,7 +171,9 @@ public class ClientBindActivity extends Activity {
         mBtnConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (null != mClient) {
+                if(ClientDBUtil.getInstance().isClientExistByPhone(mClient.getPhone())){
+                    DialogUtil.getInstance().showCustomToast(ClientBindActivity.this, "客户已存在,请勿重复添加.", Gravity.CENTER);
+                }else if (null != mClient) {
                     //绑定客户
                     bindClient(mUserID, mToken, mShopID, mClient);
                 }

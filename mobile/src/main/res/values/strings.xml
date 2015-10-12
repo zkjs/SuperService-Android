@@ -55,5 +55,8 @@
     <string name="member_bind">会员绑定</string>
     <string name="member_type">客户类型</string>
     <string name="not_check_yet">尚未选择</string>
+    <string name="exclusive_customer_service">专属客服</string>
+    <string name="action_edit">编辑</string>
+    <string name="action_tian_jia">添加</string>
 
 </resources>
