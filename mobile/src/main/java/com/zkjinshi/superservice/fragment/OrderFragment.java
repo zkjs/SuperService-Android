@@ -11,10 +11,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.zkjinshi.base.util.DialogUtil;
+import com.zkjinshi.base.util.TimeUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.common.LoginActivity;
 import com.zkjinshi.superservice.adapter.OrderAdapter;
@@ -53,6 +55,7 @@ public class OrderFragment extends Fragment{
     private SwipeRefreshLayout swipeRefreshLayout;
     private OrderAdapter orderAdapter;
     private OrderMoreAdapter orderMoreAdapter;
+    private TextView timeTips;
 
 
     public static OrderFragment newInstance() {
@@ -64,6 +67,7 @@ public class OrderFragment extends Fragment{
         rcyOrderMore = (RecyclerView)view.findViewById(R.id.rcv_order_done);
 
         moreStatsuView = (CircleStatusView)view.findViewById(R.id.csv_more);
+        timeTips = (TextView)view.findViewById(R.id.tv_time_info);
         swipeRefreshLayout = (SwipeRefreshLayout)view.findViewById(R.id.srl_order);
 
         rcyOrder.setHasFixedSize(true);
@@ -177,6 +181,7 @@ public class OrderFragment extends Fragment{
 
                         ArrayList<OrderBean> downList = getDownList(orderList);
                         orderMoreAdapter.refreshingAction(downList);
+                        timeTips.setText(orderMoreAdapter.getTimeTips());
 
                         swipeRefreshLayout.setRefreshing(false);
 
@@ -186,6 +191,7 @@ public class OrderFragment extends Fragment{
 
                         ArrayList<OrderBean> downList = getDownList(orderList);
                         orderMoreAdapter.refreshingAction(downList);
+                        timeTips.setText(orderMoreAdapter.getTimeTips());
 
                         swipeRefreshLayout.setRefreshing(false);
                     }

@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.zkjinshi.base.util.DisplayUtil;
+import com.zkjinshi.base.util.TimeUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.bean.OrderBean;
 import com.zkjinshi.superservice.utils.Constants;
@@ -29,8 +30,16 @@ public class OrderMoreAdapter extends RecyclerView.Adapter {
     private static final String TAG = OrderMoreAdapter.class.getSimpleName();
 
     private DisplayImageOptions options;
-    private ArrayList<OrderBean> dataList;
+    private ArrayList<OrderBean> dataList = new ArrayList<OrderBean>();
     private Context context;
+
+   public String getTimeTips(){
+       if(dataList.size() > 0){
+           return TimeUtil.getChatTime(dataList.get(0).getCreated());
+       }
+
+       return "";
+   }
 
     public OrderMoreAdapter(ArrayList<OrderBean> dataList) {
         this.dataList = dataList;
