@@ -107,7 +107,8 @@ public class TableOpenHelper {
                     + " phone         text, "
                     + " company       text, "
                     + " position      text, "
-                    + " is_bill       int"
+                    + " is_bill       int, "
+                    + " contact_type  int "
                     + " ) ";
 
     /** 创建区域信息表 */

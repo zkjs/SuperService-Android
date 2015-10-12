@@ -94,7 +94,7 @@ public class TeamContactsActivity extends Activity{
 
         // 创建商店排序对象
         mShopSortModel = new SortModel();
-        mShopSortModel.setContactType(ContactType.SERVER);
+        mShopSortModel.setContactType(ContactType.UNNORMAL);
         mShopSortModel.setName(CacheUtil.getInstance().getShopFullName());
         if(!TextUtils.isEmpty(mShopID)){
             mShopSortModel.setAvatarUrl(ProtocolUtil.getShopLogoUrl(mShopID));

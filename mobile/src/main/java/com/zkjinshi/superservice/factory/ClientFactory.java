@@ -4,7 +4,12 @@ import android.content.ContentValues;
 import android.database.Cursor;
 
 import com.zkjinshi.superservice.bean.ClientBean;
+import com.zkjinshi.superservice.vo.ClientVo;
+import com.zkjinshi.superservice.vo.ContactType;
 import com.zkjinshi.superservice.vo.IsBill;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 开发者：vincent
@@ -30,7 +35,7 @@ public class ClientFactory {
      * @param client
      * @return
      */
-    public ContentValues buildAddContentValues(ClientBean client) {
+    public ContentValues buildAddContentValues(ClientVo client) {
         ContentValues values = new ContentValues();
         String userId      = client.getUserid();
         int    id            = client.getId();
@@ -51,6 +56,7 @@ public class ClientFactory {
         String company       = client.getCompany();
         String position      = client.getPosition();
         int    isBill       = client.getIs_bill();
+        int    contactType  = client.getContactType().getValue();
 
         values.put("userid", userId);
         values.put("id", id);
@@ -71,6 +77,7 @@ public class ClientFactory {
         values.put("company", company);
         values.put("position", position);
         values.put("is_bill", isBill);
+        values.put("contact_type", contactType);
         return values;
     }
 
@@ -79,8 +86,8 @@ public class ClientFactory {
      * @param cursor
      * @return
      */
-    public ClientBean buildclient(Cursor cursor) {
-            ClientBean client = new ClientBean();
+    public ClientVo buildclient(Cursor cursor) {
+            ClientVo client = new ClientVo();
             client.setUserid(cursor.getString(0));
             client.setId(cursor.getInt(1));
             client.setShopid(cursor.getString(2));
@@ -100,7 +107,21 @@ public class ClientFactory {
             client.setCompany(cursor.getString(16));
             client.setPosition(cursor.getString(17));
             client.setIs_bill(cursor.getInt(18));
+            client.setContactType(getContactType(cursor.getInt(19)));
         return  client;
+    }
+
+    /**
+     * 获得联系人类型
+     * @param value
+     * @return
+     */
+    private ContactType getContactType(int value) {
+        if(value == ContactType.NORMAL.getValue()) {
+            return ContactType.NORMAL;
+        } else {
+            return ContactType.UNNORMAL;
+        }
     }
 
     /**
@@ -116,4 +137,90 @@ public class ClientFactory {
         }
     }
 
+    public List<ClientVo> buildClientVosByClientBeans(List<ClientBean> clientBeans) {
+        List<ClientVo> clientVos = null;
+        ClientVo       clientVo  = null;
+        if(null != clientBeans && !clientBeans.isEmpty()){
+            clientVos = new ArrayList<>();
+            for(ClientBean clientBean : clientBeans){
+                clientVo = bulidClientVoByClientBean(clientBean);
+                clientVos.add(clientVo);
+            }
+        }
+        return clientVos;
+    }
+
+    /**
+     *
+     * @param clientBean
+     * @return
+     */
+    private ClientVo bulidClientVoByClientBean(ClientBean clientBean) {
+        ClientVo clientVo = new ClientVo();
+        clientVo.setUserid(clientBean.getUserid());
+        clientVo.setId(clientBean.getId());
+        clientVo.setShopid(clientBean.getShopid());
+        clientVo.setSalesid(clientBean.getSalesid());
+        clientVo.setUser_level(clientBean.getUser_level());
+        clientVo.setLevel_desc(clientBean.getLevel_desc());
+        clientVo.setCard_no(clientBean.getCard_no());
+        clientVo.setIs_special(clientBean.getIs_special());
+        clientVo.setNationality(clientBean.getNationality());
+        clientVo.setLike_desc(clientBean.getLike_desc());
+        clientVo.setTaboo_desc(clientBean.getTaboo_desc());
+        clientVo.setOther_desc(clientBean.getOther_desc());
+        clientVo.setCreated(clientBean.getCreated());
+        clientVo.setModified(clientBean.getModified());
+        clientVo.setUsername(clientBean.getUsername());
+        clientVo.setPhone(clientBean.getPhone());
+        clientVo.setCompany(clientBean.getCompany());
+        clientVo.setPosition(clientBean.getPosition());
+        clientVo.setIs_bill(clientBean.getIs_bill());
+        return clientVo;
+    }
+
+    public ContentValues buildUpdateContentValues(ClientVo client) {
+
+        ContentValues values = new ContentValues();
+        int    id            = client.getId();
+        String shopID        = client.getShopid();
+        String salesID       = client.getSalesid();
+        int   userLevel      = client.getUser_level();
+        String levelDesc     = client.getLevel_desc();
+        String cardNo        = client.getCard_no();
+        String isSpecial     = client.getIs_special();
+        String nationality   = client.getNationality();
+        String likeDesc      = client.getLike_desc();
+        String tabooDesc     = client.getTaboo_desc();
+        String otherDesc     = client.getOther_desc();
+        long  created       = client.getCreated();
+        long  modified      = client.getModified();
+        String username      = client.getUsername();
+        String phone         = client.getPhone();
+        String company       = client.getCompany();
+        String position      = client.getPosition();
+        int    isBill       = client.getIs_bill();
+        int    contactType  = client.getContactType().getValue();
+
+        values.put("id", id);
+        values.put("shopid", shopID);
+        values.put("salesid", salesID);
+        values.put("user_level", userLevel);
+        values.put("level_desc", levelDesc);
+        values.put("card_no", cardNo);
+        values.put("is_special", isSpecial);
+        values.put("nationality", nationality);
+        values.put("like_desc", likeDesc);
+        values.put("taboo_desc", tabooDesc);
+        values.put("other_desc", otherDesc);
+        values.put("created", created);
+        values.put("modified", modified);
+        values.put("username", username);
+        values.put("phone", phone);
+        values.put("company", company);
+        values.put("position", position);
+        values.put("is_bill", isBill);
+        values.put("contact_type", contactType);
+        return values;
+    }
 }

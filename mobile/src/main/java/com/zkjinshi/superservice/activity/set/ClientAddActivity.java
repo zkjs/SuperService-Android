@@ -14,7 +14,10 @@ import android.widget.TextView;
 
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
+import com.zkjinshi.superservice.sqlite.ClientDBUtil;
 import com.zkjinshi.superservice.sqlite.UnRegClientDBUtil;
+import com.zkjinshi.superservice.vo.ClientVo;
+import com.zkjinshi.superservice.vo.ContactType;
 import com.zkjinshi.superservice.vo.IsBill;
 import com.zkjinshi.superservice.vo.UnRegClientVo;
 
@@ -32,7 +35,7 @@ public class ClientAddActivity extends Activity {
     private final static int CLIENT_ADD_RESULT    = 0x00;
     private final static int CLIENT_UPDATE_RESULT = 0x01;
 
-    private UnRegClientVo   mUnRegClient;
+    private ClientVo        mClient;
     private ImageButton     mIbtnBack;
     private EditText        mEtClientName;
     private TextView        mTvClientPhone;
@@ -53,7 +56,7 @@ public class ClientAddActivity extends Activity {
                     Bundle addBundle = msg.getData();
                     long addResult   = addBundle.getLong("add_result");
                     if(addResult > 0){
-                        DialogUtil.getInstance().showToast(ClientAddActivity.this, "添加新客户成功!");
+                        DialogUtil.getInstance().showToast(ClientAddActivity.this, "添加本地新客户成功!");
                         ClientAddActivity.this.finish();
                     } else {
                         DialogUtil.getInstance().showToast(ClientAddActivity.this, "添加失败! 请重试");
@@ -149,26 +152,28 @@ public class ClientAddActivity extends Activity {
                 }else {
                     isBill = IsBill.ISONACCOUNT.getValue();
                 }
-                mUnRegClient = new UnRegClientVo();
-                mUnRegClient.setPhone(mPhoneNumber);
-                mUnRegClient.setUsername(clientName);
-                mUnRegClient.setCompany(clientCompany);
-                mUnRegClient.setPosition(clientPosition);
-                mUnRegClient.setOther_desc(clientRemark);
-                mUnRegClient.setIs_bill(isBill);
-                addNewClient(mUnRegClient);
+                mClient = new ClientVo();
+                mClient.setUserid(System.currentTimeMillis()+"");
+                mClient.setPhone(mPhoneNumber);
+                mClient.setUsername(clientName);
+                mClient.setCompany(clientCompany);
+                mClient.setPosition(clientPosition);
+                mClient.setOther_desc(clientRemark);
+                mClient.setIs_bill(isBill);
+                mClient.setContactType(ContactType.UNNORMAL);
+                addNewClient(mClient);
             }
         });
     }
 
     /**
      * 添加尚未注册的用户
-     * @param unRegClientVoclient
+     * @param clientVo
      */
-    private void addNewClient(UnRegClientVo unRegClientVoclient) {
+    private void addNewClient(ClientVo clientVo) {
         // 1.add the unregister client to local db
-        if(!UnRegClientDBUtil.getInstance().isUnRegClientExistByPhone(unRegClientVoclient.getPhone())){
-            long addResult = UnRegClientDBUtil.getInstance().addUnRegClient(unRegClientVoclient);
+        if(!ClientDBUtil.getInstance().isClientExistByPhone(clientVo.getPhone())){
+            long addResult = ClientDBUtil.getInstance().addClient(clientVo);
             Message msg = Message.obtain();
             msg.what = CLIENT_ADD_RESULT;
             Bundle bundle = new Bundle();
@@ -176,7 +181,7 @@ public class ClientAddActivity extends Activity {
             msg.setData(bundle);
             handler.sendMessage(msg);
         } else {
-            long updateResult = UnRegClientDBUtil.getInstance().updateUnRegClient(unRegClientVoclient);
+            long updateResult = ClientDBUtil.getInstance().updateClient(clientVo);
             Message msg = Message.obtain();
             msg.what = CLIENT_UPDATE_RESULT;
             Bundle bundle = new Bundle();

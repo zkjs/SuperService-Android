@@ -45,12 +45,11 @@ public class TeamContactsSortAdapter extends RecyclerView.Adapter<RecyclerView.V
 
         this.mContext = mContext;
         this.mList    = list;
-        Random random = new Random();
-        int  randomColor = Color.rgb(random.nextInt(255), random.nextInt(255), random.nextInt(255));
+
         this.options = new DisplayImageOptions.Builder()
-                .showImageOnLoading(randomColor)
-                .showImageForEmptyUri(randomColor)// 设置图片Uri为空或是错误的时候显示的图片
-                .showImageOnFail(randomColor)// 设置图片加载或解码过程中发生错误显示的图片
+                .showImageOnLoading(R.mipmap.ic_launcher)
+                .showImageForEmptyUri(R.mipmap.ic_launcher)// 设置图片Uri为空或是错误的时候显示的图片
+                .showImageOnFail(R.mipmap.ic_launcher)// 设置图片加载或解码过程中发生错误显示的图片
                 .cacheInMemory(true) // 设置下载的图片是否缓存在内存中
                 .cacheOnDisk(true) // 设置下载的图片是否缓存在SD卡中
                 .build();

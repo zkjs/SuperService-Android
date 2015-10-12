@@ -1,6 +1,7 @@
 package com.zkjinshi.superservice.activity.set;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
@@ -14,6 +15,7 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -27,6 +29,7 @@ import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.adapter.ContactsSortAdapter;
 import com.zkjinshi.superservice.bean.ClientBean;
+import com.zkjinshi.superservice.factory.ClientFactory;
 import com.zkjinshi.superservice.factory.SortModelFactory;
 import com.zkjinshi.superservice.listener.RecyclerItemClickListener;
 import com.zkjinshi.superservice.net.MethodType;
@@ -34,12 +37,14 @@ import com.zkjinshi.superservice.net.NetRequest;
 import com.zkjinshi.superservice.net.NetRequestListener;
 import com.zkjinshi.superservice.net.NetRequestTask;
 import com.zkjinshi.superservice.net.NetResponse;
+import com.zkjinshi.superservice.sqlite.ClientDBUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.CharacterParser;
 import com.zkjinshi.superservice.utils.PinyinComparator;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.utils.SortKeyUtil;
 import com.zkjinshi.superservice.view.SideBar;
+import com.zkjinshi.superservice.vo.ClientVo;
 import com.zkjinshi.superservice.vo.ContactType;
 import com.zkjinshi.superservice.vo.SortModel;
 
@@ -77,6 +82,7 @@ public class ContactsActivity extends Activity{
 
     private CharacterParser      characterParser;
     private List<SortModel>      mAllContactsList;
+    private List<ClientVo>       mLocalContacts;
     private PinyinComparator     pinyinComparator;
     private ContactsSortAdapter  mContactsAdapter;
 
@@ -132,11 +138,13 @@ public class ContactsActivity extends Activity{
         mRcvContacts.setLayoutManager(mLayoutManager);
         mRcvContacts.setAdapter(mContactsAdapter);
 
-        //TODO: 1.服务器获得最近 5位联系人列表的客户列表
-//        List<ClientVo> clientVos       = ClientDBUtil.getInstance().queryAll();
-//        List<SortModel> sortModels = SortModelFactory.getInstance().convertClients2SortModels(clientVos);
-//        mAllContactsList = new ArrayList<>();
-//        mAllContactsList.addAll(sortModels);
+        //TODO: 1.获得本地最近5位联系人列表的客户列表
+        //TODO:查询我的本地客户
+        mLocalContacts = ClientDBUtil.getInstance().queryUnNormalClient();
+        if(!mLocalContacts.isEmpty()){
+            List<SortModel> sortModels = SortModelFactory.getInstance().convertClientVos2SortModels(mLocalContacts);
+            mAllContactsList.addAll(sortModels);
+        }
 
         getMyClientList(mUserID, mToken, mShopID);
     }
@@ -213,11 +221,15 @@ public class ContactsActivity extends Activity{
             @Override
             public void onItemClick(View view, int postion) {
                 SortModel sortModel = mAllContactsList.get(postion);
-                String phoneNumber = sortModel.getNumber();
-                Intent clientDetail = new Intent(ContactsActivity.this, ClientDetailActivity.class);
-                clientDetail.putExtra("phone_number", phoneNumber);
-                ContactsActivity.this.startActivity(clientDetail);
 
+                if(sortModel.getContactType().getValue() == ContactType.NORMAL.getValue()){
+                    String phoneNumber = sortModel.getNumber();
+                    Intent clientDetail = new Intent(ContactsActivity.this, ClientDetailActivity.class);
+                    clientDetail.putExtra("phone_number", phoneNumber);
+                    ContactsActivity.this.startActivity(clientDetail);
+                } else {
+                    DialogUtil.getInstance().showCustomToast(ContactsActivity.this, "当前客户为本地联系人，无详细信息。", Gravity.CENTER);
+                }
             }
         });
     }
@@ -282,11 +294,17 @@ public class ContactsActivity extends Activity{
                 Log.i(TAG, "errorCode:" + errorCode);
                 Log.i(TAG, "errorMessage:" + errorMessage);
                 DialogUtil.getInstance().showToast(ContactsActivity.this, "网络访问失败，稍候再试。");
+                Message msg = Message.obtain();
+                msg.what    = REFRESH_SORTMODELS;
+                handler.sendMessage(msg);
             }
 
             @Override
             public void onNetworkRequestCancelled() {
                 DialogUtil.getInstance().cancelProgressDialog();
+                Message msg = Message.obtain();
+                msg.what    = REFRESH_SORTMODELS;
+                handler.sendMessage(msg);
             }
 
             @Override
@@ -301,8 +319,18 @@ public class ContactsActivity extends Activity{
                     Gson gson = new Gson();
                     List<ClientBean> clientBeans = gson.fromJson(jsonResult,
                             new TypeToken<ArrayList<ClientBean>>() {}.getType());
+
                     if(null != clientBeans && !clientBeans.isEmpty()){
-                        List<SortModel> sortModels = SortModelFactory.getInstance().convertMyClient2SortModels(clientBeans);
+                        
+                        List<ClientVo> clientVos = ClientFactory.getInstance().buildClientVosByClientBeans(clientBeans);
+                        for(ClientVo clientVo : clientVos){
+                            if(!ClientDBUtil.getInstance().isClientExistByUserID(clientVo.getUserid())){
+                                clientVo.setContactType(ContactType.NORMAL);
+                                ClientDBUtil.getInstance().addClients(clientVo);
+                            }
+                        }
+
+                        List<SortModel> sortModels = SortModelFactory.getInstance().convertClientVos2SortModels(clientVos);
                         mAllContactsList.addAll(sortModels);
 
                         Message msg = Message.obtain();
@@ -363,7 +391,7 @@ public class ContactsActivity extends Activity{
                             System.out.println(sortKey);
 
                             SortModel sortModel = new SortModel();
-                            sortModel.setContactType(ContactType.LOCAL);//本地联系人类型
+                            sortModel.setContactType(ContactType.UNNORMAL);//本地联系人类型
                             sortModel.setContactID(contactID);
                             sortModel.setName(contactName);
                             sortModel.setNumber(phoneNumber);

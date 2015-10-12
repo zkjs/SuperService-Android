@@ -121,15 +121,15 @@ public class SortModelFactory {
 
     /**
      * 将服务端我的客户列表转换为排序列表
-     * @param clientBeans
+     * @param clientVos
      */
-    public List <SortModel> convertMyClient2SortModels(List<ClientBean> clientBeans) {
+    public List <SortModel> convertClientVos2SortModels(List<ClientVo> clientVos) {
 
         List <SortModel> sortModels = null;
-        if(!clientBeans.isEmpty()){
+        if(!clientVos.isEmpty()){
             sortModels = new ArrayList<>();
-            for(ClientBean clientBean : clientBeans){
-                SortModel sortModel = buildSortModelByMyClientBean(clientBean);
+            for(ClientVo clientVo : clientVos){
+                SortModel sortModel = buildSortModelByMyClientVo(clientVo);
                 sortModels.add(sortModel);
             }
         }
@@ -139,21 +139,21 @@ public class SortModelFactory {
 
     /**
      * 根据我的客户对象生成排序对象
-     * @param clientBean
+     * @param clientVo
      * @return
      */
-    private SortModel buildSortModelByMyClientBean(ClientBean clientBean) {
+    private SortModel buildSortModelByMyClientVo(ClientVo clientVo) {
 
-        String userID   = clientBean.getUserid();
-        String userName = clientBean.getUsername();
+        String userID   = clientVo.getUserid();
+        String userName = clientVo.getUsername();
 
         SortModel sortModel = new SortModel();
-        sortModel.setContactType(ContactType.SERVER);
+        sortModel.setContactType(clientVo.getContactType());
         sortModel.setName(userName);
         if(!TextUtils.isEmpty(userID)){
-            sortModel.setAvatarUrl(ProtocolUtil.getAvatarUrl(clientBean.getUserid()));
+            sortModel.setAvatarUrl(ProtocolUtil.getAvatarUrl(clientVo.getUserid()));
         }
-        sortModel.setNumber(clientBean.getPhone());
+        sortModel.setNumber(clientVo.getPhone());
         sortModel.setSortKey(userName);
         //获得首字母
         String sortLetters = SortKeyUtil.getSortLetter(userName, CharacterParser.getInstance());
@@ -193,7 +193,7 @@ public class SortModelFactory {
         String roleName = teamContact.getRole_name();
 
         SortModel sortModel = new SortModel();
-        sortModel.setContactType(ContactType.SERVER);
+        sortModel.setContactType(ContactType.NORMAL);
         sortModel.setName(userName);
         if(!TextUtils.isEmpty(userID)){
             sortModel.setAvatarUrl(ProtocolUtil.getAvatarUrl(teamContact.getSalesid()));
