@@ -3,7 +3,9 @@ package com.zkjinshi.superservice.activity.set;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
@@ -18,6 +20,7 @@ import com.zkjinshi.superservice.net.NetRequest;
 import com.zkjinshi.superservice.net.NetRequestListener;
 import com.zkjinshi.superservice.net.NetRequestTask;
 import com.zkjinshi.superservice.net.NetResponse;
+import com.zkjinshi.superservice.sqlite.ClientDBUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.utils.StringUtil;
@@ -40,9 +43,10 @@ public class ClientSelectActivity extends Activity {
 
     private String          mUserID;
     private String          mToken;
+    private String          mShopID;
     private EditText        mEtClientPhone;
 
-    private ClientDetailBean        mClient;
+    private ClientDetailBean        mClientBean;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +65,7 @@ public class ClientSelectActivity extends Activity {
     private void initData() {
         mUserID = CacheUtil.getInstance().getUserId();
         mToken  = CacheUtil.getInstance().getToken();
+        mShopID = CacheUtil.getInstance().getShopID();
     }
 
     private void initListener() {
@@ -68,9 +73,18 @@ public class ClientSelectActivity extends Activity {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                     String phone = mEtClientPhone.getText().toString().trim();
-                    if(StringUtil.isPhoneNumber(phone)){
-                        //TODO:执行网络获取具体客户信息
-                        getClientDetail(phone);
+                    if(TextUtils.isEmpty(phone)){
+                        DialogUtil.getInstance().showCustomToast(ClientSelectActivity.this,
+                                "手机号不能为空!", Gravity.CENTER);
+                    }else if(!StringUtil.isPhoneNumber(phone)){
+                        DialogUtil.getInstance().showCustomToast(ClientSelectActivity.this,
+                                "请确认手机号是否输入正确!", Gravity.CENTER);
+                    } else {
+                        if(ClientDBUtil.getInstance().isClientExistByPhone(phone)){
+                            DialogUtil.getInstance().showToast(ClientSelectActivity.this, "此用户本地已存在, 请勿重复添加!");
+                        } else {
+                            getClientDetail(phone);
+                        }
                     }
                     return true;
                 }
@@ -84,6 +98,7 @@ public class ClientSelectActivity extends Activity {
         HashMap<String,String> bizMap = new HashMap<>();
         bizMap.put("empid", mUserID);
         bizMap.put("token", mToken);
+        bizMap.put("shopid", mShopID);
         bizMap.put("phone", phoneNumber);
         bizMap.put("set", "9");
         netRequest.setBizParamMap(bizMap);
@@ -131,9 +146,9 @@ public class ClientSelectActivity extends Activity {
                     }
                 } else {
                     Gson gson = new Gson();
-                    mClient   = gson.fromJson(jsonResult, ClientDetailBean.class);
+                    mClientBean = gson.fromJson(jsonResult, ClientDetailBean.class);
                     Intent clienBind = new Intent(ClientSelectActivity.this, ClientBindActivity.class);
-                    clienBind.putExtra("client", mClient);
+                    clienBind.putExtra("client_bean", mClientBean);
                     ClientSelectActivity.this.startActivity(clienBind);
                     ClientSelectActivity.this.finish();
                 }

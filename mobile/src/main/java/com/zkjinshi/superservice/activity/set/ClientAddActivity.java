@@ -103,22 +103,22 @@ public class ClientAddActivity extends Activity {
         if(!TextUtils.isEmpty(mPhoneNumber)){
             mTvClientPhone.setText(mPhoneNumber);
         }
-        if(UnRegClientDBUtil.getInstance().isUnRegClientExistByPhone(mPhoneNumber)){
-            UnRegClientVo unRegClient = UnRegClientDBUtil.getInstance().findUnRegClientByPhone(mPhoneNumber);
-            showUnRegClient(unRegClient);
+        if(ClientDBUtil.getInstance().isClientExistByPhone(mPhoneNumber)){
+            ClientVo clientVo = ClientDBUtil.getInstance().findClientByPhone(mPhoneNumber);
+            showClient(clientVo);
         }
     }
 
     /**
      * 显示当前信息
-     * @param unRegClient
+     * @param clientVo
      */
-    private void showUnRegClient(UnRegClientVo unRegClient) {
-        mEtClientName.setText(unRegClient.getUsername());
-        mEtClientCompany.setText(unRegClient.getCompany());
-        mEtClientPosition.setText(unRegClient.getPosition());
-        mEtClientRemark.setText(unRegClient.getOther_desc());
-        if(unRegClient.getIs_bill() == IsBill.ISONACCOUNT.getValue()){
+    private void showClient(ClientVo clientVo) {
+        mEtClientName.setText(clientVo.getUsername());
+        mEtClientCompany.setText(clientVo.getCompany());
+        mEtClientPosition.setText(clientVo.getPosition());
+        mEtClientRemark.setText(clientVo.getOther_desc());
+        if(clientVo.getIs_bill() == IsBill.ISONACCOUNT.getValue()){
             mCbMemberOnAccount.setChecked(true);
         }else {
             mCbMemberOnAccount.setChecked(false);

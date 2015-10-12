@@ -3,10 +3,11 @@ package com.zkjinshi.superservice.factory;
 import android.content.ContentValues;
 import android.database.Cursor;
 
-import com.zkjinshi.superservice.bean.ClientBean;
+import com.zkjinshi.superservice.bean.ClientDetailBean;
 import com.zkjinshi.superservice.vo.ClientVo;
 import com.zkjinshi.superservice.vo.ContactType;
 import com.zkjinshi.superservice.vo.IsBill;
+import com.zkjinshi.superservice.vo.SexType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,7 +57,10 @@ public class ClientFactory {
         String company       = client.getCompany();
         String position      = client.getPosition();
         int    isBill       = client.getIs_bill();
-        int    contactType  = client.getContactType().getValue();
+        ContactType contactType = client.getContactType();
+        SexType     setType     = client.getSex();
+        int    orderCount  = client.getOrder_count();
+        String tags        = client.getTags();
 
         values.put("userid", userId);
         values.put("id", id);
@@ -77,7 +81,15 @@ public class ClientFactory {
         values.put("company", company);
         values.put("position", position);
         values.put("is_bill", isBill);
-        values.put("contact_type", contactType);
+        if(null != contactType){
+            values.put("contact_type", contactType.getValue());
+        }
+
+       if(null != setType){
+           values.put("sex", setType.getVlaue());
+       }
+        values.put("order_count", orderCount);
+        values.put("tags", tags);
         return values;
     }
 
@@ -108,6 +120,9 @@ public class ClientFactory {
             client.setPosition(cursor.getString(17));
             client.setIs_bill(cursor.getInt(18));
             client.setContactType(getContactType(cursor.getInt(19)));
+            client.setSex(getSexType(cursor.getInt(20)));
+            client.setOrder_count(cursor.getInt(21));
+            client.setTags(cursor.getString(22));
         return  client;
     }
 
@@ -137,13 +152,13 @@ public class ClientFactory {
         }
     }
 
-    public List<ClientVo> buildClientVosByClientBeans(List<ClientBean> clientBeans) {
+    public List<ClientVo> buildClientVosByClientBeans(List<ClientDetailBean> clientDetailBeans) {
         List<ClientVo> clientVos = null;
         ClientVo       clientVo  = null;
-        if(null != clientBeans && !clientBeans.isEmpty()){
+        if(null != clientDetailBeans && !clientDetailBeans.isEmpty()){
             clientVos = new ArrayList<>();
-            for(ClientBean clientBean : clientBeans){
-                clientVo = bulidClientVoByClientBean(clientBean);
+            for(ClientDetailBean clientDetailBean : clientDetailBeans){
+                clientVo = bulidClientVoByClientBean(clientDetailBean);
                 clientVos.add(clientVo);
             }
         }
@@ -151,31 +166,30 @@ public class ClientFactory {
     }
 
     /**
-     *
-     * @param clientBean
+     * @param clientDetailBean
      * @return
      */
-    private ClientVo bulidClientVoByClientBean(ClientBean clientBean) {
+    public ClientVo bulidClientVoByClientBean(ClientDetailBean clientDetailBean) {
         ClientVo clientVo = new ClientVo();
-        clientVo.setUserid(clientBean.getUserid());
-        clientVo.setId(clientBean.getId());
-        clientVo.setShopid(clientBean.getShopid());
-        clientVo.setSalesid(clientBean.getSalesid());
-        clientVo.setUser_level(clientBean.getUser_level());
-        clientVo.setLevel_desc(clientBean.getLevel_desc());
-        clientVo.setCard_no(clientBean.getCard_no());
-        clientVo.setIs_special(clientBean.getIs_special());
-        clientVo.setNationality(clientBean.getNationality());
-        clientVo.setLike_desc(clientBean.getLike_desc());
-        clientVo.setTaboo_desc(clientBean.getTaboo_desc());
-        clientVo.setOther_desc(clientBean.getOther_desc());
-        clientVo.setCreated(clientBean.getCreated());
-        clientVo.setModified(clientBean.getModified());
-        clientVo.setUsername(clientBean.getUsername());
-        clientVo.setPhone(clientBean.getPhone());
-        clientVo.setCompany(clientBean.getCompany());
-        clientVo.setPosition(clientBean.getPosition());
-        clientVo.setIs_bill(clientBean.getIs_bill());
+        clientVo.setUserid(clientDetailBean.getUserid());
+        clientVo.setId(clientDetailBean.getId());
+        clientVo.setShopid(clientDetailBean.getShopid());
+        clientVo.setSalesid(clientDetailBean.getSalesid());
+        clientVo.setUser_level(clientDetailBean.getUser_level());
+        clientVo.setLevel_desc(clientDetailBean.getLevel_desc());
+        clientVo.setCard_no(clientDetailBean.getCard_no());
+        clientVo.setIs_special(clientDetailBean.getIs_special());
+        clientVo.setNationality(clientDetailBean.getNationality());
+        clientVo.setLike_desc(clientDetailBean.getLike_desc());
+        clientVo.setTaboo_desc(clientDetailBean.getTaboo_desc());
+        clientVo.setOther_desc(clientDetailBean.getOther_desc());
+        clientVo.setCreated(clientDetailBean.getCreated());
+        clientVo.setModified(clientDetailBean.getModified());
+        clientVo.setUsername(clientDetailBean.getUsername());
+        clientVo.setPhone(clientDetailBean.getPhone());
+        clientVo.setCompany(clientDetailBean.getCompany());
+        clientVo.setPosition(clientDetailBean.getPosition());
+        clientVo.setIs_bill(clientDetailBean.getIs_bill());
         return clientVo;
     }
 
@@ -221,6 +235,42 @@ public class ClientFactory {
         values.put("position", position);
         values.put("is_bill", isBill);
         values.put("contact_type", contactType);
+        values.put("sex", client.getSex().getVlaue());
+        values.put("order_count", client.getOrder_count());
+        values.put("tags", client.getTags());
         return values;
+    }
+
+    public ClientVo convertClientDetailBean2ClientVO(ClientDetailBean clientBean) {
+        ClientVo clientVo = new ClientVo();
+        clientVo.setId(clientBean.getId());
+        clientVo.setShopid(clientBean.getShopid());
+        clientVo.setSalesid(clientBean.getSalesid());
+        clientVo.setUser_level(clientBean.getUser_level());
+        clientVo.setLevel_desc(clientBean.getLevel_desc());
+        clientVo.setCard_no(clientBean.getCard_no());
+        clientVo.setIs_special(clientBean.getIs_special());
+        clientVo.setNationality(clientBean.getNationality());
+        clientVo.setLike_desc(clientBean.getLike_desc());
+        clientVo.setTaboo_desc(clientBean.getTaboo_desc());
+        clientVo.setOther_desc(clientBean.getOther_desc());
+        clientVo.setCreated(clientBean.getCreated());
+        clientVo.setModified(clientBean.getModified());
+        clientVo.setUsername(clientBean.getUsername());
+        clientVo.setPhone(clientBean.getPhone());
+        clientVo.setCompany(clientBean.getCompany());
+        clientVo.setPosition(clientBean.getPosition());
+        clientVo.setIs_bill(clientBean.getIs_bill());
+        clientVo.setSex(getSexType(clientBean.getSex()));
+        clientVo.setOrder_count(clientBean.getOrder_count());
+        if(null != clientBean.getTags() && clientBean.getTags().size() > 0){
+            String[] tagsArray = new String[clientBean.getTags().size()];
+            clientVo.setTags(tagsArray.toString());
+        }
+        return clientVo;
+    }
+
+    private SexType getSexType(int sexType){
+        return sexType == SexType.MALE.getVlaue()? SexType.MALE : SexType.FEMALE;
     }
 }

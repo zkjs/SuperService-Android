@@ -2,7 +2,6 @@ package com.zkjinshi.superservice.factory;
 
 import android.text.TextUtils;
 
-import com.zkjinshi.superservice.bean.ClientBean;
 import com.zkjinshi.superservice.bean.TeamContactBean;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.vo.ContactType;
@@ -187,7 +186,7 @@ public class SortModelFactory {
      */
     private SortModel buildSortModelByTeamContactBean(TeamContactBean teamContact) {
 
-        String userID   = teamContact.getRole_id();
+        String userID   = teamContact.getSalesid();
         String userName = teamContact.getName();
         String phone    = teamContact.getPhone();
         String roleName = teamContact.getRole_name();

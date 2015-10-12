@@ -51,9 +51,13 @@
     <string name="add_tag_failed">添加标签失败</string>
     <string name="my_teams">我的团队</string>
     <string name="client_select">客户查询</string>
-    <string name="please_input_the_phone_number">请输入手机号码</string>
+    <string name="please_input_the_phone_number">请输入手机号</string>
     <string name="member_bind">会员绑定</string>
     <string name="member_type">客户类型</string>
     <string name="not_check_yet">尚未选择</string>
+    <string name="exclusive_customer_service">专属客服</string>
+    <string name="action_edit">编辑</string>
+    <string name="action_tian_jia">添加</string>
+    <string name="add_clients">添加客户</string>
 
 </resources>

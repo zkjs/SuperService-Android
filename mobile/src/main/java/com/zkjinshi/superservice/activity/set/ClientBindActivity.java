@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -21,17 +22,21 @@ import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.bean.ClientDetailBean;
 //import com.zkjinshi.superservice.factory.UnRegClientFactory;
+import com.zkjinshi.superservice.factory.ClientFactory;
 import com.zkjinshi.superservice.factory.UnRegClientFactory;
 import com.zkjinshi.superservice.net.MethodType;
 import com.zkjinshi.superservice.net.NetRequest;
 import com.zkjinshi.superservice.net.NetRequestListener;
 import com.zkjinshi.superservice.net.NetRequestTask;
 import com.zkjinshi.superservice.net.NetResponse;
+import com.zkjinshi.superservice.sqlite.ClientDBUtil;
 import com.zkjinshi.superservice.sqlite.UnRegClientDBUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.view.CircleImageView;
+import com.zkjinshi.superservice.vo.ClientVo;
+import com.zkjinshi.superservice.vo.ContactType;
 import com.zkjinshi.superservice.vo.UnRegClientVo;
 
 import org.json.JSONException;
@@ -71,7 +76,7 @@ public class ClientBindActivity extends Activity {
     private Button      mBtnCancell;
 
     private CircleImageView  mCivMemberAvatar;
-    private ClientDetailBean mClient;
+    private ClientDetailBean mClientBean;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,8 +110,8 @@ public class ClientBindActivity extends Activity {
         mToken  = CacheUtil.getInstance().getToken();
         mShopID = CacheUtil.getInstance().getShopID();
 
-        mClient = (ClientDetailBean) getIntent().getSerializableExtra("client");
-        showClient(mClient);
+        mClientBean = (ClientDetailBean) getIntent().getSerializableExtra("client_bean");
+        showClient(mClientBean);
     }
 
     /**
@@ -150,9 +155,9 @@ public class ClientBindActivity extends Activity {
         mIbtnDianhua.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!TextUtils.isEmpty(mClient.getPhone())) {
+                if (!TextUtils.isEmpty(mClientBean.getPhone())) {
                     //打电话
-                    Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + mClient.getPhone()));
+                    Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + mClientBean.getPhone()));
                     ClientBindActivity.this.startActivity(intent);
                 }
             }
@@ -169,9 +174,11 @@ public class ClientBindActivity extends Activity {
         mBtnConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (null != mClient) {
+                if(ClientDBUtil.getInstance().isClientExistByPhone(mClientBean.getPhone())){
+                    DialogUtil.getInstance().showCustomToast(ClientBindActivity.this, "客户已存在,请勿重复添加.", Gravity.CENTER);
+                }else if (null != mClientBean) {
                     //绑定客户
-                    bindClient(mUserID, mToken, mShopID, mClient);
+                    bindClient(mUserID, mToken, mShopID, mClientBean);
                 }
             }
         });
@@ -189,20 +196,21 @@ public class ClientBindActivity extends Activity {
      * @param userID
      * @param token
      * @param shopID
-     * @param mClient
+     * @param mClientBean
      */
-    private void bindClient(String userID, String token, String shopID, ClientDetailBean mClient) {
+    private void bindClient(String userID, String token, String shopID, ClientDetailBean mClientBean) {
         NetRequest netRequest = new NetRequest(ProtocolUtil.getAddUserUrl());
         HashMap<String,String> bizMap = new HashMap<>();
         bizMap.put("salesid", userID);
         bizMap.put("token", token);
         bizMap.put("shopid", shopID);
-        bizMap.put("phone", mClient.getPhone());
-        bizMap.put("username", mClient.getUsername());
-        bizMap.put("position", mClient.getPosition());
-        bizMap.put("company", mClient.getCompany());
+        bizMap.put("userid", mClientBean.getUserid());
+        bizMap.put("phone", mClientBean.getPhone());
+        bizMap.put("username", mClientBean.getUsername());
+        bizMap.put("position", mClientBean.getPosition());
+        bizMap.put("company", mClientBean.getCompany());
         bizMap.put("other_desc", "");
-        bizMap.put("is_bill", mClient.getIs_bill() + "");
+        bizMap.put("is_bill", mClientBean.getIs_bill() + "");
         netRequest.setBizParamMap(bizMap);
         NetRequestTask netRequestTask = new NetRequestTask(this, netRequest, NetResponse.class);
         netRequestTask.methodType = MethodType.PUSH;
@@ -289,15 +297,16 @@ public class ClientBindActivity extends Activity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
-                String phone = mClient.getPhone();
-                UnRegClientVo unRegClient = UnRegClientFactory.getInstance().buildUnRegClientByClientDetailBean(mClient);
-                if(!UnRegClientDBUtil.getInstance().isUnRegClientExistByPhone(phone)){
-                    long addResult = UnRegClientDBUtil.getInstance().addUnRegClient(unRegClient);
+                String phone = mClientBean.getPhone();
+                ClientVo clientVo = ClientFactory.getInstance().convertClientDetailBean2ClientVO(mClientBean);
+                clientVo.setContactType(ContactType.UNNORMAL);
+                if(!ClientDBUtil.getInstance().isClientExistByPhone(phone)){
+                    long addResult = ClientDBUtil.getInstance().addClient(clientVo);
                     if(addResult > 0){
                         DialogUtil.getInstance().showToast(ClientBindActivity.this, "添加为本地联系人成功！");
                     }
                 }else {
-                    long updateResult =UnRegClientDBUtil.getInstance().updateUnRegClient(unRegClient);
+                    long updateResult =ClientDBUtil.getInstance().updateClient(clientVo);
                     if(updateResult > 0){
                         DialogUtil.getInstance().showToast(ClientBindActivity.this, "更新本地联系人成功！");
                     }

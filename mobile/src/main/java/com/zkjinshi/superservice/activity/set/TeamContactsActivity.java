@@ -1,16 +1,24 @@
 package com.zkjinshi.superservice.activity.set;
 
+import android.app.ActionBar;
 import android.app.Activity;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -19,18 +27,22 @@ import com.zkjinshi.base.util.DisplayUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.adapter.TeamContactsSortAdapter;
 import com.zkjinshi.superservice.bean.TeamContactBean;
+import com.zkjinshi.superservice.factory.ShopEmployeeFactory;
 import com.zkjinshi.superservice.factory.SortModelFactory;
+import com.zkjinshi.superservice.menu.vo.MenuItem;
 import com.zkjinshi.superservice.net.MethodType;
 import com.zkjinshi.superservice.net.NetRequest;
 import com.zkjinshi.superservice.net.NetRequestListener;
 import com.zkjinshi.superservice.net.NetRequestTask;
 import com.zkjinshi.superservice.net.NetResponse;
+import com.zkjinshi.superservice.sqlite.ShopEmployeeDBUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.CharacterParser;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.utils.SortKeyUtil;
 import com.zkjinshi.superservice.view.AutoSideBar;
 import com.zkjinshi.superservice.vo.ContactType;
+import com.zkjinshi.superservice.vo.ShopEmployeeVo;
 import com.zkjinshi.superservice.vo.SortModel;
 
 import java.util.ArrayList;
@@ -44,11 +56,11 @@ import java.util.List;
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class TeamContactsActivity extends Activity{
+public class TeamContactsActivity extends ActionBarActivity{
 
     private final static String TAG = TeamContactsActivity.class.getSimpleName();
 
-    private ImageButton     mIbtnBack;
+    private Toolbar         mToolbar;
     private RecyclerView    mRvTeamContacts;
     private RelativeLayout  mRlSideBar;
     private TextView        mTvDialog;
@@ -75,7 +87,13 @@ public class TeamContactsActivity extends Activity{
     }
 
     private void initView() {
-        mIbtnBack       = (ImageButton)      findViewById(R.id.ibtn_back);
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        mToolbar.setTitle("团队管理");
+        mToolbar.setTitleTextColor(Color.WHITE);
+        mToolbar.setNavigationIcon(R.drawable.ic_fanhui);
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         mRvTeamContacts = (RecyclerView)     findViewById(R.id.rcv_team_contacts);
         mRlSideBar      = (RelativeLayout)   findViewById(R.id.rl_side_bar);
         mTvDialog       = (TextView)   findViewById(R.id.tv_dialog);
@@ -116,11 +134,24 @@ public class TeamContactsActivity extends Activity{
     }
 
     private void initListener() {
-        //返回上一页
-        mIbtnBack.setOnClickListener(new View.OnClickListener() {
+
+        mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
-            public void onClick(View v) {
-                TeamContactsActivity.this.finish();
+            public boolean onMenuItemClick(android.view.MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.menu_team_search:
+                        DialogUtil.getInstance().showToast(TeamContactsActivity.this, "search");
+                        break;
+
+                    case R.id.menu_team_jia:
+                        DialogUtil.getInstance().showToast(TeamContactsActivity.this, "tianjia");
+                        break;
+
+                    case R.id.menu_team_edit:
+                        DialogUtil.getInstance().showToast(TeamContactsActivity.this, "edit");
+                        break;
+                }
+                return true;
             }
         });
 
@@ -134,6 +165,13 @@ public class TeamContactsActivity extends Activity{
             }
         });
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_team, menu);
+        return true;
     }
 
     /**
@@ -172,20 +210,29 @@ public class TeamContactsActivity extends Activity{
                 Log.i(TAG, "result.rawResult:" + result.rawResult);
                 String jsonResult = result.rawResult;
                 if (result.rawResult.contains("set") || jsonResult.contains("err")) {
-                    //TODO:获取团队联系人失败
                     DialogUtil.getInstance().showToast(TeamContactsActivity.this, "获取团队联系人失败");
 
                 } else {
                     Gson gson = new Gson();
                     List<TeamContactBean> teamContactBeans = gson.fromJson(jsonResult,
-                            new TypeToken<ArrayList<TeamContactBean>>() {
-                            }.getType());
+                            new TypeToken<ArrayList<TeamContactBean>>() {}.getType());
+
+                    /** add to local db */
+//                    ShopEmployeeVo shopEmployeeVo = null;
+//                    for (TeamContactBean teamContactBean : teamContactBeans) {
+//                        shopEmployeeVo = ShopEmployeeFactory.getInstance().buildShopEmployee(teamContactBean);
+//                        ShopEmployeeDBUtil.getInstance().addShopEmployee(shopEmployeeVo);
+//                    }
+                    List<ShopEmployeeVo> shopEmployeeVos = ShopEmployeeFactory.getInstance().buildShopEmployees(teamContactBeans);
+                    if(!shopEmployeeVos.isEmpty()){
+                        ShopEmployeeDBUtil.getInstance().batchAddShopEmployees(shopEmployeeVos);
+                    }
+
                     if (null != mTeamContactAdapter) {
                         mTeamContactAdapter = null;
                     }
                     List<SortModel> sortModels = SortModelFactory.getInstance().convertTeamContacts2SortModels(teamContactBeans);
                     if (null != sortModels && !sortModels.isEmpty()) {
-
                         mTeamSortModels.addAll(sortModels);
                         List<String> strLetters = new ArrayList<String>();
                         for (SortModel sortModel : mTeamSortModels) {
