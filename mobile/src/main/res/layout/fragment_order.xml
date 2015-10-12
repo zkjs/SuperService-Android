@@ -62,7 +62,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
                 android:textSize="14sp"
-                android:text="已经处理的订单"/>
+                android:text="更多"/>
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rcv_order_done"
                 android:layout_width="match_parent"

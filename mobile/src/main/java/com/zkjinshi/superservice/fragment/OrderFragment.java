@@ -2,7 +2,6 @@ package com.zkjinshi.superservice.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -19,6 +18,7 @@ import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.common.LoginActivity;
 import com.zkjinshi.superservice.adapter.OrderAdapter;
+import com.zkjinshi.superservice.adapter.OrderMoreAdapter;
 import com.zkjinshi.superservice.bean.BaseBean;
 import com.zkjinshi.superservice.bean.OrderBean;
 import com.zkjinshi.superservice.net.MethodType;
@@ -47,11 +47,13 @@ public class OrderFragment extends Fragment{
     private static final String TAG = OrderFragment.class.getSimpleName();
 
     private RecyclerView rcyOrder;
-    private RecyclerView rcyOrderDone;
+    private RecyclerView rcyOrderMore;
     private UserVo userVo;
     private CircleStatusView moreStatsuView;
     private SwipeRefreshLayout swipeRefreshLayout;
-    OrderAdapter orderAdapter;
+    private OrderAdapter orderAdapter;
+    private OrderMoreAdapter orderMoreAdapter;
+
 
     public static OrderFragment newInstance() {
         return new OrderFragment();
@@ -59,7 +61,7 @@ public class OrderFragment extends Fragment{
 
     private void initView(View view){
         rcyOrder = (RecyclerView) view.findViewById(R.id.rcv_order);
-        rcyOrderDone = (RecyclerView)view.findViewById(R.id.rcv_order_done);
+        rcyOrderMore = (RecyclerView)view.findViewById(R.id.rcv_order_done);
 
         moreStatsuView = (CircleStatusView)view.findViewById(R.id.csv_more);
         swipeRefreshLayout = (SwipeRefreshLayout)view.findViewById(R.id.srl_order);
@@ -68,16 +70,21 @@ public class OrderFragment extends Fragment{
         rcyOrder.setLayoutManager(new LinearLayoutManager(getActivity()));
         orderAdapter = new OrderAdapter(new ArrayList<OrderBean>());
         rcyOrder.setAdapter(orderAdapter);
-        initListeners();
 
-        rcyOrderDone.setHasFixedSize(true);
-        rcyOrderDone.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
+        rcyOrderMore.setHasFixedSize(true);
+        rcyOrderMore.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
+        orderMoreAdapter = new OrderMoreAdapter(new ArrayList<OrderBean>());
+        rcyOrderMore.setAdapter(orderMoreAdapter);
+
+
 
         moreStatsuView.setStatus(CircleStatusView.CircleStatus.STATUS_MORE);
         moreStatsuView.invalidate();
 
         swipeRefreshLayout.setRefreshing(true);
         loadOrderList(0);
+        initListeners();
+
     }
 
     private void initListeners(){
@@ -142,7 +149,7 @@ public class OrderFragment extends Fragment{
             bizMap.put("pagetime",""+lastTimeStamp);
         }
 
-        bizMap.put("pagedata",""+orderAdapter.getPagedata());
+        bizMap.put("pagedata",""+orderAdapter.getPagedata()*2);
         netRequest.setBizParamMap(bizMap);
         NetRequestTask netRequestTask = new NetRequestTask(getActivity(),netRequest, NetResponse.class);
         netRequestTask.methodType = MethodType.PUSH;
@@ -163,11 +170,23 @@ public class OrderFragment extends Fragment{
                 Log.i(TAG, "result.rawResult:" + result.rawResult);
                 try{
                     ArrayList<OrderBean> orderList = new Gson().fromJson(result.rawResult, new TypeToken< ArrayList<OrderBean>>(){}.getType());
+
                     if(lastTimeStamp == 0){
-                        orderAdapter.refreshingAction(orderList);
+                        ArrayList<OrderBean> upList = getUpList(orderList);
+                        orderAdapter.refreshingAction(upList);
+
+                        ArrayList<OrderBean> downList = getDownList(orderList);
+                        orderMoreAdapter.refreshingAction(downList);
+
                         swipeRefreshLayout.setRefreshing(false);
+
                     }else{
-                        orderAdapter.loadMoreAction(orderList);
+                        ArrayList<OrderBean> upList = getUpList(orderList);
+                        orderAdapter.loadMoreAction(upList);
+
+                        ArrayList<OrderBean> downList = getDownList(orderList);
+                        orderMoreAdapter.refreshingAction(downList);
+
                         swipeRefreshLayout.setRefreshing(false);
                     }
                 }catch (Exception e){
@@ -192,6 +211,29 @@ public class OrderFragment extends Fragment{
         });
         netRequestTask.isShowLoadingDialog = false;
         netRequestTask.execute();
+    }
+
+    private ArrayList<OrderBean> getDownList(ArrayList<OrderBean> orderList) {
+        ArrayList<OrderBean> listData = new ArrayList<OrderBean>();
+        if(orderList.size() > orderAdapter.getPagedata()){
+            for(int i=orderAdapter.getPagedata();i < orderList.size() ;i++){
+                listData.add(orderList.get(i));
+            }
+        }
+        return listData;
+    }
+
+    private ArrayList<OrderBean> getUpList(ArrayList<OrderBean> orderList) {
+        ArrayList<OrderBean> listData = new ArrayList<OrderBean>();
+        if(orderList.size() > orderAdapter.getPagedata()){
+            for(int i=0;i<orderAdapter.getPagedata();i++){
+                listData.add(orderList.get(i));
+            }
+        }else{
+            listData = orderList;
+        }
+
+        return listData;
     }
 
     @Nullable
