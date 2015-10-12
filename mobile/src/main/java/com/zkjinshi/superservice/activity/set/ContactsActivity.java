@@ -1,7 +1,6 @@
 package com.zkjinshi.superservice.activity.set;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
@@ -28,7 +27,7 @@ import com.google.gson.reflect.TypeToken;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.adapter.ContactsSortAdapter;
-import com.zkjinshi.superservice.bean.ClientBean;
+import com.zkjinshi.superservice.bean.ClientDetailBean;
 import com.zkjinshi.superservice.factory.ClientFactory;
 import com.zkjinshi.superservice.factory.SortModelFactory;
 import com.zkjinshi.superservice.listener.RecyclerItemClickListener;
@@ -317,12 +316,12 @@ public class ContactsActivity extends Activity{
                     DialogUtil.getInstance().showToast(ContactsActivity.this, "用户操作权限不够，请重新登录。");
                 } else {
                     Gson gson = new Gson();
-                    List<ClientBean> clientBeans = gson.fromJson(jsonResult,
-                            new TypeToken<ArrayList<ClientBean>>() {}.getType());
+                    List<ClientDetailBean> clientDetailBeans = gson.fromJson(jsonResult,
+                            new TypeToken<ArrayList<ClientDetailBean>>() {}.getType());
 
-                    if(null != clientBeans && !clientBeans.isEmpty()){
-                        
-                        List<ClientVo> clientVos = ClientFactory.getInstance().buildClientVosByClientBeans(clientBeans);
+                    if(null != clientDetailBeans && !clientDetailBeans.isEmpty()){
+
+                        List<ClientVo> clientVos = ClientFactory.getInstance().buildClientVosByClientBeans(clientDetailBeans);
                         for(ClientVo clientVo : clientVos){
                             if(!ClientDBUtil.getInstance().isClientExistByUserID(clientVo.getUserid())){
                                 clientVo.setContactType(ContactType.NORMAL);

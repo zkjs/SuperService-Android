@@ -108,7 +108,10 @@ public class TableOpenHelper {
                     + " company       text, "
                     + " position      text, "
                     + " is_bill       int, "
-                    + " contact_type  int "
+                    + " contact_type  int, "
+                    + " sex           int, "
+                    + " order_count   int, "
+                    + " tags          text " //
                     + " ) ";
 
     /** 创建区域信息表 */
@@ -146,20 +149,40 @@ public class TableOpenHelper {
                     + " arrive_time long, "
                     + " order_status integer "
                     + " ) ";
-    /**
-     * 未注册的本地联系人数据表
-     */
-    public final static String UNREG_CLIENT_TBL_SQL =
+
+    /** 商家员工信息表 */
+    public final static String SHOP_EMPLOYEE_TBL_SQL =
             " create table if not exists "
-                    + DBOpenHelper.UNREG_CLIENT_TBL
+                    + DBOpenHelper.SHOP_EMPLOYEE_TBL
                     + " ( "
-                    + " phone         text primary key, "
-                    + " username      text, "
-                    + " position      text, "
-                    + " company       text, "
-                    + " other_desc    text, "
-                    + " is_bill       int "
+                    + " empid         text primary key, " //员工ID
+                    + " empcode       text, "//工号
+                    + " name          text, "//用户名
+                    + " roleid        int,  "//所属角色
+                    + " email         text, "//邮箱
+                    + " phone         text, "//手机
+                    + " phone2        text, "//其它号码
+                    + " fax           text, "//传真
+                    + " created       long, "//增加时间
+                    + " locationid    int,"//区域ID
+                    + " role_name     text"//
                     + " ) ";
+
+//    /**
+//     * 未注册的本地联系人数据表
+//     */
+//    public final static String UNREG_CLIENT_TBL_SQL =
+//            " create table if not exists "
+//                    + DBOpenHelper.UNREG_CLIENT_TBL
+//                    + " ( "
+//                    + " phone         text primary key, "
+//                    + " username      text, "
+//                    + " position      text, "
+//                    + " company       text, "
+//                    + " other_desc    text, "
+//                    + " is_bill       int "
+//                    + " ) ";
+
 
     /**
      * 获取数据库所有表名

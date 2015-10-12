@@ -27,6 +27,7 @@ import com.zkjinshi.base.util.DisplayUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.adapter.TeamContactsSortAdapter;
 import com.zkjinshi.superservice.bean.TeamContactBean;
+import com.zkjinshi.superservice.factory.ShopEmployeeFactory;
 import com.zkjinshi.superservice.factory.SortModelFactory;
 import com.zkjinshi.superservice.menu.vo.MenuItem;
 import com.zkjinshi.superservice.net.MethodType;
@@ -34,12 +35,14 @@ import com.zkjinshi.superservice.net.NetRequest;
 import com.zkjinshi.superservice.net.NetRequestListener;
 import com.zkjinshi.superservice.net.NetRequestTask;
 import com.zkjinshi.superservice.net.NetResponse;
+import com.zkjinshi.superservice.sqlite.ShopEmployeeDBUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.CharacterParser;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.utils.SortKeyUtil;
 import com.zkjinshi.superservice.view.AutoSideBar;
 import com.zkjinshi.superservice.vo.ContactType;
+import com.zkjinshi.superservice.vo.ShopEmployeeVo;
 import com.zkjinshi.superservice.vo.SortModel;
 
 import java.util.ArrayList;
@@ -58,7 +61,6 @@ public class TeamContactsActivity extends ActionBarActivity{
     private final static String TAG = TeamContactsActivity.class.getSimpleName();
 
     private Toolbar         mToolbar;
-//    private ImageButton     mIbtnBack;
     private RecyclerView    mRvTeamContacts;
     private RelativeLayout  mRlSideBar;
     private TextView        mTvDialog;
@@ -208,20 +210,29 @@ public class TeamContactsActivity extends ActionBarActivity{
                 Log.i(TAG, "result.rawResult:" + result.rawResult);
                 String jsonResult = result.rawResult;
                 if (result.rawResult.contains("set") || jsonResult.contains("err")) {
-                    //TODO:获取团队联系人失败
                     DialogUtil.getInstance().showToast(TeamContactsActivity.this, "获取团队联系人失败");
 
                 } else {
                     Gson gson = new Gson();
                     List<TeamContactBean> teamContactBeans = gson.fromJson(jsonResult,
-                            new TypeToken<ArrayList<TeamContactBean>>() {
-                            }.getType());
+                            new TypeToken<ArrayList<TeamContactBean>>() {}.getType());
+
+                    /** add to local db */
+//                    ShopEmployeeVo shopEmployeeVo = null;
+//                    for (TeamContactBean teamContactBean : teamContactBeans) {
+//                        shopEmployeeVo = ShopEmployeeFactory.getInstance().buildShopEmployee(teamContactBean);
+//                        ShopEmployeeDBUtil.getInstance().addShopEmployee(shopEmployeeVo);
+//                    }
+                    List<ShopEmployeeVo> shopEmployeeVos = ShopEmployeeFactory.getInstance().buildShopEmployees(teamContactBeans);
+                    if(!shopEmployeeVos.isEmpty()){
+                        ShopEmployeeDBUtil.getInstance().batchAddShopEmployees(shopEmployeeVos);
+                    }
+
                     if (null != mTeamContactAdapter) {
                         mTeamContactAdapter = null;
                     }
                     List<SortModel> sortModels = SortModelFactory.getInstance().convertTeamContacts2SortModels(teamContactBeans);
                     if (null != sortModels && !sortModels.isEmpty()) {
-
                         mTeamSortModels.addAll(sortModels);
                         List<String> strLetters = new ArrayList<String>();
                         for (SortModel sortModel : mTeamSortModels) {

@@ -52,6 +52,7 @@ public class ClientDetailActivity extends Activity {
     private String      mPhoneNumber;
     private String      mUserID;
     private String      mToken;
+    private String      mShopID;
 
     private ImageButton mIbtnBack;
     private ImageButton mIbtnDianhua;
@@ -102,6 +103,7 @@ public class ClientDetailActivity extends Activity {
         mPhoneNumber  = getIntent().getStringExtra("phone_number");
         mUserID = CacheUtil.getInstance().getUserId();
         mToken  = CacheUtil.getInstance().getToken();
+        mShopID = CacheUtil.getInstance().getShopID();
 
         DialogUtil.getInstance().showProgressDialog(ClientDetailActivity.this);
         getClientDetail(mPhoneNumber);
@@ -112,6 +114,7 @@ public class ClientDetailActivity extends Activity {
         HashMap<String,String> bizMap = new HashMap<>();
         bizMap.put("empid", mUserID);
         bizMap.put("token", mToken);
+        bizMap.put("shopid", mShopID);
         bizMap.put("phone", mPhoneNumber);
         bizMap.put("set", "9");
         netRequest.setBizParamMap(bizMap);

@@ -1,5 +1,6 @@
 package com.zkjinshi.superservice.vo;
 
+
 /**
  * 客户数据表操作对象
  * 开发者：vincent
@@ -29,6 +30,9 @@ public class ClientVo {
     private String position;
     private int    is_bill;
     private ContactType contactType;
+    private SexType     sex;
+    private int         order_count;
+    private String      tags;
 
     public int getUser_level() {
         return user_level;
@@ -188,5 +192,29 @@ public class ClientVo {
 
     public void setContactType(ContactType contactType) {
         this.contactType = contactType;
+    }
+
+    public SexType getSex() {
+        return sex;
+    }
+
+    public void setSex(SexType sex) {
+        this.sex = sex;
+    }
+
+    public int getOrder_count() {
+        return order_count;
+    }
+
+    public void setOrder_count(int order_count) {
+        this.order_count = order_count;
+    }
+
+    public String getTags() {
+        return tags;
+    }
+
+    public void setTags(String tags) {
+        this.tags = tags;
     }
 }

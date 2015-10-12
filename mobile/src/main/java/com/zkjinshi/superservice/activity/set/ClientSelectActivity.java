@@ -43,9 +43,10 @@ public class ClientSelectActivity extends Activity {
 
     private String          mUserID;
     private String          mToken;
+    private String          mShopID;
     private EditText        mEtClientPhone;
 
-    private ClientDetailBean        mClient;
+    private ClientDetailBean        mClientBean;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +65,7 @@ public class ClientSelectActivity extends Activity {
     private void initData() {
         mUserID = CacheUtil.getInstance().getUserId();
         mToken  = CacheUtil.getInstance().getToken();
+        mShopID = CacheUtil.getInstance().getShopID();
     }
 
     private void initListener() {
@@ -78,8 +80,11 @@ public class ClientSelectActivity extends Activity {
                         DialogUtil.getInstance().showCustomToast(ClientSelectActivity.this,
                                 "请确认手机号是否输入正确!", Gravity.CENTER);
                     } else {
-
-                        getClientDetail(phone);
+                        if(ClientDBUtil.getInstance().isClientExistByPhone(phone)){
+                            DialogUtil.getInstance().showToast(ClientSelectActivity.this, "此用户本地已存在, 请勿重复添加!");
+                        } else {
+                            getClientDetail(phone);
+                        }
                     }
                     return true;
                 }
@@ -93,6 +98,7 @@ public class ClientSelectActivity extends Activity {
         HashMap<String,String> bizMap = new HashMap<>();
         bizMap.put("empid", mUserID);
         bizMap.put("token", mToken);
+        bizMap.put("shopid", mShopID);
         bizMap.put("phone", phoneNumber);
         bizMap.put("set", "9");
         netRequest.setBizParamMap(bizMap);
@@ -140,9 +146,9 @@ public class ClientSelectActivity extends Activity {
                     }
                 } else {
                     Gson gson = new Gson();
-                    mClient = gson.fromJson(jsonResult, ClientDetailBean.class);
+                    mClientBean = gson.fromJson(jsonResult, ClientDetailBean.class);
                     Intent clienBind = new Intent(ClientSelectActivity.this, ClientBindActivity.class);
-                    clienBind.putExtra("client", mClient);
+                    clienBind.putExtra("client_bean", mClientBean);
                     ClientSelectActivity.this.startActivity(clienBind);
                     ClientSelectActivity.this.finish();
                 }

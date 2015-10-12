@@ -11,7 +11,7 @@ public class TeamContactBean {
 
     private String name;
     private String phone;
-    private String roleid;
+    private int    roleid;
     private String role_name ;
     private String salesid;
 
@@ -47,11 +47,11 @@ public class TeamContactBean {
         this.role_name = role_name;
     }
 
-    public String getRole_id() {
+    public int getRole_id() {
         return roleid;
     }
 
-    public void setRole_id(String roleid) {
+    public void setRole_id(int roleid) {
         this.roleid = roleid;
     }
 }
