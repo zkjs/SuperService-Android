@@ -66,7 +66,7 @@ public class ShopEmployeeFactory {
         shopEmployeeVo.setFax(cursor.getString(7));
         shopEmployeeVo.setCreated(cursor.getLong(8));
         shopEmployeeVo.setLocationid(cursor.getInt(9));
-        shopEmployeeVo.setRole_name(cursor.getString(9));
+        shopEmployeeVo.setRole_name(cursor.getString(10));
         return  shopEmployeeVo;
     }
 
@@ -75,7 +75,7 @@ public class ShopEmployeeFactory {
      * @param teamContactBean
      * @return
      */
-    public ShopEmployeeVo buildShopEmployee(TeamContactBean teamContactBean) {
+    public ShopEmployeeVo buildShopEmployeeVo(TeamContactBean teamContactBean) {
         ShopEmployeeVo shopEmployeeVo = new ShopEmployeeVo();
         shopEmployeeVo.setEmpid(teamContactBean.getSalesid());
         shopEmployeeVo.setName(teamContactBean.getName());
@@ -94,7 +94,7 @@ public class ShopEmployeeFactory {
         List<ShopEmployeeVo> shopEmployeeVos = new ArrayList<>();
         ShopEmployeeVo       shopEmployeeVo  = null;
         for(TeamContactBean teamContactBean : teamContactBeans){
-            shopEmployeeVo = buildShopEmployee(teamContactBean);
+            shopEmployeeVo = buildShopEmployeeVo(teamContactBean);
             shopEmployeeVos.add(shopEmployeeVo);
         }
         return shopEmployeeVos;

@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.SectionIndexer;
 import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -29,7 +30,7 @@ import java.util.Locale;
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class TeamEditContactsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class TeamEditContactsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements SectionIndexer {
 
     private List<ShopEmployeeVo> mList;
     private Context mContext;
@@ -84,6 +85,7 @@ public class TeamEditContactsAdapter extends RecyclerView.Adapter<RecyclerView.V
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         ShopEmployeeVo employeeVo = mList.get(position);
+        System.out.print("--roleName:"+employeeVo.getRole_name());
         int section = getSectionForPosition(position);
 
         if (position == getPositionForSection(section)) {
@@ -121,6 +123,11 @@ public class TeamEditContactsAdapter extends RecyclerView.Adapter<RecyclerView.V
         return mList.get(position).getRole_name().charAt(0);
     }
 
+    @Override
+    public Object[] getSections() {
+        return new Object[0];
+    }
+
     /**
      * 根据分类的首字母的Char ascii值获取其第一次出现该首字母的位置
      */
@@ -134,7 +141,6 @@ public class TeamEditContactsAdapter extends RecyclerView.Adapter<RecyclerView.V
         }
         return -1;
     }
-
 
     public static class ViewHolder extends RecyclerView.ViewHolder{
 
