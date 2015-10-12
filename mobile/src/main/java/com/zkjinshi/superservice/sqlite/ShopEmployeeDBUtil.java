@@ -102,7 +102,7 @@ public class ShopEmployeeDBUtil {
     }
 
     /**
-     *
+     * 查询所有团队联系人
      * @return
      */
     public List<ShopEmployeeVo> queryAll() {
@@ -134,4 +134,5 @@ public class ShopEmployeeDBUtil {
         }
         return  shopEmployeeVos;
     }
+
 }

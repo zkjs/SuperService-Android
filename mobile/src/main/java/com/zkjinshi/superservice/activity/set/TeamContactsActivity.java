@@ -1,24 +1,18 @@
 package com.zkjinshi.superservice.activity.set;
 
-import android.app.ActionBar;
-import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -29,7 +23,6 @@ import com.zkjinshi.superservice.adapter.TeamContactsSortAdapter;
 import com.zkjinshi.superservice.bean.TeamContactBean;
 import com.zkjinshi.superservice.factory.ShopEmployeeFactory;
 import com.zkjinshi.superservice.factory.SortModelFactory;
-import com.zkjinshi.superservice.menu.vo.MenuItem;
 import com.zkjinshi.superservice.net.MethodType;
 import com.zkjinshi.superservice.net.NetRequest;
 import com.zkjinshi.superservice.net.NetRequestListener;
@@ -56,7 +49,7 @@ import java.util.List;
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class TeamContactsActivity extends ActionBarActivity{
+public class TeamContactsActivity extends AppCompatActivity{
 
     private final static String TAG = TeamContactsActivity.class.getSimpleName();
 
@@ -148,7 +141,9 @@ public class TeamContactsActivity extends ActionBarActivity{
                         break;
 
                     case R.id.menu_team_edit:
-                        DialogUtil.getInstance().showToast(TeamContactsActivity.this, "edit");
+                        Intent teamEdit = new Intent(TeamContactsActivity.this, TeamEditActivity.class);
+                        teamEdit.putExtra("shop_id", mShopID);
+                        TeamContactsActivity.this.startActivity(teamEdit);
                         break;
                 }
                 return true;
@@ -218,11 +213,6 @@ public class TeamContactsActivity extends ActionBarActivity{
                             new TypeToken<ArrayList<TeamContactBean>>() {}.getType());
 
                     /** add to local db */
-//                    ShopEmployeeVo shopEmployeeVo = null;
-//                    for (TeamContactBean teamContactBean : teamContactBeans) {
-//                        shopEmployeeVo = ShopEmployeeFactory.getInstance().buildShopEmployee(teamContactBean);
-//                        ShopEmployeeDBUtil.getInstance().addShopEmployee(shopEmployeeVo);
-//                    }
                     List<ShopEmployeeVo> shopEmployeeVos = ShopEmployeeFactory.getInstance().buildShopEmployees(teamContactBeans);
                     if(!shopEmployeeVos.isEmpty()){
                         ShopEmployeeDBUtil.getInstance().batchAddShopEmployees(shopEmployeeVos);
