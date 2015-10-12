@@ -24,7 +24,8 @@ public class ORMOpenHelper {
         db.execSQL(TableOpenHelper.CLIENT_TBL_SQL);
         db.execSQL(TableOpenHelper.ZONE_TBL_SQL);
         db.execSQL(TableOpenHelper.COMING_TBL_SQL);
-        db.execSQL(TableOpenHelper.UNREG_CLIENT_TBL_SQL);
+        db.execSQL(TableOpenHelper.SHOP_EMPLOYEE_TBL_SQL);
+//        db.execSQL(TableOpenHelper.UNREG_CLIENT_TBL_SQL);
     }
 
     /**

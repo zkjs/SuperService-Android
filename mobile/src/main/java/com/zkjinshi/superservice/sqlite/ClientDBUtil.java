@@ -8,12 +8,9 @@ import android.database.sqlite.SQLiteDatabase;
 import com.zkjinshi.base.log.LogLevel;
 import com.zkjinshi.base.log.LogUtil;
 import com.zkjinshi.superservice.ServiceApplication;
-import com.zkjinshi.superservice.bean.ClientBean;
 import com.zkjinshi.superservice.factory.ClientFactory;
-import com.zkjinshi.superservice.factory.UnRegClientFactory;
 import com.zkjinshi.superservice.vo.ClientVo;
 import com.zkjinshi.superservice.vo.ContactType;
-import com.zkjinshi.superservice.vo.UnRegClientVo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -104,8 +101,6 @@ public class ClientDBUtil {
         }
         return addResult;
     }
-
-
 
     /**
      * 获取当前所有
@@ -222,5 +217,35 @@ public class ClientDBUtil {
             }
         }
         return  clientList;
+    }
+
+    /**
+     * 根据手机号查询客户对象
+     * @param phone
+     * @return
+     */
+    public ClientVo findClientByPhone(String phone) {
+        ClientVo clientVo = null;
+        SQLiteDatabase   db       = null;
+        Cursor       cursor       = null;
+        try{
+            db = helper.getWritableDatabase();
+            cursor = db.query(DBOpenHelper.UNREG_CLIENT_TBL, null, " phone = ? ",
+                    new String[]{ phone }, null, null, null);
+            if (cursor != null && cursor.getCount() > 0) {
+                while (cursor.moveToNext()) {
+                    clientVo = ClientFactory.getInstance().buildclient(cursor);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if(cursor != null)
+                cursor.close();
+
+            if(db != null)
+                db.close();
+        }
+        return clientVo;
     }
 }
