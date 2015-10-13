@@ -154,7 +154,9 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.exit_tv).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                startActivity(new Intent(MainActivity.this, LoginActivity.class));
                 finish();
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
             }
         });
 

@@ -171,6 +171,7 @@ public class ZoneActivity extends Activity implements SwipeRefreshLayout.OnRefre
                 BaseBean baseBean = new Gson().fromJson(result.rawResult, BaseBean.class);
                 if (baseBean.isSet()) {
                     CacheUtil.getInstance().setLogin(true);
+                    CacheUtil.getInstance().setAreaInfo(zoneAdapter.getCheckedIds());
                     startActivity(new Intent(ZoneActivity.this, MainActivity.class));
                     finish();
                     overridePendingTransition(R.anim.activity_new, R.anim.activity_out);
