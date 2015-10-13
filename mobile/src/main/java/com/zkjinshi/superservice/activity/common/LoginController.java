@@ -20,6 +20,7 @@ import com.zkjinshi.superservice.sqlite.UserDBUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
+import com.zkjinshi.superservice.vo.IdentityType;
 import com.zkjinshi.superservice.vo.UserVo;
 
 import java.util.HashMap;
@@ -86,6 +87,7 @@ public class LoginController {
                     CacheUtil.getInstance().setUserName(sempLoginbean.getName());
                     CacheUtil.getInstance().setShopID(sempLoginbean.getShopid());
                     CacheUtil.getInstance().setShopFullName(sempLoginbean.getFullname());
+                    CacheUtil.getInstance().setLoginIdentity(IdentityType.WAITER);
 
                     DBOpenHelper.DB_NAME = sempLoginbean.getSalesid() + ".db";
                     UserVo userVo = UserFactory.getInstance().buildUserVo(sempLoginbean);
