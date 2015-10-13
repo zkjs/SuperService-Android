@@ -138,8 +138,8 @@ public class TeamContactsActivity extends AppCompatActivity{
                         break;
 
                     case R.id.menu_team_jia:
-                        Intent teamEmpAdd = new Intent(TeamContactsActivity.this, TeamEmployeeAddActivity.class);
-                        TeamContactsActivity.this.startActivity(teamEmpAdd);
+                        startActivity(new Intent(TeamContactsActivity.this, EmployeeAddActivity.class));
+                        overridePendingTransition(R.anim.activity_new, R.anim.activity_out);
                         break;
 
                     case R.id.menu_team_edit:
