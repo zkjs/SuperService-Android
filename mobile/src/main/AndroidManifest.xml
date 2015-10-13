@@ -77,6 +77,14 @@
             android:theme="@android:style/Theme.Translucent.NoTitleBar">
         </activity>
 
+
+        <activity
+            android:name=".activity.notice.OnlineListActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar">
+        </activity>
+
         <activity
             android:name=".activity.common.ZoneActivity"
             android:label="@string/app_name"

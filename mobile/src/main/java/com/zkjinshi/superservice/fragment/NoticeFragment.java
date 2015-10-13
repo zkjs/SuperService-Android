@@ -1,6 +1,7 @@
 package com.zkjinshi.superservice.fragment;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -13,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -21,6 +23,7 @@ import com.zkjinshi.base.net.observer.MessageSubject;
 import com.zkjinshi.base.net.protocol.ProtocolMSG;
 import com.zkjinshi.base.util.TimeUtil;
 import com.zkjinshi.superservice.R;
+import com.zkjinshi.superservice.activity.notice.OnlineListActivity;
 import com.zkjinshi.superservice.adapter.LocMoreAdapter;
 import com.zkjinshi.superservice.adapter.LocNotificationAdapter;
 import com.zkjinshi.superservice.bean.BookOrderBean;
@@ -74,6 +77,7 @@ public class NoticeFragment extends Fragment implements IMessageObserver{
     private ArrayList<ComingVo> moreComingList = new ArrayList<ComingVo>();
     private ArrayList<ComingVo> requestComingList = new ArrayList<ComingVo>();
     private TextView totoalEmployeeTv,currentOnlineEmployeeTv;
+    private LinearLayout onlineLayout;
 
     public static NoticeFragment newInstance() {
         return new NoticeFragment();
@@ -92,6 +96,9 @@ public class NoticeFragment extends Fragment implements IMessageObserver{
         moreRecyclerView = (RecyclerView)view.findViewById(R.id.rcv_more);
         moreStatsuView = (CircleStatusView)view.findViewById(R.id.notice_more_cv_status);
         swipeRefreshLayout = (SwipeRefreshLayout)view.findViewById(R.id.srl_notice);
+        totoalEmployeeTv = (TextView)view.findViewById(R.id.notice_tv_total_employee);
+        currentOnlineEmployeeTv = (TextView)view.findViewById(R.id.notice_tv_current_online_employee);
+        onlineLayout = (LinearLayout)view.findViewById(R.id.online_layout);
     }
 
     private void initData() {
@@ -161,6 +168,16 @@ public class NoticeFragment extends Fragment implements IMessageObserver{
                 }
             }
         });
+
+        //在线布局栏
+        onlineLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), OnlineListActivity.class);
+                startActivity(intent);
+            }
+        });
+
     }
 
     @Override
