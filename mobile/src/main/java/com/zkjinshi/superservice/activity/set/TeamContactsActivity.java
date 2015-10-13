@@ -91,8 +91,9 @@ public class TeamContactsActivity extends AppCompatActivity{
         mRlSideBar      = (RelativeLayout)   findViewById(R.id.rl_side_bar);
         mTvDialog       = (TextView)   findViewById(R.id.tv_dialog);
         mAutoSideBar    = new AutoSideBar(TeamContactsActivity.this);
-        ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(DisplayUtil.dip2px(TeamContactsActivity.this, 30),
-                                                                         ViewGroup.LayoutParams.MATCH_PARENT);
+        ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(
+                        DisplayUtil.dip2px(TeamContactsActivity.this, 30),
+                        ViewGroup.LayoutParams.MATCH_PARENT);
         mAutoSideBar.setTextView(mTvDialog);
         mAutoSideBar.setLayoutParams(layoutParams);
 
@@ -137,7 +138,8 @@ public class TeamContactsActivity extends AppCompatActivity{
                         break;
 
                     case R.id.menu_team_jia:
-                        DialogUtil.getInstance().showToast(TeamContactsActivity.this, "tianjia");
+                        Intent teamEmpAdd = new Intent(TeamContactsActivity.this, TeamEmployeeAddActivity.class);
+                        TeamContactsActivity.this.startActivity(teamEmpAdd);
                         break;
 
                     case R.id.menu_team_edit:
