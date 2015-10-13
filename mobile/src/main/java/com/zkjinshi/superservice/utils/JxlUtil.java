@@ -20,7 +20,11 @@ import jxl.Workbook;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
+
+import android.util.Log;
 import android.util.Xml;
+
+import com.zkjinshi.superservice.vo.ShopEmployeeVo;
 
 /**
  * 解析,xls,xlsx文件 工具类
@@ -31,9 +35,65 @@ import android.util.Xml;
  */
 public class JxlUtil {
 
+    private static final String TAG = JxlUtil.class.getSimpleName();
+
+    /**开始解析的行数**/
+    private static final int START_ROW = 4;
+
+
+    /**
+     * 解析XLS 生成员工列表
+     * @param path
+     * @return
+     */
+    public static ArrayList<ShopEmployeeVo> decodeXLS(String path){
+        ArrayList<ShopEmployeeVo> employeeVos = new ArrayList<ShopEmployeeVo>();
+
+        try {
+            Workbook workbook = null;
+            workbook = Workbook.getWorkbook(new File(path));
+            Sheet sheet = workbook.getSheet(0);
+            Cell cell = null;
+            int columnCount = sheet.getColumns();
+            int rowCount = sheet.getRows();
+            for (int i = START_ROW; i < rowCount; i++) {
+                ShopEmployeeVo shopEmployeeVo = new ShopEmployeeVo();
+                for (int j = 0; j < columnCount; j++) {
+                    cell = sheet.getCell(j, i);
+                    String temp2 = "";
+                    if (cell.getType() == CellType.NUMBER) {
+                        temp2 = ((NumberCell) cell).getValue() + "";
+                    } else if (cell.getType() == CellType.DATE) {
+                        temp2 = "" + ((DateCell) cell).getDate();
+                    } else {
+                        temp2 = "" + cell.getContents();
+                    }
+                    initInfo(shopEmployeeVo,j,temp2);
+
+                }
+                employeeVos.add(shopEmployeeVo);
+            }
+            workbook.close();
+        } catch (Exception e) {
+            Log.e(TAG,e.getMessage());
+        }
+
+        return  employeeVos;
+    }
 
 
 
+    private static void initInfo(ShopEmployeeVo shopEmployeeVo,int j,String temp2) {
+        if(j == 1){
+            shopEmployeeVo.setRole_name(temp2);
+        }else if(j == 3){
+            shopEmployeeVo.setName(temp2);
+        }else if(j == 7){
+            shopEmployeeVo.setPhone(temp2);
+        }else if(j == 8){
+            shopEmployeeVo.setEmail(temp2);
+        }
+    }
 
     /**
      * 解析XLS
