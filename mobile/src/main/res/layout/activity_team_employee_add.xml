@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:background="#f5f5f5"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <include layout="@layout/toolbar" />
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:gravity="center_vertical" >
+
+        <Button
+            android:id="@+id/btn_add_by_manual"
+            android:padding="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:textSize="14sp"
+            android:gravity="left|center_vertical"
+            android:textColor="@color/balck101010"
+            android:text="@string/add_shop_employee_by_manual"
+            android:background="@drawable/bg_btn_default" />
+
+        <include layout="@layout/divider_line"></include>
+
+        <Button
+            android:id="@+id/btn_batch_import_data"
+            android:padding="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:textSize="14sp"
+            android:gravity="left|center_vertical"
+            android:textColor="@color/balck101010"
+            android:text="@string/import_excel_data_in_batch"
+            android:background="@drawable/bg_btn_default" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:background="#dedede"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:padding="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/gray_888888"
+            android:textSize="12sp"
+            android:text="@string/import_from_contacts" />
+
+        <TextView
+            android:padding="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/gray_888888"
+            android:textSize="12sp"
+            android:text="@string/grant_to_read_your_contacts" />
+
+    </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rcv_contacts"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:cacheColorHint="#000000"
+        android:divider="@color/divider_line_color"
+        android:dividerHeight="1.0dp"
+        android:fadingEdge="none"
+        android:scrollbars="none"
+        android:scrollingCache="false"
+        android:visibility="visible" />
+
+</LinearLayout>

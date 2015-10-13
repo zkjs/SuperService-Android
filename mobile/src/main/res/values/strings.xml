@@ -62,5 +62,10 @@
     <string name="team_edit">团队编辑</string>
     <string name="change_department">更改部门</string>
     <string name="delete">删除</string>
+    <string name="add_team_employee">添加成员</string>
+    <string name="add_shop_employee_by_manual">手动新增员工</string>
+    <string name="import_excel_data_in_batch">批量导入Excel文档</string>
+    <string name="import_from_contacts">通讯录导入</string>
+    <string name="grant_to_read_your_contacts">授权读取您的联系人</string>
 
 </resources>

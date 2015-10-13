@@ -464,6 +464,8 @@
 
     <color name="gray616161">#616161</color>
     <color name="grayB8B8B8">#B8B8B8</color>
+    <color name="gray_888888">#888888</color>
+    <color name="balck101010">#101010</color>
     <color name="whiteF5F5F5">#F5F5F5</color>
     <color name="whiteF0F0F0">#F0F0F0</color>
 
@@ -472,6 +474,7 @@
     <color name="green91DC48">#91DC48</color>
     <color name="orangeEEAF4B">#EEAF4B</color>
     <color name="blue03a9f4">#03a9f4</color>
+    <color name="divider_line_color">#e8e8e8</color>
 
     <array name="loc_notice_colors">
         <item>#666666</item>
