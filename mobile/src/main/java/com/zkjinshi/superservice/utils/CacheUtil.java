@@ -338,4 +338,47 @@ public class CacheUtil {
 		return sp.getString("shop_full_name", null);
 	}
 
+	/**
+	 *	设置登录身份
+	 * @param identityId
+	 */
+	public void setLoginIdentity(int identityId) {
+		SharedPreferences sp = context.getSharedPreferences(SVIP_CACHE, Context.MODE_PRIVATE);
+		sp.edit().putInt("login_identity", identityId).commit();
+	}
+
+	/**
+	 * 获取登录身份
+	 * @return
+	 */
+	public int getLoginIdentity() {
+		SharedPreferences sp = context.getSharedPreferences(SVIP_CACHE, Context.MODE_PRIVATE);
+		return sp.getInt("login_identity", 0);
+	}
+
+	/**
+	 * 设置区域信息
+	 * 多个区域id用,号分割
+	 * @param areaInfo
+	 */
+	public void setAreaInfo(String areaInfo) {
+		if (null == context) {
+			return;
+		}
+		SharedPreferences sp = context.getSharedPreferences(SVIP_CACHE, Context.MODE_PRIVATE);
+		sp.edit().putString("area_info", areaInfo).commit();
+	}
+
+	/**
+	 * 获取区域信息
+	 * @return
+	 */
+	public String getAreaInfo() {
+		if (null == context) {
+			return null;
+		}
+		SharedPreferences sp = context.getSharedPreferences(SVIP_CACHE, Context.MODE_PRIVATE);
+		return sp.getString("area_info", "");
+	}
+
 }
