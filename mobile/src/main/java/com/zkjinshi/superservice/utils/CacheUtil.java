@@ -3,6 +3,8 @@ package com.zkjinshi.superservice.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.zkjinshi.superservice.vo.IdentityType;
+
 /**
  * 缓存工具类
  * 开发者：JimmyZhang
@@ -340,20 +342,24 @@ public class CacheUtil {
 
 	/**
 	 *	设置登录身份
-	 * @param identityId
+	 * @param identityType
 	 */
-	public void setLoginIdentity(int identityId) {
+	public void setLoginIdentity(IdentityType identityType) {
 		SharedPreferences sp = context.getSharedPreferences(SVIP_CACHE, Context.MODE_PRIVATE);
-		sp.edit().putInt("login_identity", identityId).commit();
+		sp.edit().putInt("login_identity", identityType.getVlaue()).commit();
 	}
 
 	/**
 	 * 获取登录身份
 	 * @return
 	 */
-	public int getLoginIdentity() {
+	public IdentityType getLoginIdentity() {
 		SharedPreferences sp = context.getSharedPreferences(SVIP_CACHE, Context.MODE_PRIVATE);
-		return sp.getInt("login_identity", 0);
+		int identityValue =  sp.getInt("login_identity", 0);
+		if(identityValue == IdentityType.BUSINESS.getVlaue()){
+			return IdentityType.BUSINESS;
+		}
+		return IdentityType.WAITER;
 	}
 
 	/**
