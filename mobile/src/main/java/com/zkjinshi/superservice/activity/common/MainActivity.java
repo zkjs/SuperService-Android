@@ -39,6 +39,7 @@ import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.utils.task.ImgAsyncTask;
+import com.zkjinshi.superservice.vo.IdentityType;
 import com.zkjinshi.superservice.vo.SexType;
 import com.zkjinshi.superservice.vo.UserVo;
 
@@ -96,6 +97,16 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         onlineCbx.setChecked(CacheUtil.getInstance().getOnline());
+
+        TextView teamTv = (TextView)findViewById(R.id.team_tv);
+        if(IdentityType.BUSINESS ==  CacheUtil.getInstance().getLoginIdentity()){
+            onlineCbx.setVisibility(View.GONE);
+            teamTv.setText("团队管理");
+        }else{
+            onlineCbx.setVisibility(View.VISIBLE);
+            teamTv.setText("团队联系人");
+        }
+
 
 
     }

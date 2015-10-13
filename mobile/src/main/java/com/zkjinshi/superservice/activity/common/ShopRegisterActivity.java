@@ -9,6 +9,8 @@ import android.widget.Button;
 
 import com.zkjinshi.superservice.R;
 
+import org.apache.log4j.chainsaw.Main;
+
 /**
  * 开发者：dujiande
  * 日期：2015/9/21
@@ -44,7 +46,7 @@ public class ShopRegisterActivity extends Activity  implements VerifyPhoneContro
         registerBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(ShopRegisterActivity.this,ShopMoreActivity.class));
+                startActivity(new Intent(ShopRegisterActivity.this,MainActivity.class));
                 finish();
                 overridePendingTransition(R.anim.activity_new, R.anim.activity_out);
             }

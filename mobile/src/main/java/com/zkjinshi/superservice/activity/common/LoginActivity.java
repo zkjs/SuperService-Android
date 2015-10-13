@@ -84,7 +84,7 @@ public class LoginActivity extends Activity implements VerifyPhoneControler.Succ
         findViewById(R.id.shop_register_tv).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(LoginActivity.this, ShopRegisterActivity.class));
+                startActivity(new Intent(LoginActivity.this, ShopLoginActivity.class));
                 finish();
                 overridePendingTransition(R.anim.activity_new, R.anim.activity_out);
             }
