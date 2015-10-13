@@ -169,7 +169,7 @@ public class ProtocolUtil {
         return ConfigUtil.getInst().getHttpDomain()+"uploads/users/"+userid+".jpg";
     }
     /**
-     * 获得用户头像
+     * 获得商家logo
      * @param shopID
      * @return
      */

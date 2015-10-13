@@ -178,8 +178,8 @@ public class ProtocolMSG {
     public static int MSG_EmpWorkStatus_search_RSP = 121;
 
     //商家员工情况列表
-    public static int MSG_ShopEmplist = 122;
-    public static int MSG_ShopEmplist_RSP = 123;
+    public static int MSG_ShopEmpStatus = 122;
+    public static int MSG_ShopEmpStatus_RSP = 123;
 
     //酒店预订
     public static int MSG_ShopRes_form = 124;

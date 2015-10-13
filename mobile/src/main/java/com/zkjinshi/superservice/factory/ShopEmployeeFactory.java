@@ -4,7 +4,9 @@ import android.content.ContentValues;
 import android.database.Cursor;
 
 import com.zkjinshi.superservice.bean.TeamContactBean;
+import com.zkjinshi.superservice.vo.OnlineStatus;
 import com.zkjinshi.superservice.vo.ShopEmployeeVo;
+import com.zkjinshi.superservice.vo.WorkStatus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +36,7 @@ public class ShopEmployeeFactory {
      * @return
      */
     public ContentValues buildAddContentValues(ShopEmployeeVo shopEmployeeVo) {
+
         ContentValues values = new ContentValues();
         values.put("empid", shopEmployeeVo.getEmpid());
         values.put("empcode", shopEmployeeVo.getEmpcode());
@@ -46,6 +49,18 @@ public class ShopEmployeeFactory {
         values.put("created", shopEmployeeVo.getCreated());
         values.put("locationid", shopEmployeeVo.getLocationid());
         values.put("role_name", shopEmployeeVo.getRole_name());
+        OnlineStatus onlineStatus = shopEmployeeVo.getOnline_status();
+
+        if(null != onlineStatus ){
+            values.put("online_status", onlineStatus.getValue());
+        }
+
+        WorkStatus workStatus = shopEmployeeVo.getWork_status();
+        if(null != onlineStatus ){
+            values.put("work_status", workStatus.getValue());
+        }
+
+        values.put("last_online_time", shopEmployeeVo.getLastOnLineTime());
         return values;
     }
 
@@ -67,6 +82,13 @@ public class ShopEmployeeFactory {
         shopEmployeeVo.setCreated(cursor.getLong(8));
         shopEmployeeVo.setLocationid(cursor.getInt(9));
         shopEmployeeVo.setRole_name(cursor.getString(10));
+        shopEmployeeVo.setOnline_status(OnlineStatus.OFFLINE.getValue() ==
+                                        cursor.getInt(11) ?
+                                        OnlineStatus.OFFLINE : OnlineStatus.ONLINE);
+        shopEmployeeVo.setWork_status(WorkStatus.OFFWORK.getValue() ==
+                                      cursor.getInt(12) ?
+                                      WorkStatus.OFFWORK : WorkStatus.ONWORK);
+        shopEmployeeVo.setLastOnLineTime(cursor.getLong(13));
         return  shopEmployeeVo;
     }
 

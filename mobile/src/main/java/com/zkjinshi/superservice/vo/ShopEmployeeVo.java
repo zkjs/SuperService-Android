@@ -20,6 +20,9 @@ public class ShopEmployeeVo {
     private long   created;
     private int    locationid;
     private String  role_name;
+    private OnlineStatus  online_status;
+    private WorkStatus    work_status;
+    private long          lastOnLineTime;
 
     public String getEmpid() {
         return empid;
@@ -107,5 +110,29 @@ public class ShopEmployeeVo {
 
     public void setRole_name(String role_name) {
         this.role_name = role_name;
+    }
+
+    public OnlineStatus getOnline_status() {
+        return online_status;
+    }
+
+    public void setOnline_status(OnlineStatus online_status) {
+        this.online_status = online_status;
+    }
+
+    public WorkStatus getWork_status() {
+        return work_status;
+    }
+
+    public void setWork_status(WorkStatus work_status) {
+        this.work_status = work_status;
+    }
+
+    public long getLastOnLineTime() {
+        return lastOnLineTime;
+    }
+
+    public void setLastOnLineTime(long lastOnLineTime) {
+        this.lastOnLineTime = lastOnLineTime;
     }
 }
