@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.zkjinshi.base.net.observer.IMessageObserver;
@@ -72,6 +73,7 @@ public class NoticeFragment extends Fragment implements IMessageObserver{
     private ArrayList<ComingVo> notifyComingList = new ArrayList<ComingVo>();
     private ArrayList<ComingVo> moreComingList = new ArrayList<ComingVo>();
     private ArrayList<ComingVo> requestComingList = new ArrayList<ComingVo>();
+    private TextView totoalEmployeeTv,currentOnlineEmployeeTv;
 
     public static NoticeFragment newInstance() {
         return new NoticeFragment();
