@@ -150,6 +150,20 @@ public class ProtocolUtil {
         return ConfigUtil.getInst().getHttpDomain()+"semp/notice";
     }
 
+    /**
+     * 管理: 获取部门列表
+     */
+    public static String getShopDeptlistUrl(){
+        return ConfigUtil.getInst().getHttpDomain()+"shop/deptlist";
+    }
+
+    /**
+     * 管理: 批量添加服务员
+     */
+    public static String getBatchAddClientUrl(){
+        return ConfigUtil.getInst().getHttpDomain()+"";
+    }
+
 
 
     /**

@@ -52,10 +52,10 @@ public class EmployeeHandAddActivity extends Activity {
     }
 
     private void initView() {
-        phoneEt = (EditText)findViewById(R.id.et_input_name);
+        phoneEt = (EditText)findViewById(R.id.et_input_phone);
         nameEt = (EditText)findViewById(R.id.et_input_name);
         deptText = (TextView)findViewById(R.id.tv_dept);
-        remarkEt = (EditText)findViewById(R.id.et_input_name);
+        remarkEt = (EditText)findViewById(R.id.et_remark);
         adminCbx = (CheckBox)findViewById(R.id.cbx_admin);
     }
 
@@ -113,6 +113,10 @@ public class EmployeeHandAddActivity extends Activity {
         ShopEmployeeVo shopEmployeeVo = new ShopEmployeeVo();
         shopEmployeeVo.setName(name);
         shopEmployeeVo.setPhone(phone);
+        shopEmployeeVo.setDesc(remark);
+        if(deptId != -1){
+            shopEmployeeVo.setDept_id(deptId);
+        }
 
         if(adminCbx.isChecked()){
             shopEmployeeVo.setRoleid(1);

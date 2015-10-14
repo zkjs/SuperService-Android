@@ -69,7 +69,7 @@
             style="@style/inputStyle"
             android:inputType="text"
             android:hint="如有备注，在此说明"
-            android:id="@+id/price_remark" />
+            android:id="@+id/et_remark" />
 
         <CheckBox
             android:id="@+id/cbx_admin"

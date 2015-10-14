@@ -13,14 +13,25 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.filechoser.activity.FileListActivity;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.order.CalendarActivity;
 import com.zkjinshi.superservice.adapter.ContactsAdapter;
+import com.zkjinshi.superservice.bean.BaseBean;
+import com.zkjinshi.superservice.net.MethodType;
+import com.zkjinshi.superservice.net.NetRequest;
+import com.zkjinshi.superservice.net.NetRequestListener;
+import com.zkjinshi.superservice.net.NetRequestTask;
+import com.zkjinshi.superservice.net.NetResponse;
 import com.zkjinshi.superservice.sqlite.ShopEmployeeDBUtil;
+import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.JxlUtil;
+import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.vo.ContactLocalVo;
+import com.zkjinshi.superservice.vo.DepartmentVo;
 import com.zkjinshi.superservice.vo.ShopEmployeeVo;
 import android.content.ContentResolver;
 import android.content.ContentUris;
@@ -39,6 +50,7 @@ import android.text.TextUtils;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -239,7 +251,57 @@ public class EmployeeAddActivity extends Activity {
             return;
         }
 
+        String deptsJson = new Gson().toJson(allList);
+
+
         //调用批量上传API
+        String url = ProtocolUtil.getBatchAddClientUrl();
+        Log.i(TAG, url);
+        NetRequest netRequest = new NetRequest(url);
+        HashMap<String,String> bizMap = new HashMap<String,String>();
+        bizMap.put("salesid", CacheUtil.getInstance().getUserId());
+        bizMap.put("token", CacheUtil.getInstance().getToken());
+        bizMap.put("shopid", CacheUtil.getInstance().getShopID());
+        bizMap.put("deptsJson", deptsJson);
+        netRequest.setBizParamMap(bizMap);
+        NetRequestTask netRequestTask = new NetRequestTask(this,netRequest, NetResponse.class);
+        netRequestTask.methodType = MethodType.PUSH;
+        netRequestTask.setNetRequestListener(new NetRequestListener() {
+            @Override
+            public void onNetworkRequestError(int errorCode, String errorMessage) {
+                Log.i(TAG, "errorCode:" + errorCode);
+                Log.i(TAG, "errorMessage:" + errorMessage);
+            }
+
+            @Override
+            public void onNetworkRequestCancelled() {
+
+            }
+
+            @Override
+            public void onNetworkResponseSucceed(NetResponse result) {
+                Log.i(TAG, "result.rawResult:" + result.rawResult);
+                try{
+                    BaseBean baseBean = new Gson().fromJson(result.rawResult,BaseBean.class);
+                    if(baseBean.isSet()){
+                        DialogUtil.getInstance().showToast(EmployeeAddActivity.this,"添加成员成功");
+                        finish();
+                    }else{
+                        Log.e(TAG,baseBean.getErr());
+                    }
+                }catch (Exception e){
+                    Log.e(TAG,e.getMessage());
+                }
+
+            }
+
+            @Override
+            public void beforeNetworkRequestStart() {
+
+            }
+        });
+        netRequestTask.isShowLoadingDialog = true;
+        netRequestTask.execute();
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -267,10 +329,8 @@ public class EmployeeAddActivity extends Activity {
         if( hz.toUpperCase().equals("XLS")){
             excelList = JxlUtil.decodeXLS(filePath);
             Log.i(TAG,excelList.toString());
-        }else if(hz.toUpperCase().equals("XLSX")){
-
         }else{
-            DialogUtil.getInstance().showToast(EmployeeAddActivity.this,"暂时只支持导入XLX,XLSX 格式的文件");
+            DialogUtil.getInstance().showToast(EmployeeAddActivity.this,"暂时只支持导入XLS 格式的文件");
         }
     }
 
