@@ -323,7 +323,7 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        MessageSubject.getInstance().addObserver(this, ProtocolMSG.MSG_ShopEmpStatus_RSP);
+        MessageSubject.getInstance().removeObserver(this, ProtocolMSG.MSG_ShopEmpStatus_RSP);
     }
 
     @Override
@@ -333,14 +333,15 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
         if(TextUtils.isEmpty(message)){
             return ;
         }
+
         Gson gson = null;
+        if(null == gson ){
+            gson = new Gson();
+        }
+
         try {
             JSONObject messageObj = new JSONObject(message);
             int type = messageObj.getInt("type");
-
-            if (type == ProtocolMSG.MSG_ClientLogin_RSP) {
-                return;
-            }
 
             if (type == ProtocolMSG.MSG_ShopEmpStatus_RSP) {//重复登录
                 System.out.print("message:"+message);
@@ -350,7 +351,6 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
             e.printStackTrace();
         }
         Log.i(Constants.ZKJINSHI_BASE_TAG, TAG + ".onNetReceiveSucceed()->message:" + message);
-
     }
 
 }

@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.SectionIndexer;
@@ -22,6 +23,7 @@ import com.zkjinshi.superservice.listener.RecyclerItemClickListener;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.utils.RandomDrawbleUtil;
 import com.zkjinshi.superservice.view.CircleImageView;
+import com.zkjinshi.superservice.view.CircleTextView;
 import com.zkjinshi.superservice.vo.ShopEmployeeVo;
 
 import java.util.ArrayList;
@@ -39,6 +41,7 @@ public class TeamEditContactsAdapter extends RecyclerView.Adapter<RecyclerView.V
 
     private List<ShopEmployeeVo>  mList;
     private Context               mContext;
+    private DisplayImageOptions   options;
 
     private RecyclerItemClickListener mRecyclerItemClickListener;
 
@@ -46,7 +49,13 @@ public class TeamEditContactsAdapter extends RecyclerView.Adapter<RecyclerView.V
 
         this.mContext = mContext;
         this.mList    = list;
-
+        this.options  = new DisplayImageOptions.Builder()
+                .showImageOnLoading(R.drawable.img_hotel_zhanwei)
+                .showImageForEmptyUri(R.drawable.img_hotel_zhanwei)// 设置图片Uri为空或是错误的时候显示的图片
+                .showImageOnFail(R.drawable.img_hotel_zhanwei)// 设置图片加载或解码过程中发生错误显示的图片
+                .cacheInMemory(true) // 设置下载的图片是否缓存在内存中
+                .cacheOnDisk(true) // 设置下载的图片是否缓存在SD卡中
+                .build();
     }
 
     /**
@@ -64,70 +73,56 @@ public class TeamEditContactsAdapter extends RecyclerView.Adapter<RecyclerView.V
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = null;
-        ViewHolder holder = null;
-        if(view == null){
-            view = LayoutInflater.from(mContext).inflate(R.layout.item_team_edit_contact, null);
-            view.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                                 LinearLayout.LayoutParams.WRAP_CONTENT));
-            holder = new ViewHolder(view, mRecyclerItemClickListener);
-        } else {
-            holder = (ViewHolder) view.getTag();
-        }
+        View view = LayoutInflater.from(mContext).inflate(R.layout.item_team_edit_contact, null);
+        view.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                             LinearLayout.LayoutParams.WRAP_CONTENT));
+        ContactViewHolder holder = new ContactViewHolder(view, mRecyclerItemClickListener);
         return holder;
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
         ShopEmployeeVo employeeVo = mList.get(position);
         int section = getSectionForPosition(position);
+
         //显示客户名称
         final String employeeName = employeeVo.getName();
         if (position == getPositionForSection(section)) {
-            ((ViewHolder)holder).tvLetter.setVisibility(View.VISIBLE);
-            ((ViewHolder)holder).tvLetter.setText(employeeVo.getRole_name());
+            ((ContactViewHolder)holder).tvLetter.setVisibility(View.VISIBLE);
+            ((ContactViewHolder)holder).tvLetter.setText(employeeVo.getRole_name());
         } else {
-            ((ViewHolder)holder).tvLetter.setVisibility(View.GONE);
+            ((ContactViewHolder)holder).tvLetter.setVisibility(View.GONE);
         }
 
         if(!TextUtils.isEmpty(employeeName)){
-            ((ViewHolder)holder).tvContactName.setText(employeeName);
+            final String firstName = employeeName.substring(0, 1);
+            ((ContactViewHolder)holder).tvContactName.setText(employeeName);
+            final TextView  tvFirstName = ((ContactViewHolder)holder).tvContactAvatar;
+            //根据url显示图片
+            String avatarUrl = ProtocolUtil.getAvatarUrl(employeeVo.getEmpid());
+            ImageLoader.getInstance().displayImage(avatarUrl, ((ContactViewHolder) holder).civContactAvatar, options, new ImageLoadingListener() {
+                @Override
+                public void onLoadingStarted(String imageUri, View view) {
+                }
 
+                @Override
+                public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+                    ((ContactViewHolder)holder).tvContactAvatar.setText(firstName);
+                    ((ContactViewHolder)holder).tvContactAvatar.setVisibility(View.VISIBLE);
+                    view.setVisibility(View.GONE);
+                }
+
+                @Override
+                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                    ((ContactViewHolder)holder).tvContactAvatar.setVisibility(View.GONE);
+                    view.setVisibility(View.VISIBLE);
+                }
+
+                @Override
+                public void onLoadingCancelled(String imageUri, View view) {
+                }
+            });
         }
-        final String   firstName   = employeeName.substring(0, 1);
-        final TextView tvFirstName =  ((ViewHolder)holder).tvContactAvatar;
-
-        //根据url显示图片
-        String avatarUrl = ProtocolUtil.getAvatarUrl(employeeVo.getEmpid());
-        ImageLoader.getInstance().displayImage(avatarUrl, ((ViewHolder) holder).civContactAvatar, new DisplayImageOptions.Builder()
-                .showImageOnLoading(RandomDrawbleUtil.getRandomDrawable())
-                .showImageForEmptyUri(RandomDrawbleUtil.getRandomDrawable())// 设置图片Uri为空或是错误的时候显示的图片
-                .showImageOnFail(RandomDrawbleUtil.getRandomDrawable())// 设置图片加载或解码过程中发生错误显示的图片
-                .cacheInMemory(true) // 设置下载的图片是否缓存在内存中
-                .cacheOnDisk(true) // 设置下载的图片是否缓存在SD卡中
-                .build(), new ImageLoadingListener() {
-            @Override
-            public void onLoadingStarted(String imageUri, View view) {
-                tvFirstName.setText(firstName);
-            }
-
-            @Override
-            public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-                tvFirstName.setText(firstName);
-            }
-
-            @Override
-            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                tvFirstName.setVisibility(View.GONE);
-            }
-
-            @Override
-            public void onLoadingCancelled(String imageUri, View view) {
-                tvFirstName.setText(firstName);
-            }
-        });
-
-        holder.itemView.setTag(employeeVo);
     }
 
     @Override
@@ -165,11 +160,11 @@ public class TeamEditContactsAdapter extends RecyclerView.Adapter<RecyclerView.V
         return -1;
     }
 
-    static class ViewHolder extends RecyclerView.ViewHolder{
+    static class ContactViewHolder extends RecyclerView.ViewHolder{
 
         public TextView         tvLetter;
         public CircleImageView  civContactAvatar;
-        public TextView         tvContactAvatar;
+        public CircleTextView tvContactAvatar;
         public TextView         tvContactName;
         public RelativeLayout   rlContactStatus;
         public TextView         tvContactStatus;
@@ -179,11 +174,11 @@ public class TeamEditContactsAdapter extends RecyclerView.Adapter<RecyclerView.V
 
         private RecyclerItemClickListener mItemClickListener;
 
-        public ViewHolder(View view, RecyclerItemClickListener itemClickListener) {
+        public ContactViewHolder(View view, RecyclerItemClickListener itemClickListener) {
             super(view);
             tvLetter         = (TextView) view.findViewById(R.id.catalog);
             civContactAvatar = (CircleImageView) view.findViewById(R.id.civ_contact_avatar);
-            tvContactAvatar  = (TextView) view.findViewById(R.id.tv_contact_avatar);
+            tvContactAvatar  = (CircleTextView) view.findViewById(R.id.tv_contact_avatar);
             tvContactName    = (TextView) view.findViewById(R.id.tv_contact_name);
             rlContactStatus  = (RelativeLayout) view.findViewById(R.id.rl_contact_status);
             tvContactStatus    = (TextView) view.findViewById(R.id.tv_contact_status);
