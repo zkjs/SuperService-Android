@@ -135,6 +135,11 @@ public class ShopEmployeeDBUtil {
         return  shopEmployeeVos;
     }
 
+    /**
+     * 获取员工总个数
+     * @param shopId
+     * @return
+     */
     public int queryTotalEmpCount(String shopId) {
         int totalEmpCount = 0;
         SQLiteDatabase db = null;
