@@ -24,8 +24,6 @@ public class TestActivity extends Activity{
 
     private final static String TAG = TestActivity.class.getSimpleName();
 
-    private TextView startText;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -38,19 +36,12 @@ public class TestActivity extends Activity{
     }
 
     private void initView() {
-        startText = (TextView)findViewById(R.id.tv_start_text);
-
     }
 
     private void initData() {
-//        String path = Environment.getExternalStorageDirectory().getPath()+"/test.xls";
-//        String content = JxlUtil.readXLS(path);
 
         String path = Environment.getExternalStorageDirectory().getPath()+"/test2.xlsx";
         String content = JxlUtil.readXLSX(path);
-
-        startText.setTextColor(Color.BLACK);
-        startText.setText(content);
     }
 
     private void initListener() {

@@ -45,6 +45,7 @@ import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.view.CircleStatusView;
 import com.zkjinshi.superservice.vo.ComingVo;
 import com.zkjinshi.superservice.entity.MsgPushTriggerLocNotificationM2S;
+import com.zkjinshi.superservice.vo.IdentityType;
 import com.zkjinshi.superservice.vo.ZoneVo;
 
 import org.json.JSONArray;
@@ -126,9 +127,14 @@ public class NoticeFragment extends Fragment implements IMessageObserver{
         moreStatsuView.setStatus(CircleStatusView.CircleStatus.STATUS_MORE);
         moreStatsuView.invalidate();
         totalEmpCount = ShopEmployeeDBUtil.getInstance().queryTotalEmpCount(CacheUtil.getInstance().getShopID());
-        totoalEmployeeTv.setText("/"+totalEmpCount);
+        totoalEmployeeTv.setText("/" + totalEmpCount);
         queryPageMessages(REQUEST_PAGE_SIZE, System.currentTimeMillis(), true);
         requestOnlineCountTask();
+        if(CacheUtil.getInstance().getLoginIdentity()== IdentityType.WAITER){
+            onlineLayout.setVisibility(View.GONE);
+        }else{
+            onlineLayout.setVisibility(View.VISIBLE);
+        }
     }
 
     private void initListeners(){
