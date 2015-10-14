@@ -15,10 +15,10 @@ public class EmpStatusRecord {
 //    }
 
     private String  empid;
-    private String empname;
+    private String  empname;
     private int     onlinestatus;//0:在线 1:不在线
     private int     workstatus;//0:上班 1:下班
-    private long logintimestamp;
+    private long    logintimestamp;
 
     public String getEmpid() {
         return empid;
