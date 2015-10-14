@@ -15,8 +15,10 @@ public class EmpStatusRecord {
 //    }
 
     private String  empid;
+    private String empname;
     private int     onlinestatus;//0:在线 1:不在线
     private int     workstatus;//0:上班 1:下班
+    private long logintimestamp;
 
     public String getEmpid() {
         return empid;
@@ -40,5 +42,21 @@ public class EmpStatusRecord {
 
     public void setWorkstatus(int workstatus) {
         this.workstatus = workstatus;
+    }
+
+    public String getEmpname() {
+        return empname;
+    }
+
+    public void setEmpname(String empname) {
+        this.empname = empname;
+    }
+
+    public long getLogintimestamp() {
+        return logintimestamp;
+    }
+
+    public void setLogintimestamp(long logintimestamp) {
+        this.logintimestamp = logintimestamp;
     }
 }
