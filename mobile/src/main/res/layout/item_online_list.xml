@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="120dp">
+
+    <LinearLayout
+        android:id="@+id/online_layout_timer_shaft"
+        android:layout_width="35dp"
+        android:layout_height="120dp"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <View
+            android:layout_gravity="center"
+            android:layout_width="1dp"
+            android:background="@color/gray"
+            android:layout_height="0dp"
+            android:layout_weight="1.0">
+        </View>
+
+        <com.zkjinshi.superservice.view.CircleStatusView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="center"/>
+
+        <View
+            android:layout_gravity="center"
+            android:layout_width="1dp"
+            android:background="@color/gray"
+            android:layout_height="0dp"
+            android:layout_weight="1.0">
+        </View>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_toRightOf="@id/online_layout_timer_shaft"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:visibility="visible"
+        android:background="@drawable/radius_frame_bg"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.zkjinshi.superservice.view.CircleImageView
+                android:id="@+id/online_civ_photo"
+                android:layout_centerVertical="true"
+                android:clickable="true"
+                android:src="@drawable/img_hotel_zhanwei"
+                android:layout_margin="15dp"
+                android:layout_width="45dp"
+                android:layout_height="45dp" />
+
+            <TextView
+                android:id="@+id/online_tv_emp_name"
+                android:layout_toRightOf="@id/online_civ_photo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@null"
+                android:layout_marginTop="20dp"
+                android:textSize="14sp"
+                android:textColor="#101010"/>
+
+            <TextView
+                android:id="@+id/online_tv_online_status"
+                android:layout_toRightOf="@id/online_tv_emp_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@null"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="10dp"
+                android:textSize="12sp"
+                android:textColor="#03a9f4"/>
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/online_tv_online_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            android:layout_marginLeft="25dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:drawableLeft="@drawable/ic_clock"
+            android:drawablePadding="15dp"
+            android:textColor="#AAAAAA"
+            android:text="@null"/>
+
+    </LinearLayout>
+
+</RelativeLayout>

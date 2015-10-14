@@ -181,9 +181,9 @@ public class ProtocolMSG {
     public static int MSG_ShopEmpStatus = 122;
     public static int MSG_ShopEmpStatus_RSP = 123;
 
-    //酒店预订
-    public static int MSG_ShopRes_form = 124;
-    public static int MSG_ShopRes_form_RSP = 125;
+    //在线/离线和上下班状态统计
+    public static int MSG_ShopEmpStatusCount = 124;
+    public static int MSG_ShopEmpStatusCount_RSP = 125;
 
     //酒店确认信
     public static int MSG_ShopConf_letter = 126;
