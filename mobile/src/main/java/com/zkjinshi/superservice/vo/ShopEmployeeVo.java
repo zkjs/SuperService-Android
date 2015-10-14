@@ -25,7 +25,7 @@ public class ShopEmployeeVo implements Serializable{
     private OnlineStatus  online_status;
     private WorkStatus    work_status;
     private long          lastOnLineTime;
-    private String         dept;
+    private int            dept_id;
     private String         desc;
     private String         shop_id;
 
@@ -141,12 +141,12 @@ public class ShopEmployeeVo implements Serializable{
         this.lastOnLineTime = lastOnLineTime;
     }
 
-    public String getDept() {
-        return dept;
+    public int getDept_id() {
+        return dept_id;
     }
 
-    public void setDept(String dept) {
-        this.dept = dept;
+    public void setDept_id(int dept_id) {
+        this.dept_id = dept_id;
     }
 
     public String getDesc() {

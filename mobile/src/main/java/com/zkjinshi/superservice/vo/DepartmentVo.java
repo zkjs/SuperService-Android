@@ -12,7 +12,7 @@ import java.io.Serializable;
 public class DepartmentVo  implements Serializable {
 
     private int deptid;
-    private int shopid;
+    private String shopid;
     private String dept_code;
     private String dept_name;
     private String description;
@@ -25,11 +25,11 @@ public class DepartmentVo  implements Serializable {
         this.deptid = deptid;
     }
 
-    public int getShopid() {
+    public String getShopid() {
         return shopid;
     }
 
-    public void setShopid(int shopid) {
+    public void setShopid(String shopid) {
         this.shopid = shopid;
     }
 
