@@ -2,6 +2,7 @@ package com.zkjinshi.superservice.adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -50,9 +51,9 @@ public class TeamEditContactsAdapter extends RecyclerView.Adapter<RecyclerView.V
         this.mContext = mContext;
         this.mList    = list;
         this.options  = new DisplayImageOptions.Builder()
-                .showImageOnLoading(R.drawable.img_hotel_zhanwei)
-                .showImageForEmptyUri(R.drawable.img_hotel_zhanwei)// 设置图片Uri为空或是错误的时候显示的图片
-                .showImageOnFail(R.drawable.img_hotel_zhanwei)// 设置图片加载或解码过程中发生错误显示的图片
+                .showImageOnLoading(null)
+                .showImageForEmptyUri(null)// 设置图片Uri为空或是错误的时候显示的图片
+                .showImageOnFail(null)// 设置图片加载或解码过程中发生错误显示的图片
                 .cacheInMemory(true) // 设置下载的图片是否缓存在内存中
                 .cacheOnDisk(true) // 设置下载的图片是否缓存在SD卡中
                 .build();
@@ -97,29 +98,40 @@ public class TeamEditContactsAdapter extends RecyclerView.Adapter<RecyclerView.V
         if(!TextUtils.isEmpty(employeeName)){
             final String firstName = employeeName.substring(0, 1);
             ((ContactViewHolder)holder).tvContactName.setText(employeeName);
-            final TextView  tvFirstName = ((ContactViewHolder)holder).tvContactAvatar;
+
             //根据url显示图片
             String avatarUrl = ProtocolUtil.getAvatarUrl(employeeVo.getEmpid());
             ImageLoader.getInstance().displayImage(avatarUrl, ((ContactViewHolder) holder).civContactAvatar, options, new ImageLoadingListener() {
                 @Override
                 public void onLoadingStarted(String imageUri, View view) {
+                    view.setVisibility(View.GONE);
+                    ((ContactViewHolder)holder).tvContactAvatar.setVisibility(View.VISIBLE);
+                    ((ContactViewHolder)holder).tvContactAvatar.setBackgroundResource(RandomDrawbleUtil.getRandomDrawable());
+                    ((ContactViewHolder)holder).tvContactAvatar.setText(firstName);
                 }
 
                 @Override
                 public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-                    ((ContactViewHolder)holder).tvContactAvatar.setText(firstName);
-                    ((ContactViewHolder)holder).tvContactAvatar.setVisibility(View.VISIBLE);
                     view.setVisibility(View.GONE);
+                    ((ContactViewHolder)holder).tvContactAvatar.setVisibility(View.VISIBLE);
+                    ((ContactViewHolder) holder).tvContactAvatar.setBackgroundResource(RandomDrawbleUtil.getRandomDrawable());
+                    ((ContactViewHolder)holder).tvContactAvatar.setText(firstName);
                 }
 
                 @Override
                 public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                     ((ContactViewHolder)holder).tvContactAvatar.setVisibility(View.GONE);
+                    ((ContactViewHolder)holder).tvContactAvatar.setBackgroundDrawable(null);
                     view.setVisibility(View.VISIBLE);
                 }
 
                 @Override
                 public void onLoadingCancelled(String imageUri, View view) {
+                    view.setVisibility(View.GONE);
+                    ((ContactViewHolder)holder).tvContactAvatar.setVisibility(View.VISIBLE);
+                    ((ContactViewHolder)holder).tvContactAvatar.setBackgroundResource(RandomDrawbleUtil.getRandomDrawable());
+                    ((ContactViewHolder)holder).tvContactAvatar.setText(firstName); view.setBackgroundResource(RandomDrawbleUtil.getRandomDrawable());
+
                 }
             });
         }
@@ -164,7 +176,7 @@ public class TeamEditContactsAdapter extends RecyclerView.Adapter<RecyclerView.V
 
         public TextView         tvLetter;
         public CircleImageView  civContactAvatar;
-        public CircleTextView tvContactAvatar;
+        public TextView         tvContactAvatar;
         public TextView         tvContactName;
         public RelativeLayout   rlContactStatus;
         public TextView         tvContactStatus;
@@ -178,7 +190,7 @@ public class TeamEditContactsAdapter extends RecyclerView.Adapter<RecyclerView.V
             super(view);
             tvLetter         = (TextView) view.findViewById(R.id.catalog);
             civContactAvatar = (CircleImageView) view.findViewById(R.id.civ_contact_avatar);
-            tvContactAvatar  = (CircleTextView) view.findViewById(R.id.tv_contact_avatar);
+            tvContactAvatar  = (TextView) view.findViewById(R.id.tv_contact_avatar);
             tvContactName    = (TextView) view.findViewById(R.id.tv_contact_name);
             rlContactStatus  = (RelativeLayout) view.findViewById(R.id.rl_contact_status);
             tvContactStatus    = (TextView) view.findViewById(R.id.tv_contact_status);
