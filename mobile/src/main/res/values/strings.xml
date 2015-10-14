@@ -71,5 +71,6 @@
     <string name="offline">离线</string>
     <string name="online">在线</string>
     <string name="last_online_time">上一级在线时间</string>
+    <string name="team">团队</string>
 
 </resources>
