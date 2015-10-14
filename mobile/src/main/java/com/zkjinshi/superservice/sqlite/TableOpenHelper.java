@@ -165,7 +165,10 @@ public class TableOpenHelper {
                     + " fax           text, "//传真
                     + " created       long, "//增加时间
                     + " locationid    int,"//区域ID
-                    + " role_name     text"//
+                    + " role_name     text,"//
+                    + " online_status int,"//
+                    + " work_status   int,"//
+                    + " last_online_time  long"//
                     + " ) ";
 
 //    /**
