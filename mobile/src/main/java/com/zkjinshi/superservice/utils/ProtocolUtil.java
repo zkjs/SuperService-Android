@@ -151,6 +151,13 @@ public class ProtocolUtil {
     }
 
     /**
+     * 查询部门列表
+     */
+    public static String getDeptListUrl(){
+        return ConfigUtil.getInst().getHttpDomain()+"shop/deptlist";
+    }
+
+    /**
      * 管理: 获取部门列表
      */
     public static String getShopDeptlistUrl(){
@@ -162,6 +169,13 @@ public class ProtocolUtil {
      */
     public static String getBatchAddClientUrl(){
         return ConfigUtil.getInst().getHttpDomain()+"";
+    }
+
+    /**
+     * 员工批量修改部门
+     */
+    public static String getChangeDeptUrl(){
+        return ConfigUtil.getInst().getHttpDomain()+"shop/changedept";
     }
 
 

@@ -1,7 +1,6 @@
 package com.zkjinshi.superservice.activity.set;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -44,6 +43,7 @@ import com.zkjinshi.superservice.sqlite.ShopEmployeeDBUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.view.AutoSideBar;
+import com.zkjinshi.superservice.vo.IdentityType;
 import com.zkjinshi.superservice.vo.OnlineStatus;
 import com.zkjinshi.superservice.vo.ShopEmployeeVo;
 import com.zkjinshi.superservice.vo.WorkStatus;
@@ -83,7 +83,7 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
     private String mUserID;
     private String mShopID;
     private String mToken;
-
+    private IdentityType mUserType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,8 +95,6 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
         initData();
         initListener();
     }
-
-
 
     private void initView() {
 
@@ -124,6 +122,7 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
         mUserID     = CacheUtil.getInstance().getUserId();
         mToken      = CacheUtil.getInstance().getToken();
         mShopID     = CacheUtil.getInstance().getShopID();
+        mUserType   = CacheUtil.getInstance().getLoginIdentity();
 
         // 创建商店排序对象
         mFirstShopEmployee = new ShopEmployeeVo();
@@ -196,13 +195,16 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
                 DialogUtil.getInstance().showCustomToast(TeamContactsActivity.this, "TODO:进入客户聊天界面", Gravity.CENTER);
             }
         });
-
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_team, menu);
+        if(mUserType == IdentityType.BUSINESS){
+            getMenuInflater().inflate(R.menu.menu_team_for_business, menu);
+        }else {
+            getMenuInflater().inflate(R.menu.menu_team_for_waiter, menu);
+        }
         return true;
     }
 
