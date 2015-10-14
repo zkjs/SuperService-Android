@@ -38,6 +38,7 @@ import com.zkjinshi.superservice.net.NetRequestListener;
 import com.zkjinshi.superservice.net.NetRequestTask;
 import com.zkjinshi.superservice.net.NetResponse;
 import com.zkjinshi.superservice.sqlite.ComingDBUtil;
+import com.zkjinshi.superservice.sqlite.ShopEmployeeDBUtil;
 import com.zkjinshi.superservice.sqlite.ZoneDBUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
@@ -83,6 +84,7 @@ public class NoticeFragment extends Fragment implements IMessageObserver{
     private ArrayList<ComingVo> requestComingList = new ArrayList<ComingVo>();
     private TextView totoalEmployeeTv,currentOnlineEmployeeTv;
     private LinearLayout onlineLayout;
+    private int totalEmpCount,onlineEmpCout;
 
     public static NoticeFragment newInstance() {
         return new NoticeFragment();
@@ -123,6 +125,8 @@ public class NoticeFragment extends Fragment implements IMessageObserver{
         moreRecyclerView.setAdapter(locMoreAdapter);
         moreStatsuView.setStatus(CircleStatusView.CircleStatus.STATUS_MORE);
         moreStatsuView.invalidate();
+        totalEmpCount = ShopEmployeeDBUtil.getInstance().queryTotalEmpCount(CacheUtil.getInstance().getShopID());
+        totoalEmployeeTv.setText("/"+totalEmpCount);
         queryPageMessages(REQUEST_PAGE_SIZE, System.currentTimeMillis(), true);
         requestOnlineCountTask();
     }
@@ -180,6 +184,8 @@ public class NoticeFragment extends Fragment implements IMessageObserver{
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), OnlineListActivity.class);
+                intent.putExtra("onlineEmpCout",onlineEmpCout);
+                intent.putExtra("totalEmpCount",totalEmpCount);
                 startActivity(intent);
             }
         });
@@ -343,9 +349,9 @@ public class NoticeFragment extends Fragment implements IMessageObserver{
                 if(null == gson){
                     gson = new Gson();
                 }
-                MsgEmpStatusCountRSP msgEmpStatusCountRSP = gson.fromJson(message,MsgEmpStatusCountRSP.class);
-                int onlineCount = msgEmpStatusCountRSP.getOnlinecount();
-                currentOnlineEmployeeTv.setText(""+onlineCount);
+                MsgEmpStatusCountRSP msgEmpStatusCountRSP = gson.fromJson(message, MsgEmpStatusCountRSP.class);
+                onlineEmpCout= msgEmpStatusCountRSP.getOnlinecount();
+                currentOnlineEmployeeTv.setText(""+onlineEmpCout);
             }
         } catch (JSONException e) {
             e.printStackTrace();

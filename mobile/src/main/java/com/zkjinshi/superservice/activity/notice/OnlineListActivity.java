@@ -49,6 +49,7 @@ public class OnlineListActivity extends AppCompatActivity implements IMessageObs
     private ImageButton backIBtn;
     private TextView titleTv;
     private LinearLayoutManager linearLayoutManager;
+    private int onlineEmpCout,totalEmpCount;
 
     private void initView(){
         swipeRefreshLayout = (SwipeRefreshLayout)findViewById(R.id.srl_online);
@@ -60,7 +61,7 @@ public class OnlineListActivity extends AppCompatActivity implements IMessageObs
     }
 
     private void initData(){
-       // recyclerView.setHasFixedSize(true);
+       recyclerView.setHasFixedSize(true);
         linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(linearLayoutManager);
@@ -70,6 +71,10 @@ public class OnlineListActivity extends AppCompatActivity implements IMessageObs
         requestOnlineTask();
         titleTv.setText("员工状态");
         backIBtn.setVisibility(View.VISIBLE);
+        onlineEmpCout =  getIntent().getIntExtra("onlineEmpCout",0);
+        totalEmpCount = getIntent().getIntExtra("totalEmpCount",0);
+        currentEmpTv.setText(""+onlineEmpCout);
+        totalEmpTv.setText("/"+totalEmpCount);
     }
 
     private void initListeners(){
