@@ -2,6 +2,8 @@ package com.zkjinshi.superservice.entity;
 
 import org.json.JSONArray;
 
+import java.util.List;
+
 /**
  * 开发者：vincent
  * 日期：2015/10/13
@@ -23,8 +25,8 @@ public class MsgEmpStatus {
     private long    srvmsgid;
     private int     protover;//消息协议版本
 
-    private String    shopid;
-    private JSONArray emps;  //员工ID数组
+    private String       shopid;
+    private List<String> emps;  //员工ID数组
 
     public int getType() {
         return type;
@@ -74,11 +76,11 @@ public class MsgEmpStatus {
         this.shopid = shopid;
     }
 
-    public JSONArray getEmps() {
+    public List<String> getEmps() {
         return emps;
     }
 
-    public void setEmps(JSONArray emps) {
+    public void setEmps(List<String> emps) {
         this.emps = emps;
     }
 }

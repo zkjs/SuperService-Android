@@ -18,6 +18,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * 员工在线人数列表
  * 开发者：JimmyZhang
@@ -38,7 +41,7 @@ public class OnlineListActivity extends AppCompatActivity implements IMessageObs
         msgEmpStatus.setType(ProtocolMSG.MSG_ShopEmpStatus);
         msgEmpStatus.setTimestamp(System.currentTimeMillis());
         msgEmpStatus.setShopid(CacheUtil.getInstance().getShopID());
-        JSONArray empids = new JSONArray();
+        List<String> empids = new ArrayList<>();
         msgEmpStatus.setEmps(empids);
         String jsonMsgEmpStatus = new Gson().toJson(msgEmpStatus);
         WebSocketManager.getInstance().sendMessage(jsonMsgEmpStatus);
