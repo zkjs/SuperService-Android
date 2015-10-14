@@ -263,7 +263,8 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
                         for (ShopEmployeeVo shopEmployeeVo : shopEmployeeVos) {
                             shopEmployeeVo.setShop_id(shopID);
                             ShopEmployeeDBUtil.getInstance().addShopEmployee(shopEmployeeVo);
-                            mShopEmployeeVos.addAll(shopEmployeeVos);
+                            mShopEmployeeVos.add(shopEmployeeVo);
+
                             empids.add(shopEmployeeVo.getEmpid());
                             String sortLetter = shopEmployeeVo.getRole_name().substring(0, 1);
 
