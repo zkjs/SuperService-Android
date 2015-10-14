@@ -2,8 +2,6 @@ package com.zkjinshi.superservice.activity.common;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -20,11 +18,9 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.zkjinshi.base.net.core.WebSocketManager;
-import com.zkjinshi.base.util.DeviceUtils;
 import com.zkjinshi.base.util.DialogUtil;
-import com.zkjinshi.base.util.ImageUtil;
 import com.zkjinshi.superservice.R;
-import com.zkjinshi.superservice.activity.set.ContactsActivity;
+import com.zkjinshi.superservice.activity.set.ClientActivity;
 import com.zkjinshi.superservice.activity.set.TeamContactsActivity;
 import com.zkjinshi.superservice.bean.BaseBean;
 import com.zkjinshi.superservice.listener.MessageListener;
@@ -36,11 +32,9 @@ import com.zkjinshi.superservice.net.NetResponse;
 import com.zkjinshi.superservice.sqlite.DBOpenHelper;
 import com.zkjinshi.superservice.sqlite.UserDBUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
-import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.utils.task.ImgAsyncTask;
 import com.zkjinshi.superservice.vo.IdentityType;
-import com.zkjinshi.superservice.vo.SexType;
 import com.zkjinshi.superservice.vo.UserVo;
 
 import java.io.File;
@@ -151,7 +145,7 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.client_tv).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent myClient = new Intent(MainActivity.this, ContactsActivity.class);
+                Intent myClient = new Intent(MainActivity.this, ClientActivity.class);
                 MainActivity.this.startActivity(myClient);
             }
         });

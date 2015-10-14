@@ -68,5 +68,9 @@
     <string name="import_from_contacts">通讯录导入</string>
     <string name="grant_to_read_your_contacts">授权读取您的联系人</string>
     <string name="not_choose_emp_object_yet">尚未选择员工对象</string>
+    <string name="offline">离线</string>
+    <string name="online">在线</string>
+    <string name="last_online_time">上一级在线时间</string>
+    <string name="team">团队</string>
 
 </resources>

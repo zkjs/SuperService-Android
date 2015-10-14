@@ -3,14 +3,13 @@ package com.zkjinshi.superservice.adapter;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
-import android.widget.ImageView;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.SectionIndexer;
@@ -20,40 +19,44 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
-import com.zkjinshi.base.util.TimeUtil;
+import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.listener.RecyclerItemClickListener;
+import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.utils.RandomDrawbleUtil;
-import com.zkjinshi.superservice.utils.StringUtil;
 import com.zkjinshi.superservice.view.CircleImageView;
-import com.zkjinshi.superservice.view.CircleTextView;
 import com.zkjinshi.superservice.vo.OnlineStatus;
 import com.zkjinshi.superservice.vo.ShopEmployeeVo;
+import com.zkjinshi.superservice.vo.SortModel;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 
 /**
- * 团队编辑页面的联系人列表
+ * 联系人适配器
  * 开发者：vincent
- * 日期：2015/10/12
+ * 日期：2015/9/23
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class TeamEditContactsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements SectionIndexer {
+public class TeamContactsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
+                                  implements SectionIndexer {
 
-    private List<ShopEmployeeVo>  mList;
-    private Context               mContext;
-    private DisplayImageOptions   options;
+    private Context              mContext;
+    private List<ShopEmployeeVo> mList;
+    private DisplayImageOptions  options;
 
     private RecyclerItemClickListener mRecyclerItemClickListener;
 
-    public TeamEditContactsAdapter(Context mContext, List<ShopEmployeeVo> list) {
-
+    public TeamContactsAdapter(Context mContext, List<ShopEmployeeVo> list) {
         this.mContext = mContext;
         this.mList    = list;
+
         this.options  = new DisplayImageOptions.Builder()
                 .showImageOnLoading(R.drawable.img_hotel_zhanwei)
                 .showImageForEmptyUri(R.drawable.img_hotel_zhanwei)// 设置图片Uri为空或是错误的时候显示的图片
@@ -77,36 +80,70 @@ public class TeamEditContactsAdapter extends RecyclerView.Adapter<RecyclerView.V
     }
 
     @Override
+    public int getItemCount() {
+        return mList.size();
+    }
+
+    public void setOnItemClickListener(RecyclerItemClickListener listener) {
+        this.mRecyclerItemClickListener = listener;
+    }
+
+    @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.item_team_edit_contact, null);
-        view.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                             LinearLayout.LayoutParams.WRAP_CONTENT));
-        ContactViewHolder holder = new ContactViewHolder(view, mRecyclerItemClickListener);
+        View view = null;
+        ContactViewHolder holder = null;
+        if(null == view){
+            view = LayoutInflater.from(mContext).inflate(R.layout.item_team_contact, null);
+            view.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT));
+            holder = new ContactViewHolder(view, mRecyclerItemClickListener);
+        }else {
+            holder = (ContactViewHolder) view.getTag();
+        }
         return holder;
     }
 
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
-        ShopEmployeeVo employeeVo = mList.get(position);
-        int section = getSectionForPosition(position);
+        //根据position获取分类的首字母的Char ascii值
+        ShopEmployeeVo shopEmployeeVo = mList.get(position);
+        int section  = getSectionForPosition(position);
 
-        //显示客户名称
-        final String employeeName = employeeVo.getName();
-        if (position == getPositionForSection(section)) {
-            ((ContactViewHolder)holder).tvLetter.setVisibility(View.VISIBLE);
-            ((ContactViewHolder)holder).tvLetter.setText(employeeVo.getRole_name());
-        } else {
+        if(position == 0){
+            /** 1:显示商家信息 */
             ((ContactViewHolder)holder).tvLetter.setVisibility(View.GONE);
-        }
+            String shopLogoUrl = ProtocolUtil.getShopLogoUrl(CacheUtil.getInstance().getShopID());
+            ImageLoader.getInstance().displayImage(shopLogoUrl, ((ContactViewHolder) holder).civContactAvatar, options);
+            ((ContactViewHolder)holder).tvContactName.setText(CacheUtil.getInstance().getShopFullName());
+            ((ContactViewHolder)holder).tvContactOnLine.setText("点击消息群发");
+        } else {
+            /** 是否显示首字母  */
+            String roleName = shopEmployeeVo.getRole_name();
+            if (position == getPositionForSection(section)) {
+                ((ContactViewHolder)holder).tvLetter.setVisibility(View.VISIBLE);
+                if(!TextUtils.isEmpty(roleName)){
+                    if("?".equals(roleName.substring(0, 1))){
+                        //最近联系人的处理
+                        ((ContactViewHolder)holder).tvLetter.setText(mContext.getString(R.string.latest_contact));
+                    }else {
+                        ((ContactViewHolder)holder).tvLetter.setText(roleName);
+                    }
+                }
+            } else {
+                /** 不显示首字母 */
+                ((ContactViewHolder)holder).tvLetter.setVisibility(View.GONE);
+            }
 
-        if(!TextUtils.isEmpty(employeeName)){
-            final String firstName = employeeName.substring(0, 1);
-            ((ContactViewHolder)holder).tvContactName.setText(employeeName);
-            ((ContactViewHolder)holder).tvContactAvatar.setText(firstName);
+            String empID   = shopEmployeeVo.getEmpid();
+            String empName = shopEmployeeVo.getName();
+            if(!TextUtils.isEmpty(empName)){
+                final String firstName = empName.substring(0, 1);
+                ((ContactViewHolder)holder).tvContactName.setText(empName);
+                ((ContactViewHolder)holder).tvContactAvatar.setText(firstName);
+            }
 
-            //根据url显示图片
-            String avatarUrl = ProtocolUtil.getAvatarUrl(employeeVo.getEmpid());
-            ImageLoader.getInstance().displayImage(avatarUrl, ((ContactViewHolder) holder).civContactAvatar, options, new ImageLoadingListener() {
+            String empAvatarUrl = ProtocolUtil.getAvatarUrl(empID);
+            ImageLoader.getInstance().displayImage(empAvatarUrl, ((ContactViewHolder) holder).civContactAvatar, options, new ImageLoadingListener() {
                 @Override
                 public void onLoadingStarted(String imageUri, View view) {
                     ((ContactViewHolder)holder).tvContactAvatar.setVisibility(View.VISIBLE);
@@ -142,32 +179,71 @@ public class TeamEditContactsAdapter extends RecyclerView.Adapter<RecyclerView.V
                 }
             });
 
+            if(!TextUtils.isEmpty(empName)){
+                //去除wen
+                if("?".equals(empName.trim().substring(0, 1))) {
+                    ((ContactViewHolder)holder).tvContactName.setText(empName.substring(1));
+                }else {
+                    ((ContactViewHolder)holder).tvContactName.setText(empName);
+                }
+            }
+
             //设置显示在线状态时间
-            if(employeeVo.getOnline_status() == OnlineStatus.ONLINE) {
+            if(shopEmployeeVo.getOnline_status() == OnlineStatus.ONLINE) {
                 ((ContactViewHolder)holder).tvContactOnLine.setTextColor(Color.BLUE);
                 ((ContactViewHolder)holder).tvContactOnLine.setText(mContext.getString(R.string.online));
             } else {
                 ((ContactViewHolder)holder).tvContactOnLine.setTextColor(Color.GRAY);
-                String strLastOnline  = mContext.getString(R.string.offline);
-                Long   lastOnlineTime = employeeVo.getLastOnLineTime();
-                if(lastOnlineTime != 0){
-                    strLastOnline +=  mContext.getString(R.string.last_online_time )
-                                      + " : "
-                                      + TimeUtil.getChatTime(lastOnlineTime);
-                }
-                ((ContactViewHolder)holder).tvContactOnLine.setText(strLastOnline);
-
+                ((ContactViewHolder)holder).tvContactOnLine.setText(mContext.getString(R.string.offline));
             }
         }
+
+        ((ContactViewHolder) holder).flContactAvatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DialogUtil.getInstance().showCustomToast(mContext, "TODO: 进入客户主界面", Gravity.CENTER);
+            }
+        });
+
+        holder.itemView.setTag(holder);
     }
 
-    @Override
-    public int getItemCount() {
-        return mList.size();
-    }
+    public static class ContactViewHolder extends RecyclerView.ViewHolder{
 
-    public void setOnItemClickListener(RecyclerItemClickListener listener) {
-        this.mRecyclerItemClickListener = listener;
+        public TextView         tvLetter;
+        public FrameLayout      flContactAvatar;
+        public CircleImageView  civContactAvatar;
+        public TextView         tvContactAvatar;
+        public TextView         tvContactName;
+        public RelativeLayout   rlContactStatus;
+        public TextView         tvContactStatus;
+        public RelativeLayout   rlContactOnStatus;
+        public TextView         tvContactOnLine;
+
+        private RecyclerItemClickListener mItemClickListener;
+
+        public ContactViewHolder(View view, RecyclerItemClickListener itemClickListener) {
+            super(view);
+            tvLetter         = (TextView) view.findViewById(R.id.catalog);
+            flContactAvatar  = (FrameLayout) view.findViewById(R.id.fl_contact_avatar);
+            civContactAvatar = (CircleImageView) view.findViewById(R.id.civ_contact_avatar);
+            tvContactAvatar = (TextView) view.findViewById(R.id.tv_contact_avatar);
+            tvContactName    = (TextView) view.findViewById(R.id.tv_contact_name);
+            rlContactStatus  = (RelativeLayout) view.findViewById(R.id.rl_contact_status);
+            tvContactStatus    = (TextView) view.findViewById(R.id.tv_contact_status);
+            rlContactOnStatus  = (RelativeLayout) view.findViewById(R.id.rl_contact_on_status);
+            tvContactOnLine    = (TextView) view.findViewById(R.id.tv_contact_on_line);
+            this.mItemClickListener = itemClickListener;
+
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(mItemClickListener != null){
+                        mItemClickListener.onItemClick(v, getPosition());
+                    }
+                }
+            });
+        }
     }
 
     /**
@@ -194,46 +270,6 @@ public class TeamEditContactsAdapter extends RecyclerView.Adapter<RecyclerView.V
             }
         }
         return -1;
-    }
-
-    static class ContactViewHolder extends RecyclerView.ViewHolder{
-
-        public TextView         tvLetter;
-        public CircleImageView  civContactAvatar;
-        public TextView         tvContactAvatar;
-        public TextView         tvContactName;
-        public RelativeLayout   rlContactStatus;
-        public TextView         tvContactStatus;
-        public RelativeLayout   rlContactOnStatus;
-        public TextView         tvContactOnLine;
-        public CheckBox         cbCheck;
-
-        private RecyclerItemClickListener mItemClickListener;
-
-        public ContactViewHolder(View view, RecyclerItemClickListener itemClickListener) {
-            super(view);
-            tvLetter         = (TextView) view.findViewById(R.id.catalog);
-            civContactAvatar = (CircleImageView) view.findViewById(R.id.civ_contact_avatar);
-            tvContactAvatar  = (TextView) view.findViewById(R.id.tv_contact_avatar);
-            tvContactName    = (TextView) view.findViewById(R.id.tv_contact_name);
-            rlContactStatus  = (RelativeLayout) view.findViewById(R.id.rl_contact_status);
-            tvContactStatus    = (TextView) view.findViewById(R.id.tv_contact_status);
-            rlContactOnStatus  = (RelativeLayout) view.findViewById(R.id.rl_contact_on_status);
-            tvContactOnLine    = (TextView) view.findViewById(R.id.tv_contact_on_line);
-            cbCheck            = (CheckBox) view.findViewById(R.id.cb_check);
-            this.mItemClickListener = itemClickListener;
-
-            view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if(mItemClickListener != null){
-                        //设置复选框选中
-                        cbCheck.setChecked(!cbCheck.isChecked());
-                        mItemClickListener.onItemClick(v, getPosition());
-                    }
-                }
-            });
-        }
     }
 
 }

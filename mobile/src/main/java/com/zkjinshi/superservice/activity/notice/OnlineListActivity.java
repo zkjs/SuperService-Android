@@ -1,8 +1,15 @@
 package com.zkjinshi.superservice.activity.notice;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.view.View;
+import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.zkjinshi.base.net.core.WebSocketManager;
@@ -10,13 +17,20 @@ import com.zkjinshi.base.net.observer.IMessageObserver;
 import com.zkjinshi.base.net.observer.MessageSubject;
 import com.zkjinshi.base.net.protocol.ProtocolMSG;
 import com.zkjinshi.superservice.R;
+import com.zkjinshi.superservice.adapter.OnlineAdapter;
+import com.zkjinshi.superservice.entity.EmpStatusRecord;
 import com.zkjinshi.superservice.entity.MsgEmpStatus;
 import com.zkjinshi.superservice.entity.MsgEmpStatusRSP;
+import com.zkjinshi.superservice.factory.EmpStatusFactory;
 import com.zkjinshi.superservice.utils.CacheUtil;
+import com.zkjinshi.superservice.vo.EmpStatusVo;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 员工在线人数列表
@@ -27,25 +41,59 @@ import org.json.JSONObject;
  */
 public class OnlineListActivity extends AppCompatActivity implements IMessageObserver{
 
-    private void initView(){
+    private SwipeRefreshLayout swipeRefreshLayout;
+    private RecyclerView recyclerView;
+    private TextView currentEmpTv,totalEmpTv;
+    private ArrayList<EmpStatusVo> empStatusList;
+    private OnlineAdapter onlineAdapter;
+    private ImageButton backIBtn;
+    private TextView titleTv;
+    private LinearLayoutManager linearLayoutManager;
+    private int onlineEmpCout,totalEmpCount;
 
+    private void initView(){
+        swipeRefreshLayout = (SwipeRefreshLayout)findViewById(R.id.srl_online);
+        recyclerView = (RecyclerView)findViewById(R.id.rcv_online);
+        currentEmpTv = (TextView)findViewById(R.id.notice_tv_current_online_employee);
+        totalEmpTv = (TextView)findViewById(R.id.notice_tv_total_employee);
+        backIBtn = (ImageButton)findViewById(R.id.header_bar_btn_back);
+        titleTv = (TextView)findViewById(R.id.header_bar_tv_title);
     }
 
     private void initData(){
+       recyclerView.setHasFixedSize(true);
+        linearLayoutManager = new LinearLayoutManager(this);
+        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        recyclerView.setLayoutManager(linearLayoutManager);
+        onlineAdapter = new OnlineAdapter(this,empStatusList);
+        recyclerView.setAdapter(onlineAdapter);
         addObservers();
-        //发送查询客户是否在线请求
-        MsgEmpStatus msgEmpStatus = new MsgEmpStatus();
-        msgEmpStatus.setType(ProtocolMSG.MSG_ShopEmpStatus);
-        msgEmpStatus.setTimestamp(System.currentTimeMillis());
-        msgEmpStatus.setShopid(CacheUtil.getInstance().getShopID());
-        JSONArray empids = new JSONArray();
-        msgEmpStatus.setEmps(empids);
-        String jsonMsgEmpStatus = new Gson().toJson(msgEmpStatus);
-        WebSocketManager.getInstance().sendMessage(jsonMsgEmpStatus);
+        requestOnlineTask();
+        titleTv.setText("员工状态");
+        backIBtn.setVisibility(View.VISIBLE);
+        onlineEmpCout =  getIntent().getIntExtra("onlineEmpCout",0);
+        totalEmpCount = getIntent().getIntExtra("totalEmpCount",0);
+        currentEmpTv.setText(""+onlineEmpCout);
+        totalEmpTv.setText("/"+totalEmpCount);
     }
 
     private void initListeners(){
 
+        //刷新页面
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                requestOnlineTask();
+            }
+        });
+
+        //返回
+        backIBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
     @Override
@@ -85,10 +133,34 @@ public class OnlineListActivity extends AppCompatActivity implements IMessageObs
             int type = messageObj.getInt("type");
             if (type == ProtocolMSG.MSG_ShopEmpStatus_RSP) {
                 MsgEmpStatusRSP msgEmpStatusRSP = gson.fromJson(message,MsgEmpStatusRSP.class);
-
+                if(null != msgEmpStatusRSP){
+                    ArrayList<EmpStatusRecord> empStatusRecordList =  (ArrayList<EmpStatusRecord>)msgEmpStatusRSP.getResult();
+                    if(null != empStatusRecordList && !empStatusRecordList.isEmpty()){
+                        empStatusList = EmpStatusFactory.getInstance().buildEmpStatusList(empStatusRecordList);
+                        onlineAdapter.setEmpStatusList(empStatusList);
+                    }
+                }
+                if(null != swipeRefreshLayout){
+                    swipeRefreshLayout.setRefreshing(false);
+                }
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
+
+    /**
+     * 发送查询客户是否在线请求
+     */
+    private void requestOnlineTask(){
+        MsgEmpStatus msgEmpStatus = new MsgEmpStatus();
+        msgEmpStatus.setType(ProtocolMSG.MSG_ShopEmpStatus);
+        msgEmpStatus.setTimestamp(System.currentTimeMillis());
+        msgEmpStatus.setShopid(CacheUtil.getInstance().getShopID());
+        ArrayList<String> empids = new ArrayList<String>();
+        msgEmpStatus.setEmps(empids);
+        String jsonMsgEmpStatus = new Gson().toJson(msgEmpStatus);
+        WebSocketManager.getInstance().sendMessage(jsonMsgEmpStatus);
+    }
+
 }

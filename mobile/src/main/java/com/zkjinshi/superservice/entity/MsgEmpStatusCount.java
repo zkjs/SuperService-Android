@@ -1,32 +1,19 @@
 package com.zkjinshi.superservice.entity;
 
-import org.json.JSONArray;
-
-import java.util.List;
-
 /**
- * 开发者：vincent
- * 日期：2015/10/13
+ * 开发者：JimmyZhang
+ * 日期：2015/10/14
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class MsgEmpStatus {
+public class MsgEmpStatusCount {
 
-//      //当emps为空，则返回商家所有员工状态列表,否则只返回
-//      // emp数组中指定员工id的状态
-//    type MsgEmpStatus struct {
-//        MsgHeader
-//        ShopID string   `json:"shopid"`
-//        Emp    []string `json:"emps,omitempty"` //员工ID字符数组
-//    }
-    private int     type;//not  null //协议消息类型
-    private long    timestamp;//not  null //当前时间
-    private String  tempid;//app端临时ID
-    private long    srvmsgid;
-    private int     protover;//消息协议版本
-
-    private String       shopid;
-    private List<String> emps;  //员工ID数组
+    private int type;//not  null //协议消息类型
+    private long timestamp;//not  null //当前时间
+    private String tempid;//app端临时ID
+    private long srvmsgid;
+    private int protover;//消息协议版本
+    private String shopid;
 
     public int getType() {
         return type;
@@ -74,13 +61,5 @@ public class MsgEmpStatus {
 
     public void setShopid(String shopid) {
         this.shopid = shopid;
-    }
-
-    public List<String> getEmps() {
-        return emps;
-    }
-
-    public void setEmps(List<String> emps) {
-        this.emps = emps;
     }
 }

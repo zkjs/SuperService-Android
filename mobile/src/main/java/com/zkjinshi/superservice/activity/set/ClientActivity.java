@@ -8,13 +8,16 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.ContactsContract;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.Menu;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -60,22 +63,20 @@ import java.util.Locale;
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class ContactsActivity extends Activity{
+public class ClientActivity extends AppCompatActivity{
 
-    private final static String TAG = ContactsActivity.class.getSimpleName();
+    private final static String TAG = ClientActivity.class.getSimpleName();
 
     private final static int REFRESH_SORTMODELS = 0X01;//刷新界面显示
 
-    private String mUserID;
-    private String mToken;
-    private String mShopID;
+    private String      mUserID;
+    private String      mToken;
+    private String      mShopID;
+    private Toolbar     mToolbar;
+    private TextView    mTvCenterTitle;
+    private SideBar     mSideBar;
+    private TextView    mTvDialog;
 
-    private SideBar      mSideBar;
-    private TextView     mTvDialog;
-    private ImageView    mIvClearText;
-    private EditText     mEtSearch;
-    private ImageButton  mIbtnBack;
-    private ImageButton  mIbtnAdd;
     private RecyclerView        mRcvContacts;
     private LinearLayoutManager mLayoutManager;
 
@@ -101,7 +102,7 @@ public class ContactsActivity extends Activity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_contacts);
+        setContentView(R.layout.activity_client);
 
         initView();
         initData();
@@ -109,13 +110,17 @@ public class ContactsActivity extends Activity{
     }
 
     private void initView() {
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        mToolbar.setTitle("");
+        mToolbar.setNavigationIcon(R.drawable.ic_fanhui);
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        mTvCenterTitle = (TextView) findViewById(R.id.tv_center_title);
+        mTvCenterTitle.setText(getString(R.string.my_clients));
+
         mSideBar     = (SideBar)    findViewById(R.id.sb_sidebar);
         mTvDialog    = (TextView)   findViewById(R.id.tv_dialog);
-        mIvClearText = (ImageView)  findViewById(R.id.iv_cleartext);
-        mEtSearch    = (EditText)   findViewById(R.id.et_search);
         mRcvContacts = (RecyclerView) findViewById(R.id.rcv_contacts);
-        mIbtnBack    = (ImageButton)  findViewById(R.id.ibtn_back);
-        mIbtnAdd     = (ImageButton)  findViewById(R.id.ibtn_add);
     }
 
     private void initData() {
@@ -149,60 +154,59 @@ public class ContactsActivity extends Activity{
     }
 
     private void initListener() {
-
         /** 后退界面 */
-        mIbtnBack.setOnClickListener(new View.OnClickListener() {
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ContactsActivity.this.finish();
+                ClientActivity.this.finish();
             }
         });
 
-        /** 进入新增客户界面 */
-        mIbtnAdd.setOnClickListener(new View.OnClickListener() {
+        mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
-            public void onClick(View v) {
-                Intent clientSelect = new Intent(ContactsActivity.this, ClientSelectActivity.class);
-                ContactsActivity.this.startActivity(clientSelect);
-            }
-        });
+            public boolean onMenuItemClick(android.view.MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.menu_client_search:
+                        DialogUtil.getInstance().showToast(ClientActivity.this, "search");
+                        break;
 
-        /**清除输入字符**/
-        mIvClearText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mEtSearch.setText("");
-            }
-        });
-
-        mEtSearch.addTextChangedListener(new TextWatcher() {
-
-            @Override
-            public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable e) {
-                String content = mEtSearch.getText().toString();
-                if ("".equals(content)) {
-                    mIvClearText.setVisibility(View.INVISIBLE);
-                } else {
-                    mIvClearText.setVisibility(View.VISIBLE);
+                    case R.id.menu_client_jia:
+                        Intent clientSelect = new Intent(ClientActivity.this, ClientSelectActivity.class);
+                        ClientActivity.this.startActivity(clientSelect);
+                        break;
                 }
-                if (content.length() > 0) {
-                    ArrayList<SortModel> fileterList = (ArrayList<SortModel>) search(content);
-                    mContactsAdapter.updateListView(fileterList);
-                    //mAdapter.updateData(mContacts);
-                } else {
-                    mContactsAdapter.updateListView(mAllContactsList);
-                }
-                mRcvContacts.scrollToPosition(0);
+                return true;
             }
         });
+
+//        mEtSearch.addTextChangedListener(new TextWatcher() {
+//
+//            @Override
+//            public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+//            }
+//
+//            @Override
+//            public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+//            }
+//
+//            @Override
+//            public void afterTextChanged(Editable e) {
+//                String content = mEtSearch.getText().toString();
+//                if ("".equals(content)) {
+//                    mIvClearText.setVisibility(View.INVISIBLE);
+//                } else {
+//                    mIvClearText.setVisibility(View.VISIBLE);
+//                }
+//                if (content.length() > 0) {
+//                    ArrayList<SortModel> fileterList = (ArrayList<SortModel>) search(content);
+//                    mContactsAdapter.updateListView(fileterList);
+//                    //mAdapter.updateData(mContacts);
+//                } else {
+//                    mContactsAdapter.updateListView(mAllContactsList);
+//                }
+//                mRcvContacts.scrollToPosition(0);
+//            }
+//        });
 
         //设置右侧[A-Z]快速导航栏触摸监听
         mSideBar.setOnTouchingLetterChangedListener(new SideBar.OnTouchingLetterChangedListener() {
@@ -221,54 +225,61 @@ public class ContactsActivity extends Activity{
             public void onItemClick(View view, int postion) {
                 SortModel sortModel = mAllContactsList.get(postion);
 
-                if(sortModel.getContactType().getValue() == ContactType.NORMAL.getValue()){
+                if (sortModel.getContactType().getValue() == ContactType.NORMAL.getValue()) {
                     String phoneNumber = sortModel.getNumber();
-                    Intent clientDetail = new Intent(ContactsActivity.this, ClientDetailActivity.class);
+                    Intent clientDetail = new Intent(ClientActivity.this, ClientDetailActivity.class);
                     clientDetail.putExtra("phone_number", phoneNumber);
-                    ContactsActivity.this.startActivity(clientDetail);
+                    ClientActivity.this.startActivity(clientDetail);
                 } else {
-                    DialogUtil.getInstance().showCustomToast(ContactsActivity.this, "当前客户为本地联系人，无详细信息。", Gravity.CENTER);
+                    DialogUtil.getInstance().showCustomToast(ClientActivity.this, "当前客户为本地联系人，无详细信息。", Gravity.CENTER);
                 }
             }
         });
     }
 
-    /**
-     * 模糊查询
-     * @param str
-     * @return
-     */
-    public List<SortModel> search(String str) {
-        List<SortModel> filterList = new ArrayList<SortModel>();// 过滤后的list
-        //if (str.matches("^([0-9]|[/+])*$")) {// 正则表达式 匹配号码
-        if (str.matches("^([0-9]|[/+]).*")) {// 正则表达式 匹配以数字或者加号开头的字符串(包括了带空格及-分割的号码)
-            String simpleStr = str.replaceAll("\\-|\\s", "");
-            for (SortModel contact : mAllContactsList) {
-                if (contact.getNumber() != null && contact.getName() != null) {
-                    if (contact.getSimpleNumber().contains(simpleStr) || contact.getName().contains(str)) {
-                        if (!filterList.contains(contact)) {
-                            filterList.add(contact);
-                        }
-                    }
-                }
-            }
-        }else {
-            for (SortModel contact : mAllContactsList) {
-                if (contact.getNumber() != null && contact.getName() != null) {
-                    //姓名全匹配,姓名首字母简拼匹配,姓名全字母匹配
-                    if (contact.getName().toLowerCase(Locale.CHINESE).contains(str.toLowerCase(Locale.CHINESE))
-                            || contact.getSortKey().toLowerCase(Locale.CHINESE).replace(" ", "").contains(str.toLowerCase(Locale.CHINESE))
-                            || contact.getSortToken().simpleSpell.toLowerCase(Locale.CHINESE).contains(str.toLowerCase(Locale.CHINESE))
-                            || contact.getSortToken().wholeSpell.toLowerCase(Locale.CHINESE).contains(str.toLowerCase(Locale.CHINESE))) {
-                        if (!filterList.contains(contact)) {
-                            filterList.add(contact);
-                        }
-                    }
-                }
-            }
-        }
-        return filterList;
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_client, menu);
+        return true;
     }
+
+//    /**
+//     * 模糊查询
+//     * @param str
+//     * @return
+//     */
+//    public List<SortModel> search(String str) {
+//        List<SortModel> filterList = new ArrayList<SortModel>();// 过滤后的list
+//        //if (str.matches("^([0-9]|[/+])*$")) {// 正则表达式 匹配号码
+//        if (str.matches("^([0-9]|[/+]).*")) {// 正则表达式 匹配以数字或者加号开头的字符串(包括了带空格及-分割的号码)
+//            String simpleStr = str.replaceAll("\\-|\\s", "");
+//            for (SortModel contact : mAllContactsList) {
+//                if (contact.getNumber() != null && contact.getName() != null) {
+//                    if (contact.getSimpleNumber().contains(simpleStr) || contact.getName().contains(str)) {
+//                        if (!filterList.contains(contact)) {
+//                            filterList.add(contact);
+//                        }
+//                    }
+//                }
+//            }
+//        }else {
+//            for (SortModel contact : mAllContactsList) {
+//                if (contact.getNumber() != null && contact.getName() != null) {
+//                    //姓名全匹配,姓名首字母简拼匹配,姓名全字母匹配
+//                    if (contact.getName().toLowerCase(Locale.CHINESE).contains(str.toLowerCase(Locale.CHINESE))
+//                            || contact.getSortKey().toLowerCase(Locale.CHINESE).replace(" ", "").contains(str.toLowerCase(Locale.CHINESE))
+//                            || contact.getSortToken().simpleSpell.toLowerCase(Locale.CHINESE).contains(str.toLowerCase(Locale.CHINESE))
+//                            || contact.getSortToken().wholeSpell.toLowerCase(Locale.CHINESE).contains(str.toLowerCase(Locale.CHINESE))) {
+//                        if (!filterList.contains(contact)) {
+//                            filterList.add(contact);
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//        return filterList;
+//    }
 
     /**
      * 获取我的客户列表
@@ -277,7 +288,7 @@ public class ContactsActivity extends Activity{
      * @param shopID
      */
     public void getMyClientList(String userID, String token, String shopID) {
-        DialogUtil.getInstance().showProgressDialog(ContactsActivity.this);
+        DialogUtil.getInstance().showProgressDialog(ClientActivity.this);
         NetRequest netRequest = new NetRequest(ProtocolUtil.getShopUserListUrl());
         HashMap<String,String> bizMap = new HashMap<>();
         bizMap.put("salesid", userID);
@@ -292,7 +303,7 @@ public class ContactsActivity extends Activity{
                 DialogUtil.getInstance().cancelProgressDialog();
                 Log.i(TAG, "errorCode:" + errorCode);
                 Log.i(TAG, "errorMessage:" + errorMessage);
-                DialogUtil.getInstance().showToast(ContactsActivity.this, "网络访问失败，稍候再试。");
+                DialogUtil.getInstance().showToast(ClientActivity.this, "网络访问失败，稍候再试。");
                 Message msg = Message.obtain();
                 msg.what    = REFRESH_SORTMODELS;
                 handler.sendMessage(msg);
@@ -313,7 +324,7 @@ public class ContactsActivity extends Activity{
                 String jsonResult = result.rawResult;
                 if (result.rawResult.contains("set") || jsonResult.contains("err")) {
                     //TODO: 获取客户列表失败请稍后再试
-                    DialogUtil.getInstance().showToast(ContactsActivity.this, "用户操作权限不够，请重新登录。");
+                    DialogUtil.getInstance().showToast(ClientActivity.this, "用户操作权限不够，请重新登录。");
                 } else {
                     Gson gson = new Gson();
                     List<ClientDetailBean> clientDetailBeans = gson.fromJson(jsonResult,
@@ -352,7 +363,7 @@ public class ContactsActivity extends Activity{
      * 获取本地联系人数据
      */
     public void getLocalContacts() {
-        DialogUtil.getInstance().showProgressDialog(ContactsActivity.this);
+        DialogUtil.getInstance().showProgressDialog(ClientActivity.this);
         new Thread(new Runnable() {
             @Override
             public void run() {

@@ -18,6 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
+import com.zkjinshi.base.net.core.WebSocketManager;
 import com.zkjinshi.base.net.observer.IMessageObserver;
 import com.zkjinshi.base.net.observer.MessageSubject;
 import com.zkjinshi.base.net.protocol.ProtocolMSG;
@@ -28,12 +29,16 @@ import com.zkjinshi.superservice.adapter.LocMoreAdapter;
 import com.zkjinshi.superservice.adapter.LocNotificationAdapter;
 import com.zkjinshi.superservice.bean.BookOrderBean;
 import com.zkjinshi.superservice.bean.NoticeBean;
+import com.zkjinshi.superservice.entity.MsgEmpStatus;
+import com.zkjinshi.superservice.entity.MsgEmpStatusCount;
+import com.zkjinshi.superservice.entity.MsgEmpStatusCountRSP;
 import com.zkjinshi.superservice.net.MethodType;
 import com.zkjinshi.superservice.net.NetRequest;
 import com.zkjinshi.superservice.net.NetRequestListener;
 import com.zkjinshi.superservice.net.NetRequestTask;
 import com.zkjinshi.superservice.net.NetResponse;
 import com.zkjinshi.superservice.sqlite.ComingDBUtil;
+import com.zkjinshi.superservice.sqlite.ShopEmployeeDBUtil;
 import com.zkjinshi.superservice.sqlite.ZoneDBUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
@@ -42,6 +47,7 @@ import com.zkjinshi.superservice.vo.ComingVo;
 import com.zkjinshi.superservice.entity.MsgPushTriggerLocNotificationM2S;
 import com.zkjinshi.superservice.vo.ZoneVo;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -78,6 +84,7 @@ public class NoticeFragment extends Fragment implements IMessageObserver{
     private ArrayList<ComingVo> requestComingList = new ArrayList<ComingVo>();
     private TextView totoalEmployeeTv,currentOnlineEmployeeTv;
     private LinearLayout onlineLayout;
+    private int totalEmpCount,onlineEmpCout;
 
     public static NoticeFragment newInstance() {
         return new NoticeFragment();
@@ -118,7 +125,10 @@ public class NoticeFragment extends Fragment implements IMessageObserver{
         moreRecyclerView.setAdapter(locMoreAdapter);
         moreStatsuView.setStatus(CircleStatusView.CircleStatus.STATUS_MORE);
         moreStatsuView.invalidate();
-        queryPageMessages(REQUEST_PAGE_SIZE,System.currentTimeMillis(),true);
+        totalEmpCount = ShopEmployeeDBUtil.getInstance().queryTotalEmpCount(CacheUtil.getInstance().getShopID());
+        totoalEmployeeTv.setText("/"+totalEmpCount);
+        queryPageMessages(REQUEST_PAGE_SIZE, System.currentTimeMillis(), true);
+        requestOnlineCountTask();
     }
 
     private void initListeners(){
@@ -144,13 +154,13 @@ public class NoticeFragment extends Fragment implements IMessageObserver{
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-                LinearLayoutManager linearLayoutManager = (LinearLayoutManager)recyclerView.getLayoutManager();
-                if(newState == RecyclerView.SCROLL_STATE_IDLE){
+                LinearLayoutManager linearLayoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                     int lastVisibleItem = linearLayoutManager.findLastCompletelyVisibleItemPosition();
                     int totalItemCount = linearLayoutManager.getItemCount();
-                    if (lastVisibleItem == (totalItemCount -1) && isSlidingToLast) {
+                    if (lastVisibleItem == (totalItemCount - 1) && isSlidingToLast) {
                         //加载更多功能的代码
-                        queryPageMessages(REQUEST_PAGE_SIZE, System.currentTimeMillis(),false);
+                        queryPageMessages(REQUEST_PAGE_SIZE, System.currentTimeMillis(), false);
                     }
                 }
             }
@@ -159,10 +169,10 @@ public class NoticeFragment extends Fragment implements IMessageObserver{
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 //dx用来判断横向滑动方向，dy用来判断纵向滑动方向
-                if(dy > 0){
+                if (dy > 0) {
                     //大于0表示，正在向下滚动
                     isSlidingToLast = true;
-                }else{
+                } else {
                     //小于等于0 表示停止或向下滚动
                     isSlidingToLast = false;
                 }
@@ -174,16 +184,28 @@ public class NoticeFragment extends Fragment implements IMessageObserver{
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), OnlineListActivity.class);
+                intent.putExtra("onlineEmpCout",onlineEmpCout);
+                intent.putExtra("totalEmpCount",totalEmpCount);
                 startActivity(intent);
             }
         });
 
     }
 
+    private void addObservers() {
+        MessageSubject.getInstance().addObserver(this, ProtocolMSG.MSG_PushTriggerLocNotification_M2S);
+        MessageSubject.getInstance().addObserver(this, ProtocolMSG.MSG_ShopEmpStatusCount_RSP);
+    }
+
+    private void removeObservers(){
+        MessageSubject.getInstance().removeObserver(this, ProtocolMSG.MSG_PushTriggerLocNotification_M2S);
+        MessageSubject.getInstance().removeObserver(this, ProtocolMSG.MSG_ShopEmpStatusCount_RSP);
+    }
+
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        MessageSubject.getInstance().addObserver(this, ProtocolMSG.MSG_PushTriggerLocNotification_M2S);
+        addObservers();
     }
 
     @Override
@@ -202,7 +224,7 @@ public class NoticeFragment extends Fragment implements IMessageObserver{
     @Override
     public void onDestroy() {
         super.onDestroy();
-        MessageSubject.getInstance().removeObserver(this, ProtocolMSG.MSG_PushTriggerLocNotification_M2S);
+        removeObservers();
     }
 
     @Override
@@ -323,6 +345,13 @@ public class NoticeFragment extends Fragment implements IMessageObserver{
                     }
 
                 }
+            }else if(type == ProtocolMSG.MSG_ShopEmpStatusCount_RSP){//在线/离线和上下班状态统计
+                if(null == gson){
+                    gson = new Gson();
+                }
+                MsgEmpStatusCountRSP msgEmpStatusCountRSP = gson.fromJson(message, MsgEmpStatusCountRSP.class);
+                onlineEmpCout= msgEmpStatusCountRSP.getOnlinecount();
+                currentOnlineEmployeeTv.setText(""+onlineEmpCout);
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -373,5 +402,16 @@ public class NoticeFragment extends Fragment implements IMessageObserver{
         return moreComingList;
     }
 
+    /**
+     * 获取在线人数
+     */
+    private void requestOnlineCountTask(){
+        MsgEmpStatusCount msgEmpStatusCount = new MsgEmpStatusCount();
+        msgEmpStatusCount.setType(ProtocolMSG.MSG_ShopEmpStatusCount);
+        msgEmpStatusCount.setTimestamp(System.currentTimeMillis());
+        msgEmpStatusCount.setShopid(CacheUtil.getInstance().getShopID());
+        String jsonMsgEmpStatusCount = new Gson().toJson(msgEmpStatusCount);
+        WebSocketManager.getInstance().sendMessage(jsonMsgEmpStatusCount);
+    }
 
 }

@@ -3,13 +3,13 @@ package com.zkjinshi.superservice.activity.set;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +17,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.google.gson.reflect.TypeToken;
 import com.zkjinshi.base.log.LogLevel;
 import com.zkjinshi.base.log.LogUtil;
@@ -29,44 +28,33 @@ import com.zkjinshi.base.util.Constants;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.base.util.DisplayUtil;
 import com.zkjinshi.superservice.R;
-import com.zkjinshi.superservice.ServiceApplication;
-import com.zkjinshi.superservice.adapter.TeamContactsSortAdapter;
+import com.zkjinshi.superservice.adapter.TeamContactsAdapter;
 import com.zkjinshi.superservice.bean.TeamContactBean;
-import com.zkjinshi.superservice.entity.MsgCustomerServiceImgChat;
-import com.zkjinshi.superservice.entity.MsgCustomerServiceMediaChat;
-import com.zkjinshi.superservice.entity.MsgCustomerServiceTextChat;
+import com.zkjinshi.superservice.entity.EmpStatusRecord;
 import com.zkjinshi.superservice.entity.MsgEmpStatus;
-import com.zkjinshi.superservice.entity.MsgPushTriggerLocNotificationM2S;
-import com.zkjinshi.superservice.factory.MessageFactory;
+import com.zkjinshi.superservice.entity.MsgEmpStatusRSP;
 import com.zkjinshi.superservice.factory.ShopEmployeeFactory;
-import com.zkjinshi.superservice.factory.SortModelFactory;
+import com.zkjinshi.superservice.listener.RecyclerItemClickListener;
 import com.zkjinshi.superservice.net.MethodType;
 import com.zkjinshi.superservice.net.NetRequest;
 import com.zkjinshi.superservice.net.NetRequestListener;
 import com.zkjinshi.superservice.net.NetRequestTask;
 import com.zkjinshi.superservice.net.NetResponse;
-import com.zkjinshi.superservice.notification.NotificationHelper;
-import com.zkjinshi.superservice.sqlite.ChatRoomDBUtil;
-import com.zkjinshi.superservice.sqlite.MessageDBUtil;
 import com.zkjinshi.superservice.sqlite.ShopEmployeeDBUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
-import com.zkjinshi.superservice.utils.CharacterParser;
-import com.zkjinshi.superservice.utils.FileUtil;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
-import com.zkjinshi.superservice.utils.SortKeyUtil;
 import com.zkjinshi.superservice.view.AutoSideBar;
-import com.zkjinshi.superservice.vo.ContactType;
-import com.zkjinshi.superservice.vo.MessageVo;
+import com.zkjinshi.superservice.vo.OnlineStatus;
 import com.zkjinshi.superservice.vo.ShopEmployeeVo;
-import com.zkjinshi.superservice.vo.SortModel;
+import com.zkjinshi.superservice.vo.WorkStatus;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 团队联系人显示界面
@@ -80,16 +68,17 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
     private final static String TAG = TeamContactsActivity.class.getSimpleName();
 
     private Toolbar         mToolbar;
+    private TextView        mTvCenterTitle;
     private RecyclerView    mRvTeamContacts;
     private RelativeLayout  mRlSideBar;
     private TextView        mTvDialog;
     private AutoSideBar     mAutoSideBar;
 
     private LinearLayoutManager     mLayoutManager;
-    private TeamContactsSortAdapter mTeamContactAdapter;
+    private TeamContactsAdapter     mTeamContactAdapter;
 
-    private SortModel               mShopSortModel;
-    private List<SortModel>         mTeamSortModels;
+    private List<ShopEmployeeVo>   mShopEmployeeVos;
+    private ShopEmployeeVo         mFirstShopEmployee;
 
     private String mUserID;
     private String mShopID;
@@ -110,12 +99,14 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
 
 
     private void initView() {
+
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        mToolbar.setTitle("团队管理");
-        mToolbar.setTitleTextColor(Color.WHITE);
+        mToolbar.setTitle("");
         mToolbar.setNavigationIcon(R.drawable.ic_fanhui);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        mTvCenterTitle = (TextView) findViewById(R.id.tv_center_title);
+        mTvCenterTitle.setText(getString(R.string.team));
 
         mRvTeamContacts = (RecyclerView)     findViewById(R.id.rcv_team_contacts);
         mRlSideBar      = (RelativeLayout)   findViewById(R.id.rl_side_bar);
@@ -135,23 +126,22 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
         mShopID     = CacheUtil.getInstance().getShopID();
 
         // 创建商店排序对象
-        mShopSortModel = new SortModel();
-        mShopSortModel.setContactType(ContactType.UNNORMAL);
-        mShopSortModel.setName(CacheUtil.getInstance().getShopFullName());
-        if(!TextUtils.isEmpty(mShopID)){
-            mShopSortModel.setAvatarUrl(ProtocolUtil.getShopLogoUrl(mShopID));
-        }
-        String sortLetter = SortKeyUtil.getSortLetter(CacheUtil.getInstance().getShopFullName(), CharacterParser.getInstance());
-        mShopSortModel.setSortKey(sortLetter);
-        mShopSortModel.setSortLetters(sortLetter); //此处为角色部门全称
+        mFirstShopEmployee = new ShopEmployeeVo();
+        String shopName    = CacheUtil.getInstance().getShopFullName();
+        mFirstShopEmployee.setName(shopName);
+        mFirstShopEmployee.setRole_name(shopName);
+        mFirstShopEmployee.setEmpid(System.currentTimeMillis() + "");
 
-        mTeamSortModels = new ArrayList<SortModel>();
-        mTeamSortModels.add(0, mShopSortModel);
+        mShopEmployeeVos = new ArrayList<ShopEmployeeVo>();
+        mShopEmployeeVos.add(0, mFirstShopEmployee);
 
         mRvTeamContacts.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(this);
         mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRvTeamContacts.setLayoutManager(mLayoutManager);
+
+        mTeamContactAdapter = new TeamContactsAdapter(TeamContactsActivity.this, mShopEmployeeVos);
+        mRvTeamContacts.setAdapter(mTeamContactAdapter);
 
         //TODO: 1.服务器获得最近 5位联系人列表的客户列表
         getTeamList(mUserID, mToken, mShopID);
@@ -175,7 +165,7 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
                         break;
 
                     case R.id.menu_team_jia:
-                        Intent intent = new Intent(TeamContactsActivity.this,EmployeeAddActivity.class);
+                        Intent intent = new Intent(TeamContactsActivity.this, EmployeeAddActivity.class);
                         startActivity(intent);
                         overridePendingTransition(R.anim.activity_new, R.anim.activity_out);
                         break;
@@ -200,6 +190,13 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
             }
         });
 
+        mTeamContactAdapter.setOnItemClickListener(new RecyclerItemClickListener() {
+            @Override
+            public void onItemClick(View view, int postion) {
+                DialogUtil.getInstance().showCustomToast(TeamContactsActivity.this, "TODO:进入客户聊天界面", Gravity.CENTER);
+            }
+        });
+
     }
 
     @Override
@@ -215,7 +212,7 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
      * @param token
      * @param shopID
      */
-    public void getTeamList(String userID, String token, String shopID) {
+    public void getTeamList(String userID, String token, final String shopID) {
         DialogUtil.getInstance().showProgressDialog(this);
         NetRequest netRequest = new NetRequest(ProtocolUtil.getTeamListUrl());
         HashMap<String,String> bizMap = new HashMap<>();
@@ -255,31 +252,22 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
 
                     /** add to local db */
                     List<ShopEmployeeVo> shopEmployeeVos = ShopEmployeeFactory.getInstance().buildShopEmployees(teamContactBeans);
-//                    if(!shopEmployeeVos.isEmpty()){
-//                        ShopEmployeeDBUtil.getInstance().batchAddShopEmployees(shopEmployeeVos);
-//                    }
-                    JSONArray empids = null;
-                    for (ShopEmployeeVo shopEmployeeVo : shopEmployeeVos) {
-                        ShopEmployeeDBUtil.getInstance().addShopEmployee(shopEmployeeVo);
-                        if (null == empids) {
-                            empids = new JSONArray();
-                        }
-                        empids.put(shopEmployeeVo.getEmpid());
-                    }
 
-                    if (null != mTeamContactAdapter) {
-                        mTeamContactAdapter = null;
-                    }
-                    List<SortModel> sortModels = SortModelFactory.getInstance().convertTeamContacts2SortModels(teamContactBeans);
-                    if (null != sortModels && !sortModels.isEmpty()) {
-                        mTeamSortModels.addAll(sortModels);
-                        List<String> strLetters = new ArrayList<String>();
-                        for (SortModel sortModel : mTeamSortModels) {
-                            String sortLetter = sortModel.getSortLetters().substring(0, 1);
-                            //商家本身
-                            if (sortModel == mTeamSortModels.get(0)) {
-                                continue;
-                            }
+
+                    List<String> strLetters = null;//首字母显示数组
+                    List<String> empids     = null;//员工ID数组
+                    if (null != shopEmployeeVos && !shopEmployeeVos.isEmpty()) {
+
+                        strLetters = new ArrayList<String>();
+                        empids = new ArrayList<>();
+                        for (ShopEmployeeVo shopEmployeeVo : shopEmployeeVos) {
+                            shopEmployeeVo.setShop_id(shopID);
+                            ShopEmployeeDBUtil.getInstance().addShopEmployee(shopEmployeeVo);
+                            mShopEmployeeVos.add(shopEmployeeVo);
+
+                            empids.add(shopEmployeeVo.getEmpid());
+                            String sortLetter = shopEmployeeVo.getRole_name().substring(0, 1);
+
                             //部门分类并消除相同部门
                             if (!TextUtils.isEmpty(sortLetter) && !strLetters.contains(sortLetter)) {
                                 strLetters.add(sortLetter);
@@ -288,6 +276,9 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
                             }
                         }
 
+
+                        mTeamContactAdapter.updateListView(mShopEmployeeVos);
+
                         String[] sortArray = strLetters.toArray(new String[strLetters.size()]);
                         if (sortArray.length > 0) {
                             mAutoSideBar.setSortArray(sortArray);
@@ -295,18 +286,16 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
                         }
                     }
 
-                    mTeamContactAdapter = new TeamContactsSortAdapter(TeamContactsActivity.this, mTeamSortModels);
-                    mRvTeamContacts.setAdapter(mTeamContactAdapter);
                     //发送查询客户是否在线请求
                     MsgEmpStatus msgEmpStatus = new MsgEmpStatus();
                     msgEmpStatus.setType(ProtocolMSG.MSG_ShopEmpStatus);
                     msgEmpStatus.setTimestamp(System.currentTimeMillis());
-                    msgEmpStatus.setShopid(mShopID);
+                    msgEmpStatus.setShopid(shopID);
                     msgEmpStatus.setEmps(empids);
-
-                    String jsonMsgEmpStatus = gson.toJson(msgEmpStatus);
+                    //转成
+                    String jsonMsgEmpStatus = gson.toJson(msgEmpStatus, MsgEmpStatus.class);
+                    LogUtil.getInstance().info(LogLevel.INFO, "jsonMsgEmpStatus:"+jsonMsgEmpStatus);
                     WebSocketManager.getInstance().sendMessage(jsonMsgEmpStatus);
-
                 }
             }
 
@@ -338,16 +327,58 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
         }
 
         Gson gson = null;
-        if(null == gson ){
+        if(null == gson )
             gson = new Gson();
-        }
 
         try {
             JSONObject messageObj = new JSONObject(message);
             int type = messageObj.getInt("type");
 
-            if (type == ProtocolMSG.MSG_ShopEmpStatus_RSP) {//重复登录
-                System.out.print("message:"+message);
+            if (type == ProtocolMSG.MSG_ShopEmpStatus_RSP) {
+                MsgEmpStatusRSP msgEmpStatusRSP = gson.fromJson(message, MsgEmpStatusRSP.class);
+                if(null != msgEmpStatusRSP && mShopID.equals(msgEmpStatusRSP.getShopid())){
+                    //TODO:获取在线状态后更新界面
+                    List<EmpStatusRecord> empStatusRecords = msgEmpStatusRSP.getResult();
+                    Map<String, EmpStatusRecord> empStatusRecordMap = new HashMap<>();
+
+                    //接收服务器返回在线员工数组
+                    for(EmpStatusRecord empStatusRecord : empStatusRecords){
+                        empStatusRecordMap.put(empStatusRecord.getEmpid(), empStatusRecord);
+                    }
+
+                    //接收服务器返回在线员工数组
+                    for(int i=0; i< mShopEmployeeVos.size(); i++){
+                        ShopEmployeeVo shopEmployeeVo = mShopEmployeeVos.get(i);
+                        String empID = shopEmployeeVo.getEmpid();
+                        if(empStatusRecordMap.containsKey(empID)){
+                            EmpStatusRecord empStatusRecord = empStatusRecordMap.get(empID);
+
+                            //获得员工是否服务器在线
+                            if(empStatusRecord.getOnlinestatus() == OnlineStatus.ONLINE.getValue()){
+                                shopEmployeeVo.setOnline_status(OnlineStatus.ONLINE);
+
+                                //获得登录时间
+                                Long lastLoginTime = empStatusRecord.getLogintimestamp();
+                                shopEmployeeVo.setLastOnLineTime(lastLoginTime);
+
+                            } else {
+                                shopEmployeeVo.setOnline_status(OnlineStatus.OFFLINE);
+                            }
+
+                            //获得员工是否工作中
+                            if(empStatusRecord.getWorkstatus() == WorkStatus.ONWORK.getValue()){
+                                shopEmployeeVo.setWork_status(WorkStatus.ONWORK);
+                            } else {
+                                shopEmployeeVo.setWork_status(WorkStatus.OFFWORK);
+                            }
+                            //更新数据库
+                            ShopEmployeeDBUtil.getInstance().addShopEmployee(shopEmployeeVo);
+                            mShopEmployeeVos.remove(i);
+                            mShopEmployeeVos.add(i, shopEmployeeVo);
+                        }
+                    }
+                    mTeamContactAdapter.updateListView(mShopEmployeeVos);
+                }
             }
 
         } catch (JSONException e) {

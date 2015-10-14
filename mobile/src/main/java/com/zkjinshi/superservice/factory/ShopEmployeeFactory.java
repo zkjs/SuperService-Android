@@ -49,6 +49,7 @@ public class ShopEmployeeFactory {
         values.put("created", shopEmployeeVo.getCreated());
         values.put("locationid", shopEmployeeVo.getLocationid());
         values.put("role_name", shopEmployeeVo.getRole_name());
+
         OnlineStatus onlineStatus = shopEmployeeVo.getOnline_status();
 
         if(null != onlineStatus ){
@@ -61,6 +62,9 @@ public class ShopEmployeeFactory {
         }
 
         values.put("last_online_time", shopEmployeeVo.getLastOnLineTime());
+        values.put("dept", shopEmployeeVo.getDept());
+        values.put("desc", shopEmployeeVo.getDesc());
+        values.put("shop_id", shopEmployeeVo.getShop_id());
         return values;
     }
 
@@ -89,6 +93,9 @@ public class ShopEmployeeFactory {
                                       cursor.getInt(12) ?
                                       WorkStatus.OFFWORK : WorkStatus.ONWORK);
         shopEmployeeVo.setLastOnLineTime(cursor.getLong(13));
+        shopEmployeeVo.setDept(cursor.getString(14));
+        shopEmployeeVo.setDesc(cursor.getString(15));
+        shopEmployeeVo.setShop_id(cursor.getString(16));
         return  shopEmployeeVo;
     }
 

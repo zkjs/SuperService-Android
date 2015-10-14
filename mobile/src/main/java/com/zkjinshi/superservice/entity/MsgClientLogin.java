@@ -23,7 +23,7 @@ public class MsgClientLogin {
     private String      shopid;     //商家id
     private String      empid;      //员工id
     private int         roleid;     //商家角色ID
-    private String   loc;        //员工区域数组
+    private String      loc;        //员工区域数组//TODO:用List集合传递
     private String      beaconid;   //beaconid
     private int         workstatus; //0:上班 1:下班
 

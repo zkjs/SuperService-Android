@@ -135,4 +135,34 @@ public class ShopEmployeeDBUtil {
         return  shopEmployeeVos;
     }
 
+    /**
+     * 获取员工总个数
+     * @param shopId
+     * @return
+     */
+    public int queryTotalEmpCount(String shopId) {
+        int totalEmpCount = 0;
+        SQLiteDatabase db = null;
+        Cursor cursor = null;
+        if (null != helper) {
+            try {
+                db = helper.getReadableDatabase();
+                cursor = db.query(DBOpenHelper.SHOP_EMPLOYEE_TBL, null,
+                        " shop_id = ? ",
+                        new String[]{shopId}, null, null, null);
+                totalEmpCount = cursor.getCount();
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                if (null != cursor) {
+                    cursor.close();
+                }
+                if (null != db) {
+                    db.close();
+                }
+            }
+        }
+        return totalEmpCount;
+    }
+
 }

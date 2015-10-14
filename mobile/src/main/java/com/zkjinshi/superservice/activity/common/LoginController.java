@@ -6,10 +6,13 @@ import android.content.Intent;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.bean.AdminLoginBean;
 import com.zkjinshi.superservice.bean.SempLoginBean;
+import com.zkjinshi.superservice.bean.TeamContactBean;
+import com.zkjinshi.superservice.factory.ShopEmployeeFactory;
 import com.zkjinshi.superservice.factory.UserFactory;
 import com.zkjinshi.superservice.net.MethodType;
 import com.zkjinshi.superservice.net.NetRequest;
@@ -17,14 +20,18 @@ import com.zkjinshi.superservice.net.NetRequestListener;
 import com.zkjinshi.superservice.net.NetRequestTask;
 import com.zkjinshi.superservice.net.NetResponse;
 import com.zkjinshi.superservice.sqlite.DBOpenHelper;
+import com.zkjinshi.superservice.sqlite.ShopEmployeeDBUtil;
 import com.zkjinshi.superservice.sqlite.UserDBUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.vo.IdentityType;
+import com.zkjinshi.superservice.vo.ShopEmployeeVo;
 import com.zkjinshi.superservice.vo.UserVo;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * 开发者：dujiande
@@ -90,6 +97,13 @@ public class LoginController {
                     CacheUtil.getInstance().setShopID(sempLoginbean.getShopid());
                     CacheUtil.getInstance().setShopFullName(sempLoginbean.getFullname());
                     CacheUtil.getInstance().setLoginIdentity(IdentityType.WAITER);
+
+                    //TODO: 同步服务器数据库
+                    getTeamList(
+                            CacheUtil.getInstance().getUserId(),
+                            CacheUtil.getInstance().getToken(),
+                            CacheUtil.getInstance().getShopID()
+                    );
 
                     DBOpenHelper.DB_NAME = sempLoginbean.getSalesid() + ".db";
                     UserVo userVo = UserFactory.getInstance().buildUserVo(sempLoginbean);
@@ -171,6 +185,12 @@ public class LoginController {
                     String avatarUrl = ProtocolUtil.getShopLogoUrl(adminLoginBean.getShopid());
                     CacheUtil.getInstance().saveUserPhotoUrl(avatarUrl);
 
+                    //TODO: 同步服务器数据库
+                    getTeamList(
+                                CacheUtil.getInstance().getUserId(),
+                                CacheUtil.getInstance().getToken(),
+                                CacheUtil.getInstance().getShopID()
+                                );
 
                     Intent intent = new Intent(activity, MainActivity.class);
                     activity.startActivity(intent);
@@ -190,6 +210,70 @@ public class LoginController {
             @Override
             public void beforeNetworkRequestStart() {
 
+            }
+        });
+        netRequestTask.isShowLoadingDialog = true;
+        netRequestTask.execute();
+    }
+
+    /**
+     * 获取团队联系人列表
+     * @param userID
+     * @param token
+     * @param shopID
+     */
+    public void getTeamList(String userID, String token, final String shopID) {
+
+        DialogUtil.getInstance().showProgressDialog(activity);
+        NetRequest netRequest = new NetRequest(ProtocolUtil.getTeamListUrl());
+        HashMap<String,String> bizMap = new HashMap<>();
+        bizMap.put("salesid", userID);
+        bizMap.put("token", token);
+        bizMap.put("shopid", shopID);
+        netRequest.setBizParamMap(bizMap);
+        NetRequestTask netRequestTask = new NetRequestTask(context, netRequest, NetResponse.class);
+        netRequestTask.methodType = MethodType.PUSH;
+        netRequestTask.setNetRequestListener(new NetRequestListener() {
+            @Override
+            public void onNetworkRequestError(int errorCode, String errorMessage) {
+                DialogUtil.getInstance().cancelProgressDialog();
+                Log.i(TAG, "errorCode:" + errorCode);
+                Log.i(TAG, "errorMessage:" + errorMessage);
+                activity.finish();
+            }
+
+            @Override
+            public void onNetworkRequestCancelled() {
+                DialogUtil.getInstance().cancelProgressDialog();
+                activity.finish();
+            }
+
+            @Override
+            public void onNetworkResponseSucceed(NetResponse result) {
+                DialogUtil.getInstance().cancelProgressDialog();
+                Log.i(TAG, "result.rawResult:" + result.rawResult);
+                String jsonResult = result.rawResult;
+                if (result.rawResult.contains("set") || jsonResult.contains("err")) {
+                    DialogUtil.getInstance().showToast(activity, "获取团队联系人失败");
+
+                } else {
+                    Gson gson = new Gson();
+                    List<TeamContactBean> teamContactBeans = gson.fromJson(jsonResult,
+                            new TypeToken<ArrayList<TeamContactBean>>() {
+                            }.getType());
+
+                    /** add to local db */
+                    List<ShopEmployeeVo> shopEmployeeVos = ShopEmployeeFactory.getInstance().buildShopEmployees(teamContactBeans);
+                    for (ShopEmployeeVo shopEmployeeVo : shopEmployeeVos) {
+                        shopEmployeeVo.setShop_id(shopID);
+                        ShopEmployeeDBUtil.getInstance().addShopEmployee(shopEmployeeVo);
+                    }
+                }
+            }
+
+            @Override
+            public void beforeNetworkRequestStart() {
+                //网络请求前
             }
         });
         netRequestTask.isShowLoadingDialog = true;
