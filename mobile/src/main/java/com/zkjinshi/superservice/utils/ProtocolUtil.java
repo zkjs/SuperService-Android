@@ -13,6 +13,16 @@ public class ProtocolUtil {
 
 
     /**
+     * 管理员登陆
+     * @return
+     */
+    public static String getAdminLoginUrl(){
+        return ConfigUtil.getInst().getHttpDomain()+"semp/semplogin";
+    }
+
+
+
+    /**
      * 服务员登陆
      * @return
      */
@@ -169,12 +179,30 @@ public class ProtocolUtil {
         return ConfigUtil.getInst().getHttpDomain()+"uploads/users/"+userid+".jpg";
     }
     /**
-     * 获得用户头像
+     * 获得商家logo
      * @param shopID
      * @return
      */
     public static String getShopLogoUrl(String shopID){
         return ConfigUtil.getInst().getHttpDomain()+"uploads/shops/"+ shopID +".png";
+    }
+
+    /**
+     * 获得商家背景
+     * @param shopID
+     * @return
+     */
+    public static String getShopBackUrl(String shopID){
+        return ConfigUtil.getInst().getHttpDomain()+"uploads/shops/"+ shopID +"_bg.png";
+    }
+
+    /**
+     * 获得商家主图
+     * @param shopID
+     * @return
+     */
+    public static String getShopMainUrl(String shopID){
+        return ConfigUtil.getInst().getHttpDomain()+"uploads/shops/"+ shopID +".jpg";
     }
 
 

@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.text.TextUtils;
 
+import com.zkjinshi.superservice.bean.AdminLoginBean;
 import com.zkjinshi.superservice.bean.SempLoginBean;
 import com.zkjinshi.superservice.bean.UserBean;
 import com.zkjinshi.superservice.vo.SexType;
@@ -40,6 +41,20 @@ public class UserFactory {
         userVo.setShopId(userBean.getShopid());
         userVo.setUserName(userBean.getName());
         userVo.setSex(userBean.getSex()== 0 ? SexType.FEMALE : SexType.MALE);
+        return userVo;
+    }
+
+    public UserVo buildUserVo(AdminLoginBean userBean){
+        UserVo userVo = new UserVo();
+        userVo.setUserId(userBean.getUserid());
+        userVo.setRoleId(userBean.getRoleid());
+        userVo.setToken(userBean.getToken());
+        userVo.setShopName(userBean.getFullname());
+        userVo.setCellphone(userBean.getPhone());
+        userVo.setPhotoUrl("");
+        userVo.setShopId(userBean.getShopid());
+        userVo.setUserName(userBean.getName());
+        userVo.setSex(SexType.MALE);
         return userVo;
     }
 

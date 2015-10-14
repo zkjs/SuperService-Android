@@ -242,6 +242,7 @@
             android:name=".activity.common.ShopLoginActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
+            android:launchMode="singleTask"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         </activity>
 

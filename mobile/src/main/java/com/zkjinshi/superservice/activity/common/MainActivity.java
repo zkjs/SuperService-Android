@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
         messageListener = new MessageListener();
         initService(messageListener);
         userVo = UserDBUtil.getInstance().queryUserById(CacheUtil.getInstance().getUserId());
-        mainActivityController.setUserPhoto(CacheUtil.getInstance().getUserPhotoUrl(), avatarIv);
+
         if(null != userVo){
             String userName = userVo.getUserName();
             if(!TextUtils.isEmpty(userName)){
@@ -102,9 +102,12 @@ public class MainActivity extends AppCompatActivity {
         if(IdentityType.BUSINESS ==  CacheUtil.getInstance().getLoginIdentity()){
             onlineCbx.setVisibility(View.GONE);
             teamTv.setText("团队管理");
+           // String avatarUrl = ProtocolUtil.getShopBackUrl(userVo.getShopId());
+           // mainActivityController.setUserPhoto(CacheUtil.getInstance().getUserPhotoUrl(), avatarIv);
         }else{
             onlineCbx.setVisibility(View.VISIBLE);
             teamTv.setText("团队联系人");
+            mainActivityController.setUserPhoto(CacheUtil.getInstance().getUserPhotoUrl(), avatarIv);
         }
 
 

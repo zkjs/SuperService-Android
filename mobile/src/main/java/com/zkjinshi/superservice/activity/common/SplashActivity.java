@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.utils.CacheUtil;
+import com.zkjinshi.superservice.vo.IdentityType;
 
 /**
  * 应用启动页面
@@ -23,7 +24,12 @@ public class SplashActivity extends Activity{
         LoginController.getInstance().init(this);
 
         if(CacheUtil.getInstance().isLogin()){
-            LoginController.getInstance().requestLogin(CacheUtil.getInstance().getUserPhone());
+            if(IdentityType.BUSINESS ==  CacheUtil.getInstance().getLoginIdentity()){
+                LoginController.getInstance().requestAdminLogin(CacheUtil.getInstance().getUserPhone(),CacheUtil.getInstance().getPassword());
+            }else{
+                LoginController.getInstance().requestLogin(CacheUtil.getInstance().getUserPhone());
+            }
+
         }else{
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);

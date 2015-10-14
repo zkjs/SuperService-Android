@@ -387,4 +387,29 @@ public class CacheUtil {
 		return sp.getString("area_info", "");
 	}
 
+	/**
+	 * 设置密码
+	 *
+	 * @param password
+	 */
+	public void setPassword(String password) {
+		if (null == context) {
+			return;
+		}
+		SharedPreferences sp = context.getSharedPreferences(SVIP_CACHE, Context.MODE_PRIVATE);
+		sp.edit().putString("password", password).commit();
+	}
+
+	/**
+	 * 获取密码
+	 * @return
+	 */
+	public String getPassword() {
+		if (null == context) {
+			return null;
+		}
+		SharedPreferences sp = context.getSharedPreferences(SVIP_CACHE, Context.MODE_PRIVATE);
+		return sp.getString("password", "");
+	}
+
 }

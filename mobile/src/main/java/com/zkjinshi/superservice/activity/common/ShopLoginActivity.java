@@ -3,12 +3,15 @@ package com.zkjinshi.superservice.activity.common;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
+import com.zkjinshi.superservice.utils.MD5Util;
 
 /**
  * 商家登录
@@ -41,8 +44,7 @@ public class ShopLoginActivity extends Activity{
     }
 
     private void initData() {
-
-
+        LoginController.getInstance().init(this);
     }
 
     private void initListener() {
@@ -65,9 +67,14 @@ public class ShopLoginActivity extends Activity{
     }
 
     private void loginRequest(){
-        startActivity(new Intent(ShopLoginActivity.this, MainActivity.class));
-        finish();
-        overridePendingTransition(R.anim.activity_new, R.anim.activity_out);
+        String phone =  nameEt.getText().toString();
+        String password = pwdEt.getText().toString();
+        if(TextUtils.isEmpty(phone)){
+            DialogUtil.getInstance().showToast(this,"手机号不能为空");
+        }else if(TextUtils.isEmpty(password)){
+            DialogUtil.getInstance().showToast(this,"密码不能为空");
+        }
+        LoginController.getInstance().requestAdminLogin(phone, MD5Util.MD5(password));
     }
 
 
