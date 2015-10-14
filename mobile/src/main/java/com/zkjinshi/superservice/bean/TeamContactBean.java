@@ -14,6 +14,8 @@ public class TeamContactBean {
     private int    roleid;
     private String role_name ;
     private String salesid;
+    private int    deptid;
+    private String dept_name;
 
     public String getName() {
         return name;
@@ -53,6 +55,22 @@ public class TeamContactBean {
 
     public void setRole_id(int roleid) {
         this.roleid = roleid;
+    }
+
+    public int getDeptid() {
+        return deptid;
+    }
+
+    public void setDeptid(int deptid) {
+        this.deptid = deptid;
+    }
+
+    public String getDept_name() {
+        return dept_name;
+    }
+
+    public void setDept_name(String dept_name) {
+        this.dept_name = dept_name;
     }
 }
 

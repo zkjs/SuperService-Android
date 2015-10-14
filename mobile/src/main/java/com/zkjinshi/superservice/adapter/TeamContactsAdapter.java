@@ -118,15 +118,15 @@ public class TeamContactsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             ((ContactViewHolder)holder).tvContactOnLine.setText("点击消息群发");
         } else {
             /** 是否显示首字母  */
-            String roleName = shopEmployeeVo.getRole_name();
+            String deptName = shopEmployeeVo.getDept_name();
             if (position == getPositionForSection(section)) {
                 ((ContactViewHolder)holder).tvLetter.setVisibility(View.VISIBLE);
-                if(!TextUtils.isEmpty(roleName)){
-                    if("?".equals(roleName.substring(0, 1))){
+                if(!TextUtils.isEmpty(deptName)){
+                    if("?".equals(deptName.substring(0, 1))){
                         //最近联系人的处理
                         ((ContactViewHolder)holder).tvLetter.setText(mContext.getString(R.string.latest_contact));
                     }else {
-                        ((ContactViewHolder)holder).tvLetter.setText(roleName);
+                        ((ContactViewHolder)holder).tvLetter.setText(deptName);
                     }
                 }
             } else {
@@ -250,7 +250,7 @@ public class TeamContactsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
      * 根据ListView的当前位置获取分类的首字母的Char ascii值
      */
     public int getSectionForPosition(int position) {
-        return mList.get(position).getRole_name().charAt(0);
+        return mList.get(position).getDept_name().charAt(0);
     }
 
     @Override
@@ -263,7 +263,7 @@ public class TeamContactsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
      */
     public int getPositionForSection(int section) {
         for (int i = 0; i < getItemCount(); i++) {
-            String sortStr = mList.get(i).getRole_name();
+            String sortStr = mList.get(i).getDept_name();
             char firstChar = sortStr.toUpperCase(Locale.CHINESE).charAt(0);
             if (firstChar == section) {
                 return i;

@@ -169,26 +169,23 @@ public class TableOpenHelper {
                     + " online_status int,"// 服务器在线状态
                     + " work_status   int,"//是否上班中
                     + " last_online_time  long, "//上一次在线时间
-                    + " dept_id   int,"  //部门
-                    + " desc      text," //备注描述
-                    + " shop_id   text"  //商家ID
+                    + " dept_id       int,"  //部门
+                    + " desc          text," //备注描述
+                    + " shop_id       text,"  //商家ID
+                    + " dept_name     text"  //部门名称
                     + " ) ";
 
-//    /**
-//     * 未注册的本地联系人数据表
-//     */
-//    public final static String UNREG_CLIENT_TBL_SQL =
-//            " create table if not exists "
-//                    + DBOpenHelper.UNREG_CLIENT_TBL
-//                    + " ( "
-//                    + " phone         text primary key, "
-//                    + " username      text, "
-//                    + " position      text, "
-//                    + " company       text, "
-//                    + " other_desc    text, "
-//                    + " is_bill       int "
-//                    + " ) ";
-
+    /** 商家部门表 */
+    public final static String SHOP_DEPARTMENT_TBL_SQL =
+            " create table if not exists "
+                    + DBOpenHelper.SHOP_DEPARTMENT_TBL
+                    + " ( "
+                    + " deptid        int primary key, " //部门ID
+                    + " shopid        text, "//商家ID
+                    + " dept_code     text, "//部门编号
+                    + " dept_name     int,  "//部门名称
+                    + " description   text "//描述
+                    + " ) ";
 
     /**
      * 获取数据库所有表名
@@ -202,7 +199,9 @@ public class TableOpenHelper {
                 DBOpenHelper.USER_TBL,//app用户表
                 DBOpenHelper.CLIENT_TBL,//客户表
                 DBOpenHelper.ZONE_TBL,//个人区域信息表
-                DBOpenHelper.COMING_TBL//到店信息表
+                DBOpenHelper.COMING_TBL,//到店信息表
+                DBOpenHelper.SHOP_EMPLOYEE_TBL,//商家员工表
+                DBOpenHelper.SHOP_DEPARTMENT_TBL//商家部门表
         };
     }
 

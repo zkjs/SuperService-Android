@@ -28,6 +28,7 @@ public class ShopEmployeeVo implements Serializable{
     private int            dept_id;
     private String         desc;
     private String         shop_id;
+    private String         dept_name;
 
     public String getEmpid() {
         return empid;
@@ -165,4 +166,11 @@ public class ShopEmployeeVo implements Serializable{
         this.shop_id = shop_id;
     }
 
+    public String getDept_name() {
+        return dept_name;
+    }
+
+    public void setDept_name(String dept_name) {
+        this.dept_name = dept_name;
+    }
 }
