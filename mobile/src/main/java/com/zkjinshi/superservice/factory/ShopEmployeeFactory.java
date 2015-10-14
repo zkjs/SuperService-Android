@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 
 import com.zkjinshi.superservice.bean.TeamContactBean;
+import com.zkjinshi.superservice.sqlite.ShopDepartmentDBUtil;
 import com.zkjinshi.superservice.vo.OnlineStatus;
 import com.zkjinshi.superservice.vo.ShopEmployeeVo;
 import com.zkjinshi.superservice.vo.WorkStatus;
@@ -65,6 +66,7 @@ public class ShopEmployeeFactory {
         values.put("dept_id", shopEmployeeVo.getDept_id());
         values.put("desc", shopEmployeeVo.getDesc());
         values.put("shop_id", shopEmployeeVo.getShop_id());
+        values.put("dept_name", shopEmployeeVo.getDept_name());
         return values;
     }
 
@@ -87,15 +89,16 @@ public class ShopEmployeeFactory {
         shopEmployeeVo.setLocationid(cursor.getInt(9));
         shopEmployeeVo.setRole_name(cursor.getString(10));
         shopEmployeeVo.setOnline_status(OnlineStatus.OFFLINE.getValue() ==
-                                        cursor.getInt(11) ?
-                                        OnlineStatus.OFFLINE : OnlineStatus.ONLINE);
+                cursor.getInt(11) ?
+                OnlineStatus.OFFLINE : OnlineStatus.ONLINE);
         shopEmployeeVo.setWork_status(WorkStatus.OFFWORK.getValue() ==
-                                      cursor.getInt(12) ?
-                                      WorkStatus.OFFWORK : WorkStatus.ONWORK);
+                cursor.getInt(12) ?
+                WorkStatus.OFFWORK : WorkStatus.ONWORK);
         shopEmployeeVo.setLastOnLineTime(cursor.getLong(13));
         shopEmployeeVo.setDept_id(cursor.getInt(14));
         shopEmployeeVo.setDesc(cursor.getString(15));
         shopEmployeeVo.setShop_id(cursor.getString(16));
+        shopEmployeeVo.setDept_name(cursor.getString(17));
         return  shopEmployeeVo;
     }
 
@@ -111,11 +114,12 @@ public class ShopEmployeeFactory {
         shopEmployeeVo.setPhone(teamContactBean.getPhone());
         shopEmployeeVo.setRoleid(teamContactBean.getRole_id());
         shopEmployeeVo.setRole_name(teamContactBean.getRole_name());
+        shopEmployeeVo.setDept_id(teamContactBean.getDeptid());
+        shopEmployeeVo.setDept_name(teamContactBean.getDept_name());
         return  shopEmployeeVo;
     }
 
     /**
-     *
      * @param teamContactBeans
      * @return
      */

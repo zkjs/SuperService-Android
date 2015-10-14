@@ -129,7 +129,7 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
         mFirstShopEmployee = new ShopEmployeeVo();
         String shopName    = CacheUtil.getInstance().getShopFullName();
         mFirstShopEmployee.setName(shopName);
-        mFirstShopEmployee.setRole_name(shopName);
+        mFirstShopEmployee.setDept_name(shopName);
         mFirstShopEmployee.setEmpid(System.currentTimeMillis() + "");
 
         mShopEmployeeVos = new ArrayList<ShopEmployeeVo>();
@@ -242,17 +242,15 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
                 Log.i(TAG, "result.rawResult:" + result.rawResult);
                 String jsonResult = result.rawResult;
                 if (result.rawResult.contains("set") || jsonResult.contains("err")) {
-                    DialogUtil.getInstance().showToast(TeamContactsActivity.this, "获取团队联系人失败");
+//                    DialogUtil.getInstance().showToast(TeamContactsActivity.this, "获取团队联系人失败");
 
                 } else {
                     Gson gson = new Gson();
                     List<TeamContactBean> teamContactBeans = gson.fromJson(jsonResult,
-                            new TypeToken<ArrayList<TeamContactBean>>() {
-                            }.getType());
+                            new TypeToken<ArrayList<TeamContactBean>>() {}.getType());
 
                     /** add to local db */
                     List<ShopEmployeeVo> shopEmployeeVos = ShopEmployeeFactory.getInstance().buildShopEmployees(teamContactBeans);
-
 
                     List<String> strLetters = null;//首字母显示数组
                     List<String> empids     = null;//员工ID数组
@@ -266,7 +264,7 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
                             mShopEmployeeVos.add(shopEmployeeVo);
 
                             empids.add(shopEmployeeVo.getEmpid());
-                            String sortLetter = shopEmployeeVo.getRole_name().substring(0, 1);
+                            String sortLetter = shopEmployeeVo.getDept_name().substring(0, 1);
 
                             //部门分类并消除相同部门
                             if (!TextUtils.isEmpty(sortLetter) && !strLetters.contains(sortLetter)) {
@@ -275,7 +273,6 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
                                 continue;
                             }
                         }
-
 
                         mTeamContactAdapter.updateListView(mShopEmployeeVos);
 

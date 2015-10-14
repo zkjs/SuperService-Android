@@ -150,6 +150,13 @@ public class ProtocolUtil {
         return ConfigUtil.getInst().getHttpDomain()+"semp/notice";
     }
 
+    /**
+     * 查询部门列表
+     */
+    public static String getDeptListUrl(){
+        return ConfigUtil.getInst().getHttpDomain()+"shop/deptlist";
+    }
+
 
 
     /**

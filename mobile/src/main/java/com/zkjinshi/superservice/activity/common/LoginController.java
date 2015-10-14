@@ -20,11 +20,13 @@ import com.zkjinshi.superservice.net.NetRequestListener;
 import com.zkjinshi.superservice.net.NetRequestTask;
 import com.zkjinshi.superservice.net.NetResponse;
 import com.zkjinshi.superservice.sqlite.DBOpenHelper;
+import com.zkjinshi.superservice.sqlite.ShopDepartmentDBUtil;
 import com.zkjinshi.superservice.sqlite.ShopEmployeeDBUtil;
 import com.zkjinshi.superservice.sqlite.UserDBUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
+import com.zkjinshi.superservice.vo.DepartmentVo;
 import com.zkjinshi.superservice.vo.IdentityType;
 import com.zkjinshi.superservice.vo.ShopEmployeeVo;
 import com.zkjinshi.superservice.vo.UserVo;
@@ -99,11 +101,12 @@ public class LoginController {
                     CacheUtil.getInstance().setLoginIdentity(IdentityType.WAITER);
 
                     //TODO: 同步服务器数据库
-                    getTeamList(
-                            CacheUtil.getInstance().getUserId(),
-                            CacheUtil.getInstance().getToken(),
-                            CacheUtil.getInstance().getShopID()
-                    );
+                    String userID = CacheUtil.getInstance().getUserId();
+                    String token  = CacheUtil.getInstance().getToken();
+                    String shopID = CacheUtil.getInstance().getShopID();
+
+                    getDeptList(userID, token, shopID);//获取部门列表
+                    getTeamList(userID, token, shopID);//获取团队列表
 
                     DBOpenHelper.DB_NAME = sempLoginbean.getSalesid() + ".db";
                     UserVo userVo = UserFactory.getInstance().buildUserVo(sempLoginbean);
@@ -143,11 +146,11 @@ public class LoginController {
      */
     public void requestAdminLogin(final String phone,final String password){
         String url = ProtocolUtil.getAdminLoginUrl();
-        Log.i(TAG,url);
+        Log.i(TAG, url);
         NetRequest netRequest = new NetRequest(url);
         HashMap<String,String> bizMap = new HashMap<String,String>();
         bizMap.put("phone",phone);
-        bizMap.put("password",password);
+        bizMap.put("password", password);
         netRequest.setBizParamMap(bizMap);
         NetRequestTask netRequestTask = new NetRequestTask(activity,netRequest, NetResponse.class);
         netRequestTask.methodType = MethodType.PUSH;
@@ -222,6 +225,63 @@ public class LoginController {
      * @param token
      * @param shopID
      */
+    public void getDeptList(String userID, String token, final String shopID) {
+
+        DialogUtil.getInstance().showProgressDialog(activity);
+        NetRequest netRequest = new NetRequest(ProtocolUtil.getDeptListUrl());
+        HashMap<String,String> bizMap = new HashMap<>();
+        bizMap.put("salesid", userID);
+        bizMap.put("token", token);
+        bizMap.put("shopid", shopID);
+        netRequest.setBizParamMap(bizMap);
+        NetRequestTask netRequestTask = new NetRequestTask(context, netRequest, NetResponse.class);
+        netRequestTask.methodType = MethodType.PUSH;
+        netRequestTask.setNetRequestListener(new NetRequestListener() {
+            @Override
+            public void onNetworkRequestError(int errorCode, String errorMessage) {
+                DialogUtil.getInstance().cancelProgressDialog();
+                Log.i(TAG, "errorCode:" + errorCode);
+                Log.i(TAG, "errorMessage:" + errorMessage);
+            }
+
+            @Override
+            public void onNetworkRequestCancelled() {
+                DialogUtil.getInstance().cancelProgressDialog();
+            }
+
+            @Override
+            public void onNetworkResponseSucceed(NetResponse result) {
+                DialogUtil.getInstance().cancelProgressDialog();
+                Log.i(TAG, "result.rawResult:" + result.rawResult);
+                String jsonResult = result.rawResult;
+                if (result.rawResult.contains("set") || jsonResult.contains("err")) {
+                    return ;
+                } else {
+                    Gson gson = new Gson();
+                    List<DepartmentVo> departmentVos = gson.fromJson(jsonResult,
+                            new TypeToken<ArrayList<DepartmentVo>>() {}.getType());
+                    /** add to local db */
+                    if(null != departmentVos && departmentVos.isEmpty()){
+                        ShopDepartmentDBUtil.getInstance().batchAddShopDepartments(departmentVos);
+                    }
+                }
+            }
+
+            @Override
+            public void beforeNetworkRequestStart() {
+                //网络请求前
+            }
+        });
+        netRequestTask.isShowLoadingDialog = true;
+        netRequestTask.execute();
+    }
+
+    /**
+     * 获取团队联系人列表
+     * @param userID
+     * @param token
+     * @param shopID
+     */
     public void getTeamList(String userID, String token, final String shopID) {
 
         DialogUtil.getInstance().showProgressDialog(activity);
@@ -239,13 +299,11 @@ public class LoginController {
                 DialogUtil.getInstance().cancelProgressDialog();
                 Log.i(TAG, "errorCode:" + errorCode);
                 Log.i(TAG, "errorMessage:" + errorMessage);
-                activity.finish();
             }
 
             @Override
             public void onNetworkRequestCancelled() {
                 DialogUtil.getInstance().cancelProgressDialog();
-                activity.finish();
             }
 
             @Override
@@ -254,13 +312,11 @@ public class LoginController {
                 Log.i(TAG, "result.rawResult:" + result.rawResult);
                 String jsonResult = result.rawResult;
                 if (result.rawResult.contains("set") || jsonResult.contains("err")) {
-                    DialogUtil.getInstance().showToast(activity, "获取团队联系人失败");
-
+                    return ;
                 } else {
                     Gson gson = new Gson();
                     List<TeamContactBean> teamContactBeans = gson.fromJson(jsonResult,
-                            new TypeToken<ArrayList<TeamContactBean>>() {
-                            }.getType());
+                            new TypeToken<ArrayList<TeamContactBean>>() {}.getType());
 
                     /** add to local db */
                     List<ShopEmployeeVo> shopEmployeeVos = ShopEmployeeFactory.getInstance().buildShopEmployees(teamContactBeans);
