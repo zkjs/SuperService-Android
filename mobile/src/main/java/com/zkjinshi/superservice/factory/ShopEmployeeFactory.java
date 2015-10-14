@@ -64,6 +64,7 @@ public class ShopEmployeeFactory {
         values.put("last_online_time", shopEmployeeVo.getLastOnLineTime());
         values.put("dept", shopEmployeeVo.getDept());
         values.put("desc", shopEmployeeVo.getDesc());
+        values.put("shop_id", shopEmployeeVo.getShop_id());
         return values;
     }
 
@@ -94,6 +95,7 @@ public class ShopEmployeeFactory {
         shopEmployeeVo.setLastOnLineTime(cursor.getLong(13));
         shopEmployeeVo.setDept(cursor.getString(14));
         shopEmployeeVo.setDesc(cursor.getString(15));
+        shopEmployeeVo.setShop_id(cursor.getString(16));
         return  shopEmployeeVo;
     }
 

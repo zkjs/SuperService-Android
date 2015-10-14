@@ -25,6 +25,7 @@ public class ShopEmployeeVo {
     private long          lastOnLineTime;
     private String         dept;
     private String         desc;
+    private String         shop_id;
 
     public String getEmpid() {
         return empid;
@@ -153,4 +154,13 @@ public class ShopEmployeeVo {
     public void setDesc(String desc) {
         this.desc = desc;
     }
+
+    public String getShop_id() {
+        return shop_id;
+    }
+
+    public void setShop_id(String shop_id) {
+        this.shop_id = shop_id;
+    }
+
 }

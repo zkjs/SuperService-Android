@@ -28,8 +28,6 @@ import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.vo.IdentityType;
 import com.zkjinshi.superservice.vo.ShopEmployeeVo;
 
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -78,7 +76,8 @@ public class SplashActivity extends Activity{
      * @param token
      * @param shopID
      */
-    public void getTeamList(String userID, String token, String shopID) {
+    public void getTeamList(String userID, String token, final String shopID) {
+
         DialogUtil.getInstance().showProgressDialog(this);
         NetRequest netRequest = new NetRequest(ProtocolUtil.getTeamListUrl());
         HashMap<String,String> bizMap = new HashMap<>();
@@ -94,11 +93,13 @@ public class SplashActivity extends Activity{
                 DialogUtil.getInstance().cancelProgressDialog();
                 Log.i(TAG, "errorCode:" + errorCode);
                 Log.i(TAG, "errorMessage:" + errorMessage);
+                SplashActivity.this.finish();
             }
 
             @Override
             public void onNetworkRequestCancelled() {
                 DialogUtil.getInstance().cancelProgressDialog();
+                SplashActivity.this.finish();
             }
 
             @Override
@@ -117,8 +118,9 @@ public class SplashActivity extends Activity{
 
                     /** add to local db */
                     List<ShopEmployeeVo> shopEmployeeVos = ShopEmployeeFactory.getInstance().buildShopEmployees(teamContactBeans);
-                    if (!shopEmployeeVos.isEmpty()) {
-                        ShopEmployeeDBUtil.getInstance().batchAddShopEmployees(shopEmployeeVos);
+                        for (ShopEmployeeVo shopEmployeeVo : shopEmployeeVos) {
+                        shopEmployeeVo.setShop_id(shopID);
+                        ShopEmployeeDBUtil.getInstance().addShopEmployee(shopEmployeeVo);
                     }
                 }
             }

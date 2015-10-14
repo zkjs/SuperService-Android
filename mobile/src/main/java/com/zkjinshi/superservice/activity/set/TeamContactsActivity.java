@@ -252,11 +252,7 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
 
                     /** add to local db */
                     List<ShopEmployeeVo> shopEmployeeVos = ShopEmployeeFactory.getInstance().buildShopEmployees(teamContactBeans);
-                    if(!shopEmployeeVos.isEmpty()){
-                        ShopEmployeeDBUtil.getInstance().batchAddShopEmployees(shopEmployeeVos);
-                        mShopEmployeeVos.addAll(shopEmployeeVos);
-                    }
-                    mTeamContactAdapter.updateListView(mShopEmployeeVos);
+
 
                     List<String> strLetters = null;//首字母显示数组
                     List<String> empids     = null;//员工ID数组
@@ -265,7 +261,9 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
                         strLetters = new ArrayList<String>();
                         empids = new ArrayList<>();
                         for (ShopEmployeeVo shopEmployeeVo : shopEmployeeVos) {
-
+                            shopEmployeeVo.setShop_id(shopID);
+                            ShopEmployeeDBUtil.getInstance().addShopEmployee(shopEmployeeVo);
+                            mShopEmployeeVos.addAll(shopEmployeeVos);
                             empids.add(shopEmployeeVo.getEmpid());
                             String sortLetter = shopEmployeeVo.getRole_name().substring(0, 1);
 
@@ -276,6 +274,9 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
                                 continue;
                             }
                         }
+
+
+                        mTeamContactAdapter.updateListView(mShopEmployeeVos);
 
                         String[] sortArray = strLetters.toArray(new String[strLetters.size()]);
                         if (sortArray.length > 0) {
