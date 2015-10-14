@@ -169,9 +169,9 @@ public class TableOpenHelper {
                     + " online_status int,"// 服务器在线状态
                     + " work_status   int,"//是否上班中
                     + " last_online_time  long, "//上一次在线时间
-                    + " dept   text,"//部门
-                    + " desc   text," //备注描述
-                    + " shop_id   text" //商家ID
+                    + " dept_id   int,"  //部门
+                    + " desc      text," //备注描述
+                    + " shop_id   text"  //商家ID
                     + " ) ";
 
 //    /**

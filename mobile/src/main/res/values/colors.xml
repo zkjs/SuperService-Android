@@ -3,6 +3,9 @@
 
     <color name="transparent">#00000000</color>
 
+    <color name="selected_color">#87CEEB</color>
+    <color name="unselect_color">#505152</color>
+
     <color name="white">#FFFFFF</color>
     <!-- 白色 -->
 

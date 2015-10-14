@@ -11,22 +11,49 @@ import java.io.Serializable;
  */
 public class DepartmentVo  implements Serializable {
 
-    private int id;
-    private String name;
+    private int deptid;
+    private String shopid;
+    private String dept_code;
+    private String dept_name;
+    private String description;
 
-    public int getId() {
-        return id;
+    public int getDeptid() {
+        return deptid;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setDeptid(int deptid) {
+        this.deptid = deptid;
     }
 
-    public String getName() {
-        return name;
+    public String getShopid() {
+        return shopid;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setShopid(String shopid) {
+        this.shopid = shopid;
+    }
+
+    public String getDept_code() {
+        return dept_code;
+    }
+
+    public void setDept_code(String dept_code) {
+        this.dept_code = dept_code;
+    }
+
+    public String getDept_name() {
+        return dept_name;
+    }
+
+    public void setDept_name(String dept_name) {
+        this.dept_name = dept_name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

@@ -20,8 +20,8 @@ public class DepartmentBiz {
         ArrayList<DepartmentVo> dptList = new ArrayList<DepartmentVo>();
         for(int i=0;i<4;i++){
             DepartmentVo departmentVo = new DepartmentVo();
-            departmentVo.setId(i);
-            departmentVo.setName(names[i]);
+            departmentVo.setDeptid(i);
+            departmentVo.setDept_name(names[i]);
             dptList.add(departmentVo);
         }
         return dptList;

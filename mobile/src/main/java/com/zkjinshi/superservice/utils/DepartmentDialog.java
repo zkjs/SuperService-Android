@@ -2,22 +2,22 @@ package com.zkjinshi.superservice.utils;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.ListView;
 
 import com.zkjinshi.base.util.DisplayUtil;
 import com.zkjinshi.superservice.R;
-import com.zkjinshi.superservice.adapter.DepartmentAdapter;
+import com.zkjinshi.superservice.adapter.DeptAdapter;
 import com.zkjinshi.superservice.test.DepartmentBiz;
 import com.zkjinshi.superservice.vo.DepartmentVo;
+
+import java.util.ArrayList;
 
 
 /**
@@ -29,20 +29,33 @@ import com.zkjinshi.superservice.vo.DepartmentVo;
 public class DepartmentDialog  extends Dialog {
 
     private Context context;
-    private DepartmentAdapter departmentAdapter = null;
-    private DepartmentAdapter.ClickRadioButtonInterface clickRadioButtonInterface = null;
+    private ClickOneListener clickOneListener;
+    private ListView listView;
 
+    private int selectid = 0;
+    DeptAdapter deptAdapter;
 
+    public interface ClickOneListener{
+        public void clickOne(DepartmentVo departmentVo);
+    }
+
+    public void setClickOneListener(ClickOneListener clickOneListener) {
+        this.clickOneListener = clickOneListener;
+    }
 
     public DepartmentDialog(Context context) {
         super(context);
         this.context = context;
     }
 
-
-    public void setClickRadioButtonInterface(DepartmentAdapter.ClickRadioButtonInterface clickRadioButtonInterface) {
-        this.clickRadioButtonInterface = clickRadioButtonInterface;
+    public DepartmentDialog(Context context,int selectid) {
+        super(context);
+        this.context = context;
+        this.selectid = selectid;
     }
+
+
+
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,25 +71,24 @@ public class DepartmentDialog  extends Dialog {
         View view = inflater.inflate(R.layout.dialog_department, null);
         setContentView(view);
 
-        RecyclerView recyclerView = (RecyclerView)view.findViewById(R.id.rcv_department);
-        recyclerView.setLayoutManager(new LinearLayoutManager(context));
-        departmentAdapter = new DepartmentAdapter(DepartmentBiz.getDepartmentList(),1);
-        departmentAdapter.setClickRadioButtonInterface(new DepartmentAdapter.ClickRadioButtonInterface() {
+        listView = (ListView)view.findViewById(R.id.dept_listview);
+        deptAdapter = new DeptAdapter(context,DepartmentBiz.getDepartmentList(),this.selectid);
+        listView.setAdapter(deptAdapter);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void clickItem(DepartmentVo selectDepartmentVo) {
-                if (clickRadioButtonInterface != null) {
-                    clickRadioButtonInterface.clickItem(selectDepartmentVo);
-                    cancel();
-                }
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                ArrayList<DepartmentVo> dataList = deptAdapter.getdataList();
+                clickOneListener.clickOne(dataList.get(i));
+                cancel();
             }
         });
-        recyclerView.setAdapter(departmentAdapter);
 
         Window dialogWindow = getWindow();
         dialogWindow.setGravity(Gravity.CENTER);
         WindowManager.LayoutParams lp = dialogWindow.getAttributes();
         lp.width = DisplayUtil.dip2px(context, 300);
-        lp.height = DisplayUtil.dip2px(context, 57)* departmentAdapter.getItemCount();
+        lp.height = DisplayUtil.dip2px(context, 58)* deptAdapter.getCount();
         dialogWindow.setAttributes(lp);
 
     }
