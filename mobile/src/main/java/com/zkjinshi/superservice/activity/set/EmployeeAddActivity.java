@@ -68,16 +68,19 @@ public class EmployeeAddActivity extends Activity {
 
     //
     public static final int EXCEL_REQUEST_CODE = 4;
+    public static final int HAND_REQUEST_CODE = 5;
 
     private TextView handText;
     private TextView importText;
     private ListView listView;
     private ContactsAdapter contactsAdapter;
 
-    private List<ShopEmployeeVo> employeeVoList;
-    private ArrayList<ContactLocalVo> contactLocalList = new ArrayList<ContactLocalVo>();
+    private List<ShopEmployeeVo> employeeVoList; //团队联系人列表
+    private ArrayList<ContactLocalVo> contactLocalList = new ArrayList<ContactLocalVo>(); //手机联系人
     private List<ShopEmployeeVo> excelList = new ArrayList<ShopEmployeeVo>(); //解析excel得到的员工资料
     private ShopEmployeeVo handEmployeeVo = null; //手动输入的员工资料
+
+    private  List<ShopEmployeeVo> allList = new ArrayList<ShopEmployeeVo>(); // 汇总的要提交的新成员。
 
 
 
@@ -179,15 +182,15 @@ public class EmployeeAddActivity extends Activity {
         findViewById(R.id.header_confirm_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                submitEmployees();
             }
         });
-
         //手动添加
         findViewById(R.id.hand_listener).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent intent = new Intent(EmployeeAddActivity.this, EmployeeHandAddActivity.class);
+                startActivityForResult(intent,HAND_REQUEST_CODE);
             }
         });
 
@@ -211,6 +214,34 @@ public class EmployeeAddActivity extends Activity {
         });
     }
 
+    // 上传新建的成员
+    private void submitEmployees() {
+        allList.clear();
+        //汇总要上传的手机联系人
+        for(ContactLocalVo contactLocalVo : contactLocalList){
+            if(contactLocalVo.isHasAdd()){
+                ShopEmployeeVo shopEmployeeVo = new ShopEmployeeVo();
+                shopEmployeeVo.setPhone(contactLocalVo.getPhoneNumber());
+                shopEmployeeVo.setName(contactLocalVo.getContactName());
+                allList.add(shopEmployeeVo);
+            }
+        }
+        //汇总手动添加的新成员
+        if(handEmployeeVo != null){
+            allList.add(handEmployeeVo);
+        }
+        //汇总导入的Excel
+        if( excelList != null && excelList.size() > 0){
+            allList.addAll(excelList);
+        }
+        if(allList.size() <= 0){
+            DialogUtil.getInstance().showToast(this,"至少添加一个成员");
+            return;
+        }
+
+        //调用批量上传API
+    }
+
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (RESULT_OK == resultCode) {
@@ -219,6 +250,11 @@ public class EmployeeAddActivity extends Activity {
                     String filePath = data.getStringExtra(FileListActivity.EXTRA_RESULT);
                     importText.setText(filePath);
                     decodeExcel(filePath);
+                }
+            }else if (HAND_REQUEST_CODE == requestCode) {
+                if (null != data) {
+                    handEmployeeVo = (ShopEmployeeVo)data.getSerializableExtra(EmployeeHandAddActivity.CREATE_RESULT);
+                    handText.setText(handEmployeeVo.getName());
                 }
             }
         }

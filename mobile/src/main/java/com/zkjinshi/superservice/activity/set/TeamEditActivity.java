@@ -4,28 +4,20 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.zkjinshi.base.util.DialogUtil;
-import com.zkjinshi.base.util.DisplayUtil;
 import com.zkjinshi.superservice.R;
-import com.zkjinshi.superservice.adapter.DepartmentAdapter;
 import com.zkjinshi.superservice.adapter.TeamEditContactsAdapter;
 import com.zkjinshi.superservice.listener.RecyclerItemClickListener;
 import com.zkjinshi.superservice.sqlite.ShopEmployeeDBUtil;
 import com.zkjinshi.superservice.utils.DepartmentDialog;
-import com.zkjinshi.superservice.view.AutoSideBar;
 import com.zkjinshi.superservice.vo.DepartmentVo;
 import com.zkjinshi.superservice.vo.ShopEmployeeVo;
-import com.zkjinshi.superservice.vo.SortModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -165,11 +157,12 @@ public class TeamEditActivity extends Activity{
     private void showChangeDepartmentDialog(){
         //弹出选择部门对话框
         DepartmentDialog dialog = new DepartmentDialog(TeamEditActivity.this);
-        dialog.setClickRadioButtonInterface(new DepartmentAdapter.ClickRadioButtonInterface() {
+        dialog.setClickOneListener(new DepartmentDialog.ClickOneListener() {
             @Override
-            public void clickItem(DepartmentVo selectDepartmentVo) {
-                Log.i(TAG, selectDepartmentVo.toString());
+            public void clickOne(DepartmentVo departmentVo) {
+
             }
+
         });
         dialog.show();
     }
