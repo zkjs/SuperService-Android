@@ -23,6 +23,8 @@ public class ShopEmployeeVo {
     private OnlineStatus  online_status;
     private WorkStatus    work_status;
     private long          lastOnLineTime;
+    private String         dept;
+    private String         desc;
 
     public String getEmpid() {
         return empid;
@@ -134,5 +136,21 @@ public class ShopEmployeeVo {
 
     public void setLastOnLineTime(long lastOnLineTime) {
         this.lastOnLineTime = lastOnLineTime;
+    }
+
+    public String getDept() {
+        return dept;
+    }
+
+    public void setDept(String dept) {
+        this.dept = dept;
+    }
+
+    public String getDesc() {
+        return desc;
+    }
+
+    public void setDesc(String desc) {
+        this.desc = desc;
     }
 }

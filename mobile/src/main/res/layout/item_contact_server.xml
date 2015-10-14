@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#f0f0f0"
-        android:paddingLeft="8dip"
+        android:padding="8dip"
         android:gravity="center_vertical"
         android:textColor="#000" />
 
@@ -121,5 +121,6 @@
 
         </LinearLayout>
     </LinearLayout>
+    <include layout="@layout/divider_line"></include>
 
 </LinearLayout>

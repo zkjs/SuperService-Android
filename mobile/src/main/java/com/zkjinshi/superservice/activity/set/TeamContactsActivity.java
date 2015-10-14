@@ -68,6 +68,7 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
     private final static String TAG = TeamContactsActivity.class.getSimpleName();
 
     private Toolbar         mToolbar;
+    private TextView        mTvCenterTitle;
     private RecyclerView    mRvTeamContacts;
     private RelativeLayout  mRlSideBar;
     private TextView        mTvDialog;
@@ -98,12 +99,14 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
 
 
     private void initView() {
+
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        mToolbar.setTitle("团队管理");
-        mToolbar.setTitleTextColor(Color.WHITE);
+        mToolbar.setTitle("");
         mToolbar.setNavigationIcon(R.drawable.ic_fanhui);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        mTvCenterTitle = (TextView) findViewById(R.id.tv_center_title);
+        mTvCenterTitle.setText(getString(R.string.team));
 
         mRvTeamContacts = (RecyclerView)     findViewById(R.id.rcv_team_contacts);
         mRlSideBar      = (RelativeLayout)   findViewById(R.id.rl_side_bar);
@@ -209,7 +212,7 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
      * @param token
      * @param shopID
      */
-    public void getTeamList(String userID, String token, String shopID) {
+    public void getTeamList(String userID, String token, final String shopID) {
         DialogUtil.getInstance().showProgressDialog(this);
         NetRequest netRequest = new NetRequest(ProtocolUtil.getTeamListUrl());
         HashMap<String,String> bizMap = new HashMap<>();
@@ -285,7 +288,7 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
                     MsgEmpStatus msgEmpStatus = new MsgEmpStatus();
                     msgEmpStatus.setType(ProtocolMSG.MSG_ShopEmpStatus);
                     msgEmpStatus.setTimestamp(System.currentTimeMillis());
-                    msgEmpStatus.setShopid(mShopID);
+                    msgEmpStatus.setShopid(shopID);
                     msgEmpStatus.setEmps(empids);
                     //转成
                     String jsonMsgEmpStatus = gson.toJson(msgEmpStatus, MsgEmpStatus.class);
