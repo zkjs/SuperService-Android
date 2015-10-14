@@ -49,6 +49,9 @@ public class LoginController {
     private static LoginController instance;
     private Context context;
     private Activity activity;
+    private String mUserID;
+    private String mToken;
+    private String mShopID;
 
     public static synchronized LoginController getInstance(){
         if(null ==  instance){
@@ -61,6 +64,9 @@ public class LoginController {
         this.context = context;
         this.activity = (Activity)context;
 
+        mUserID = CacheUtil.getInstance().getUserId();
+        mToken  = CacheUtil.getInstance().getToken();
+        mShopID = CacheUtil.getInstance().getShopID();
     }
 
     /**
@@ -100,13 +106,8 @@ public class LoginController {
                     CacheUtil.getInstance().setShopFullName(sempLoginbean.getFullname());
                     CacheUtil.getInstance().setLoginIdentity(IdentityType.WAITER);
 
-                    //TODO: 同步服务器数据库
-                    String userID = CacheUtil.getInstance().getUserId();
-                    String token  = CacheUtil.getInstance().getToken();
-                    String shopID = CacheUtil.getInstance().getShopID();
-
-                    getDeptList(userID, token, shopID);//获取部门列表
-                    getTeamList(userID, token, shopID);//获取团队列表
+                    getDeptList(mUserID, mToken, mShopID);//获取部门列表
+                    getTeamList(mUserID, mToken, mShopID);//获取团队列表
 
                     DBOpenHelper.DB_NAME = sempLoginbean.getSalesid() + ".db";
                     UserVo userVo = UserFactory.getInstance().buildUserVo(sempLoginbean);
@@ -182,18 +183,14 @@ public class LoginController {
                     CacheUtil.getInstance().setPassword(password);
                     CacheUtil.getInstance().setLogin(true);
 
+                    getDeptList(mUserID, mToken, mShopID);//获取部门列表
+                    getTeamList(mUserID, mToken, mShopID);//获取团队列表
+
                     DBOpenHelper.DB_NAME = adminLoginBean.getUserid() + ".db";
                     UserVo userVo = UserFactory.getInstance().buildUserVo(adminLoginBean);
                     UserDBUtil.getInstance().addUser(userVo);
                     String avatarUrl = ProtocolUtil.getShopLogoUrl(adminLoginBean.getShopid());
                     CacheUtil.getInstance().saveUserPhotoUrl(avatarUrl);
-
-                    //TODO: 同步服务器数据库
-                    getTeamList(
-                                CacheUtil.getInstance().getUserId(),
-                                CacheUtil.getInstance().getToken(),
-                                CacheUtil.getInstance().getShopID()
-                                );
 
                     Intent intent = new Intent(activity, MainActivity.class);
                     activity.startActivity(intent);
@@ -226,8 +223,6 @@ public class LoginController {
      * @param shopID
      */
     public void getDeptList(String userID, String token, final String shopID) {
-
-        DialogUtil.getInstance().showProgressDialog(activity);
         NetRequest netRequest = new NetRequest(ProtocolUtil.getDeptListUrl());
         HashMap<String,String> bizMap = new HashMap<>();
         bizMap.put("salesid", userID);
@@ -239,19 +234,16 @@ public class LoginController {
         netRequestTask.setNetRequestListener(new NetRequestListener() {
             @Override
             public void onNetworkRequestError(int errorCode, String errorMessage) {
-                DialogUtil.getInstance().cancelProgressDialog();
                 Log.i(TAG, "errorCode:" + errorCode);
                 Log.i(TAG, "errorMessage:" + errorMessage);
             }
 
             @Override
             public void onNetworkRequestCancelled() {
-                DialogUtil.getInstance().cancelProgressDialog();
             }
 
             @Override
             public void onNetworkResponseSucceed(NetResponse result) {
-                DialogUtil.getInstance().cancelProgressDialog();
                 Log.i(TAG, "result.rawResult:" + result.rawResult);
                 String jsonResult = result.rawResult;
                 if (result.rawResult.contains("set") || jsonResult.contains("err")) {
@@ -283,8 +275,6 @@ public class LoginController {
      * @param shopID
      */
     public void getTeamList(String userID, String token, final String shopID) {
-
-        DialogUtil.getInstance().showProgressDialog(activity);
         NetRequest netRequest = new NetRequest(ProtocolUtil.getTeamListUrl());
         HashMap<String,String> bizMap = new HashMap<>();
         bizMap.put("salesid", userID);
@@ -296,19 +286,16 @@ public class LoginController {
         netRequestTask.setNetRequestListener(new NetRequestListener() {
             @Override
             public void onNetworkRequestError(int errorCode, String errorMessage) {
-                DialogUtil.getInstance().cancelProgressDialog();
                 Log.i(TAG, "errorCode:" + errorCode);
                 Log.i(TAG, "errorMessage:" + errorMessage);
             }
 
             @Override
             public void onNetworkRequestCancelled() {
-                DialogUtil.getInstance().cancelProgressDialog();
             }
 
             @Override
             public void onNetworkResponseSucceed(NetResponse result) {
-                DialogUtil.getInstance().cancelProgressDialog();
                 Log.i(TAG, "result.rawResult:" + result.rawResult);
                 String jsonResult = result.rawResult;
                 if (result.rawResult.contains("set") || jsonResult.contains("err")) {
