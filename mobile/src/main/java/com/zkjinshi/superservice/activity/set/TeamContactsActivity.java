@@ -175,7 +175,9 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
                         break;
 
                     case R.id.menu_team_jia:
-
+                        Intent intent = new Intent(TeamContactsActivity.this,EmployeeAddActivity.class);
+                        startActivity(intent);
+                        overridePendingTransition(R.anim.activity_new, R.anim.activity_out);
                         break;
 
                     case R.id.menu_team_edit:
@@ -248,7 +250,8 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
                 } else {
                     Gson gson = new Gson();
                     List<TeamContactBean> teamContactBeans = gson.fromJson(jsonResult,
-                            new TypeToken<ArrayList<TeamContactBean>>() {}.getType());
+                            new TypeToken<ArrayList<TeamContactBean>>() {
+                            }.getType());
 
                     /** add to local db */
                     List<ShopEmployeeVo> shopEmployeeVos = ShopEmployeeFactory.getInstance().buildShopEmployees(teamContactBeans);
@@ -256,9 +259,9 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
 //                        ShopEmployeeDBUtil.getInstance().batchAddShopEmployees(shopEmployeeVos);
 //                    }
                     JSONArray empids = null;
-                    for(ShopEmployeeVo shopEmployeeVo : shopEmployeeVos){
+                    for (ShopEmployeeVo shopEmployeeVo : shopEmployeeVos) {
                         ShopEmployeeDBUtil.getInstance().addShopEmployee(shopEmployeeVo);
-                        if(null == empids){
+                        if (null == empids) {
                             empids = new JSONArray();
                         }
                         empids.put(shopEmployeeVo.getEmpid());
@@ -329,7 +332,7 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
     @Override
     public void receive(String message) {
 
-        System.out.print("message:"+message);
+        System.out.print("message:" + message);
         if(TextUtils.isEmpty(message)){
             return ;
         }

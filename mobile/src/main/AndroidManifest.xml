@@ -127,7 +127,7 @@
             android:name=".activity.common.LoginActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar">
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
 
         </activity>
 
@@ -157,7 +157,7 @@
             android:name=".activity.order.OrderDealActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar">
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
 
         </activity>
 
@@ -187,7 +187,7 @@
             android:name=".activity.set.EmployeeAddActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar">
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
 
         </activity>
 
@@ -231,12 +231,6 @@
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar">
-        </activity>
-        <activity
-            android:name=".activity.set.TeamEmployeeAddActivity"
-            android:label="@string/app_name"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         </activity>
         <activity
             android:name=".activity.common.ShopLoginActivity"
