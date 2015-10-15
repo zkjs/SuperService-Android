@@ -33,6 +33,7 @@ import com.zkjinshi.superservice.entity.EmpStatusRecord;
 import com.zkjinshi.superservice.entity.MsgEmpStatus;
 import com.zkjinshi.superservice.entity.MsgEmpStatusRSP;
 import com.zkjinshi.superservice.factory.ShopEmployeeFactory;
+import com.zkjinshi.superservice.listener.GetTeamContactsListener;
 import com.zkjinshi.superservice.listener.RecyclerItemClickListener;
 import com.zkjinshi.superservice.net.MethodType;
 import com.zkjinshi.superservice.net.NetRequest;
@@ -143,10 +144,73 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
         mRvTeamContacts.setAdapter(mTeamContactAdapter);
 
         //TODO: 1.服务器获得最近 5位联系人列表的客户列表
-        getTeamList(mUserID, mToken, mShopID);
+
     }
 
     private void initListener() {
+        //get team list
+        TeamContactsController.getInstance().getTeamContacts(
+                TeamContactsActivity.this,
+                mUserID,
+                mToken,
+                mShopID,
+                new GetTeamContactsListener() {
+                    @Override
+                    public void getContactsDone(List<TeamContactBean> teamContacts) {
+                        List<ShopEmployeeVo> shopEmployeeVos = ShopEmployeeFactory.getInstance().
+                                                                buildShopEmployees(teamContacts);
+                        System.out.print("shopEmployeeVos:"+shopEmployeeVos);
+                        List<String> strLetters = null;//首字母显示数组
+                        List<String> empids     = null;//员工ID数组
+                        if (null != shopEmployeeVos && !shopEmployeeVos.isEmpty()) {
+
+                            strLetters = new ArrayList<String>();
+                            empids = new ArrayList<>();
+                            for (ShopEmployeeVo shopEmployeeVo : shopEmployeeVos) {
+                                shopEmployeeVo.setShop_id(mShopID);
+                                ShopEmployeeDBUtil.getInstance().addShopEmployee(shopEmployeeVo);
+                                mShopEmployeeVos.add(shopEmployeeVo);
+
+                                empids.add(shopEmployeeVo.getEmpid());
+                                String deptID   = shopEmployeeVo.getDept_id()+"";
+                                String deptName = shopEmployeeVo.getDept_name();
+                                String sortLetter = null;
+                                if(!TextUtils.isEmpty(deptName)){
+                                    sortLetter = deptName.substring(0, 1);
+                                }else {
+                                    sortLetter = deptID.substring(0, 1);
+                                }
+
+                                //部门分类并消除相同部门
+                                if (!TextUtils.isEmpty(sortLetter) && !strLetters.contains(sortLetter)) {
+                                    strLetters.add(sortLetter);
+                                } else {
+                                    continue;
+                                }
+                            }
+
+                            String[] sortArray = strLetters.toArray(new String[strLetters.size()]);
+                            if (sortArray.length > 0) {
+                                mAutoSideBar.setSortArray(sortArray);
+                                mRlSideBar.addView(mAutoSideBar);
+                            }
+
+                            mTeamContactAdapter.updateListView(mShopEmployeeVos);
+                        }
+
+                        //发送查询客户是否在线请求
+                        MsgEmpStatus msgEmpStatus = new MsgEmpStatus();
+                        msgEmpStatus.setType(ProtocolMSG.MSG_ShopEmpStatus);
+                        msgEmpStatus.setTimestamp(System.currentTimeMillis());
+                        msgEmpStatus.setShopid(mShopID);
+                        msgEmpStatus.setEmps(empids);
+
+                        Gson gson = new Gson();
+                        String jsonMsgEmpStatus = gson.toJson(msgEmpStatus, MsgEmpStatus.class);
+                        LogUtil.getInstance().info(LogLevel.INFO, "jsonMsgEmpStatus:"+jsonMsgEmpStatus);
+                        WebSocketManager.getInstance().sendMessage(jsonMsgEmpStatus);
+                    }
+                });
 
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -206,105 +270,6 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
             getMenuInflater().inflate(R.menu.menu_team_for_waiter, menu);
         }
         return true;
-    }
-
-    /**
-     * 获取团队联系人列表
-     * @param userID
-     * @param token
-     * @param shopID
-     */
-    public void getTeamList(String userID, String token, final String shopID) {
-        DialogUtil.getInstance().showProgressDialog(this);
-        NetRequest netRequest = new NetRequest(ProtocolUtil.getTeamListUrl());
-        HashMap<String,String> bizMap = new HashMap<>();
-        bizMap.put("salesid", userID);
-        bizMap.put("token", token);
-        bizMap.put("shopid", shopID);
-        netRequest.setBizParamMap(bizMap);
-        NetRequestTask netRequestTask = new NetRequestTask(this, netRequest, NetResponse.class);
-        netRequestTask.methodType = MethodType.PUSH;
-        netRequestTask.setNetRequestListener(new NetRequestListener() {
-            @Override
-            public void onNetworkRequestError(int errorCode, String errorMessage) {
-                DialogUtil.getInstance().cancelProgressDialog();
-                Log.i(TAG, "errorCode:" + errorCode);
-                Log.i(TAG, "errorMessage:" + errorMessage);
-                DialogUtil.getInstance().showToast(TeamContactsActivity.this, "网络访问失败，稍候再试。");
-            }
-
-            @Override
-            public void onNetworkRequestCancelled() {
-                DialogUtil.getInstance().cancelProgressDialog();
-            }
-
-            @Override
-            public void onNetworkResponseSucceed(NetResponse result) {
-                DialogUtil.getInstance().cancelProgressDialog();
-                Log.i(TAG, "result.rawResult:" + result.rawResult);
-                String jsonResult = result.rawResult;
-                if (result.rawResult.contains("set") || jsonResult.contains("err")) {
-//                    DialogUtil.getInstance().showToast(TeamContactsActivity.this, "获取团队联系人失败");
-
-                } else {
-                    Gson gson = new Gson();
-                    List<TeamContactBean> teamContactBeans = gson.fromJson(jsonResult,
-                            new TypeToken<ArrayList<TeamContactBean>>() {}.getType());
-
-                    /** add to local db */
-                    List<ShopEmployeeVo> shopEmployeeVos = ShopEmployeeFactory.getInstance().buildShopEmployees(teamContactBeans);
-
-                    List<String> strLetters = null;//首字母显示数组
-                    List<String> empids     = null;//员工ID数组
-                    if (null != shopEmployeeVos && !shopEmployeeVos.isEmpty()) {
-
-                        strLetters = new ArrayList<String>();
-                        empids = new ArrayList<>();
-                        for (ShopEmployeeVo shopEmployeeVo : shopEmployeeVos) {
-                            shopEmployeeVo.setShop_id(shopID);
-                            ShopEmployeeDBUtil.getInstance().addShopEmployee(shopEmployeeVo);
-                            mShopEmployeeVos.add(shopEmployeeVo);
-
-                            empids.add(shopEmployeeVo.getEmpid());
-                            String sortLetter = shopEmployeeVo.getDept_name().substring(0, 1);
-
-                            //部门分类并消除相同部门
-                            if (!TextUtils.isEmpty(sortLetter) && !strLetters.contains(sortLetter)) {
-                                strLetters.add(sortLetter);
-                            } else {
-                                continue;
-                            }
-                        }
-
-                        mTeamContactAdapter.updateListView(mShopEmployeeVos);
-
-                        String[] sortArray = strLetters.toArray(new String[strLetters.size()]);
-                        if (sortArray.length > 0) {
-                            mAutoSideBar.setSortArray(sortArray);
-                            mRlSideBar.addView(mAutoSideBar);
-                        }
-                    }
-
-                    //发送查询客户是否在线请求
-                    MsgEmpStatus msgEmpStatus = new MsgEmpStatus();
-                    msgEmpStatus.setType(ProtocolMSG.MSG_ShopEmpStatus);
-                    msgEmpStatus.setTimestamp(System.currentTimeMillis());
-                    msgEmpStatus.setShopid(shopID);
-                    msgEmpStatus.setEmps(empids);
-                    //转成
-                    String jsonMsgEmpStatus = gson.toJson(msgEmpStatus, MsgEmpStatus.class);
-                    LogUtil.getInstance().info(LogLevel.INFO, "jsonMsgEmpStatus:"+jsonMsgEmpStatus);
-                    WebSocketManager.getInstance().sendMessage(jsonMsgEmpStatus);
-                }
-            }
-
-            @Override
-            public void beforeNetworkRequestStart() {
-                //网络请求前
-            }
-        });
-        netRequestTask.isShowLoadingDialog = true;
-        netRequestTask.execute();
     }
 
     private void addObservers() {

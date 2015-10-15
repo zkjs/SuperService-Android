@@ -113,6 +113,7 @@
                 android:id="@+id/cb_check"
                 android:background="@drawable/bg_ic_xuankuang"
                 android:button="@null"
+                android:clickable="false"
                 android:layout_width="24dp"
                 android:layout_height="24dp" />
 

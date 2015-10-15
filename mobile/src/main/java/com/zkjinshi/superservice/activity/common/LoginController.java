@@ -9,11 +9,13 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
+import com.zkjinshi.superservice.activity.set.TeamContactsController;
 import com.zkjinshi.superservice.bean.AdminLoginBean;
 import com.zkjinshi.superservice.bean.SempLoginBean;
 import com.zkjinshi.superservice.bean.TeamContactBean;
 import com.zkjinshi.superservice.factory.ShopEmployeeFactory;
 import com.zkjinshi.superservice.factory.UserFactory;
+import com.zkjinshi.superservice.listener.GetTeamContactsListener;
 import com.zkjinshi.superservice.net.MethodType;
 import com.zkjinshi.superservice.net.NetRequest;
 import com.zkjinshi.superservice.net.NetRequestListener;
@@ -105,7 +107,8 @@ public class LoginController {
                     String shopiD = CacheUtil.getInstance().getShopID();
 
                     getDeptList(userID, token, shopiD);//获取部门列表
-                    getTeamList(userID, token, shopiD);//获取团队列表
+                    //获取团队列表
+                    TeamContactsController.getInstance().getTeamContacts(context, userID, token, shopiD, null);
 
                     DBOpenHelper.DB_NAME = sempLoginbean.getSalesid() + ".db";
                     UserVo userVo = UserFactory.getInstance().buildUserVo(sempLoginbean);
@@ -186,7 +189,8 @@ public class LoginController {
                     String shopiD = CacheUtil.getInstance().getShopID();
 
                     getDeptList(userID, token, shopiD);//获取部门列表
-                    getTeamList(userID, token, shopiD);//获取团队列表
+                    //获取团队列表
+                    TeamContactsController.getInstance().getTeamContacts(context, userID, token, shopiD, null);
 
                     DBOpenHelper.DB_NAME = adminLoginBean.getUserid() + ".db";
                     UserVo userVo = UserFactory.getInstance().buildUserVo(adminLoginBean);
@@ -270,58 +274,5 @@ public class LoginController {
         netRequestTask.execute();
     }
 
-    /**
-     * 获取团队联系人列表
-     * @param userID
-     * @param token
-     * @param shopID
-     */
-    public void getTeamList(String userID, String token, final String shopID) {
-        NetRequest netRequest = new NetRequest(ProtocolUtil.getTeamListUrl());
-        HashMap<String,String> bizMap = new HashMap<>();
-        bizMap.put("salesid", userID);
-        bizMap.put("token", token);
-        bizMap.put("shopid", shopID);
-        netRequest.setBizParamMap(bizMap);
-        NetRequestTask netRequestTask = new NetRequestTask(context, netRequest, NetResponse.class);
-        netRequestTask.methodType = MethodType.PUSH;
-        netRequestTask.setNetRequestListener(new NetRequestListener() {
-            @Override
-            public void onNetworkRequestError(int errorCode, String errorMessage) {
-                Log.i(TAG, "errorCode:" + errorCode);
-                Log.i(TAG, "errorMessage:" + errorMessage);
-            }
 
-            @Override
-            public void onNetworkRequestCancelled() {
-            }
-
-            @Override
-            public void onNetworkResponseSucceed(NetResponse result) {
-                Log.i(TAG, "result.rawResult:" + result.rawResult);
-                String jsonResult = result.rawResult;
-                if (result.rawResult.contains("set") || jsonResult.contains("err")) {
-                    return ;
-                } else {
-                    Gson gson = new Gson();
-                    List<TeamContactBean> teamContactBeans = gson.fromJson(jsonResult,
-                            new TypeToken<ArrayList<TeamContactBean>>() {}.getType());
-
-                    /** add to local db */
-                    List<ShopEmployeeVo> shopEmployeeVos = ShopEmployeeFactory.getInstance().buildShopEmployees(teamContactBeans);
-                    for (ShopEmployeeVo shopEmployeeVo : shopEmployeeVos) {
-                        shopEmployeeVo.setShop_id(shopID);
-                        ShopEmployeeDBUtil.getInstance().addShopEmployee(shopEmployeeVo);
-                    }
-                }
-            }
-
-            @Override
-            public void beforeNetworkRequestStart() {
-                //网络请求前
-            }
-        });
-        netRequestTask.isShowLoadingDialog = true;
-        netRequestTask.execute();
-    }
 }

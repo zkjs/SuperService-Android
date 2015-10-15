@@ -51,9 +51,15 @@ public class ShopEmployeeDBUtil {
         SQLiteDatabase db = null;
         try {
             db        = helper.getWritableDatabase();
-            addResult = db.insert(DBOpenHelper.SHOP_EMPLOYEE_TBL, null, values);
-            if(addResult == -1){
-                db.update(DBOpenHelper.SHOP_EMPLOYEE_TBL, values, " empid = ?", new String[] {shopEmployeeVo.getEmpid()});
+            Cursor cursor = db.rawQuery(" select * from "
+                            + DBOpenHelper.SHOP_EMPLOYEE_TBL
+                            + " where empid = ? ",
+                                new String[] { shopEmployeeVo.getEmpid() });
+
+            if(cursor.getCount() > 0){
+                addResult = db.update(DBOpenHelper.SHOP_EMPLOYEE_TBL, values, " empid = ?", new String[] {shopEmployeeVo.getEmpid()});
+            } else {
+                addResult = db.insert(DBOpenHelper.SHOP_EMPLOYEE_TBL, null, values);
             }
         } catch (Exception e) {
             LogUtil.getInstance().info(LogLevel.ERROR, TAG + ".addShopEmployee->" + e.getMessage());
@@ -165,4 +171,63 @@ public class ShopEmployeeDBUtil {
         return totalEmpCount;
     }
 
+    /**
+     * 根据empID判断员工是否存在
+     * @return
+     */
+    public Boolean isEmployeeExistByEmpID(String empID) {
+        Cursor cursor = null;
+        SQLiteDatabase db = null;
+        try {
+            db = helper.getReadableDatabase();
+            cursor = db.rawQuery(" select * from " + DBOpenHelper.SHOP_EMPLOYEE_TBL + " where empid = ? ", new String[] { empID });
+            if(cursor.getCount() > 0){
+                return true;
+            }
+        } catch (Exception e) {
+            LogUtil.getInstance().info(LogLevel.ERROR, TAG + ".isEmployeeExistByEmpID->"+e.getMessage());
+            e.printStackTrace();
+        } finally{
+            if(null != db)
+                db.close();
+
+            if(null != cursor)
+                cursor.close();
+        }
+        return false;
+    }
+
+    /**
+     * query by department id asc
+     * @return
+     */
+    public List<ShopEmployeeVo> queryAllByDeptIDAsc() {
+        List<ShopEmployeeVo> shopEmployeeVos = new ArrayList<>();
+        ShopEmployeeVo shopEmployeeVo = null;
+        SQLiteDatabase db = null;
+        Cursor cursor = null;
+        if (null != helper) {
+            try {
+                db = helper.getReadableDatabase();
+                cursor = db.query(DBOpenHelper.SHOP_EMPLOYEE_TBL, null, null, null, null, null, " dept_id ASC");
+                if (cursor != null && cursor.getCount() > 0) {
+                    while (cursor.moveToNext()) {
+                        shopEmployeeVo = ShopEmployeeFactory.getInstance().buildShopEmployee(cursor);
+                        shopEmployeeVos.add(shopEmployeeVo);
+                    }
+                }
+            } catch (Exception e) {
+                LogUtil.getInstance().info(LogLevel.ERROR, TAG+".queryAll->"+e.getMessage());
+                e.printStackTrace();
+            } finally {
+                if (null != cursor) {
+                    cursor.close();
+                }
+                if (null != db) {
+                    db.close();
+                }
+            }
+        }
+        return  shopEmployeeVos;
+    }
 }

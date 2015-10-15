@@ -28,14 +28,10 @@ import com.zkjinshi.superservice.utils.RandomDrawbleUtil;
 import com.zkjinshi.superservice.view.CircleImageView;
 import com.zkjinshi.superservice.vo.OnlineStatus;
 import com.zkjinshi.superservice.vo.ShopEmployeeVo;
-import com.zkjinshi.superservice.vo.SortModel;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Random;
 
 /**
  * 联系人适配器
@@ -119,6 +115,9 @@ public class TeamContactsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         } else {
             /** 是否显示首字母  */
             String deptName = shopEmployeeVo.getDept_name();
+            if(TextUtils.isEmpty(deptName)){
+                deptName = shopEmployeeVo.getDept_id()+"";
+            }
             if (position == getPositionForSection(section)) {
                 ((ContactViewHolder)holder).tvLetter.setVisibility(View.VISIBLE);
                 if(!TextUtils.isEmpty(deptName)){
@@ -250,7 +249,10 @@ public class TeamContactsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
      * 根据ListView的当前位置获取分类的首字母的Char ascii值
      */
     public int getSectionForPosition(int position) {
-        return mList.get(position).getDept_name().charAt(0);
+        if(!TextUtils.isEmpty(mList.get(position).getDept_name())){
+            return mList.get(position).getDept_name().charAt(0);
+        }
+        return ( mList.get(position).getDept_id()+"").charAt(0);
     }
 
     @Override

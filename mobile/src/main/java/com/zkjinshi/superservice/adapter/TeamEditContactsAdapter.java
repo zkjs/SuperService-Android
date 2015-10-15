@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -19,6 +20,7 @@ import android.widget.TextView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.assist.deque.LIFOLinkedBlockingDeque;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.zkjinshi.base.util.TimeUtil;
 import com.zkjinshi.superservice.R;
@@ -32,8 +34,10 @@ import com.zkjinshi.superservice.vo.OnlineStatus;
 import com.zkjinshi.superservice.vo.ShopEmployeeVo;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * 团队编辑页面的联系人列表
@@ -47,13 +51,14 @@ public class TeamEditContactsAdapter extends RecyclerView.Adapter<RecyclerView.V
     private List<ShopEmployeeVo>  mList;
     private Context               mContext;
     private DisplayImageOptions   options;
-
+    private Map<Integer, Boolean> mCheckedMap;
     private RecyclerItemClickListener mRecyclerItemClickListener;
 
     public TeamEditContactsAdapter(Context mContext, List<ShopEmployeeVo> list) {
 
         this.mContext = mContext;
         this.mList    = list;
+        this.mCheckedMap = new HashMap<>();
         this.options  = new DisplayImageOptions.Builder()
                 .showImageOnLoading(R.drawable.img_hotel_zhanwei)
                 .showImageForEmptyUri(R.drawable.img_hotel_zhanwei)// 设置图片Uri为空或是错误的时候显示的图片
@@ -78,15 +83,22 @@ public class TeamEditContactsAdapter extends RecyclerView.Adapter<RecyclerView.V
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.item_team_edit_contact, null);
-        view.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                             LinearLayout.LayoutParams.WRAP_CONTENT));
-        ContactViewHolder holder = new ContactViewHolder(view, mRecyclerItemClickListener);
+        View view = null;
+        ContactViewHolder holder = null;
+        if(null == view){
+            view = LayoutInflater.from(mContext).inflate(R.layout.item_team_edit_contact, null);
+            view.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                                 LinearLayout.LayoutParams.WRAP_CONTENT));
+            holder = new ContactViewHolder(view, mRecyclerItemClickListener);
+        } else {
+            holder = (ContactViewHolder) view.getTag();
+        }
         return holder;
     }
 
     @Override
-    public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
+
         ShopEmployeeVo employeeVo = mList.get(position);
         int section = getSectionForPosition(position);
 
@@ -156,8 +168,23 @@ public class TeamEditContactsAdapter extends RecyclerView.Adapter<RecyclerView.V
                                       + TimeUtil.getChatTime(lastOnlineTime);
                 }
                 ((ContactViewHolder)holder).tvContactOnLine.setText(strLastOnline);
-
             }
+
+            //set the checkbox
+            ((ContactViewHolder) holder).cbCheck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        mCheckedMap.put(position, isChecked);
+                }
+            });
+
+            if(mCheckedMap.containsKey(position) && mCheckedMap.get(position)){
+                ((ContactViewHolder) holder).cbCheck.setChecked(true);
+            } else {
+                ((ContactViewHolder) holder).cbCheck.setChecked(false);
+            }
+
+            holder.itemView.setTag(holder);
         }
     }
 
@@ -221,6 +248,7 @@ public class TeamEditContactsAdapter extends RecyclerView.Adapter<RecyclerView.V
             rlContactOnStatus  = (RelativeLayout) view.findViewById(R.id.rl_contact_on_status);
             tvContactOnLine    = (TextView) view.findViewById(R.id.tv_contact_on_line);
             cbCheck            = (CheckBox) view.findViewById(R.id.cb_check);
+
             this.mItemClickListener = itemClickListener;
 
             view.setOnClickListener(new View.OnClickListener() {
