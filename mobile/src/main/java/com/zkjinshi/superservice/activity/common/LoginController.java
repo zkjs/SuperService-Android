@@ -138,7 +138,7 @@ public class LoginController {
 
             }
         });
-        netRequestTask.isShowLoadingDialog = true;
+        netRequestTask.isShowLoadingDialog = false;
         netRequestTask.execute();
     }
 
@@ -218,7 +218,7 @@ public class LoginController {
 
             }
         });
-        netRequestTask.isShowLoadingDialog = true;
+        netRequestTask.isShowLoadingDialog = false;
         netRequestTask.execute();
     }
 

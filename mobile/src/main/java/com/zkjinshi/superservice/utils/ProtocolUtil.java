@@ -168,7 +168,7 @@ public class ProtocolUtil {
      * 管理: 批量添加服务员
      */
     public static String getBatchAddClientUrl(){
-        return ConfigUtil.getInst().getHttpDomain()+"";
+        return ConfigUtil.getInst().getHttpDomain()+"shop/import";
     }
 
     /**

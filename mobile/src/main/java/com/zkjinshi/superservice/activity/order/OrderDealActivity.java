@@ -128,7 +128,7 @@ public class OrderDealActivity extends Activity {
         NetRequest netRequest = new NetRequest(url);
         HashMap<String,String> bizMap = new HashMap<String,String>();
         bizMap.put("salesid", CacheUtil.getInstance().getUserId());
-        bizMap.put("token",CacheUtil.getInstance().getToken());
+        bizMap.put("token", CacheUtil.getInstance().getToken());
         bizMap.put("reservation_no", reservationNo);
         netRequest.setBizParamMap(bizMap);
         NetRequestTask netRequestTask = new NetRequestTask(this,netRequest, NetResponse.class);
@@ -291,18 +291,27 @@ public class OrderDealActivity extends Activity {
         finishBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(orderDetailBean == null){
+                if (orderDetailBean == null) {
                     return;
                 }
-                if(TextUtils.isEmpty(orderDetailBean.getRoom().getPay_name())){
+                if (TextUtils.isEmpty(orderDetailBean.getRoom().getPay_name())) {
                     DialogUtil.getInstance().showToast(OrderDealActivity.this, "请选择支付方式。");
                     return;
                 }
-                if(TextUtils.isEmpty(orderDetailBean.getRoom().getRoom_rate())){
+                if (TextUtils.isEmpty(orderDetailBean.getRoom().getRoom_rate())) {
                     DialogUtil.getInstance().showToast(OrderDealActivity.this, "请输入金额。");
                     return;
                 }
-                addOrder();
+                //订单状态 默认0可取消订单 1已取消订单 2已确认订单 3已经完成的订单 4正在入住中 5已删除订单
+                //支付状态 0未支付,1已支付,3支付一部分,4已退款, 5已挂账
+
+                String getReservation_no = orderDetailBean.getRoom().getReservation_no();
+                if(TextUtils.isEmpty(getReservation_no)){
+                    addOrder();
+                }else{
+                    updateOrder();
+                }
+
             }
         });
 
@@ -354,6 +363,81 @@ public class OrderDealActivity extends Activity {
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
         });
+    }
+
+    //修改订单
+    private void updateOrder(){
+        String url = ProtocolUtil.getUpdateOrderUrl();
+        Log.i(TAG,url);
+        NetRequest netRequest = new NetRequest(url);
+        HashMap<String,String> bizMap = new HashMap<String,String>();
+        bizMap.put("userid",CacheUtil.getInstance().getUserId());
+        bizMap.put("token",CacheUtil.getInstance().getToken());
+        bizMap.put("reservation_no",orderDetailBean.getRoom().getReservation_no());
+        bizMap.put("status",orderDetailBean.getRoom().getStatus());
+
+        bizMap.put("roomid",orderDetailBean.getRoom().getRoom_typeid()+"");
+        bizMap.put("room_type",orderDetailBean.getRoom().getRoom_type());
+        bizMap.put("rooms",orderDetailBean.getRoom().getRooms()+"");
+        bizMap.put("arrival_date",orderDetailBean.getRoom().getArrival_date());
+        bizMap.put("departure_date",orderDetailBean.getRoom().getDeparture_date());
+        bizMap.put("room_rate",orderDetailBean.getRoom().getRoom_rate());
+        bizMap.put("payment",orderDetailBean.getRoom().getPay_id()+"");
+
+        netRequest.setBizParamMap(bizMap);
+        NetRequestTask netRequestTask = new NetRequestTask(this,netRequest, NetResponse.class);
+        netRequestTask.methodType = MethodType.PUSH;
+        netRequestTask.setNetRequestListener(new NetRequestListener() {
+            @Override
+            public void onNetworkRequestError(int errorCode, String errorMessage) {
+                Log.i(TAG, "errorCode:" + errorCode);
+                Log.i(TAG, "errorMessage:" + errorMessage);
+            }
+
+            @Override
+            public void onNetworkRequestCancelled() {
+
+            }
+
+            @Override
+            public void onNetworkResponseSucceed(NetResponse result) {
+                Log.i(TAG, "result.rawResult:" + result.rawResult);
+                try {
+                    AddOrderBean addOrderBean = new Gson().fromJson(result.rawResult, AddOrderBean.class);
+                    if(addOrderBean.isSet()){
+                        DialogUtil.getInstance().showToast(OrderDealActivity.this,"订单修改成功。\n订单号是："+addOrderBean.getReservation_no());
+
+                        //TODO 杜健德 待流程完善再做修改
+                        //确认成功订单，发送IM消息
+//                        MsgUserDefine msgUserDefine = MsgUserDefineTool.buildSuccMsgUserDefine(
+//                                CacheUtil.getInstance().getUserId(),
+//                                orderDetailBean.getRoom().getGuestid(),
+//                                addOrderBean.getReservation_no(),
+//                                orderDetailBean.getRoom().getShopid()
+//                        );
+//                        Gson gson = new Gson();
+//                        String jsonMsg = gson.toJson(msgUserDefine);
+//                        WebSocketManager.getInstance().sendMessage(jsonMsg);
+                        finish();
+                    }else{
+                        DialogUtil.getInstance().showToast(OrderDealActivity.this,"订单修改失败");
+                        //确认失败订单，发送IM消息
+                        //MsgUserDefineTool.buildFailMsgUserDefine( CacheUtil.getInstance().getUserId(),  orderDetailBean.getRoom().getGuestid());
+                        Log.e(TAG,addOrderBean.getErr());
+                    }
+                } catch (Exception e) {
+                    Log.e(TAG, e.getMessage());
+                }
+
+            }
+
+            @Override
+            public void beforeNetworkRequestStart() {
+
+            }
+        });
+        netRequestTask.isShowLoadingDialog = true;
+        netRequestTask.execute();
     }
 
     //添加订单

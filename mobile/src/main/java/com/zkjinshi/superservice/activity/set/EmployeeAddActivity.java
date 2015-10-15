@@ -321,6 +321,8 @@ public class EmployeeAddActivity extends Activity {
                 ShopEmployeeVo shopEmployeeVo = new ShopEmployeeVo();
                 shopEmployeeVo.setPhone(contactLocalVo.getPhoneNumber());
                 shopEmployeeVo.setName(contactLocalVo.getContactName());
+                shopEmployeeVo.setRoleid(2);
+                shopEmployeeVo.setDept_id(0);
                 if(!TextUtils.isEmpty(shopEmployeeVo.getPhone()) && !map.containsKey(shopEmployeeVo.getPhone())){
                     allList.add(shopEmployeeVo);
                     map.put(shopEmployeeVo.getPhone(),shopEmployeeVo.getPhone());
@@ -346,7 +348,7 @@ public class EmployeeAddActivity extends Activity {
         bizMap.put("salesid", CacheUtil.getInstance().getUserId());
         bizMap.put("token", CacheUtil.getInstance().getToken());
         bizMap.put("shopid", CacheUtil.getInstance().getShopID());
-        bizMap.put("employeesJson", employeesJson);
+        bizMap.put("userdata", employeesJson);
         netRequest.setBizParamMap(bizMap);
         NetRequestTask netRequestTask = new NetRequestTask(this,netRequest, NetResponse.class);
         netRequestTask.methodType = MethodType.PUSH;
