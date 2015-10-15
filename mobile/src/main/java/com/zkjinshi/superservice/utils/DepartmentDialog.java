@@ -148,9 +148,9 @@ public class DepartmentDialog  extends Dialog {
 
         Window dialogWindow = getWindow();
         dialogWindow.setGravity(Gravity.CENTER);
-        WindowManager.LayoutParams lp = dialogWindow.getAttributes();
-        lp.width = DisplayUtil.dip2px(context, 300);
-        lp.height = DisplayUtil.dip2px(context, 58)* deptAdapter.getCount();
-        dialogWindow.setAttributes(lp);
+//        WindowManager.LayoutParams lp = dialogWindow.getAttributes();
+//        lp.width = DisplayUtil.dip2px(context, 300);
+//        lp.height = DisplayUtil.dip2px(context, 58)* deptAdapter.getCount();
+//        dialogWindow.setAttributes(lp);
     }
 }

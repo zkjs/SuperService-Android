@@ -62,7 +62,7 @@ public class JxlUtil {
                     cell = sheet.getCell(j, i);
                     String temp2 = "";
                     if (cell.getType() == CellType.NUMBER) {
-                        temp2 = ((NumberCell) cell).getValue() + "";
+                        temp2 = ((NumberCell) cell).getContents() + "";
                     } else if (cell.getType() == CellType.DATE) {
                         temp2 = "" + ((DateCell) cell).getDate();
                     } else {
@@ -85,7 +85,7 @@ public class JxlUtil {
 
     private static void initInfo(ShopEmployeeVo shopEmployeeVo,int j,String temp2) {
         if(j == 1){
-            shopEmployeeVo.setRole_name(temp2);
+            shopEmployeeVo.setDept_name(temp2);
         }else if(j == 3){
             shopEmployeeVo.setName(temp2);
         }else if(j == 7){

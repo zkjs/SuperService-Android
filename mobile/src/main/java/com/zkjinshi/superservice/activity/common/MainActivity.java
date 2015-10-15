@@ -21,6 +21,7 @@ import com.zkjinshi.base.net.core.WebSocketManager;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.set.ClientActivity;
+import com.zkjinshi.superservice.activity.set.EmployeeAddActivity;
 import com.zkjinshi.superservice.activity.set.TeamContactsActivity;
 import com.zkjinshi.superservice.bean.BaseBean;
 import com.zkjinshi.superservice.listener.MessageListener;
@@ -137,6 +138,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent myTeamContacts = new Intent(MainActivity.this, TeamContactsActivity.class);
+               // Intent myTeamContacts = new Intent(MainActivity.this, EmployeeAddActivity.class);
                 MainActivity.this.startActivity(myTeamContacts);
             }
         });

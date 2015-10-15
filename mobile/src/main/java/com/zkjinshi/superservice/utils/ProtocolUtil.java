@@ -178,6 +178,13 @@ public class ProtocolUtil {
         return ConfigUtil.getInst().getHttpDomain()+"shop/changedept";
     }
 
+    /**
+     * 管理: 添加/批量管理部门
+     */
+    public static String getBatchAddDeptUrl(){
+        return ConfigUtil.getInst().getHttpDomain()+"shop/adddept";
+    }
+
 
 
     /**

@@ -18,7 +18,6 @@ import com.google.gson.reflect.TypeToken;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.filechoser.activity.FileListActivity;
 import com.zkjinshi.superservice.R;
-import com.zkjinshi.superservice.activity.order.CalendarActivity;
 import com.zkjinshi.superservice.adapter.ContactsAdapter;
 import com.zkjinshi.superservice.bean.BaseBean;
 import com.zkjinshi.superservice.net.MethodType;
@@ -33,23 +32,18 @@ import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.vo.ContactLocalVo;
 import com.zkjinshi.superservice.vo.DepartmentVo;
 import com.zkjinshi.superservice.vo.ShopEmployeeVo;
-import android.content.ContentResolver;
+
 import android.content.ContentUris;
-import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.provider.ContactsContract.CommonDataKinds.Photo;
 import android.text.TextUtils;
 
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
@@ -91,6 +85,7 @@ public class EmployeeAddActivity extends Activity {
     private ArrayList<ContactLocalVo> contactLocalList = new ArrayList<ContactLocalVo>(); //手机联系人
     private List<ShopEmployeeVo> excelList = new ArrayList<ShopEmployeeVo>(); //解析excel得到的员工资料
     private ShopEmployeeVo handEmployeeVo = null; //手动输入的员工资料
+    private ArrayList<DepartmentVo> deptList;
 
     private  List<ShopEmployeeVo> allList = new ArrayList<ShopEmployeeVo>(); // 汇总的要提交的新成员。
 
@@ -194,7 +189,12 @@ public class EmployeeAddActivity extends Activity {
         findViewById(R.id.header_confirm_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                submitEmployees();
+                if( excelList != null && excelList.size() > 0){
+                    submitDepts();
+                }else{
+                    //submitEmployees();
+                }
+
             }
         });
         //手动添加
@@ -226,8 +226,73 @@ public class EmployeeAddActivity extends Activity {
         });
     }
 
-    // 上传新建的成员
-    private void submitEmployees() {
+    /**
+     *  批量上传部门
+     */
+    private void submitDepts() {
+        if(deptList != null && deptList.size() > 0){
+            String url = ProtocolUtil.getBatchAddDeptUrl();
+            Log.i(TAG, url);
+            String deptJson = new Gson().toJson(deptList);
+            NetRequest netRequest = new NetRequest(url);
+            HashMap<String,String> bizMap = new HashMap<String,String>();
+            bizMap.put("salesid", CacheUtil.getInstance().getUserId());
+            bizMap.put("token", CacheUtil.getInstance().getToken());
+            bizMap.put("shopid", CacheUtil.getInstance().getShopID());
+            bizMap.put("dept", deptJson);
+            bizMap.put("set","2");
+            netRequest.setBizParamMap(bizMap);
+            NetRequestTask netRequestTask = new NetRequestTask(this,netRequest, NetResponse.class);
+            netRequestTask.methodType = MethodType.PUSH;
+            netRequestTask.setNetRequestListener(new NetRequestListener() {
+                @Override
+                public void onNetworkRequestError(int errorCode, String errorMessage) {
+                    Log.i(TAG, "errorCode:" + errorCode);
+                    Log.i(TAG, "errorMessage:" + errorMessage);
+                }
+
+                @Override
+                public void onNetworkRequestCancelled() {
+
+                }
+
+                @Override
+                public void onNetworkResponseSucceed(NetResponse result) {
+                    Log.i(TAG, "result.rawResult:" + result.rawResult);
+                    try {
+                        ArrayList<DepartmentVo> dlist = new Gson().fromJson(result.rawResult, new TypeToken<ArrayList<DepartmentVo>>() {
+                        }.getType());
+                        if (dlist != null && deptList.size() > 0) {
+                            deptList = dlist;
+                            for (ShopEmployeeVo shopEmployeeVo : excelList) {
+                                for (DepartmentVo departmentVo : deptList) {
+                                    if (shopEmployeeVo.getDept_name().equals(departmentVo.getDept_name())) {
+                                        shopEmployeeVo.setDept_id(departmentVo.getDeptid());
+                                        break;
+                                    }
+                                }
+                            }
+                            //submitEmployees();
+                        }
+
+                    } catch (Exception e) {
+                        Log.e(TAG, e.getMessage());
+                    }
+
+                }
+
+                @Override
+                public void beforeNetworkRequestStart() {
+
+                }
+            });
+            netRequestTask.isShowLoadingDialog = true;
+            netRequestTask.execute();
+        }
+    }
+
+    //汇总要添加的成员
+    private void summaryEmployees(){
         allList.clear();
         //汇总要上传的手机联系人
         for(ContactLocalVo contactLocalVo : contactLocalList){
@@ -246,23 +311,25 @@ public class EmployeeAddActivity extends Activity {
         if( excelList != null && excelList.size() > 0){
             allList.addAll(excelList);
         }
+    }
+
+    // 批量上传新建的成员
+    private void submitEmployees() {
+        summaryEmployees();
         if(allList.size() <= 0){
             DialogUtil.getInstance().showToast(this,"至少添加一个成员");
             return;
         }
 
-        String deptsJson = new Gson().toJson(allList);
-
-
-        //调用批量上传API
         String url = ProtocolUtil.getBatchAddClientUrl();
         Log.i(TAG, url);
+        String employeesJson = new Gson().toJson(allList);
         NetRequest netRequest = new NetRequest(url);
         HashMap<String,String> bizMap = new HashMap<String,String>();
         bizMap.put("salesid", CacheUtil.getInstance().getUserId());
         bizMap.put("token", CacheUtil.getInstance().getToken());
         bizMap.put("shopid", CacheUtil.getInstance().getShopID());
-        bizMap.put("deptsJson", deptsJson);
+        bizMap.put("employeesJson", employeesJson);
         netRequest.setBizParamMap(bizMap);
         NetRequestTask netRequestTask = new NetRequestTask(this,netRequest, NetResponse.class);
         netRequestTask.methodType = MethodType.PUSH;
@@ -328,10 +395,27 @@ public class EmployeeAddActivity extends Activity {
         String hz = filePath.substring(index+1,filePath.length());
         if( hz.toUpperCase().equals("XLS")){
             excelList = JxlUtil.decodeXLS(filePath);
+            getDeptList(excelList);
             Log.i(TAG,excelList.toString());
         }else{
             DialogUtil.getInstance().showToast(EmployeeAddActivity.this,"暂时只支持导入XLS 格式的文件");
         }
+    }
+
+    //获取部门列表
+    private void getDeptList(List<ShopEmployeeVo> excelList){
+        deptList = new ArrayList<DepartmentVo>();
+        HashMap<String,String> map = new HashMap<String,String>();
+        for(ShopEmployeeVo shopEmployeeVo : excelList){
+            String deptname = shopEmployeeVo.getDept_name();
+            if(!TextUtils.isEmpty(deptname) && !map.containsKey(deptname)){
+                map.put(deptname, deptname);
+                DepartmentVo departmentVo = new DepartmentVo();
+                departmentVo.setDept_name(deptname);
+                deptList.add(departmentVo);
+            }
+        }
+        map = null;
     }
 
 }
