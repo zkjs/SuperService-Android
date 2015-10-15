@@ -43,6 +43,7 @@ import com.zkjinshi.superservice.sqlite.ZoneDBUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.view.CircleStatusView;
+import com.zkjinshi.superservice.view.RecyclerViewHeader;
 import com.zkjinshi.superservice.vo.ComingVo;
 import com.zkjinshi.superservice.entity.MsgPushTriggerLocNotificationM2S;
 import com.zkjinshi.superservice.vo.IdentityType;
@@ -86,6 +87,7 @@ public class NoticeFragment extends Fragment implements IMessageObserver{
     private TextView totoalEmployeeTv,currentOnlineEmployeeTv;
     private LinearLayout onlineLayout;
     private int totalEmpCount,onlineEmpCout;
+    private RecyclerViewHeader recyclerViewHeader;
 
     public static NoticeFragment newInstance() {
         return new NoticeFragment();
@@ -100,25 +102,27 @@ public class NoticeFragment extends Fragment implements IMessageObserver{
     }
 
     private void initView(View view){
+
         notityRecyclerView = (RecyclerView) view.findViewById(R.id.rcv_notice);
         moreRecyclerView = (RecyclerView)view.findViewById(R.id.rcv_more);
         moreStatsuView = (CircleStatusView)view.findViewById(R.id.notice_more_cv_status);
         swipeRefreshLayout = (SwipeRefreshLayout)view.findViewById(R.id.srl_notice);
-        totoalEmployeeTv = (TextView)view.findViewById(R.id.notice_tv_total_employee);
-        currentOnlineEmployeeTv = (TextView)view.findViewById(R.id.notice_tv_current_online_employee);
-        onlineLayout = (LinearLayout)view.findViewById(R.id.online_layout);
     }
 
     private void initData() {
 
         activity = this.getActivity();
+        recyclerViewHeader = RecyclerViewHeader.fromXml(getContext(), R.layout.layout_online_stat);
+        totoalEmployeeTv = (TextView)recyclerViewHeader.findViewById(R.id.notice_tv_total_employee);
+        currentOnlineEmployeeTv = (TextView)recyclerViewHeader.findViewById(R.id.notice_tv_current_online_employee);
+        onlineLayout = (LinearLayout)recyclerViewHeader.findViewById(R.id.online_layout);
         mNotificationAdapter = new LocNotificationAdapter(activity, notifyComingList);
         notityRecyclerView.setAdapter(mNotificationAdapter);
         notityRecyclerView.setHasFixedSize(true);
         notifyLayoutManager = new LinearLayoutManager(activity);
         notifyLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         notityRecyclerView.setLayoutManager(notifyLayoutManager);
-
+        recyclerViewHeader.attachTo(notityRecyclerView);
         locMoreAdapter = new LocMoreAdapter(activity, moreComingList);
         moreLayoutManager = new LinearLayoutManager(activity);
         moreLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
@@ -135,6 +139,7 @@ public class NoticeFragment extends Fragment implements IMessageObserver{
         }else{
             onlineLayout.setVisibility(View.VISIBLE);
         }
+
     }
 
     private void initListeners(){
