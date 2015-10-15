@@ -65,7 +65,8 @@ public class TeamEditActivity extends Activity implements IMessageObserver{
 
     private final static String TAG = TeamEditActivity.class.getSimpleName();
 
-    private List<Boolean> mCheckedList;
+    private List<ShopEmployeeVo> mCheckedList;
+
     private ImageButton   mIbtnBack;
     private TextView      mTvTitle;
     private RecyclerView  mRcvTeamContacts;
@@ -120,10 +121,10 @@ public class TeamEditActivity extends Activity implements IMessageObserver{
             mContactsAdapter = new TeamEditContactsAdapter(TeamEditActivity.this, mShopEmployeeVos);
             mRcvTeamContacts.setAdapter(mContactsAdapter);
 
-            //设置默认勾选中的数据
-            for(int i=0; i< mShopEmployeeVos.size(); i++){
-                mCheckedList.add(i, false);
-            }
+//            //设置默认勾选中的数据
+//            for(int i=0; i< mShopEmployeeVos.size(); i++){
+//                mCheckedList.add(i, false);
+//            }
 
             //需要获得在线状态的用户
             List<String> empids = null;
@@ -166,7 +167,11 @@ public class TeamEditActivity extends Activity implements IMessageObserver{
         mContactsAdapter.setOnItemClickListener(new RecyclerItemClickListener() {
             @Override
             public void onItemClick(View view, int postion) {
-                mCheckedList.set(postion, !mCheckedList.get(postion));
+                if(mCheckedList.contains(mShopEmployeeVos.get(postion))){
+                    mCheckedList.remove(postion);
+                } else {
+                    mCheckedList.add(mShopEmployeeVos.get(postion));
+                }
             }
         });
 
@@ -174,10 +179,8 @@ public class TeamEditActivity extends Activity implements IMessageObserver{
             @Override
             public void onClick(View v) {
                 /** 1.获得待操作数据 */
-                List<String> empIDs = getCheckedEmpIDs(mCheckedList);
-                if (null != empIDs && !empIDs.isEmpty()) {
-                    //ToDO:弹出提示框 是否更换部门
-                    showChangeDepartmentDialog(empIDs);
+                if (null != mCheckedList && !mCheckedList.isEmpty()) {
+                    showChangeDepartmentDialog(mCheckedList);
                 } else {
                     /** 尚未选择员工 */
                     DialogUtil.getInstance().showCustomToast(TeamEditActivity.this,
@@ -191,17 +194,80 @@ public class TeamEditActivity extends Activity implements IMessageObserver{
             @Override
             public void onClick(View v) {
                 /** 获得待删除数据 */
-                List<String> shopEmployeeVos = getCheckedEmpIDs(mCheckedList);
-                if(null == shopEmployeeVos && shopEmployeeVos.isEmpty()) {
-                    //TODO:弹出提示框 是否确定删除
-
+                if (null != mCheckedList && !mCheckedList.isEmpty()) {
+                    deleteEmployees(mUserID, mToken, mShopID, mCheckedList);
                 } else {
                     DialogUtil.getInstance().showCustomToast(TeamEditActivity.this,
-                                      getString(R.string.not_choose_emp_object_yet),
-                                      Gravity.CENTER);
+                            getString(R.string.not_choose_emp_object_yet),
+                            Gravity.CENTER);
                 }
             }
         });
+    }
+
+    /**
+     * batch delete the employee
+     * @param userID
+     * @param token
+     * @param shopID
+     * @param shopEmployeeVos
+     */
+    private void deleteEmployees(String userID, String token, final String shopID, List<ShopEmployeeVo> shopEmployeeVos) {
+        String deleteList = convertList2String(shopEmployeeVos);
+
+        DialogUtil.getInstance().showProgressDialog(this);
+        NetRequest netRequest = new NetRequest(ProtocolUtil.getBatchDeleteEmployeeUrl());
+        HashMap<String,String> bizMap = new HashMap<>();
+        bizMap.put("salesid", userID);
+        bizMap.put("token", token);
+        bizMap.put("shopid", shopID);
+        bizMap.put("deletelist", deleteList);
+
+        netRequest.setBizParamMap(bizMap);
+        NetRequestTask netRequestTask = new NetRequestTask(this, netRequest, NetResponse.class);
+        netRequestTask.methodType = MethodType.PUSH;
+        netRequestTask.setNetRequestListener(new NetRequestListener() {
+            @Override
+            public void onNetworkRequestError(int errorCode, String errorMessage) {
+                DialogUtil.getInstance().cancelProgressDialog();
+                Log.i(TAG, "errorCode:" + errorCode);
+                Log.i(TAG, "errorMessage:" + errorMessage);
+                DialogUtil.getInstance().showToast(TeamEditActivity.this, "网络访问失败，稍候再试。");
+            }
+
+            @Override
+            public void onNetworkRequestCancelled() {
+                DialogUtil.getInstance().cancelProgressDialog();
+            }
+
+            @Override
+            public void onNetworkResponseSucceed(NetResponse result) {
+                DialogUtil.getInstance().cancelProgressDialog();
+                Log.i(TAG, "result.rawResult:" + result.rawResult);
+                System.out.print(":" + result.rawResult);
+                String jsonResult = result.rawResult;
+                try {
+                    JSONObject jsonObject = new JSONObject(jsonResult);
+                    if (jsonObject.getBoolean("set")) {
+                        for(ShopEmployeeVo shopEmployeeVo : mCheckedList){
+                            mShopEmployeeVos.remove(shopEmployeeVo);
+                        }
+                        mContactsAdapter.updateListView(mShopEmployeeVos);
+                    } else {
+                        DialogUtil.getInstance().showToast(TeamEditActivity.this, "delete failed, retry after a while!");
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void beforeNetworkRequestStart() {
+                //网络请求前
+            }
+        });
+        netRequestTask.isShowLoadingDialog = true;
+        netRequestTask.execute();
     }
 
     private void addObservers() {
@@ -282,50 +348,38 @@ public class TeamEditActivity extends Activity implements IMessageObserver{
     }
 
     /**
-     * 获得已选中员工对象
-     * @param mCheckedList
-     * @return
-     */
-    private List<String> getCheckedEmpIDs(List<Boolean> mCheckedList) {
-        List<String> checkedEmpIDs = null;
-        for(int i=0; i<mCheckedList.size(); i++){
-            if(null == checkedEmpIDs){
-                checkedEmpIDs = new ArrayList<>();
-            }
-            if(mCheckedList.get(i)){
-                String empID = mShopEmployeeVos.get(i).getEmpid();
-                if(!checkedEmpIDs.contains(empID)){
-                    checkedEmpIDs.add(empID);
-                }
-            }
-        }
-        return checkedEmpIDs;
-    }
-
-    /**
      * 弹出选择部门对话框
-     * @param empIDs
+     * @param shopEmployeeVos
      */
-    private void showChangeDepartmentDialog(final List<String> empIDs){
+    private void showChangeDepartmentDialog(final List<ShopEmployeeVo> shopEmployeeVos){
         //弹出选择部门对话框
-        DialogUtil.getInstance().showCustomToast(TeamEditActivity.this, "empids:" + empIDs, Gravity.CENTER);
         DepartmentDialog dialog = new DepartmentDialog(TeamEditActivity.this);
         dialog.setClickOneListener(new DepartmentDialog.ClickOneListener() {
             @Override
             public void clickOne(DepartmentVo departmentVo) {
                 int deptID = departmentVo.getDeptid();
-                String changeList = "";
-                for(int i=0; i<empIDs.size(); i++){
-                    if(i == empIDs.size()-1){
-                        changeList += empIDs.get(i);
-                    }else {
-                        changeList += empIDs.get(i) + ",";
-                    }
-                }
+                String changeList = convertList2String(shopEmployeeVos);
                 postChangeDept(mUserID, mToken, mShopID, deptID, changeList);
             }
         });
         dialog.show();
+    }
+
+    /**
+     * convert the string list to String
+     * @param shopEmployeeVos
+     * @return
+     */
+    private String convertList2String(List<ShopEmployeeVo> shopEmployeeVos) {
+        StringBuilder sb = new StringBuilder();
+        for(int i=0; i<shopEmployeeVos.size(); i++){
+            if(i == shopEmployeeVos.size()-1){
+                sb.append(shopEmployeeVos.get(i).getEmpid());
+            }else {
+                sb.append(shopEmployeeVos.get(i).getEmpid() +  ",");
+            }
+        }
+        return sb.toString();
     }
 
     /**
@@ -372,6 +426,7 @@ public class TeamEditActivity extends Activity implements IMessageObserver{
                 try {
                     JSONObject jsonObject = new JSONObject(jsonResult);
                     if (jsonObject.getBoolean("set")) {
+                        DialogUtil.getInstance().showProgressDialog(TeamEditActivity.this);
                         TeamContactsController.getInstance().getTeamContacts(
                                 TeamEditActivity.this,
                                 mUserID,
@@ -380,8 +435,12 @@ public class TeamEditActivity extends Activity implements IMessageObserver{
                                 new GetTeamContactsListener() {
                                     @Override
                                     public void getContactsDone(List<TeamContactBean> teamContacts) {
-                                        DialogUtil.getInstance().showCustomToast(TeamEditActivity.this, "getTeamContactsSuccess", Gravity.CENTER);
-                                        //TODO 更新部门成功后更新界面
+                                        List<ShopEmployeeVo> shopEmployeeVos =  ShopEmployeeFactory.getInstance().buildShopEmployees(teamContacts);
+                                        mShopEmployeeVos.removeAll(mShopEmployeeVos);
+                                        mShopEmployeeVos.addAll(shopEmployeeVos);
+                                        mContactsAdapter.updateListView(mShopEmployeeVos);
+                                        DialogUtil.getInstance().showCustomToast(TeamEditActivity.this,
+                                                       "change the department success", Gravity.CENTER);
                                     }
                                 });
                     } else {

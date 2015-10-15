@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.bean.TeamContactBean;
 import com.zkjinshi.superservice.factory.ShopEmployeeFactory;
 import com.zkjinshi.superservice.listener.GetTeamContactsListener;
@@ -52,7 +53,7 @@ public class TeamContactsController {
         this.mActivity = (Activity)context;
     }
 
-    public void getTeamContacts(Context context, String userID,
+    public void getTeamContacts(final Context context, String userID,
                                   String token, final String shopID,
                                   final GetTeamContactsListener listener){
         NetRequest netRequest = new NetRequest(ProtocolUtil.getTeamListUrl());
@@ -66,17 +67,19 @@ public class TeamContactsController {
         netRequestTask.setNetRequestListener(new NetRequestListener() {
             @Override
             public void onNetworkRequestError(int errorCode, String errorMessage) {
+                DialogUtil.getInstance().cancelProgressDialog();
                 Log.i(TAG, "errorCode:" + errorCode);
                 Log.i(TAG, "errorMessage:" + errorMessage);
             }
 
             @Override
             public void onNetworkRequestCancelled() {
-
+                DialogUtil.getInstance().cancelProgressDialog();
             }
 
             @Override
             public void onNetworkResponseSucceed(NetResponse result) {
+                DialogUtil.getInstance().cancelProgressDialog();
                 Log.i(TAG, "result.rawResult:" + result.rawResult);
                 String jsonResult = result.rawResult;
                 if (result.rawResult.contains("set") || jsonResult.contains("err")) {

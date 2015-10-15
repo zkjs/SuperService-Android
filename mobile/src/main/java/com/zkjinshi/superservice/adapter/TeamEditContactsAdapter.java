@@ -78,6 +78,9 @@ public class TeamEditContactsAdapter extends RecyclerView.Adapter<RecyclerView.V
         } else {
             this.mList = list;
         }
+        if(mCheckedMap != null){
+            mCheckedMap.clear();
+        }
         this.notifyDataSetChanged();
     }
 

@@ -28,10 +28,14 @@ import com.zkjinshi.superservice.utils.RandomDrawbleUtil;
 import com.zkjinshi.superservice.view.CircleImageView;
 import com.zkjinshi.superservice.vo.OnlineStatus;
 import com.zkjinshi.superservice.vo.ShopEmployeeVo;
+import com.zkjinshi.superservice.vo.SortModel;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 
 /**
  * 联系人适配器
@@ -109,7 +113,27 @@ public class TeamContactsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             /** 1:显示商家信息 */
             ((ContactViewHolder)holder).tvLetter.setVisibility(View.GONE);
             String shopLogoUrl = ProtocolUtil.getShopLogoUrl(CacheUtil.getInstance().getShopID());
-            ImageLoader.getInstance().displayImage(shopLogoUrl, ((ContactViewHolder) holder).civContactAvatar, options);
+            ImageLoader.getInstance().displayImage(shopLogoUrl, ((ContactViewHolder) holder).civContactAvatar, options, new ImageLoadingListener() {
+                @Override
+                public void onLoadingStarted(String imageUri, View view) {
+                    ((ContactViewHolder) holder).tvContactAvatar.setVisibility(View.VISIBLE);
+                }
+
+                @Override
+                public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+                    ((ContactViewHolder) holder).tvContactAvatar.setVisibility(View.VISIBLE);
+                }
+
+                @Override
+                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                    ((ContactViewHolder) holder).tvContactAvatar.setVisibility(View.GONE);
+                }
+
+                @Override
+                public void onLoadingCancelled(String imageUri, View view) {
+                    ((ContactViewHolder) holder).tvContactAvatar.setVisibility(View.VISIBLE);
+                }
+            });
             ((ContactViewHolder)holder).tvContactName.setText(CacheUtil.getInstance().getShopFullName());
             ((ContactViewHolder)holder).tvContactOnLine.setText("点击消息群发");
         } else {

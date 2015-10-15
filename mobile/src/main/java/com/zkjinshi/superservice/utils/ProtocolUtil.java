@@ -185,6 +185,13 @@ public class ProtocolUtil {
         return ConfigUtil.getInst().getHttpDomain()+"shop/adddept";
     }
 
+    /**
+     * 管理: 批量
+     */
+    public static String getBatchDeleteEmployeeUrl(){
+        return ConfigUtil.getInst().getHttpDomain()+"shop/deletesemp";
+    }
+
 
 
     /**
