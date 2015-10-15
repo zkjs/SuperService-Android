@@ -49,9 +49,6 @@ public class LoginController {
     private static LoginController instance;
     private Context context;
     private Activity activity;
-    private String mUserID;
-    private String mToken;
-    private String mShopID;
 
     public static synchronized LoginController getInstance(){
         if(null ==  instance){
@@ -64,9 +61,6 @@ public class LoginController {
         this.context = context;
         this.activity = (Activity)context;
 
-        mUserID = CacheUtil.getInstance().getUserId();
-        mToken  = CacheUtil.getInstance().getToken();
-        mShopID = CacheUtil.getInstance().getShopID();
     }
 
     /**
@@ -106,8 +100,12 @@ public class LoginController {
                     CacheUtil.getInstance().setShopFullName(sempLoginbean.getFullname());
                     CacheUtil.getInstance().setLoginIdentity(IdentityType.WAITER);
 
-                    getDeptList(mUserID, mToken, mShopID);//获取部门列表
-                    getTeamList(mUserID, mToken, mShopID);//获取团队列表
+                    String userID = CacheUtil.getInstance().getUserId();
+                    String token  = CacheUtil.getInstance().getToken();
+                    String shopiD = CacheUtil.getInstance().getShopID();
+
+                    getDeptList(userID, token, shopiD);//获取部门列表
+                    getTeamList(userID, token, shopiD);//获取团队列表
 
                     DBOpenHelper.DB_NAME = sempLoginbean.getSalesid() + ".db";
                     UserVo userVo = UserFactory.getInstance().buildUserVo(sempLoginbean);
@@ -183,8 +181,12 @@ public class LoginController {
                     CacheUtil.getInstance().setPassword(password);
                     CacheUtil.getInstance().setLogin(true);
 
-                    getDeptList(mUserID, mToken, mShopID);//获取部门列表
-                    getTeamList(mUserID, mToken, mShopID);//获取团队列表
+                    String userID = CacheUtil.getInstance().getUserId();
+                    String token  = CacheUtil.getInstance().getToken();
+                    String shopiD = CacheUtil.getInstance().getShopID();
+
+                    getDeptList(userID, token, shopiD);//获取部门列表
+                    getTeamList(userID, token, shopiD);//获取团队列表
 
                     DBOpenHelper.DB_NAME = adminLoginBean.getUserid() + ".db";
                     UserVo userVo = UserFactory.getInstance().buildUserVo(adminLoginBean);
@@ -260,7 +262,7 @@ public class LoginController {
             }
 
             @Override
-            public void beforeNetworkRequestStart() {
+            public void beforeNetworkRequestStart()     {
                 //网络请求前
             }
         });
