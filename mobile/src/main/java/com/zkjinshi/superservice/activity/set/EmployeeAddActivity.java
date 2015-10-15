@@ -25,6 +25,7 @@ import com.zkjinshi.superservice.net.NetRequest;
 import com.zkjinshi.superservice.net.NetRequestListener;
 import com.zkjinshi.superservice.net.NetRequestTask;
 import com.zkjinshi.superservice.net.NetResponse;
+import com.zkjinshi.superservice.sqlite.ShopDepartmentDBUtil;
 import com.zkjinshi.superservice.sqlite.ShopEmployeeDBUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.JxlUtil;
@@ -137,7 +138,7 @@ public class EmployeeAddActivity extends Activity {
                     InputStream input = ContactsContract.Contacts.openContactPhotoInputStream(resolver, uri);
                     contactPhoto = BitmapFactory.decodeStream(input);
                 }else {
-                    contactPhoto = BitmapFactory.decodeResource(getResources(), R.drawable.img_hotel_zhanwei);
+                    //contactPhoto = BitmapFactory.decodeResource(getResources(), R.drawable.img_hotel_zhanwei);
                 }
 
                 ContactLocalVo contactLocalVo = new ContactLocalVo();
@@ -264,6 +265,8 @@ public class EmployeeAddActivity extends Activity {
                         }.getType());
                         if (dlist != null && deptList.size() > 0) {
                             deptList = dlist;
+                            ShopDepartmentDBUtil.getInstance().batchAddShopDepartments(deptList);
+
                             for (ShopEmployeeVo shopEmployeeVo : excelList) {
                                 for (DepartmentVo departmentVo : deptList) {
                                     if (shopEmployeeVo.getDept_name().equals(departmentVo.getDept_name())) {
@@ -294,23 +297,37 @@ public class EmployeeAddActivity extends Activity {
     //汇总要添加的成员
     private void summaryEmployees(){
         allList.clear();
+        HashMap<String,String> map = new HashMap<String,String>();
+        //汇总手动添加的新成员
+        if(handEmployeeVo != null){
+            if(!TextUtils.isEmpty(handEmployeeVo.getPhone()) && !map.containsKey(handEmployeeVo.getPhone())){
+                allList.add(handEmployeeVo);
+                map.put(handEmployeeVo.getPhone(),handEmployeeVo.getPhone());
+            }
+        }
+
+        //汇总导入的Excel
+        if( excelList != null && excelList.size() > 0){
+            for(ShopEmployeeVo shopEmployeeVo : excelList){
+                if(!TextUtils.isEmpty(shopEmployeeVo.getPhone()) && !map.containsKey(shopEmployeeVo.getPhone())){
+                    allList.add(shopEmployeeVo);
+                    map.put(shopEmployeeVo.getPhone(),shopEmployeeVo.getPhone());
+                }
+            }
+        }
         //汇总要上传的手机联系人
         for(ContactLocalVo contactLocalVo : contactLocalList){
             if(contactLocalVo.isHasAdd()){
                 ShopEmployeeVo shopEmployeeVo = new ShopEmployeeVo();
                 shopEmployeeVo.setPhone(contactLocalVo.getPhoneNumber());
                 shopEmployeeVo.setName(contactLocalVo.getContactName());
-                allList.add(shopEmployeeVo);
+                if(!TextUtils.isEmpty(shopEmployeeVo.getPhone()) && !map.containsKey(shopEmployeeVo.getPhone())){
+                    allList.add(shopEmployeeVo);
+                    map.put(shopEmployeeVo.getPhone(),shopEmployeeVo.getPhone());
+                }
             }
         }
-        //汇总手动添加的新成员
-        if(handEmployeeVo != null){
-            allList.add(handEmployeeVo);
-        }
-        //汇总导入的Excel
-        if( excelList != null && excelList.size() > 0){
-            allList.addAll(excelList);
-        }
+        map = null;
     }
 
     // 批量上传新建的成员
@@ -349,13 +366,16 @@ public class EmployeeAddActivity extends Activity {
             public void onNetworkResponseSucceed(NetResponse result) {
                 Log.i(TAG, "result.rawResult:" + result.rawResult);
                 try{
-                    BaseBean baseBean = new Gson().fromJson(result.rawResult,BaseBean.class);
-                    if(baseBean.isSet()){
+                    ArrayList<ShopEmployeeVo> dlist = new Gson().fromJson(result.rawResult, new TypeToken<ArrayList<ShopEmployeeVo>>() {
+                    }.getType());
+
+                    if(dlist != null && dlist.size() > 0){
+                        //ShopEmployeeDBUtil.getInstance().batchAddShopEmployees(dlist);
                         DialogUtil.getInstance().showToast(EmployeeAddActivity.this,"添加成员成功");
+                        setResult(RESULT_OK);
                         finish();
-                    }else{
-                        Log.e(TAG,baseBean.getErr());
                     }
+
                 }catch (Exception e){
                     Log.e(TAG,e.getMessage());
                 }
@@ -383,7 +403,7 @@ public class EmployeeAddActivity extends Activity {
             }else if (HAND_REQUEST_CODE == requestCode) {
                 if (null != data) {
                     handEmployeeVo = (ShopEmployeeVo)data.getSerializableExtra(EmployeeHandAddActivity.CREATE_RESULT);
-                    handText.setText(handEmployeeVo.getName());
+                    handText.setText(handEmployeeVo.getName()+","+handEmployeeVo.getPhone());
                 }
             }
         }

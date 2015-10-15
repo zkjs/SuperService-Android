@@ -26,6 +26,7 @@ import com.zkjinshi.base.net.protocol.ProtocolMSG;
 import com.zkjinshi.base.util.Constants;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.base.util.DisplayUtil;
+import com.zkjinshi.filechoser.activity.FileListActivity;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.adapter.TeamContactsAdapter;
 import com.zkjinshi.superservice.bean.TeamContactBean;
@@ -67,6 +68,8 @@ import java.util.Map;
 public class TeamContactsActivity extends AppCompatActivity implements IMessageObserver{
 
     private final static String TAG = TeamContactsActivity.class.getSimpleName();
+
+    public static final int ADD_REQUEST_CODE = 1;
 
     private Toolbar         mToolbar;
     private TextView        mTvCenterTitle;
@@ -229,7 +232,7 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
 
                     case R.id.menu_team_jia:
                         Intent intent = new Intent(TeamContactsActivity.this, EmployeeAddActivity.class);
-                        startActivity(intent);
+                        startActivityForResult(intent,ADD_REQUEST_CODE);
                         overridePendingTransition(R.anim.activity_new, R.anim.activity_out);
                         break;
 
@@ -242,6 +245,7 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
                 return true;
             }
         });
+
 
         mAutoSideBar.setOnTouchingLetterChangedListener(new AutoSideBar.OnTouchingLetterChangedListener() {
             @Override
@@ -259,6 +263,15 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
                 DialogUtil.getInstance().showCustomToast(TeamContactsActivity.this, "TODO:进入客户聊天界面", Gravity.CENTER);
             }
         });
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (RESULT_OK == resultCode) {
+            if (ADD_REQUEST_CODE == requestCode) {
+                //刷新操作
+            }
+        }
     }
 
     @Override

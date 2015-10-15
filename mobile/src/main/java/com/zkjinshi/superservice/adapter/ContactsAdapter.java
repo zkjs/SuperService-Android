@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.bean.ZoneBean;
+import com.zkjinshi.superservice.utils.RandomDrawbleUtil;
 import com.zkjinshi.superservice.view.CircleImageView;
 import com.zkjinshi.superservice.vo.ContactLocalVo;
 import com.zkjinshi.superservice.vo.ShopEmployeeVo;
@@ -67,6 +68,7 @@ public class ContactsAdapter extends BaseAdapter{
             convertView = mInflater.inflate(R.layout.item_employee_contact, null);
             holder = new ViewHolder();
             holder.avatar = (CircleImageView)convertView.findViewById(R.id.avatar_civ);
+            holder.avatarText = (TextView)convertView.findViewById(R.id.avatar_tv);
             holder.name = (TextView)convertView.findViewById(R.id.tv_name);
             holder.check      = (ImageView)convertView.findViewById(R.id.iv_check);
             holder.phone = (TextView)convertView.findViewById(R.id.tv_phone);
@@ -76,7 +78,19 @@ public class ContactsAdapter extends BaseAdapter{
         }
 
         ContactLocalVo contactLocalVo = contactLocalList.get(position);
-        holder.avatar.setImageBitmap(contactLocalVo.getContactPhoto());
+        if(contactLocalVo.getPhotoid() > 0){
+            holder.avatarText.setVisibility(View.GONE);
+            holder.avatar.setImageBitmap(contactLocalVo.getContactPhoto());
+        }else{
+            holder.avatarText.setVisibility(View.VISIBLE);
+            String nameIndex = contactLocalVo.getContactName().substring(0,1);
+            if(!nameIndex.equals( holder.avatarText.getText())){
+                holder.avatarText.setText(nameIndex);
+                holder.avatarText.setBackgroundResource(RandomDrawbleUtil.getRandomDrawable());
+            }
+
+        }
+
         holder.name.setText(contactLocalVo.getContactName());
         holder.phone.setText(contactLocalVo.getPhoneNumber());
         if(contactLocalVo.isHasAdd()){
@@ -102,6 +116,7 @@ public class ContactsAdapter extends BaseAdapter{
     /*存放控件*/
     public final class ViewHolder{
         public CircleImageView avatar;
+        public TextView avatarText;
         public TextView  name;
         public TextView  phone;
         public ImageView check;
