@@ -74,5 +74,6 @@
     <string name="online">在线</string>
     <string name="last_online_time">上一次在线时间</string>
     <string name="team">团队</string>
+    <string name="client_detail">客户详情</string>
 
 </resources>

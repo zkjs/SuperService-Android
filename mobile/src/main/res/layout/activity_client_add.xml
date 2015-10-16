@@ -6,29 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <RelativeLayout
-        android:textColor="@android:color/white"
-        android:background="@android:color/holo_blue_light"
-        android:layout_width="match_parent"
-        android:layout_height="50dp">
-
-        <ImageButton
-            android:id="@+id/ibtn_back"
-            android:layout_marginLeft="10dp"
-            android:layout_centerVertical="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/ic_fanhui" />
-
-        <TextView
-            android:id="@+id/ibtn_title"
-            android:layout_width="match_parent"
-            android:gravity="center"
-            android:text="@string/my_clients"
-            android:textColor="@android:color/white"
-            android:layout_height="50dp" />
-
-    </RelativeLayout>
+    <include layout="@layout/activity_title"></include>
 
     <LinearLayout
         android:padding="40dp"

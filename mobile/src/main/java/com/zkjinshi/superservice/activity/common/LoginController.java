@@ -278,5 +278,4 @@ public class LoginController {
         netRequestTask.execute();
     }
 
-
 }

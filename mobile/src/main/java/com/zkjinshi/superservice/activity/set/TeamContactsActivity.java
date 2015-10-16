@@ -81,8 +81,9 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
     private LinearLayoutManager     mLayoutManager;
     private TeamContactsAdapter     mTeamContactAdapter;
 
-    private List<ShopEmployeeVo>   mShopEmployeeVos;
-    private ShopEmployeeVo         mFirstShopEmployee;
+    private List<ShopEmployeeVo>    mShopEmployeeVos;
+    private ShopEmployeeVo          mFirstShopEmployee;
+    private GetTeamContactsListener mContactsListener;
 
     private String mUserID;
     private String mShopID;
@@ -147,73 +148,70 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
         mRvTeamContacts.setAdapter(mTeamContactAdapter);
 
         //TODO: 1.服务器获得最近 5位联系人列表的客户列表
-
     }
 
     private void initListener() {
         //get team list
-        TeamContactsController.getInstance().getTeamContacts(
-                TeamContactsActivity.this,
-                mUserID,
-                mToken,
-                mShopID,
-                new GetTeamContactsListener() {
-                    @Override
-                    public void getContactsDone(List<TeamContactBean> teamContacts) {
-                        List<ShopEmployeeVo> shopEmployeeVos = ShopEmployeeFactory.getInstance().
-                                                                buildShopEmployees(teamContacts);
-                        System.out.print("shopEmployeeVos:"+shopEmployeeVos);
-                        List<String> strLetters = null;//首字母显示数组
-                        List<String> empids     = null;//员工ID数组
-                        if (null != shopEmployeeVos && !shopEmployeeVos.isEmpty()) {
+        mContactsListener = new GetTeamContactsListener() {
+            @Override
+            public void getContactsDone(List<TeamContactBean> teamContacts) {
+                List<ShopEmployeeVo> shopEmployeeVos = ShopEmployeeFactory.getInstance().
+                        buildShopEmployees(teamContacts);
+                List<String> strLetters = null;//首字母显示数组
+                List<String> empids     = null;//员工ID数组
+                if (null != shopEmployeeVos && !shopEmployeeVos.isEmpty()) {
 
-                            strLetters = new ArrayList<String>();
-                            empids = new ArrayList<>();
-                            for (ShopEmployeeVo shopEmployeeVo : shopEmployeeVos) {
-                                shopEmployeeVo.setShop_id(mShopID);
-                                ShopEmployeeDBUtil.getInstance().addShopEmployee(shopEmployeeVo);
-                                mShopEmployeeVos.add(shopEmployeeVo);
+                    strLetters = new ArrayList<String>();
+                    empids = new ArrayList<>();
+                    for (ShopEmployeeVo shopEmployeeVo : shopEmployeeVos) {
+                        shopEmployeeVo.setShop_id(mShopID);
+                        ShopEmployeeDBUtil.getInstance().addShopEmployee(shopEmployeeVo);
+                        mShopEmployeeVos.add(shopEmployeeVo);
 
-                                empids.add(shopEmployeeVo.getEmpid());
-                                String deptID   = shopEmployeeVo.getDept_id()+"";
-                                String deptName = shopEmployeeVo.getDept_name();
-                                String sortLetter = null;
-                                if(!TextUtils.isEmpty(deptName)){
-                                    sortLetter = deptName.substring(0, 1);
-                                }else {
-                                    sortLetter = deptID.substring(0, 1);
-                                }
-
-                                //部门分类并消除相同部门
-                                if (!TextUtils.isEmpty(sortLetter) && !strLetters.contains(sortLetter)) {
-                                    strLetters.add(sortLetter);
-                                } else {
-                                    continue;
-                                }
-                            }
-
-                            String[] sortArray = strLetters.toArray(new String[strLetters.size()]);
-                            if (sortArray.length > 0) {
-                                mAutoSideBar.setSortArray(sortArray);
-                                mRlSideBar.addView(mAutoSideBar);
-                            }
-
-                            mTeamContactAdapter.updateListView(mShopEmployeeVos);
+                        empids.add(shopEmployeeVo.getEmpid());
+                        String deptID   = shopEmployeeVo.getDept_id()+"";
+                        String deptName = shopEmployeeVo.getDept_name();
+                        String sortLetter = null;
+                        if(!TextUtils.isEmpty(deptName)){
+                            sortLetter = deptName.substring(0, 1);
+                        }else {
+                            sortLetter = deptID.substring(0, 1);
                         }
 
-                        //发送查询客户是否在线请求
-                        MsgEmpStatus msgEmpStatus = new MsgEmpStatus();
-                        msgEmpStatus.setType(ProtocolMSG.MSG_ShopEmpStatus);
-                        msgEmpStatus.setTimestamp(System.currentTimeMillis());
-                        msgEmpStatus.setShopid(mShopID);
-                        msgEmpStatus.setEmps(empids);
-
-                        Gson gson = new Gson();
-                        String jsonMsgEmpStatus = gson.toJson(msgEmpStatus, MsgEmpStatus.class);
-                        LogUtil.getInstance().info(LogLevel.INFO, "jsonMsgEmpStatus:"+jsonMsgEmpStatus);
-                        WebSocketManager.getInstance().sendMessage(jsonMsgEmpStatus);
+                        //部门分类并消除相同部门
+                        if (!TextUtils.isEmpty(sortLetter) && !strLetters.contains(sortLetter)) {
+                            strLetters.add(sortLetter);
+                        } else {
+                            continue;
+                        }
                     }
-                });
+
+                    String[] sortArray = strLetters.toArray(new String[strLetters.size()]);
+                    if (sortArray.length > 0) {
+                        mAutoSideBar.setSortArray(sortArray);
+                        mRlSideBar.addView(mAutoSideBar);
+                    }
+
+                    mTeamContactAdapter.updateListView(mShopEmployeeVos);
+                }
+
+                //发送查询客户是否在线请求
+                MsgEmpStatus msgEmpStatus = new MsgEmpStatus();
+                msgEmpStatus.setType(ProtocolMSG.MSG_ShopEmpStatus);
+                msgEmpStatus.setTimestamp(System.currentTimeMillis());
+                msgEmpStatus.setShopid(mShopID);
+                msgEmpStatus.setEmps(empids);
+
+                Gson gson = new Gson();
+                String jsonMsgEmpStatus = gson.toJson(msgEmpStatus, MsgEmpStatus.class);
+                LogUtil.getInstance().info(LogLevel.INFO, "jsonMsgEmpStatus:"+jsonMsgEmpStatus);
+                WebSocketManager.getInstance().sendMessage(jsonMsgEmpStatus);
+            }
+        };
+        //获取团队列表
+        TeamContactsController.getInstance().getTeamContacts(
+                TeamContactsActivity.this,
+                mUserID, mToken, mShopID, mContactsListener);
 
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -265,11 +263,15 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
         });
     }
 
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (RESULT_OK == resultCode) {
             if (ADD_REQUEST_CODE == requestCode) {
-                //刷新操作
+                TeamContactsController.getInstance().getTeamContacts(
+                        TeamContactsActivity.this,
+                        mUserID, mToken, mShopID, mContactsListener);
+
             }
         }
     }

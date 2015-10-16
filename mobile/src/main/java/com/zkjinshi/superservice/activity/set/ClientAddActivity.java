@@ -37,6 +37,7 @@ public class ClientAddActivity extends Activity {
 
     private ClientVo        mClient;
     private ImageButton     mIbtnBack;
+    private TextView        mTvTitle;
     private EditText        mEtClientName;
     private TextView        mTvClientPhone;
     private EditText        mEtClientCompany;
@@ -89,6 +90,8 @@ public class ClientAddActivity extends Activity {
 
     private void initView() {
         mIbtnBack           = (ImageButton) findViewById(R.id.ibtn_back);
+        mTvTitle            = (TextView) findViewById(R.id.tv_title);
+        mTvTitle.setText(getString(R.string.add_clients));
         mEtClientName       = (EditText) findViewById(R.id.et_client_name);
         mTvClientPhone      = (TextView) findViewById(R.id.tv_client_phone);
         mEtClientCompany    = (EditText) findViewById(R.id.et_client_company);

@@ -55,6 +55,7 @@ public class ClientDetailActivity extends Activity {
     private String      mShopID;
 
     private ImageButton mIbtnBack;
+    private TextView    mTvTitle;
     private ImageButton mIbtnDianhua;
     private ImageButton mIbtnDuiHua;
     private TextView    mTvMemberName;
@@ -83,6 +84,10 @@ public class ClientDetailActivity extends Activity {
 
     private void initView() {
         mIbtnBack        = (ImageButton)     findViewById(R.id.ibtn_back);
+        mTvTitle         = (TextView)        findViewById(R.id.tv_title);
+
+        mTvTitle.setText(getString(R.string.client_detail));
+
         mCivMemberAvatar = (CircleImageView) findViewById(R.id.civ_member_avatar);
         mTvMemberName    = (TextView)        findViewById(R.id.tv_member_name);
         mTvMemberPhone   = (TextView)        findViewById(R.id.tv_member_phone);

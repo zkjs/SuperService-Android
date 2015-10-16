@@ -28,14 +28,10 @@ import com.zkjinshi.superservice.utils.RandomDrawbleUtil;
 import com.zkjinshi.superservice.view.CircleImageView;
 import com.zkjinshi.superservice.vo.OnlineStatus;
 import com.zkjinshi.superservice.vo.ShopEmployeeVo;
-import com.zkjinshi.superservice.vo.SortModel;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Random;
 
 /**
  * 联系人适配器
@@ -58,9 +54,9 @@ public class TeamContactsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         this.mList    = list;
 
         this.options  = new DisplayImageOptions.Builder()
-                .showImageOnLoading(R.drawable.img_hotel_zhanwei)
-                .showImageForEmptyUri(R.drawable.img_hotel_zhanwei)// 设置图片Uri为空或是错误的时候显示的图片
-                .showImageOnFail(R.drawable.img_hotel_zhanwei)// 设置图片加载或解码过程中发生错误显示的图片
+                .showImageOnLoading(R.color.transparent)
+                .showImageForEmptyUri(R.color.transparent)// 设置图片Uri为空或是错误的时候显示的图片
+                .showImageOnFail(R.color.transparent)// 设置图片加载或解码过程中发生错误显示的图片
                 .cacheInMemory(true) // 设置下载的图片是否缓存在内存中
                 .cacheOnDisk(true) // 设置下载的图片是否缓存在SD卡中
                 .build();
@@ -94,8 +90,9 @@ public class TeamContactsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         ContactViewHolder holder = null;
         if(null == view){
             view = LayoutInflater.from(mContext).inflate(R.layout.item_team_contact, null);
-            view.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT));
+            view.setLayoutParams(new LinearLayout.LayoutParams(
+                                LinearLayout.LayoutParams.MATCH_PARENT,
+                                LinearLayout.LayoutParams.WRAP_CONTENT));
             holder = new ContactViewHolder(view, mRecyclerItemClickListener);
         }else {
             holder = (ContactViewHolder) view.getTag();
@@ -113,28 +110,42 @@ public class TeamContactsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             /** 1:显示商家信息 */
             ((ContactViewHolder)holder).tvLetter.setVisibility(View.GONE);
             String shopLogoUrl = ProtocolUtil.getShopLogoUrl(CacheUtil.getInstance().getShopID());
+            String shopName = CacheUtil.getInstance().getShopFullName();
+
+            if(!TextUtils.isEmpty(shopName)){
+                ((ContactViewHolder) holder).tvContactAvatar.setText(shopName.substring(0, 1));
+                ((ContactViewHolder)holder).tvContactName.setText(shopName);
+            }
+
             ImageLoader.getInstance().displayImage(shopLogoUrl, ((ContactViewHolder) holder).civContactAvatar, options, new ImageLoadingListener() {
                 @Override
                 public void onLoadingStarted(String imageUri, View view) {
+                    ((ContactViewHolder) holder).civContactAvatar.setVisibility(View.GONE);
                     ((ContactViewHolder) holder).tvContactAvatar.setVisibility(View.VISIBLE);
+                    ((ContactViewHolder) holder).tvContactAvatar.setBackgroundResource(RandomDrawbleUtil.getRandomDrawable());
                 }
 
                 @Override
                 public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+                    ((ContactViewHolder) holder).civContactAvatar.setVisibility(View.GONE);
                     ((ContactViewHolder) holder).tvContactAvatar.setVisibility(View.VISIBLE);
+                    ((ContactViewHolder) holder).tvContactAvatar.setBackgroundResource(RandomDrawbleUtil.getRandomDrawable());
                 }
 
                 @Override
                 public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                    ((ContactViewHolder) holder).tvContactAvatar.setVisibility(View.GONE);
+                    ((ContactViewHolder) holder).civContactAvatar.setVisibility(View.VISIBLE);
+//                    ((ContactViewHolder) holder).tvContactAvatar.setVisibility(View.GONE);
                 }
 
                 @Override
                 public void onLoadingCancelled(String imageUri, View view) {
+                    ((ContactViewHolder) holder).civContactAvatar.setVisibility(View.GONE);
                     ((ContactViewHolder) holder).tvContactAvatar.setVisibility(View.VISIBLE);
+                    ((ContactViewHolder) holder).tvContactAvatar.setBackgroundResource(RandomDrawbleUtil.getRandomDrawable());
                 }
             });
-            ((ContactViewHolder)holder).tvContactName.setText(CacheUtil.getInstance().getShopFullName());
+
             ((ContactViewHolder)holder).tvContactOnLine.setText("点击消息群发");
         } else {
             /** 是否显示首字母  */
@@ -169,36 +180,27 @@ public class TeamContactsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             ImageLoader.getInstance().displayImage(empAvatarUrl, ((ContactViewHolder) holder).civContactAvatar, options, new ImageLoadingListener() {
                 @Override
                 public void onLoadingStarted(String imageUri, View view) {
-                    ((ContactViewHolder)holder).tvContactAvatar.setVisibility(View.VISIBLE);
-                    if(null == ((ContactViewHolder)holder).tvContactAvatar.getBackground()){
-                        ((ContactViewHolder)holder).tvContactAvatar.setBackgroundResource(RandomDrawbleUtil.getRandomDrawable());
-                    }
+
                 }
 
                 @Override
                 public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-                    ((ContactViewHolder)holder).tvContactAvatar.setVisibility(View.VISIBLE);
-                    if(null == ((ContactViewHolder)holder).tvContactAvatar.getBackground()){
-                        ((ContactViewHolder)holder).tvContactAvatar.setBackgroundResource(RandomDrawbleUtil.getRandomDrawable());
-                    }
+                    ((ContactViewHolder) holder).civContactAvatar.setVisibility(View.GONE);
+                    ((ContactViewHolder) holder).tvContactAvatar.setVisibility(View.VISIBLE);
+                    ((ContactViewHolder) holder).tvContactAvatar.setBackgroundResource(RandomDrawbleUtil.getRandomDrawable());
                 }
 
                 @Override
                 public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                    view.setVisibility(View.VISIBLE);
-                    if(((ContactViewHolder)holder).civContactAvatar.getBackground() == null){
-                        ((CircleImageView)view).setImageBitmap(loadedImage);
-                    }
-                    ((ContactViewHolder)holder).tvContactAvatar.setVisibility(View.GONE);
-                    ((ContactViewHolder)holder).tvContactAvatar.setBackgroundDrawable(null);
+                    ((ContactViewHolder) holder).civContactAvatar.setVisibility(View.VISIBLE);
+                    ((ContactViewHolder) holder).tvContactAvatar.setVisibility(View.GONE);
                 }
 
                 @Override
                 public void onLoadingCancelled(String imageUri, View view) {
-                    ((ContactViewHolder)holder).tvContactAvatar.setVisibility(View.VISIBLE);
-                    if(null == ((ContactViewHolder)holder).tvContactAvatar.getBackground()){
-                        ((ContactViewHolder)holder).tvContactAvatar.setBackgroundResource(RandomDrawbleUtil.getRandomDrawable());
-                    }
+                    ((ContactViewHolder) holder).civContactAvatar.setVisibility(View.GONE);
+                    ((ContactViewHolder) holder).tvContactAvatar.setVisibility(View.VISIBLE);
+                    ((ContactViewHolder) holder).tvContactAvatar.setBackgroundResource(RandomDrawbleUtil.getRandomDrawable());
                 }
             });
 

@@ -63,6 +63,7 @@ public class ClientBindActivity extends Activity {
     private String mShopID;
 
     private ImageButton mIbtnBack;
+    private TextView    mTvTitle;
     private ImageButton mIbtnDianhua;
     private ImageButton mIbtnDuiHua;
     private TextView    mTvMemberName;
@@ -90,6 +91,8 @@ public class ClientBindActivity extends Activity {
 
     private void initView() {
         mIbtnBack        = (ImageButton)     findViewById(R.id.ibtn_back);
+        mTvTitle         = (TextView)        findViewById(R.id.tv_title);
+        mTvTitle.setText(getString(R.string.member_bind));
         mCivMemberAvatar = (CircleImageView) findViewById(R.id.civ_member_avatar);
         mTvMemberName    = (TextView)        findViewById(R.id.tv_member_name);
         mTvMemberPhone   = (TextView)        findViewById(R.id.tv_member_phone);
@@ -167,7 +170,7 @@ public class ClientBindActivity extends Activity {
             @Override
             public void onClick(View v) {
                 //TODO: 发起聊天
-                DialogUtil.getInstance().showToast(ClientBindActivity.this, "会话聊天");
+                DialogUtil.getInstance().showToast(ClientBindActivity.this, "TODO: 会话聊天");
             }
         });
 

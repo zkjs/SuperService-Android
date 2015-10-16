@@ -7,8 +7,10 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -44,6 +46,8 @@ public class ClientSelectActivity extends Activity {
     private String          mUserID;
     private String          mToken;
     private String          mShopID;
+    private ImageButton     mIbtnBack;
+    private TextView        mTvTitle;
     private EditText        mEtClientPhone;
 
     private ClientDetailBean        mClientBean;
@@ -59,7 +63,10 @@ public class ClientSelectActivity extends Activity {
     }
 
     private void initView() {
-        mEtClientPhone      = (EditText) findViewById(R.id.et_client_phone);
+        mIbtnBack = (ImageButton) findViewById(R.id.ibtn_back);
+        mTvTitle  = (TextView) findViewById(R.id.tv_title);
+        mTvTitle.setText(getString(R.string.add_clients));
+        mEtClientPhone = (EditText) findViewById(R.id.et_client_phone);
     }
 
     private void initData() {
@@ -69,6 +76,13 @@ public class ClientSelectActivity extends Activity {
     }
 
     private void initListener() {
+        mIbtnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ClientSelectActivity.this.finish();
+            }
+        });
+
         mEtClientPhone.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {

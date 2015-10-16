@@ -90,7 +90,6 @@ public class TeamContactsController {
                             new TypeToken<ArrayList<TeamContactBean>>() {}.getType());
 
                     if (null != teamContactBeans) {
-
                         /** add to local db */
                         List<ShopEmployeeVo> shopEmployeeVos = ShopEmployeeFactory.getInstance().buildShopEmployees(teamContactBeans);
                         for (ShopEmployeeVo shopEmployeeVo : shopEmployeeVos) {
