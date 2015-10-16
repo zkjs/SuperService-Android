@@ -150,8 +150,11 @@ public class EmployeeAddActivity extends Activity {
                 contactLocalVo.setContactPhoto(contactPhoto);
                 contactLocalVo.setPhoneNumber(phoneNumber);
                 contactLocalVo.setPhotoid(photoid);
-                contactLocalVo.setHasAdd(isExsitInEmployeeVoList(phoneNumber));
-                contactLocalList.add(contactLocalVo);
+                if(!isExsitInEmployeeVoList(phoneNumber)){
+                    contactLocalVo.setHasAdd(false);
+                    contactLocalList.add(contactLocalVo);
+                }
+
             }
             phoneCursor.close();
         }
