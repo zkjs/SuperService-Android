@@ -20,13 +20,7 @@ import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-/**
- * 自定义RecyclerView头部View
- * 开发者：JimmyZhang
- * 日期：2015/10/13
- * Copyright (C) 2015 深圳中科金石科技有限公司
- * 版权所有
- */
+
 public class RecyclerViewHeader extends RelativeLayout {
 
     private RecyclerView mRecycler;

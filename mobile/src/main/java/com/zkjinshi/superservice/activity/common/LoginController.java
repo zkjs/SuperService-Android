@@ -9,6 +9,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
+import com.zkjinshi.superservice.activity.notice.LocNoticeController;
 import com.zkjinshi.superservice.activity.set.TeamContactsController;
 import com.zkjinshi.superservice.bean.AdminLoginBean;
 import com.zkjinshi.superservice.bean.SempLoginBean;
@@ -106,11 +107,12 @@ public class LoginController {
                     String token  = CacheUtil.getInstance().getToken();
                     String shopiD = CacheUtil.getInstance().getShopID();
 
-                    getDeptList(userID, token, shopiD);//获取部门列表
-                    //获取团队列表
-                    TeamContactsController.getInstance().getTeamContacts(context, userID, token, shopiD, null);
-
                     DBOpenHelper.DB_NAME = sempLoginbean.getSalesid() + ".db";
+
+                    getDeptList(userID, token, shopiD);//获取部门列表
+                    TeamContactsController.getInstance().getTeamContacts(context, userID, token, shopiD, null);//获取团队列表
+                    LocNoticeController.getInstance().init(context).requestLocTask();//获取区域信息
+
                     UserVo userVo = UserFactory.getInstance().buildUserVo(sempLoginbean);
                     UserDBUtil.getInstance().addUser(userVo);
                     String avatarUrl = Constants.AVATAR_PRE_URL+userVo.getUserId()+".jpg";
@@ -183,16 +185,18 @@ public class LoginController {
                     CacheUtil.getInstance().setLoginIdentity(IdentityType.BUSINESS);
                     CacheUtil.getInstance().setPassword(password);
                     CacheUtil.getInstance().setLogin(true);
+                    CacheUtil.getInstance().setAreaInfo(adminLoginBean.getLocid());
 
                     String userID = CacheUtil.getInstance().getUserId();
                     String token  = CacheUtil.getInstance().getToken();
                     String shopiD = CacheUtil.getInstance().getShopID();
 
-                    getDeptList(userID, token, shopiD);//获取部门列表
-                    //获取团队列表
-                    TeamContactsController.getInstance().getTeamContacts(context, userID, token, shopiD, null);
-
                     DBOpenHelper.DB_NAME = adminLoginBean.getUserid() + ".db";
+
+                    getDeptList(userID, token, shopiD);//获取部门列表
+                    TeamContactsController.getInstance().getTeamContacts(context, userID, token, shopiD, null);//获取团队列表
+                    LocNoticeController.getInstance().init(context).requestLocTask();//获取区域信息
+
                     UserVo userVo = UserFactory.getInstance().buildUserVo(adminLoginBean);
                     UserDBUtil.getInstance().addUser(userVo);
                     String avatarUrl = ProtocolUtil.getShopLogoUrl(adminLoginBean.getShopid());
@@ -270,7 +274,7 @@ public class LoginController {
                 //网络请求前
             }
         });
-        netRequestTask.isShowLoadingDialog = true;
+        netRequestTask.isShowLoadingDialog = false;
         netRequestTask.execute();
     }
 

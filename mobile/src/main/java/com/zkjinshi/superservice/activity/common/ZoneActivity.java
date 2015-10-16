@@ -106,7 +106,6 @@ public class ZoneActivity extends Activity implements SwipeRefreshLayout.OnRefre
                 ArrayList<ZoneBean> zoneList = new Gson().fromJson(result.rawResult, new TypeToken< ArrayList<ZoneBean>>(){}.getType());
                 zoneAdapter = new ZoneAdapter(ZoneActivity.this, zoneList);
                 zoneLv.setAdapter(zoneAdapter);
-                ZoneDBUtil.getInstance().batchAddZone(zoneList);
             }
 
             @Override

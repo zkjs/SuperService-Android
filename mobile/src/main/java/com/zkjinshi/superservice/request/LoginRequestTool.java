@@ -37,11 +37,7 @@ public class LoginRequestTool {
         msgClientLogin.setPlatform("");
         msgClientLogin.setAppid("");
         msgClientLogin.setShopid("120");//TODO JimmyZhang 写死，后期需要做修改
-        if(CacheUtil.getInstance().getLoginIdentity().equals(IdentityType.WAITER)){
-            msgClientLogin.setLoc(CacheUtil.getInstance().getAreaInfo());
-        }else{
-            msgClientLogin.setLoc("1,3,2,6");
-        }
+        msgClientLogin.setLoc(CacheUtil.getInstance().getAreaInfo());//"1,3,2,6"
         msgClientLogin.setRoleid(1);//TODO JimmyZhang 写死，后期需要做修改
         return msgClientLogin;
     }
