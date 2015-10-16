@@ -235,7 +235,19 @@ public class ShopEmployeeDBUtil {
      * 根据员工ID进行本地数据库的删除
      * @param empid
      */
-    public void deleteShopEmployeeByEmpID(String empid) {
-
+    public long deleteShopEmployeeByEmpID(String empid) {
+        SQLiteDatabase db = null;
+        long delResult = -1;
+        try {
+            db = helper.getWritableDatabase();
+            delResult = db.delete(DBOpenHelper.SHOP_EMPLOYEE_TBL, " empid = ? ", new String[]{empid});
+        } catch (Exception e) {
+            LogUtil.getInstance().info(LogLevel.ERROR,TAG+".deleteShopEmployeeByEmpID->"+e.getMessage());
+            e.printStackTrace();
+        }finally{
+            if(null != db)
+                db.close();
+        }
+        return delResult;
     }
 }

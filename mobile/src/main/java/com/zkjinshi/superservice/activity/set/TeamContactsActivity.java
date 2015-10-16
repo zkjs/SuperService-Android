@@ -168,6 +168,7 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
         }
 
         //获取团队列表
+        DialogUtil.getInstance().showProgressDialog(TeamContactsActivity.this);
         TeamContactsController.getInstance().getTeamContacts(
                 TeamContactsActivity.this,
                 mUserID, mToken, mShopID, new GetTeamContactsListener() {

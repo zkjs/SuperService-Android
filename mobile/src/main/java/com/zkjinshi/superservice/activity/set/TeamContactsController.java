@@ -109,7 +109,7 @@ public class TeamContactsController {
                 //网络请求前
             }
         });
-        netRequestTask.isShowLoadingDialog = true;
+        netRequestTask.isShowLoadingDialog = false;
         netRequestTask.execute();
     }
 }
