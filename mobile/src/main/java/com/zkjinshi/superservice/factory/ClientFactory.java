@@ -7,6 +7,7 @@ import com.zkjinshi.superservice.bean.ClientDetailBean;
 import com.zkjinshi.superservice.vo.ClientVo;
 import com.zkjinshi.superservice.vo.ContactType;
 import com.zkjinshi.superservice.vo.IsBill;
+import com.zkjinshi.superservice.vo.OnlineStatus;
 import com.zkjinshi.superservice.vo.SexType;
 
 import java.util.ArrayList;
@@ -123,6 +124,7 @@ public class ClientFactory {
             client.setSex(getSexType(cursor.getInt(20)));
             client.setOrder_count(cursor.getInt(21));
             client.setTags(cursor.getString(22));
+            client.setIsOnline(getOnlineStatus(cursor.getInt(23)));
         return  client;
     }
 
@@ -238,6 +240,7 @@ public class ClientFactory {
         values.put("sex", client.getSex().getVlaue());
         values.put("order_count", client.getOrder_count());
         values.put("tags", client.getTags());
+        values.put("online_status", client.getIsOnline().getValue());
         return values;
     }
 
@@ -273,4 +276,10 @@ public class ClientFactory {
     private SexType getSexType(int sexType){
         return sexType == SexType.MALE.getVlaue()? SexType.MALE : SexType.FEMALE;
     }
+
+
+    private OnlineStatus getOnlineStatus(int onlineStatus) {
+        return onlineStatus == OnlineStatus.OFFLINE.getValue() ? OnlineStatus.OFFLINE : OnlineStatus.ONLINE;
+    }
+
 }

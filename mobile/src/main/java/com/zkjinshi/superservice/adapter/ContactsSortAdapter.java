@@ -1,11 +1,7 @@
 package com.zkjinshi.superservice.adapter;
 
-import android.content.ContentUris;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
-import android.provider.ContactsContract;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -20,11 +16,10 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.listener.RecyclerItemClickListener;
-import com.zkjinshi.superservice.vo.ContactType;
+import com.zkjinshi.superservice.vo.OnlineStatus;
 import com.zkjinshi.superservice.vo.SortModel;
 import com.zkjinshi.superservice.view.CircleImageView;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -80,30 +75,17 @@ public class ContactsSortAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = null;
-        ServerViewHolder serverHolder = null;
-
-//        if(ContactType.LOCAL.getValue() == viewType){
-//            //本地联系人
-//            View view = LayoutInflater.from(mContext).inflate(R.layout.item_contact_local, null);
-//            //设置条目宽度满足屏幕
-//            view.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-//                    LinearLayout.LayoutParams.WRAP_CONTENT));
-//            LocalViewHolder localHolder = new LocalViewHolder(view, mRecyclerItemClickListener);
-//            return localHolder;
-//        } else {
-            //服务器我的客人
-        //        }
+        ClientViewHolder clientHolder = null;
         if(view == null){
-            view = LayoutInflater.from(mContext).inflate(R.layout.item_contact_server, null);
+            view = LayoutInflater.from(mContext).inflate(R.layout.item_my_cilent, null);
             //设置条目宽度满足屏幕
             view.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                                                              LinearLayout.LayoutParams.WRAP_CONTENT));
-            serverHolder = new ServerViewHolder(view, mRecyclerItemClickListener);
+                                                               LinearLayout.LayoutParams.WRAP_CONTENT));
+            clientHolder = new ClientViewHolder(view, mRecyclerItemClickListener);
         } else {
-            serverHolder = (ServerViewHolder) view.getTag();
+            clientHolder = (ClientViewHolder) view.getTag();
         }
-
-        return serverHolder;
+        return clientHolder;
     }
 
     @Override
@@ -111,57 +93,41 @@ public class ContactsSortAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         //根据position获取分类的首字母的Char ascii值
         SortModel sortModel = mList.get(position);
         int section = getSectionForPosition(position);
-//        if(sortModel.getContactType() == ContactType.LOCAL){
-//            //如果当前位置等于该分类首字母的Char的位置 ，则认为是第一次出现
-//            if (position == getPositionForSection(section)) {
-//                ((LocalViewHolder)holder).tvLetter.setVisibility(View.VISIBLE);
-//                ((LocalViewHolder)holder).tvLetter.setText(sortModel.getSortLetters());
-//            } else {
-//                ((LocalViewHolder)holder).tvLetter.setVisibility(View.GONE);
-//            }
-//
-//            long contactID = sortModel.getContactID();
-//            Uri uri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, contactID);
-//            InputStream input = ContactsContract.Contacts.openContactPhotoInputStream(
-//                    mContext.getContentResolver(), uri);
-//            Bitmap contactBitmap = BitmapFactory.decodeStream(input);
-//            if(null != contactBitmap){
-//                ((LocalViewHolder)holder).civContactAvatar.setImageBitmap(contactBitmap);
-//            } else {
-//                ((LocalViewHolder)holder).civContactAvatar.setImageBitmap(BitmapFactory.decodeResource(
-//                        mContext.getResources(),
-//                        R.mipmap.ic_main_user_default_photo_nor));
-//            }
-//            ((LocalViewHolder)holder).tvContactName.setText(this.mList.get(position).getName());
-//            ((LocalViewHolder)holder).tvContactPhone.setText(this.mList.get(position).getNumber());
-//        } else {
-//        }
-
         //是否显示首字母
         if (position == getPositionForSection(section)) {
-            ((ServerViewHolder)holder).tvLetter.setVisibility(View.VISIBLE);
+            ((ClientViewHolder)holder).tvLetter.setVisibility(View.VISIBLE);
             String sortLetter = sortModel.getSortLetters();
             if("?".equals(sortLetter)){
-                ((ServerViewHolder)holder).tvLetter.setText(mContext.getString(R.string.latest_contact));
+                ((ClientViewHolder)holder).tvLetter.setText(mContext.getString(R.string.latest_contact));
             }else {
-                ((ServerViewHolder)holder).tvLetter.setText(sortModel.getSortLetters());
+                ((ClientViewHolder)holder).tvLetter.setText(sortModel.getSortLetters());
             }
         } else {
-            ((ServerViewHolder)holder).tvLetter.setVisibility(View.GONE);
+            ((ClientViewHolder)holder).tvLetter.setVisibility(View.GONE);
         }
 
         //根据url显示图片
         String avatarUrl = sortModel.getAvatarUrl();
-        ImageLoader.getInstance().displayImage(avatarUrl, ((ServerViewHolder)holder).civContactAvatar, options);
+        ImageLoader.getInstance().displayImage(avatarUrl, ((ClientViewHolder)holder).civContactAvatar, options);
 
         //显示客户名称
         String clientName = sortModel.getName();
         if(!TextUtils.isEmpty(clientName)){
             //去除wen
             if("?".equals(clientName.trim().substring(0, 1))){
-                ((ServerViewHolder)holder).tvContactName.setText(clientName.substring(1));
+                ((ClientViewHolder)holder).tvContactName.setText(clientName.substring(1));
             }
-            ((ServerViewHolder)holder).tvContactName.setText(this.mList.get(position).getName());
+            ((ClientViewHolder)holder).tvContactName.setText(this.mList.get(position).getName());
+        }
+
+
+        //设置显示在线状态时间
+        if(sortModel.getIsOnLine() == OnlineStatus.ONLINE) {
+            ((ClientViewHolder)holder).tvContactOnLine.setTextColor(Color.BLUE);
+            ((ClientViewHolder)holder).tvContactOnLine.setText(mContext.getString(R.string.online));
+        } else {
+            ((ClientViewHolder)holder).tvContactOnLine.setTextColor(Color.GRAY);
+            ((ClientViewHolder)holder).tvContactOnLine.setText(mContext.getString(R.string.offline));
         }
 
         //TODO 1.显示客户订单描述
@@ -169,42 +135,11 @@ public class ContactsSortAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         holder.itemView.setTag(sortModel);
     }
 
-    @Override
-    public int getItemViewType(int position) {
-        return mList.get(position).getContactType().getValue();
-    }
-
     public void setOnItemClickListener(RecyclerItemClickListener listener) {
         this.mRecyclerItemClickListener = listener;
     }
 
-//    public static class LocalViewHolder extends RecyclerView.ViewHolder{
-//
-//        public TextView         tvLetter;
-//        public CircleImageView  civContactAvatar;
-//        public TextView         tvContactName;
-//        public TextView         tvContactPhone;
-//
-//        private RecyclerItemClickListener mItemClickListener;
-//
-//        public LocalViewHolder(View view, RecyclerItemClickListener itemClickListener) {
-//            super(view);
-//            tvLetter         = (TextView) view.findViewById(R.id.catalog);
-//            civContactAvatar = (CircleImageView) view.findViewById(R.id.civ_contact_avatar);
-//            tvContactName    = (TextView) view.findViewById(R.id.tv_contact_name);
-//            tvContactPhone   = (TextView) view.findViewById(R.id.tv_contact_phone);
-//
-//            this.mItemClickListener = itemClickListener;
-//            view.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    mItemClickListener.onItemClick(v, getPosition());
-//                }
-//            });
-//        }
-//    }
-
-    public static class ServerViewHolder extends RecyclerView.ViewHolder{
+    public static class ClientViewHolder extends RecyclerView.ViewHolder{
 
         public TextView         tvLetter;
         public CircleImageView  civContactAvatar;
@@ -218,7 +153,7 @@ public class ContactsSortAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
         private RecyclerItemClickListener mItemClickListener;
 
-        public ServerViewHolder(View view, RecyclerItemClickListener itemClickListener) {
+        public ClientViewHolder(View view, RecyclerItemClickListener itemClickListener) {
             super(view);
             tvLetter         = (TextView) view.findViewById(R.id.catalog);
             civContactAvatar = (CircleImageView) view.findViewById(R.id.civ_contact_avatar);

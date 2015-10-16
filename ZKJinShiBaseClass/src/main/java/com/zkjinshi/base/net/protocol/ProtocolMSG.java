@@ -189,9 +189,13 @@ public class ProtocolMSG {
     public static int MSG_ShopConf_letter = 126;
     public static int MSG_ShopConf_letter_RSP = 127;
 
-    //客户会员卡信息
-    public static int MSG_ShopSendUsercard_loc = 128;
-    public static int MSG_ShopSendUsercard_emp = 129;
+    //客户是否在线状态
+    public static int MSG_UserOnlineStatus = 128;
+    public static int MSG_UserOnlineStatus_RSP = 129;
+
+//    客户会员卡信息
+//    public static int MSG_ShopSendUsercard_loc = 128;
+//    public static int MSG_ShopSendUsercard_emp = 129;
     public static int MSG_ShopSendUsercard_RSP = 130;
 
     //将客人userid转发给员工

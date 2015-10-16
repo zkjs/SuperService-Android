@@ -123,7 +123,6 @@ public class SortModelFactory {
      * @param clientVos
      */
     public List <SortModel> convertClientVos2SortModels(List<ClientVo> clientVos) {
-
         List <SortModel> sortModels = null;
         if(!clientVos.isEmpty()){
             sortModels = new ArrayList<>();
@@ -141,15 +140,16 @@ public class SortModelFactory {
      * @param clientVo
      * @return
      */
-    private SortModel buildSortModelByMyClientVo(ClientVo clientVo) {
+    public SortModel buildSortModelByMyClientVo(ClientVo clientVo) {
 
-        String userID   = clientVo.getUserid();
+        String clientID = clientVo.getUserid();
         String userName = clientVo.getUsername();
 
         SortModel sortModel = new SortModel();
         sortModel.setContactType(clientVo.getContactType());
+
         sortModel.setName(userName);
-        if(!TextUtils.isEmpty(userID)){
+        if(!TextUtils.isEmpty(clientID)){
             sortModel.setAvatarUrl(ProtocolUtil.getAvatarUrl(clientVo.getUserid()));
         }
         sortModel.setNumber(clientVo.getPhone());
@@ -158,50 +158,10 @@ public class SortModelFactory {
         String sortLetters = SortKeyUtil.getSortLetter(userName, CharacterParser.getInstance());
         sortModel.setSortLetters(sortLetters);
         sortModel.setSortToken(SortKeyUtil.parseSortKey(userName));
+
+        sortModel.setClientID(clientID);
+        sortModel.setIsOnLine(clientVo.getIsOnline());
         return sortModel;
     }
 
-    /**
-     * 将团队客户对象转换成排序对象
-     * @param teamContactBeans
-     * @return
-     */
-    public List<SortModel> convertTeamContacts2SortModels(List<TeamContactBean> teamContactBeans) {
-        List <SortModel> sortModels = null;
-
-        if(!teamContactBeans.isEmpty()){
-            sortModels = new ArrayList<>();
-            for(TeamContactBean teamContact : teamContactBeans){
-                SortModel sortModel = buildSortModelByTeamContactBean(teamContact);
-                sortModels.add(sortModel);
-            }
-        }
-        return sortModels;
-    }
-
-    /**
-     * 构建排序对象
-     * @param teamContact
-     * @return
-     */
-    private SortModel buildSortModelByTeamContactBean(TeamContactBean teamContact) {
-
-        String userID   = teamContact.getSalesid();
-        String userName = teamContact.getName();
-        String phone    = teamContact.getPhone();
-        String roleName = teamContact.getRole_name();
-
-        SortModel sortModel = new SortModel();
-        sortModel.setContactType(ContactType.NORMAL);
-        sortModel.setName(userName);
-        if(!TextUtils.isEmpty(userID)){
-            sortModel.setAvatarUrl(ProtocolUtil.getAvatarUrl(teamContact.getSalesid()));
-        }
-        sortModel.setNumber(phone);
-        sortModel.setSortKey(userName);
-
-        sortModel.setSortLetters(roleName); //此处为角色部门全称
-        sortModel.setSortToken(SortKeyUtil.parseSortKey(userName));
-        return sortModel;
-    }
 }
