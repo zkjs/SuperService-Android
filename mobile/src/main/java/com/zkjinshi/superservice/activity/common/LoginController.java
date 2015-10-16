@@ -209,10 +209,16 @@ public class LoginController {
 
                 } else {
                     DialogUtil.getInstance().showToast(activity, "密码或者手机号不对 ");
-                    Intent intent = new Intent(activity, ShopLoginActivity.class);
-                    activity.startActivity(intent);
-                    activity.finish();
-                    activity.overridePendingTransition(R.anim.activity_new, R.anim.activity_out);
+                    if(activity instanceof ShopLoginActivity){
+
+                    }else{
+                        Intent intent = new Intent(activity, ShopLoginActivity.class);
+                        activity.startActivity(intent);
+                        activity.finish();
+                        activity.overridePendingTransition(R.anim.activity_new, R.anim.activity_out);
+                    }
+
+
                 }
 
             }
