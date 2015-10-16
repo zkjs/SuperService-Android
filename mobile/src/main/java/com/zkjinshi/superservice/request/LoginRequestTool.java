@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import com.zkjinshi.base.net.protocol.ProtocolMSG;
 import com.zkjinshi.superservice.entity.MsgClientLogin;
 import com.zkjinshi.superservice.utils.CacheUtil;
+import com.zkjinshi.superservice.vo.IdentityType;
 
 /**
  * 登录请求帮助类
