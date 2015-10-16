@@ -122,8 +122,9 @@ public class OrderAdapter extends RecyclerView.Adapter {
         String orderStatusStr = "";
         if(orderStatus.equals("0")){
             orderStatusStr = "已提交订单";
-        }else if(orderStatus.equals("1")){
             holder.leftIcon.setStatus(CircleStatusView.CircleStatus.STATUS_LOADING);
+        }else if(orderStatus.equals("1")){
+            holder.leftIcon.setStatus(CircleStatusView.CircleStatus.STATUS_FINISH);
             orderStatusStr = "已取消订单";
         }else if(orderStatus.equals("2")){
             holder.leftIcon.setStatus(CircleStatusView.CircleStatus.STATUS_FINISH);
@@ -135,6 +136,7 @@ public class OrderAdapter extends RecyclerView.Adapter {
             holder.leftIcon.setStatus(CircleStatusView.CircleStatus.STATUS_FINISH);
             orderStatusStr = "正在入住中";
         }else if(orderStatus.equals("5")){
+            holder.leftIcon.setStatus(CircleStatusView.CircleStatus.STATUS_FINISH);
             orderStatusStr = "已删除订单";
         }
         holder.name.setText(orderBean.getGuest()+"   "+orderStatusStr);
