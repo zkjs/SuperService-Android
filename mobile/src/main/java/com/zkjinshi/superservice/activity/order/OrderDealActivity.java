@@ -246,6 +246,13 @@ public class OrderDealActivity extends Activity {
 
         final String orderStatus = orderDetailBean.getRoom().getStatus();
         String payStatus = orderDetailBean.getRoom().getPay_status();
+
+        String reservation_no = orderDetailBean.getRoom().getReservation_no();
+        if(TextUtils.isEmpty(reservation_no)){
+            finishBtn.setText("添加订单");
+        }else{
+            finishBtn.setText("修改订单");
+        }
     }
 
     //初始化订单备注
@@ -376,7 +383,7 @@ public class OrderDealActivity extends Activity {
         bizMap.put("reservation_no",orderDetailBean.getRoom().getReservation_no());
         bizMap.put("status",orderDetailBean.getRoom().getStatus());
 
-        bizMap.put("roomid",orderDetailBean.getRoom().getRoom_typeid()+"");
+        bizMap.put("room_typeid",orderDetailBean.getRoom().getRoom_typeid()+"");
         bizMap.put("room_type",orderDetailBean.getRoom().getRoom_type());
         bizMap.put("rooms",orderDetailBean.getRoom().getRooms()+"");
         bizMap.put("arrival_date",orderDetailBean.getRoom().getArrival_date());
@@ -405,7 +412,7 @@ public class OrderDealActivity extends Activity {
                 try {
                     AddOrderBean addOrderBean = new Gson().fromJson(result.rawResult, AddOrderBean.class);
                     if(addOrderBean.isSet()){
-                        DialogUtil.getInstance().showToast(OrderDealActivity.this,"订单修改成功。\n订单号是："+addOrderBean.getReservation_no());
+                        DialogUtil.getInstance().showToast(OrderDealActivity.this,"订单修改成功。");
 
                         //TODO 杜健德 待流程完善再做修改
                         //确认成功订单，发送IM消息

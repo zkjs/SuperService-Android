@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -65,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
     private RelativeLayout avatarLayout;
     private MessageListener messageListener;
     private UserVo userVo;
+    private ImageButton setIbtn;
 
 
 
@@ -74,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
         shopnameTv = (TextView)findViewById(R.id.shop_name_tv);
         onlineCbx = (CheckBox)findViewById(R.id.online_cbx);
         avatarLayout = (RelativeLayout)findViewById(R.id.avatar_rlt);
+        setIbtn = (ImageButton)findViewById(R.id.edit_avatar_ibtn);
     }
 
     private void initData(){
@@ -97,12 +100,14 @@ public class MainActivity extends AppCompatActivity {
         if(IdentityType.BUSINESS ==  CacheUtil.getInstance().getLoginIdentity()){
             onlineCbx.setVisibility(View.GONE);
             teamTv.setText("团队管理");
+            setIbtn.setVisibility(View.GONE);
            // String avatarUrl = ProtocolUtil.getShopBackUrl(userVo.getShopId());
            // mainActivityController.setUserPhoto(CacheUtil.getInstance().getUserPhotoUrl(), avatarIv);
         }else{
             onlineCbx.setVisibility(View.VISIBLE);
             teamTv.setText("团队联系人");
             mainActivityController.setUserPhoto(CacheUtil.getInstance().getUserPhotoUrl(), avatarIv);
+            setIbtn.setVisibility(View.VISIBLE);
         }
 
 

@@ -124,19 +124,15 @@ public class OrderAdapter extends RecyclerView.Adapter {
             orderStatusStr = "已提交订单";
         }else if(orderStatus.equals("1")){
             holder.leftIcon.setStatus(CircleStatusView.CircleStatus.STATUS_LOADING);
-            holder.leftIcon.invalidate();
             orderStatusStr = "已取消订单";
         }else if(orderStatus.equals("2")){
             holder.leftIcon.setStatus(CircleStatusView.CircleStatus.STATUS_FINISH);
-            holder.leftIcon.invalidate();
             orderStatusStr = "已确认订单";
         }else if(orderStatus.equals("3")){
             holder.leftIcon.setStatus(CircleStatusView.CircleStatus.STATUS_FINISH);
-            holder.leftIcon.invalidate();
             orderStatusStr = "已完成订单";
         }else if(orderStatus.equals("4")){
             holder.leftIcon.setStatus(CircleStatusView.CircleStatus.STATUS_FINISH);
-            holder.leftIcon.invalidate();
             orderStatusStr = "正在入住中";
         }else if(orderStatus.equals("5")){
             orderStatusStr = "已删除订单";

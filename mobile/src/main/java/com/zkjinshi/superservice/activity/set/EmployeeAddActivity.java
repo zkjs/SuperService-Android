@@ -20,6 +20,7 @@ import com.zkjinshi.filechoser.activity.FileListActivity;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.adapter.ContactsAdapter;
 import com.zkjinshi.superservice.bean.BaseBean;
+import com.zkjinshi.superservice.bean.ImportSempBean;
 import com.zkjinshi.superservice.net.MethodType;
 import com.zkjinshi.superservice.net.NetRequest;
 import com.zkjinshi.superservice.net.NetRequestListener;
@@ -89,6 +90,8 @@ public class EmployeeAddActivity extends Activity {
     private ArrayList<DepartmentVo> deptList;
 
     private  List<ShopEmployeeVo> allList = new ArrayList<ShopEmployeeVo>(); // 汇总的要提交的新成员。
+
+    private boolean hasGetDept = false;
 
 
 
@@ -191,7 +194,11 @@ public class EmployeeAddActivity extends Activity {
             @Override
             public void onClick(View view) {
                 if( excelList != null && excelList.size() > 0){
-                    submitDepts();
+                    if(hasGetDept){
+                        submitEmployees();
+                    }else{
+                        submitDepts();
+                    }
                 }else{
                     submitEmployees();
                 }
@@ -265,6 +272,7 @@ public class EmployeeAddActivity extends Activity {
                         }.getType());
                         if (dlist != null && deptList.size() > 0) {
                             deptList = dlist;
+                            hasGetDept = true;
                             ShopDepartmentDBUtil.getInstance().batchAddShopDepartments(deptList);
 
                             for (ShopEmployeeVo shopEmployeeVo : excelList) {
@@ -310,6 +318,7 @@ public class EmployeeAddActivity extends Activity {
         if( excelList != null && excelList.size() > 0){
             for(ShopEmployeeVo shopEmployeeVo : excelList){
                 if(!TextUtils.isEmpty(shopEmployeeVo.getPhone()) && !map.containsKey(shopEmployeeVo.getPhone())){
+                    shopEmployeeVo.setRoleid(2);
                     allList.add(shopEmployeeVo);
                     map.put(shopEmployeeVo.getPhone(),shopEmployeeVo.getPhone());
                 }
@@ -368,14 +377,13 @@ public class EmployeeAddActivity extends Activity {
             public void onNetworkResponseSucceed(NetResponse result) {
                 Log.i(TAG, "result.rawResult:" + result.rawResult);
                 try{
-                    ArrayList<ShopEmployeeVo> dlist = new Gson().fromJson(result.rawResult, new TypeToken<ArrayList<ShopEmployeeVo>>() {
-                    }.getType());
-
-                    if(dlist != null && dlist.size() > 0){
-                        //ShopEmployeeDBUtil.getInstance().batchAddShopEmployees(dlist);
-                        DialogUtil.getInstance().showToast(EmployeeAddActivity.this,"添加成员成功");
+                    ImportSempBean importSempBean = new Gson().fromJson(result.rawResult,ImportSempBean.class);
+                    if(importSempBean != null && importSempBean.isSet()){
+                        DialogUtil.getInstance().showToast(EmployeeAddActivity.this,"成功添加"+importSempBean.getInsert()+"成员\n"+"成功更新"+importSempBean.getUpdate()+"成员\n");
                         setResult(RESULT_OK);
                         finish();
+                    }else{
+                        Log.e(TAG,"添加成员失败");
                     }
 
                 }catch (Exception e){

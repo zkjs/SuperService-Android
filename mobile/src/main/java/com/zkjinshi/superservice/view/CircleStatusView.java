@@ -39,7 +39,11 @@ public class CircleStatusView extends View{
     }
 
     public void setStatus(CircleStatus status) {
-        this.status = status;
+        if(status != this.status){
+            this.status = status;
+            invalidate();
+        }
+
     }
 
     public int getBgcolor() {
@@ -47,7 +51,10 @@ public class CircleStatusView extends View{
     }
 
     public void setBgcolor(int bgcolor) {
-        this.bgcolor = bgcolor;
+        if(bgcolor != this.bgcolor){
+            this.bgcolor = bgcolor;
+            invalidate();
+        }
     }
 
     public CircleStatusView(Context context) {
