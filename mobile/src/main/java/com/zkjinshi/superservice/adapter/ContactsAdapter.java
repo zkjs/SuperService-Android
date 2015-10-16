@@ -102,7 +102,6 @@ public class ContactsAdapter extends BaseAdapter{
     }
 
 
-
     @Override
     public int getItemViewType(int position) {
         return super.getItemViewType(position);

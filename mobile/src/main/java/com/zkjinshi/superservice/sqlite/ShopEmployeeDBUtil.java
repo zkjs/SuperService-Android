@@ -230,4 +230,12 @@ public class ShopEmployeeDBUtil {
         }
         return  shopEmployeeVos;
     }
+
+    /**
+     * 根据员工ID进行本地数据库的删除
+     * @param empid
+     */
+    public void deleteShopEmployeeByEmpID(String empid) {
+
+    }
 }

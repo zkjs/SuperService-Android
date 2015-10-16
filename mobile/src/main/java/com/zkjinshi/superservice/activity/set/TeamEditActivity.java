@@ -117,32 +117,25 @@ public class TeamEditActivity extends Activity implements IMessageObserver{
         mRcvTeamContacts.setLayoutManager(mLayoutManager);
 
         mShopEmployeeVos = ShopEmployeeDBUtil.getInstance().queryAllByDeptIDAsc();
-        if(null != mShopEmployeeVos && !mShopEmployeeVos.isEmpty()){
-            mContactsAdapter = new TeamEditContactsAdapter(TeamEditActivity.this, mShopEmployeeVos);
-            mRcvTeamContacts.setAdapter(mContactsAdapter);
+        mContactsAdapter = new TeamEditContactsAdapter(TeamEditActivity.this, mShopEmployeeVos);
+        mRcvTeamContacts.setAdapter(mContactsAdapter);
 
-//            //设置默认勾选中的数据
-//            for(int i=0; i< mShopEmployeeVos.size(); i++){
-//                mCheckedList.add(i, false);
-//            }
-
-            //需要获得在线状态的用户
-            List<String> empids = null;
-            for (ShopEmployeeVo shopEmployeeVo : mShopEmployeeVos) {
-                if(empids == null){
-                    empids = new ArrayList<>();
-                }
-                empids.add(shopEmployeeVo.getEmpid());
+        //需要获得在线状态的用户
+        List<String> empids = null;
+        for (ShopEmployeeVo shopEmployeeVo : mShopEmployeeVos) {
+            if(empids == null){
+                empids = new ArrayList<>();
             }
-
-            //批量请求客户是否在线
-            MsgEmpStatus msgEmpStatus = new MsgEmpStatus();
-            msgEmpStatus.setType(ProtocolMSG.MSG_ShopEmpStatus);
-            msgEmpStatus.setTimestamp(System.currentTimeMillis());
-            msgEmpStatus.setShopid(mShopID);
-            msgEmpStatus.setEmps(empids);
-            sendEmpStatusRequest(msgEmpStatus);
+            empids.add(shopEmployeeVo.getEmpid());
         }
+
+        //批量请求客户是否在线
+        MsgEmpStatus msgEmpStatus = new MsgEmpStatus();
+        msgEmpStatus.setType(ProtocolMSG.MSG_ShopEmpStatus);
+        msgEmpStatus.setTimestamp(System.currentTimeMillis());
+        msgEmpStatus.setShopid(mShopID);
+        msgEmpStatus.setEmps(empids);
+        sendEmpStatusRequest(msgEmpStatus);
     }
 
     /**
@@ -251,6 +244,7 @@ public class TeamEditActivity extends Activity implements IMessageObserver{
                     if (jsonObject.getBoolean("set")) {
                         for(ShopEmployeeVo shopEmployeeVo : mCheckedList){
                             mShopEmployeeVos.remove(shopEmployeeVo);
+                            ShopEmployeeDBUtil.getInstance().deleteShopEmployeeByEmpID(shopEmployeeVo.getEmpid());
                         }
                         mContactsAdapter.updateListView(mShopEmployeeVos);
                     } else {

@@ -124,95 +124,113 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
     }
 
     private void initData() {
+
         mUserID     = CacheUtil.getInstance().getUserId();
         mToken      = CacheUtil.getInstance().getToken();
         mShopID     = CacheUtil.getInstance().getShopID();
         mUserType   = CacheUtil.getInstance().getLoginIdentity();
-
-        // 创建商店排序对象
-        mFirstShopEmployee = new ShopEmployeeVo();
-        String shopName    = CacheUtil.getInstance().getShopFullName();
-        mFirstShopEmployee.setName(shopName);
-        mFirstShopEmployee.setDept_name(shopName);
-        mFirstShopEmployee.setEmpid(System.currentTimeMillis() + "");
-
-        mShopEmployeeVos = new ArrayList<ShopEmployeeVo>();
-        mShopEmployeeVos.add(0, mFirstShopEmployee);
 
         mRvTeamContacts.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(this);
         mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRvTeamContacts.setLayoutManager(mLayoutManager);
 
-        mTeamContactAdapter = new TeamContactsAdapter(TeamContactsActivity.this, mShopEmployeeVos);
-        mRvTeamContacts.setAdapter(mTeamContactAdapter);
-
         //TODO: 1.服务器获得最近 5位联系人列表的客户列表
+        showDataList();
     }
 
-    private void initListener() {
-        //get team list
-        mContactsListener = new GetTeamContactsListener() {
-            @Override
-            public void getContactsDone(List<TeamContactBean> teamContacts) {
-                List<ShopEmployeeVo> shopEmployeeVos = ShopEmployeeFactory.getInstance().
-                        buildShopEmployees(teamContacts);
-                List<String> strLetters = null;//首字母显示数组
-                List<String> empids     = null;//员工ID数组
-                if (null != shopEmployeeVos && !shopEmployeeVos.isEmpty()) {
+    /**
+     * 初始化待显示数据并展示
+     */
+    private void showDataList() {
+        // 创建商店排序对象
+        if(null == mFirstShopEmployee){
+            mFirstShopEmployee = new ShopEmployeeVo();
+            String shopName    = CacheUtil.getInstance().getShopFullName();
+            mFirstShopEmployee.setName(shopName);
+            mFirstShopEmployee.setDept_name(shopName);
+            mFirstShopEmployee.setEmpid(System.currentTimeMillis() + "");
+        }
 
-                    strLetters = new ArrayList<String>();
-                    empids = new ArrayList<>();
-                    for (ShopEmployeeVo shopEmployeeVo : shopEmployeeVos) {
-                        shopEmployeeVo.setShop_id(mShopID);
-                        ShopEmployeeDBUtil.getInstance().addShopEmployee(shopEmployeeVo);
-                        mShopEmployeeVos.add(shopEmployeeVo);
+        if(null == mShopEmployeeVos){
+            mShopEmployeeVos = new ArrayList<>();
+        }else{
+            mShopEmployeeVos.removeAll(mShopEmployeeVos);
+        }
 
-                        empids.add(shopEmployeeVo.getEmpid());
-                        String deptID   = shopEmployeeVo.getDept_id()+"";
-                        String deptName = shopEmployeeVo.getDept_name();
-                        String sortLetter = null;
-                        if(!TextUtils.isEmpty(deptName)){
-                            sortLetter = deptName.substring(0, 1);
-                        }else {
-                            sortLetter = deptID.substring(0, 1);
-                        }
+        if(!mShopEmployeeVos.contains(mFirstShopEmployee)){
+            mShopEmployeeVos.add(0, mFirstShopEmployee);
+        }
 
-                        //部门分类并消除相同部门
-                        if (!TextUtils.isEmpty(sortLetter) && !strLetters.contains(sortLetter)) {
-                            strLetters.add(sortLetter);
-                        } else {
-                            continue;
-                        }
-                    }
+        if(null == mTeamContactAdapter){
+            mTeamContactAdapter = new TeamContactsAdapter(TeamContactsActivity.this, mShopEmployeeVos);
+            mRvTeamContacts.setAdapter(mTeamContactAdapter);
+        }
 
-                    String[] sortArray = strLetters.toArray(new String[strLetters.size()]);
-                    if (sortArray.length > 0) {
-                        mAutoSideBar.setSortArray(sortArray);
-                        mRlSideBar.addView(mAutoSideBar);
-                    }
-
-                    mTeamContactAdapter.updateListView(mShopEmployeeVos);
-                }
-
-                //发送查询客户是否在线请求
-                MsgEmpStatus msgEmpStatus = new MsgEmpStatus();
-                msgEmpStatus.setType(ProtocolMSG.MSG_ShopEmpStatus);
-                msgEmpStatus.setTimestamp(System.currentTimeMillis());
-                msgEmpStatus.setShopid(mShopID);
-                msgEmpStatus.setEmps(empids);
-
-                Gson gson = new Gson();
-                String jsonMsgEmpStatus = gson.toJson(msgEmpStatus, MsgEmpStatus.class);
-                LogUtil.getInstance().info(LogLevel.INFO, "jsonMsgEmpStatus:"+jsonMsgEmpStatus);
-                WebSocketManager.getInstance().sendMessage(jsonMsgEmpStatus);
-            }
-        };
         //获取团队列表
         TeamContactsController.getInstance().getTeamContacts(
                 TeamContactsActivity.this,
-                mUserID, mToken, mShopID, mContactsListener);
+                mUserID, mToken, mShopID, new GetTeamContactsListener() {
+                    @Override
+                    public void getContactsDone(List<TeamContactBean> teamContacts) {
+                        List<ShopEmployeeVo> shopEmployeeVos = ShopEmployeeFactory.getInstance().buildShopEmployees(teamContacts);
+                        List<String> strLetters = null;//首字母显示数组
+                        List<String> empids     = null;//员工ID数组
+                        if (null != shopEmployeeVos && !shopEmployeeVos.isEmpty()) {
+                            strLetters = new ArrayList<>();
+                            empids = new ArrayList<>();
 
+                            for (ShopEmployeeVo shopEmployeeVo : shopEmployeeVos) {
+                                shopEmployeeVo.setShop_id(mShopID);
+                                ShopEmployeeDBUtil.getInstance().addShopEmployee(shopEmployeeVo);
+                                mShopEmployeeVos.add(shopEmployeeVo);
+
+                                empids.add(shopEmployeeVo.getEmpid());
+                                String deptID   = shopEmployeeVo.getDept_id()+"";
+                                String deptName = shopEmployeeVo.getDept_name();
+                                String sortLetter = null;
+                                if(!TextUtils.isEmpty(deptName)){
+                                    sortLetter = deptName.substring(0, 1);
+                                }else {
+                                    sortLetter = deptID.substring(0, 1);
+                                }
+
+                                //部门分类并消除相同部门
+                                if (!TextUtils.isEmpty(sortLetter) && !strLetters.contains(sortLetter)) {
+                                    strLetters.add(sortLetter);
+                                } else {
+                                    continue;
+                                }
+                            }
+
+                            String[] sortArray = strLetters.toArray(new String[strLetters.size()]);
+                            if (sortArray.length > 0) {
+                                mAutoSideBar.setSortArray(sortArray);
+                                //移除之前设置
+                                mRlSideBar.removeAllViews();
+                                mRlSideBar.addView(mAutoSideBar);
+                            }
+
+                            mTeamContactAdapter.updateListView(mShopEmployeeVos);
+                        }
+
+                        //发送查询客户是否在线请求
+                        MsgEmpStatus msgEmpStatus = new MsgEmpStatus();
+                        msgEmpStatus.setType(ProtocolMSG.MSG_ShopEmpStatus);
+                        msgEmpStatus.setTimestamp(System.currentTimeMillis());
+                        msgEmpStatus.setShopid(mShopID);
+                        msgEmpStatus.setEmps(empids);
+
+                        Gson gson = new Gson();
+                        String jsonMsgEmpStatus = gson.toJson(msgEmpStatus, MsgEmpStatus.class);
+                        LogUtil.getInstance().info(LogLevel.INFO, "jsonMsgEmpStatus:"+jsonMsgEmpStatus);
+                        WebSocketManager.getInstance().sendMessage(jsonMsgEmpStatus);
+                    }
+                }
+        );
+    }
+
+    private void initListener() {
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -268,10 +286,7 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
         super.onActivityResult(requestCode, resultCode, data);
         if (RESULT_OK == resultCode) {
             if (ADD_REQUEST_CODE == requestCode) {
-                TeamContactsController.getInstance().getTeamContacts(
-                        TeamContactsActivity.this,
-                        mUserID, mToken, mShopID, mContactsListener);
-
+                showDataList();
             }
         }
     }
