@@ -193,7 +193,7 @@ public class EmployeeAddActivity extends Activity {
                 if( excelList != null && excelList.size() > 0){
                     submitDepts();
                 }else{
-                    //submitEmployees();
+                    submitEmployees();
                 }
 
             }
@@ -275,7 +275,7 @@ public class EmployeeAddActivity extends Activity {
                                     }
                                 }
                             }
-                            //submitEmployees();
+                            submitEmployees();
                         }
 
                     } catch (Exception e) {
