@@ -36,10 +36,12 @@ import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-
 /**
- * Created by Bartosz Lipinski
- * 31.03.15
+ * 自定义RecyclerView头部View
+ * 开发者：JimmyZhang
+ * 日期：2015/10/13
+ * Copyright (C) 2015 深圳中科金石科技有限公司
+ * 版权所有
  */
 public class RecyclerViewHeader extends RelativeLayout {
 
@@ -51,13 +53,6 @@ public class RecyclerViewHeader extends RelativeLayout {
     private boolean mAlreadyAligned;
     private boolean mRecyclerWantsTouchEvent;
 
-    /**
-     * Inflates layout from <code>xml</code> and encapsulates it with <code>RecyclerViewHeader</code>.
-     *
-     * @param context   application context.
-     * @param layoutRes layout resource to be inflated.
-     * @return <code>RecyclerViewHeader</code> view object.
-     */
     public static RecyclerViewHeader fromXml(Context context, @LayoutRes int layoutRes) {
         RecyclerViewHeader header = new RecyclerViewHeader(context);
         View.inflate(context, layoutRes, header);
@@ -76,28 +71,10 @@ public class RecyclerViewHeader extends RelativeLayout {
         super(context, attrs, defStyle);
     }
 
-    /**
-     * Attaches <code>RecyclerViewHeader</code> to <code>RecyclerView</code>.
-     * This method will perform necessary actions to properly align the header within <code>RecyclerView</code>.
-     * Be sure that <code>setLayoutManager(...)</code> has been called for <code>RecyclerView</code> before calling this method.
-     * Also, if you were planning to use <code>setOnScrollListener(...)</code> method for your <code>RecyclerView</code>, be sure to do it before calling this method.
-     *
-     * @param recycler <code>RecyclerView</code> to attach <code>RecyclerViewHeader</code> to.
-     */
     public void attachTo(RecyclerView recycler) {
         attachTo(recycler, false);
     }
 
-    /**
-     * Attaches <code>RecyclerViewHeader</code> to <code>RecyclerView</code>.
-     * Be sure that <code>setLayoutManager(...)</code> has been called for <code>RecyclerView</code> before calling this method.
-     * Also, if you were planning to use <code>setOnScrollListener(...)</code> method for your <code>RecyclerView</code>, be sure to do it before calling this method.
-     *
-     * @param recycler             <code>RecyclerView</code> to attach <code>RecyclerViewHeader</code> to.
-     * @param headerAlreadyAligned If set to <code>false</code>, method will perform necessary actions to properly align
-     *                             the header within <code>RecyclerView</code>. If set to <code>true</code> method will assume,
-     *                             that user has already aligned <code>RecyclerViewHeader</code> properly.
-     */
     public void attachTo(RecyclerView recycler, boolean headerAlreadyAligned) {
         validateRecycler(recycler, headerAlreadyAligned);
 
@@ -122,7 +99,6 @@ public class RecyclerViewHeader extends RelativeLayout {
 
     private void setupAlignment(RecyclerView recycler) {
         if (!mAlreadyAligned) {
-            //setting alignment of header
             ViewGroup.LayoutParams currentParams = getLayoutParams();
             FrameLayout.LayoutParams newHeaderParams;
             int width = ViewGroup.LayoutParams.WRAP_CONTENT;
@@ -137,8 +113,6 @@ public class RecyclerViewHeader extends RelativeLayout {
                 newHeaderParams = new FrameLayout.LayoutParams(width, height, gravity);
             }
             RecyclerViewHeader.this.setLayoutParams(newHeaderParams);
-
-            //setting alignment of recycler
             FrameLayout newRootParent = new FrameLayout(recycler.getContext());
             newRootParent.setLayoutParams(recycler.getLayoutParams());
             ViewParent currentParent = recycler.getParent();
