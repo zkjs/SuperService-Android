@@ -148,17 +148,13 @@ public class NoticeFragment extends Fragment implements IMessageObserver{
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        swipeRefreshLayout.setRefreshing(false);
-                    }
-                }, 2000);
+                notifyComingList = new ArrayList<ComingVo>();
+                queryPageMessages(REQUEST_PAGE_SIZE, System.currentTimeMillis(), true);
             }
         });
 
         //自动加载更多
-        notityRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        notityRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
 
             boolean isSlidingToLast = false;
 
@@ -171,7 +167,9 @@ public class NoticeFragment extends Fragment implements IMessageObserver{
                     int totalItemCount = linearLayoutManager.getItemCount();
                     if (lastVisibleItem == (totalItemCount - 1) && isSlidingToLast) {
                         //加载更多功能的代码
-                        queryPageMessages(REQUEST_PAGE_SIZE, System.currentTimeMillis(), false);
+                        ComingVo comingVo = notifyComingList.get(notifyComingList.size()-1);
+                        long arriveTime = comingVo.getArriveTime();
+                        queryPageMessages(REQUEST_PAGE_SIZE, arriveTime, false);
                     }
                 }
             }
@@ -350,7 +348,7 @@ public class NoticeFragment extends Fragment implements IMessageObserver{
 
                                 }
                             });
-                            netRequestTask.isShowLoadingDialog = true;
+                            netRequestTask.isShowLoadingDialog = false;
                             netRequestTask.execute();
                         }
                     }
@@ -376,7 +374,6 @@ public class NoticeFragment extends Fragment implements IMessageObserver{
         int  localCount;
         requestComingList = new ArrayList<ComingVo>();
         requestComingList = ComingDBUtil.getInstance().queryComingList(lastSendTime,limitSize,isFirstTime);
-        Collections.reverse(requestComingList);
         localCount = requestComingList.size();
         if (localCount > 0) {
             if (null == notifyComingList) {
