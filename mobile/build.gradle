@@ -34,5 +34,4 @@ dependencies {
     compile project(':Cloud_TagView')
     compile project(':CalendarListview')
     compile project(':library.FileChoser')
-    compile 'com.android.support:recyclerview-v7:22.0.0'
 }
