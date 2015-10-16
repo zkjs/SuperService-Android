@@ -112,7 +112,7 @@ public class NoticeFragment extends Fragment implements IMessageObserver{
     private void initData() {
 
         activity = this.getActivity();
-        recyclerViewHeader = RecyclerViewHeader.fromXml(getContext(), R.layout.layout_online_stat);
+        recyclerViewHeader = RecyclerViewHeader.fromXml(getActivity(), R.layout.layout_online_stat);
         totoalEmployeeTv = (TextView)recyclerViewHeader.findViewById(R.id.notice_tv_total_employee);
         currentOnlineEmployeeTv = (TextView)recyclerViewHeader.findViewById(R.id.notice_tv_current_online_employee);
         onlineLayout = (LinearLayout)recyclerViewHeader.findViewById(R.id.online_layout);
