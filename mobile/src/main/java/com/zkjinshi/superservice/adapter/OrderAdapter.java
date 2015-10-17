@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.base.util.DisplayUtil;
 import com.zkjinshi.base.util.IntentUtil;
 import com.zkjinshi.base.util.TimeUtil;
@@ -252,17 +254,32 @@ public class OrderAdapter extends RecyclerView.Adapter {
                             R.anim.slide_out_left);
                     break;
                 case R.id.iv_tel:
+                    if(TextUtils.isEmpty( orderBean.getGuesttel())){
+                        DialogUtil.getInstance().showToast(context,"联系号码为空");
+                        return;
+                    }
                     IntentUtil.callPhone(context, orderBean.getGuesttel());
                     break;
                 case R.id.iv_chat:
+                    if(TextUtils.isEmpty( orderBean.getGuesttel())){
+                        DialogUtil.getInstance().showToast(context,"联系号码为空");
+                        return;
+                    }
                     IntentUtil.startSendMessage("",orderBean.getGuesttel(),context);
                     break;
                 case R.id.iv_share:
+                    if(TextUtils.isEmpty( orderBean.getGuesttel())){
+                        DialogUtil.getInstance().showToast(context,"联系号码为空");
+                        return;
+                    }
                     IntentUtil.startSendMessage("",orderBean.getGuesttel(),context);
                     break;
             }
 
         }
+
+
+
     }
 
 
