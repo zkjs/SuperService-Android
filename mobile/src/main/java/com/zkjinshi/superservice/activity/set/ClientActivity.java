@@ -130,7 +130,6 @@ public class ClientActivity extends AppCompatActivity implements IMessageObserve
         mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRcvContacts.setLayoutManager(mLayoutManager);
         mRcvContacts.setAdapter(mContactsAdapter);
-
     }
 
     private void initListener() {
@@ -262,26 +261,25 @@ public class ClientActivity extends AppCompatActivity implements IMessageObserve
                             mAllContactsList.add(sortModel);
                         }
 
-                        //根据名称进行排序显示
-                        Collections.sort(mAllContactsList, pinyinComparator);// 根据a-z进行排序源数据
-                        mContactsAdapter.updateListView(mAllContactsList);
+                        ClientActivity.this.updateListView(mAllContactsList);
 
                         //获得需要查询是否在线的userID的集合
-                        List<String> keyList = new ArrayList<>(mLocalClientMap.keySet());
+                        if (!mLocalClientMap.isEmpty()) {
+                            List<String> keyList = new ArrayList<>(mLocalClientMap.keySet());
 
-                        MsgUserOnlineStatus msgUserOnlineStatus = new MsgUserOnlineStatus();
-                        msgUserOnlineStatus.setType(ProtocolMSG.MSG_UserOnlineStatus);
-                        msgUserOnlineStatus.setTimestamp(System.currentTimeMillis());
-                        msgUserOnlineStatus.setEmpid(mUserID);
-                        msgUserOnlineStatus.setShopid(mShopID);
-                        System.out.println("keyList:" + keyList);
-                        msgUserOnlineStatus.setClients(keyList);
+                            MsgUserOnlineStatus msgUserOnlineStatus = new MsgUserOnlineStatus();
+                            msgUserOnlineStatus.setType(ProtocolMSG.MSG_UserOnlineStatus);
+                            msgUserOnlineStatus.setTimestamp(System.currentTimeMillis());
+                            msgUserOnlineStatus.setEmpid(mUserID);
+                            msgUserOnlineStatus.setShopid(mShopID);
+                            msgUserOnlineStatus.setClients(keyList);
 
-                        if(null == gson)
-                            gson = new Gson();
+                            if (null == gson)
+                                gson = new Gson();
 
-                        String jsonMsg = gson.toJson(msgUserOnlineStatus, MsgUserOnlineStatus.class);
-                        WebSocketManager.getInstance().sendMessage(jsonMsg);
+                            String jsonMsg = gson.toJson(msgUserOnlineStatus, MsgUserOnlineStatus.class);
+                            WebSocketManager.getInstance().sendMessage(jsonMsg);
+                        }
                     }
                 }
             }
@@ -310,10 +308,22 @@ public class ClientActivity extends AppCompatActivity implements IMessageObserve
             if(null != mAllContactsList && !mAllContactsList.isEmpty()){
                 mAllContactsList.removeAll(mAllContactsList);
             }
-
             mAllContactsList.addAll(mLocalContacts);
-            Collections.sort(mAllContactsList, pinyinComparator);// 根据a-z进行排序源数据
+        }
+
+        this.updateListView(mAllContactsList);
+
+    }
+
+    private void updateListView(List<SortModel> mAllContactsList) {
+        if(null != mAllContactsList && !mAllContactsList.isEmpty()){
+            // 根据a-z进行排序源数据
+            Collections.sort(mAllContactsList, pinyinComparator);
+            mTvDialog.setVisibility(View.GONE);
             mContactsAdapter.updateListView(mAllContactsList);
+        }else {
+            mTvDialog.setVisibility(View.VISIBLE);
+            mTvDialog.setText(ClientActivity.this.getString(R.string.no_data));
         }
     }
 
@@ -360,9 +370,7 @@ public class ClientActivity extends AppCompatActivity implements IMessageObserve
                         }
                     }
 
-                    // 根据a-z进行排序源数据
-                    Collections.sort(mAllContactsList, pinyinComparator);
-                    mContactsAdapter.updateListView(mAllContactsList);
+                    this.updateListView(mAllContactsList);
                 }
             }
         } catch (JSONException e) {
