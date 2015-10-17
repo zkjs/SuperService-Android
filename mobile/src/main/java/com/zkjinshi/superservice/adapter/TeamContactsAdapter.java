@@ -86,17 +86,11 @@ public class TeamContactsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = null;
-        ContactViewHolder holder = null;
-        if(null == view){
-            view = LayoutInflater.from(mContext).inflate(R.layout.item_team_contact, null);
-            view.setLayoutParams(new LinearLayout.LayoutParams(
+        View view = LayoutInflater.from(mContext).inflate(R.layout.item_team_contact, null);
+        view.setLayoutParams(new LinearLayout.LayoutParams(
                                 LinearLayout.LayoutParams.MATCH_PARENT,
                                 LinearLayout.LayoutParams.WRAP_CONTENT));
-            holder = new ContactViewHolder(view, mRecyclerItemClickListener);
-        }else {
-            holder = (ContactViewHolder) view.getTag();
-        }
+        ContactViewHolder holder = new ContactViewHolder(view, mRecyclerItemClickListener);
         return holder;
     }
 
@@ -240,9 +234,7 @@ public class TeamContactsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 DialogUtil.getInstance().showCustomToast(mContext, "TODO: 进入客户主界面", Gravity.CENTER);
             }
         });
-
-        holder.itemView.setTag(holder);
-    }
+        }
 
     public static class ContactViewHolder extends RecyclerView.ViewHolder{
 

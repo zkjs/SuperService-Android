@@ -74,17 +74,11 @@ public class ContactsSortAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = null;
-        ClientViewHolder clientHolder = null;
-        if(view == null){
-            view = LayoutInflater.from(mContext).inflate(R.layout.item_my_cilent, null);
-            //设置条目宽度满足屏幕
-            view.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                                                               LinearLayout.LayoutParams.WRAP_CONTENT));
-            clientHolder = new ClientViewHolder(view, mRecyclerItemClickListener);
-        } else {
-            clientHolder = (ClientViewHolder) view.getTag();
-        }
+        View view = LayoutInflater.from(mContext).inflate(R.layout.item_my_cilent, null);
+        //设置条目宽度满足屏幕
+        view.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                                                            LinearLayout.LayoutParams.WRAP_CONTENT));
+        ClientViewHolder clientHolder = new ClientViewHolder(view, mRecyclerItemClickListener);
         return clientHolder;
     }
 
@@ -120,7 +114,6 @@ public class ContactsSortAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             ((ClientViewHolder)holder).tvContactName.setText(this.mList.get(position).getName());
         }
 
-
         //设置显示在线状态时间
         if(sortModel.getIsOnLine() == OnlineStatus.ONLINE) {
             ((ClientViewHolder)holder).tvContactOnLine.setTextColor(Color.BLUE);
@@ -132,7 +125,6 @@ public class ContactsSortAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
         //TODO 1.显示客户订单描述
         //TODO 2.显示客户在线状态
-        holder.itemView.setTag(sortModel);
     }
 
     public void setOnItemClickListener(RecyclerItemClickListener listener) {

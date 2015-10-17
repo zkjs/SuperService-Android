@@ -86,16 +86,11 @@ public class TeamEditContactsAdapter extends RecyclerView.Adapter<RecyclerView.V
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = null;
-        ContactViewHolder holder = null;
-        if(null == view){
-            view = LayoutInflater.from(mContext).inflate(R.layout.item_team_edit_contact, null);
-            view.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+        View view = LayoutInflater.from(mContext).inflate(R.layout.item_team_edit_contact, null);
+        view.setLayoutParams(new LinearLayout.LayoutParams(
+                                 LinearLayout.LayoutParams.MATCH_PARENT,
                                  LinearLayout.LayoutParams.WRAP_CONTENT));
-            holder = new ContactViewHolder(view, mRecyclerItemClickListener);
-        } else {
-            holder = (ContactViewHolder) view.getTag();
-        }
+        ContactViewHolder holder = new ContactViewHolder(view, mRecyclerItemClickListener);
         return holder;
     }
 
@@ -186,8 +181,6 @@ public class TeamEditContactsAdapter extends RecyclerView.Adapter<RecyclerView.V
             } else {
                 ((ContactViewHolder) holder).cbCheck.setChecked(false);
             }
-
-            holder.itemView.setTag(holder);
         }
     }
 

@@ -281,7 +281,6 @@ public class ClientActivity extends AppCompatActivity implements IMessageObserve
                             gson = new Gson();
 
                         String jsonMsg = gson.toJson(msgUserOnlineStatus, MsgUserOnlineStatus.class);
-                        DialogUtil.getInstance().showProgressDialog(ClientActivity.this, "获取客户在线状态中");
                         WebSocketManager.getInstance().sendMessage(jsonMsg);
                     }
                 }
@@ -330,7 +329,6 @@ public class ClientActivity extends AppCompatActivity implements IMessageObserve
 
     @Override
     public void receive(String message) {
-        DialogUtil.getInstance().cancelProgressDialog();
         System.out.print("message:" + message);
         if(TextUtils.isEmpty(message)){
             return ;
@@ -345,7 +343,6 @@ public class ClientActivity extends AppCompatActivity implements IMessageObserve
             int type = messageObj.getInt("type");
 
             if (type == ProtocolMSG.MSG_UserOnlineStatus_RSP) {
-                DialogUtil.getInstance().showCustomToast(ClientActivity.this, "获取用户在线状态成功", Gravity.CENTER);
                 MsgUserOnlineStatusRSP userOnlineStatusRSP = gson.fromJson(message, MsgUserOnlineStatusRSP.class);
                 List<UserOnlineStatusRecord> userOnlineStatusRecords =  userOnlineStatusRSP.getResult();
                 if(null != userOnlineStatusRecords && !userOnlineStatusRecords.isEmpty()){
@@ -362,6 +359,9 @@ public class ClientActivity extends AppCompatActivity implements IMessageObserve
                             mAllContactsList.add(sortModel);
                         }
                     }
+
+                    // 根据a-z进行排序源数据
+                    Collections.sort(mAllContactsList, pinyinComparator);
                     mContactsAdapter.updateListView(mAllContactsList);
                 }
             }
