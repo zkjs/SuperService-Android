@@ -82,7 +82,6 @@
 
 #保留扩展控件不被混淆
 -keep class android.support.**{ *; }
-
 -dontwarn android.support.**
 
 #---根据 Android Dependencies 配置library工程包start---#
