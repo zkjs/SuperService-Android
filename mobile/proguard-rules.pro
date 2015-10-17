@@ -69,9 +69,19 @@
 -keep class com.google.gson.examples.android.model.** { *; }
 -keep class com.guosen.crm.common.ui.launcher.LauncherPageGridView.** {*;}
 
+# 防止R被混淆，R类反射混淆，找不到资源ID
 -keep class **.R$* {
-    public static final int *;
+    *;
 }
+
+#保留网络请求的实体不被混淆
+-keep class com.zkjinshi.superservice.bean.** { *; }
+-keep class com.zkjinshi.superservice.entity.** { *; }
+-keep class com.zkjinshi.superservice.vo.** { *; }
+-keep class com.zkjinshi.superservice.net.** { *; }
+
+#保留扩展控件不被混淆
+-keep class android.support.**{ *; }
 
 -dontwarn android.support.**
 
