@@ -457,7 +457,7 @@ public class OrderDealActivity extends Activity {
         bizMap.put("token",CacheUtil.getInstance().getToken());
         bizMap.put("shopid",orderDetailBean.getRoom().getShopid());
         bizMap.put("userid",orderDetailBean.getRoom().getGuestid());
-
+        bizMap.put("guesttel",orderDetailBean.getRoom().getGuesttel());
         bizMap.put("guest",orderDetailBean.getRoom().getGuest());
         bizMap.put("fullname",orderDetailBean.getRoom().getFullname());
         bizMap.put("roomid",orderDetailBean.getRoom().getRoom_typeid()+"");

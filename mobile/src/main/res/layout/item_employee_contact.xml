@@ -68,9 +68,6 @@
             android:src="@drawable/ic_jia_nor"
             android:scaleType="fitCenter"/>
 
-
     </LinearLayout>
-
-
 
 </LinearLayout>
