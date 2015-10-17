@@ -233,4 +233,17 @@
         <item name="android:backgroundDimEnabled">true</item>
     </style>
 
+    <style name="TitleTextSize">
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="TextSize_14sp">
+        <item name="android:textSize">14sp</item>
+    </style>
+
+
+    <style name="TextSize_20sp">
+        <item name="android:textSize">20sp</item>
+    </style>
+
 </resources>

@@ -52,7 +52,7 @@
                     android:layout_height="wrap_content"
                     android:singleLine="true"
                     android:textColor="#000"
-                    android:textSize="18sp" />
+                    android:textSize="14sp" />
 
                 <TextView
                     android:id="@+id/tv_contact_des"
@@ -62,7 +62,7 @@
                     android:textColor="#000"
                     android:layout_marginLeft="10dp"
                     android:layout_toRightOf="@+id/tv_contact_name"
-                    android:textSize="18sp" />
+                    android:textSize="14sp" />
 
             </RelativeLayout>
 
@@ -84,7 +84,7 @@
                         android:singleLine="true"
                         android:text="15分钟前在线"
                         android:textColor="#333"
-                        android:textSize="16sp" />
+                        android:textSize="14sp" />
 
                 </RelativeLayout>
 
@@ -100,7 +100,7 @@
                         android:singleLine="true"
                         android:text="在线"
                         android:textColor="@color/blue"
-                        android:textSize="16sp" />
+                        android:textSize="14sp" />
 
                     <TextView
                         android:id="@+id/tv_contact_on_shop"
@@ -110,7 +110,7 @@
                         android:layout_height="wrap_content"
                         android:singleLine="true"
                         android:textColor="@color/blue"
-                        android:textSize="16sp" />
+                        android:textSize="14sp" />
 
                 </RelativeLayout>
 
