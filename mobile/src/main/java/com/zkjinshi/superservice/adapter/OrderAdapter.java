@@ -252,13 +252,13 @@ public class OrderAdapter extends RecyclerView.Adapter {
                             R.anim.slide_out_left);
                     break;
                 case R.id.iv_tel:
-                    //IntentUtil.callPhone(context, orderBean.getPhone);
+                    IntentUtil.callPhone(context, orderBean.getGuesttel());
                     break;
                 case R.id.iv_chat:
-                    //IntentUtil.startSendMessage("",orderBean.getPhone,context);
+                    IntentUtil.startSendMessage("",orderBean.getGuesttel(),context);
                     break;
                 case R.id.iv_share:
-                    //IntentUtil.startSendMessage("",orderBean.getPhone,context);
+                    IntentUtil.startSendMessage("",orderBean.getGuesttel(),context);
                     break;
             }
 

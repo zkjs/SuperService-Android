@@ -26,6 +26,15 @@ public class OrderBean  implements Serializable {
     private String status;
     private String pay_status;
     private String created;
+    private String guesttel;
+
+    public String getGuesttel() {
+        return guesttel;
+    }
+
+    public void setGuesttel(String guesttel) {
+        this.guesttel = guesttel;
+    }
 
     public String getCreated() {
         return created;
