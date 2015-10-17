@@ -1,8 +1,10 @@
 package com.zkjinshi.superservice.activity.common;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
@@ -169,9 +171,25 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.exit_tv).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(MainActivity.this, LoginActivity.class));
-                finish();
-                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setTitle("退出")
+                        .setMessage("确定退出该账户？")
+                        .setCancelable(true)
+                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                CacheUtil.getInstance().setLogin(false);
+                                startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                                finish();
+                                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                            }
+                        })
+                        .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+                builder.create().show();
             }
         });
 

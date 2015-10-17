@@ -118,21 +118,21 @@ public class OrderGoodsActivity extends Activity implements AdapterView.OnItemCl
             @Override
             public void onClick(View view) {
                 finish();
-                overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
             }
         });
 
         findViewById(R.id.go_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(selectGood != null){
+                if (selectGood != null) {
                     Intent data = new Intent();
-                    data.putExtra("roomNum",roomNum);
-                    data.putExtra("selectGood",selectGood);
+                    data.putExtra("roomNum", roomNum);
+                    data.putExtra("selectGood", selectGood);
                     setResult(RESULT_OK, data);
                     finish();
                     overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-                }else{
+                } else {
                     finish();
                     overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 }
@@ -159,13 +159,19 @@ public class OrderGoodsActivity extends Activity implements AdapterView.OnItemCl
             @Override
             public void onNetworkResponseSucceed(NetResponse result) {
                 Log.i(TAG, "result.rawResult:" + result.rawResult);
-                try{
-                    ArrayList<GoodBean> goodList = new Gson().fromJson(result.rawResult, new TypeToken< ArrayList<GoodBean>>(){}.getType());
-                    goodAdapter = new GoodAdapter(OrderGoodsActivity.this, goodList,selelectId);
+                try {
+                    ArrayList<GoodBean> goodList = new Gson().fromJson(result.rawResult, new TypeToken<ArrayList<GoodBean>>() {
+                    }.getType());
+                    for (GoodBean goodBean : goodList) {
+                        if (goodBean.getId() == selelectId) {
+                            selectGood = goodBean;
+                        }
+                    }
+                    goodAdapter = new GoodAdapter(OrderGoodsActivity.this, goodList, selelectId);
                     goodLv.setAdapter(goodAdapter);
                     goodLv.setOnItemClickListener(OrderGoodsActivity.this);
-                }catch (Exception e){
-                    Log.e(TAG,e.getMessage());
+                } catch (Exception e) {
+                    Log.e(TAG, e.getMessage());
                 }
 
             }

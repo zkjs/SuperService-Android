@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.zkjinshi.base.util.DisplayUtil;
+import com.zkjinshi.base.util.IntentUtil;
 import com.zkjinshi.base.util.TimeUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.order.OrderDealActivity;
@@ -251,10 +252,13 @@ public class OrderAdapter extends RecyclerView.Adapter {
                             R.anim.slide_out_left);
                     break;
                 case R.id.iv_tel:
+                    //IntentUtil.callPhone(context, orderBean.getPhone);
                     break;
                 case R.id.iv_chat:
+                    //IntentUtil.startSendMessage("",orderBean.getPhone,context);
                     break;
                 case R.id.iv_share:
+                    //IntentUtil.startSendMessage("",orderBean.getPhone,context);
                     break;
             }
 

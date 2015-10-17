@@ -71,8 +71,10 @@ public class ShopLoginActivity extends Activity{
         String password = pwdEt.getText().toString();
         if(TextUtils.isEmpty(phone)){
             DialogUtil.getInstance().showToast(this,"手机号不能为空");
+            return;
         }else if(TextUtils.isEmpty(password)){
             DialogUtil.getInstance().showToast(this,"密码不能为空");
+            return;
         }
         LoginController.getInstance().requestAdminLogin(phone, MD5Util.MD5(password));
     }
