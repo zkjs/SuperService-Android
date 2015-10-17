@@ -83,7 +83,6 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
 
     private List<ShopEmployeeVo>    mShopEmployeeVos;
     private ShopEmployeeVo          mFirstShopEmployee;
-    private GetTeamContactsListener mContactsListener;
 
     private String mUserID;
     private String mShopID;

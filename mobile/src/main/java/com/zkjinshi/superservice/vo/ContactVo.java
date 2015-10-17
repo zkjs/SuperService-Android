@@ -14,14 +14,19 @@ public class ContactVo {
 	private String number;
 	private String simpleNumber;
 	private String sortKey;
+    private String clientID;
+	private OnlineStatus isOnLine;
 
 	public ContactVo() {}
 
-	public ContactVo(long contactID, String name, String number, String sortKey) {
+	public ContactVo(long contactID, String clientID, String name,
+                      String number, String sortKey, OnlineStatus isOnLine) {
 		this.contactID = contactID;
 		this.name		= name;
 		this.number  	= number;
 		this.sortKey 	= sortKey;
+		this.clientID  = clientID;
+		this.isOnLine 	= isOnLine;
 		if(number!=null){
 			this.simpleNumber=number.replaceAll("\\-|\\s", "");
 		}
@@ -33,6 +38,14 @@ public class ContactVo {
 
 	public void setContactID(long contactID) {
 		this.contactID = contactID;
+	}
+
+	public String getClientID() {
+		return clientID;
+	}
+
+	public void setClientID(String clientID) {
+		this.clientID = clientID;
 	}
 
 	public String getName() {
@@ -67,10 +80,20 @@ public class ContactVo {
 		this.sortKey = sortKey;
 	}
 
-	@Override
+    public OnlineStatus getIsOnLine() {
+        return isOnLine;
+    }
+
+    public SortModel setIsOnLine(OnlineStatus isOnLine) {
+        this.isOnLine = isOnLine;
+        return null;
+    }
+
+    @Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result + ((clientID == null) ? 0 : clientID.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		result = prime * result + ((number == null) ? 0 : number.hashCode());
 		result = prime * result + ((sortKey == null) ? 0 : sortKey.hashCode());
@@ -88,6 +111,12 @@ public class ContactVo {
 			return false;
 
 		ContactVo other = (ContactVo) obj;
+
+		if (clientID == null) {
+			if (other.clientID != null)
+				return false;
+		} else if (!clientID.equals(other.clientID))
+			return false;
 
 		if (name == null) {
 			if (other.name != null)

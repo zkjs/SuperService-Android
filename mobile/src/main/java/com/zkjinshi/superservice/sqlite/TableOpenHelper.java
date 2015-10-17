@@ -111,7 +111,8 @@ public class TableOpenHelper {
                     + " contact_type  int, "
                     + " sex           int, "
                     + " order_count   int, "
-                    + " tags          text " //
+                    + " tags          text, " //
+                    + " online_status int " //
                     + " ) ";
 
     /** 创建区域信息表 */

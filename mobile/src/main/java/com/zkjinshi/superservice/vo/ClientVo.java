@@ -33,6 +33,7 @@ public class ClientVo {
     private SexType     sex;
     private int         order_count;
     private String      tags;
+    private OnlineStatus    isOnline;
 
     public int getUser_level() {
         return user_level;
@@ -216,5 +217,13 @@ public class ClientVo {
 
     public void setTags(String tags) {
         this.tags = tags;
+    }
+
+    public OnlineStatus getIsOnline() {
+        return isOnline;
+    }
+
+    public void setIsOnline(OnlineStatus isOnline) {
+        this.isOnline = isOnline;
     }
 }

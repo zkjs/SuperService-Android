@@ -1,36 +1,34 @@
 package com.zkjinshi.superservice.activity.set;
 
-import android.app.Activity;
-import android.content.ContentResolver;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.zkjinshi.base.net.core.WebSocketManager;
+import com.zkjinshi.base.net.observer.IMessageObserver;
+import com.zkjinshi.base.net.observer.MessageSubject;
+import com.zkjinshi.base.net.protocol.ProtocolMSG;
+import com.zkjinshi.base.util.Constants;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.adapter.ContactsSortAdapter;
 import com.zkjinshi.superservice.bean.ClientDetailBean;
+import com.zkjinshi.superservice.entity.EmpStatusRecord;
+import com.zkjinshi.superservice.entity.MsgEmpStatusRSP;
+import com.zkjinshi.superservice.entity.MsgUserOnlineStatus;
+import com.zkjinshi.superservice.entity.MsgUserOnlineStatusRSP;
+import com.zkjinshi.superservice.entity.UserOnlineStatusRecord;
 import com.zkjinshi.superservice.factory.ClientFactory;
 import com.zkjinshi.superservice.factory.SortModelFactory;
 import com.zkjinshi.superservice.listener.RecyclerItemClickListener;
@@ -40,21 +38,26 @@ import com.zkjinshi.superservice.net.NetRequestListener;
 import com.zkjinshi.superservice.net.NetRequestTask;
 import com.zkjinshi.superservice.net.NetResponse;
 import com.zkjinshi.superservice.sqlite.ClientDBUtil;
+import com.zkjinshi.superservice.sqlite.ShopEmployeeDBUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
-import com.zkjinshi.superservice.utils.CharacterParser;
 import com.zkjinshi.superservice.utils.PinyinComparator;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
-import com.zkjinshi.superservice.utils.SortKeyUtil;
 import com.zkjinshi.superservice.view.SideBar;
 import com.zkjinshi.superservice.vo.ClientVo;
 import com.zkjinshi.superservice.vo.ContactType;
+import com.zkjinshi.superservice.vo.OnlineStatus;
+import com.zkjinshi.superservice.vo.ShopEmployeeVo;
 import com.zkjinshi.superservice.vo.SortModel;
+import com.zkjinshi.superservice.vo.WorkStatus;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
+import java.util.Map;
 
 /**
  * 联系人列表显示， 提供字母快速进入和查找联系人功能
@@ -63,11 +66,9 @@ import java.util.Locale;
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class ClientActivity extends AppCompatActivity{
+public class ClientActivity extends AppCompatActivity implements IMessageObserver{
 
     private final static String TAG = ClientActivity.class.getSimpleName();
-
-    private final static int REFRESH_SORTMODELS = 0X01;//刷新界面显示
 
     private String      mUserID;
     private String      mToken;
@@ -80,30 +81,18 @@ public class ClientActivity extends AppCompatActivity{
     private RecyclerView        mRcvContacts;
     private LinearLayoutManager mLayoutManager;
 
-    private CharacterParser      characterParser;
-    private List<SortModel>      mAllContactsList;
-    private List<ClientVo>       mLocalContacts;
+    private List<SortModel>         mAllContactsList;
+    private List<SortModel>         mLocalContacts;
+    private Map<String, ClientVo>   mLocalClientMap;
     private PinyinComparator     pinyinComparator;
     private ContactsSortAdapter  mContactsAdapter;
-
-    private Handler handler = new Handler(){
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            switch(msg.what){
-                case REFRESH_SORTMODELS:
-                    mContactsAdapter.updateListView(mAllContactsList);
-                    break;
-
-            }
-        }
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_client);
 
+        addObservers();
         initView();
         initData();
         initListener();
@@ -130,8 +119,8 @@ public class ClientActivity extends AppCompatActivity{
 
         /** 给ListView设置adapter **/
         mSideBar.setTextView(mTvDialog);
-        characterParser  = CharacterParser.getInstance();
 
+        mLocalClientMap  = new HashMap<>();
         mAllContactsList = new ArrayList<>();
         pinyinComparator = new PinyinComparator();
         Collections.sort(mAllContactsList, pinyinComparator);// 根据a-z进行排序源数据
@@ -142,15 +131,6 @@ public class ClientActivity extends AppCompatActivity{
         mRcvContacts.setLayoutManager(mLayoutManager);
         mRcvContacts.setAdapter(mContactsAdapter);
 
-        //TODO: 1.获得本地最近5位联系人列表的客户列表
-        //TODO:查询我的本地客户
-        mLocalContacts = ClientDBUtil.getInstance().queryUnNormalClient();
-        if(!mLocalContacts.isEmpty()){
-            List<SortModel> sortModels = SortModelFactory.getInstance().convertClientVos2SortModels(mLocalContacts);
-            mAllContactsList.addAll(sortModels);
-        }
-
-        getMyClientList(mUserID, mToken, mShopID);
     }
 
     private void initListener() {
@@ -179,35 +159,6 @@ public class ClientActivity extends AppCompatActivity{
             }
         });
 
-//        mEtSearch.addTextChangedListener(new TextWatcher() {
-//
-//            @Override
-//            public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
-//            }
-//
-//            @Override
-//            public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
-//            }
-//
-//            @Override
-//            public void afterTextChanged(Editable e) {
-//                String content = mEtSearch.getText().toString();
-//                if ("".equals(content)) {
-//                    mIvClearText.setVisibility(View.INVISIBLE);
-//                } else {
-//                    mIvClearText.setVisibility(View.VISIBLE);
-//                }
-//                if (content.length() > 0) {
-//                    ArrayList<SortModel> fileterList = (ArrayList<SortModel>) search(content);
-//                    mContactsAdapter.updateListView(fileterList);
-//                    //mAdapter.updateData(mContacts);
-//                } else {
-//                    mContactsAdapter.updateListView(mAllContactsList);
-//                }
-//                mRcvContacts.scrollToPosition(0);
-//            }
-//        });
-
         //设置右侧[A-Z]快速导航栏触摸监听
         mSideBar.setOnTouchingLetterChangedListener(new SideBar.OnTouchingLetterChangedListener() {
             @Override
@@ -224,7 +175,6 @@ public class ClientActivity extends AppCompatActivity{
             @Override
             public void onItemClick(View view, int postion) {
                 SortModel sortModel = mAllContactsList.get(postion);
-
                 if (sortModel.getContactType().getValue() == ContactType.NORMAL.getValue()) {
                     String phoneNumber = sortModel.getNumber();
                     Intent clientDetail = new Intent(ClientActivity.this, ClientDetailActivity.class);
@@ -239,47 +189,17 @@ public class ClientActivity extends AppCompatActivity{
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_client, menu);
         return true;
     }
 
-//    /**
-//     * 模糊查询
-//     * @param str
-//     * @return
-//     */
-//    public List<SortModel> search(String str) {
-//        List<SortModel> filterList = new ArrayList<SortModel>();// 过滤后的list
-//        //if (str.matches("^([0-9]|[/+])*$")) {// 正则表达式 匹配号码
-//        if (str.matches("^([0-9]|[/+]).*")) {// 正则表达式 匹配以数字或者加号开头的字符串(包括了带空格及-分割的号码)
-//            String simpleStr = str.replaceAll("\\-|\\s", "");
-//            for (SortModel contact : mAllContactsList) {
-//                if (contact.getNumber() != null && contact.getName() != null) {
-//                    if (contact.getSimpleNumber().contains(simpleStr) || contact.getName().contains(str)) {
-//                        if (!filterList.contains(contact)) {
-//                            filterList.add(contact);
-//                        }
-//                    }
-//                }
-//            }
-//        }else {
-//            for (SortModel contact : mAllContactsList) {
-//                if (contact.getNumber() != null && contact.getName() != null) {
-//                    //姓名全匹配,姓名首字母简拼匹配,姓名全字母匹配
-//                    if (contact.getName().toLowerCase(Locale.CHINESE).contains(str.toLowerCase(Locale.CHINESE))
-//                            || contact.getSortKey().toLowerCase(Locale.CHINESE).replace(" ", "").contains(str.toLowerCase(Locale.CHINESE))
-//                            || contact.getSortToken().simpleSpell.toLowerCase(Locale.CHINESE).contains(str.toLowerCase(Locale.CHINESE))
-//                            || contact.getSortToken().wholeSpell.toLowerCase(Locale.CHINESE).contains(str.toLowerCase(Locale.CHINESE))) {
-//                        if (!filterList.contains(contact)) {
-//                            filterList.add(contact);
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//        return filterList;
-//    }
+    @Override
+    protected void onResume() {
+        //TODO: 1.获得本地最近5位联系人列表的客户列表
+        showLocalUnNormalClientList();
+        showMyClientList(mUserID, mToken, mShopID);
+        super.onResume();
+    }
 
     /**
      * 获取我的客户列表
@@ -287,8 +207,7 @@ public class ClientActivity extends AppCompatActivity{
      * @param token
      * @param shopID
      */
-    public void getMyClientList(String userID, String token, String shopID) {
-        DialogUtil.getInstance().showProgressDialog(ClientActivity.this);
+    public void showMyClientList(String userID, String token, String shopID) {
         NetRequest netRequest = new NetRequest(ProtocolUtil.getShopUserListUrl());
         HashMap<String,String> bizMap = new HashMap<>();
         bizMap.put("salesid", userID);
@@ -304,17 +223,12 @@ public class ClientActivity extends AppCompatActivity{
                 Log.i(TAG, "errorCode:" + errorCode);
                 Log.i(TAG, "errorMessage:" + errorMessage);
                 DialogUtil.getInstance().showToast(ClientActivity.this, "网络访问失败，稍候再试。");
-                Message msg = Message.obtain();
-                msg.what    = REFRESH_SORTMODELS;
-                handler.sendMessage(msg);
+
             }
 
             @Override
             public void onNetworkRequestCancelled() {
                 DialogUtil.getInstance().cancelProgressDialog();
-                Message msg = Message.obtain();
-                msg.what    = REFRESH_SORTMODELS;
-                handler.sendMessage(msg);
             }
 
             @Override
@@ -328,24 +242,47 @@ public class ClientActivity extends AppCompatActivity{
                 } else {
                     Gson gson = new Gson();
                     List<ClientDetailBean> clientDetailBeans = gson.fromJson(jsonResult,
-                            new TypeToken<ArrayList<ClientDetailBean>>() {}.getType());
-
-                    if(null != clientDetailBeans && !clientDetailBeans.isEmpty()){
-
+                            new TypeToken<ArrayList<ClientDetailBean>>() {
+                            }.getType());
+                    if (null != clientDetailBeans && !clientDetailBeans.isEmpty()) {
                         List<ClientVo> clientVos = ClientFactory.getInstance().buildClientVosByClientBeans(clientDetailBeans);
-                        for(ClientVo clientVo : clientVos){
-                            if(!ClientDBUtil.getInstance().isClientExistByUserID(clientVo.getUserid())){
+
+                        for (ClientVo clientVo : clientVos) {
+                            if (!ClientDBUtil.getInstance().isClientExistByUserID(clientVo.getUserid())) {
                                 clientVo.setContactType(ContactType.NORMAL);
                                 ClientDBUtil.getInstance().addClients(clientVo);
                             }
+
+                            String userid = clientVo.getUserid();
+                            if (mLocalClientMap.containsKey(userid)) {
+                                mAllContactsList.remove(mLocalClientMap.get(userid));
+                            }
+                            mLocalClientMap.put(userid, clientVo);
+                            SortModel sortModel = SortModelFactory.getInstance().buildSortModelByMyClientVo(clientVo);
+                            mAllContactsList.add(sortModel);
                         }
 
-                        List<SortModel> sortModels = SortModelFactory.getInstance().convertClientVos2SortModels(clientVos);
-                        mAllContactsList.addAll(sortModels);
+                        //根据名称进行排序显示
+                        Collections.sort(mAllContactsList, pinyinComparator);// 根据a-z进行排序源数据
+                        mContactsAdapter.updateListView(mAllContactsList);
 
-                        Message msg = Message.obtain();
-                        msg.what    = REFRESH_SORTMODELS;
-                        handler.sendMessage(msg);
+                        //获得需要查询是否在线的userID的集合
+                        List<String> keyList = new ArrayList<>(mLocalClientMap.keySet());
+
+                        MsgUserOnlineStatus msgUserOnlineStatus = new MsgUserOnlineStatus();
+                        msgUserOnlineStatus.setType(ProtocolMSG.MSG_UserOnlineStatus);
+                        msgUserOnlineStatus.setTimestamp(System.currentTimeMillis());
+                        msgUserOnlineStatus.setEmpid(mUserID);
+                        msgUserOnlineStatus.setShopid(mShopID);
+                        System.out.println("keyList:" + keyList);
+                        msgUserOnlineStatus.setClients(keyList);
+
+                        if(null == gson)
+                            gson = new Gson();
+
+                        String jsonMsg = gson.toJson(msgUserOnlineStatus, MsgUserOnlineStatus.class);
+                        DialogUtil.getInstance().showProgressDialog(ClientActivity.this, "获取客户在线状态中");
+                        WebSocketManager.getInstance().sendMessage(jsonMsg);
                     }
                 }
             }
@@ -360,75 +297,77 @@ public class ClientActivity extends AppCompatActivity{
     }
 
     /**
-     * 获取本地联系人数据
+     * 获取本地非正式客人列表
+     * @return
      */
-    public void getLocalContacts() {
-        DialogUtil.getInstance().showProgressDialog(ClientActivity.this);
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    ContentResolver resolver = getApplicationContext().getContentResolver();
-                    Cursor phoneCursor = resolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                            new String[]
-                                    {
-                                            ContactsContract.CommonDataKinds.Phone.CONTACT_ID,
-                                            ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
-                                            ContactsContract.CommonDataKinds.Phone.NUMBER,
-                                            "sort_key"
-                                    },
-                            null, null, "sort_key");
+    public void showLocalUnNormalClientList() {
+        List<ClientVo> clientVos = ClientDBUtil.getInstance().queryUnNormalClient();
+        for(ClientVo clientVo : clientVos){
+            mLocalClientMap.put(clientVo.getUserid(), clientVo);
+        }
 
-                    if (phoneCursor == null || phoneCursor.getCount() == 0) {
-                        Toast.makeText(getApplicationContext(), "未获得读取联系人权限 或 未获得联系人数据", Toast.LENGTH_SHORT).show();
-                        return ;
-                    }
-                    int PHONES_CONTEACT_ID_INDEX  = phoneCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.CONTACT_ID);
-                    int PHONES_NUMBER_INDEX       = phoneCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
-                    int PHONES_DISPLAY_NAME_INDEX = phoneCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
-                    int SORT_KEY_INDEX            = phoneCursor.getColumnIndex("sort_key");
-                    if (phoneCursor.getCount() > 0) {
-                        if(null == mAllContactsList){
-                            mAllContactsList = new ArrayList<>();
-                        }
-                        while (phoneCursor.moveToNext()) {
-                            String phoneNumber = phoneCursor.getString(PHONES_NUMBER_INDEX);
-                            if (TextUtils.isEmpty(phoneNumber))
-                                continue;
-                            long   contactID   = phoneCursor.getLong(PHONES_CONTEACT_ID_INDEX);
-                            String contactName = phoneCursor.getString(PHONES_DISPLAY_NAME_INDEX);
-                            String sortKey     = phoneCursor.getString(SORT_KEY_INDEX);
-                            System.out.println(sortKey);
+        mLocalContacts =  SortModelFactory.getInstance().convertClientVos2SortModels(clientVos);
+        if(null != mLocalContacts  && !mLocalContacts.isEmpty()){
+            if(null != mAllContactsList && !mAllContactsList.isEmpty()){
+                mAllContactsList.removeAll(mAllContactsList);
+            }
 
-                            SortModel sortModel = new SortModel();
-                            sortModel.setContactType(ContactType.UNNORMAL);//本地联系人类型
-                            sortModel.setContactID(contactID);
-                            sortModel.setName(contactName);
-                            sortModel.setNumber(phoneNumber);
-                            sortModel.setSortKey(sortKey);
+            mAllContactsList.addAll(mLocalContacts);
+            Collections.sort(mAllContactsList, pinyinComparator);// 根据a-z进行排序源数据
+            mContactsAdapter.updateListView(mAllContactsList);
+        }
+    }
 
-                            //优先使用系统sortkey取, 取不到再使用工具取
-                            String sortLetters = SortKeyUtil.getSortLetterBySortKey(sortKey, characterParser);
-                            if (sortLetters == null) {
-                                sortLetters = SortKeyUtil.getSortLetter(contactName, characterParser);
-                            }
-                            sortModel.setSortLetters(sortLetters);
-                            sortModel.setSortToken(SortKeyUtil.parseSortKey(sortKey));
+    private void addObservers() {
+        MessageSubject.getInstance().addObserver(ClientActivity.this, ProtocolMSG.MSG_UserOnlineStatus_RSP);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        MessageSubject.getInstance().removeObserver(this, ProtocolMSG.MSG_UserOnlineStatus_RSP);
+    }
+
+    @Override
+    public void receive(String message) {
+        DialogUtil.getInstance().cancelProgressDialog();
+        System.out.print("message:" + message);
+        if(TextUtils.isEmpty(message)){
+            return ;
+        }
+
+        Gson gson = null;
+        if(null == gson )
+            gson = new Gson();
+
+        try {
+            JSONObject messageObj = new JSONObject(message);
+            int type = messageObj.getInt("type");
+
+            if (type == ProtocolMSG.MSG_UserOnlineStatus_RSP) {
+                DialogUtil.getInstance().showCustomToast(ClientActivity.this, "获取用户在线状态成功", Gravity.CENTER);
+                MsgUserOnlineStatusRSP userOnlineStatusRSP = gson.fromJson(message, MsgUserOnlineStatusRSP.class);
+                List<UserOnlineStatusRecord> userOnlineStatusRecords =  userOnlineStatusRSP.getResult();
+                if(null != userOnlineStatusRecords && !userOnlineStatusRecords.isEmpty()){
+
+                    mAllContactsList.removeAll(mAllContactsList);
+                    for(UserOnlineStatusRecord userOnlineStatusRecord : userOnlineStatusRecords){
+                        String userID = userOnlineStatusRecord.getUserid();
+                        if(mLocalClientMap.containsKey(userID)){
+                            int onlineStatus = userOnlineStatusRecord.getOnlinestatus();
+                            ClientVo clientVo = mLocalClientMap.get(userID);
+                            clientVo.setIsOnline(OnlineStatus.OFFLINE.getValue() == onlineStatus ?
+                                                      OnlineStatus.OFFLINE : OnlineStatus.ONLINE);
+                            SortModel sortModel = SortModelFactory.getInstance().buildSortModelByMyClientVo(clientVo);
                             mAllContactsList.add(sortModel);
                         }
                     }
-                    phoneCursor.close();
-                    runOnUiThread(new Runnable() {
-                        public void run() {
-                            Collections.sort(mAllContactsList, pinyinComparator);
-                            mContactsAdapter.updateListView(mAllContactsList);
-                            DialogUtil.getInstance().cancelProgressDialog();
-                        }
-                    });
-                } catch (Exception e) {
-                    Log.e("xbc", e.getLocalizedMessage());
+                    mContactsAdapter.updateListView(mAllContactsList);
                 }
             }
-        }).start();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        Log.i(Constants.ZKJINSHI_BASE_TAG, TAG + ".onNetReceiveSucceed()->message:" + message);
     }
 }

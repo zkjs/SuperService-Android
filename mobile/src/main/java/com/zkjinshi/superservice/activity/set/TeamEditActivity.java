@@ -160,10 +160,11 @@ public class TeamEditActivity extends Activity implements IMessageObserver{
         mContactsAdapter.setOnItemClickListener(new RecyclerItemClickListener() {
             @Override
             public void onItemClick(View view, int postion) {
-                if(mCheckedList.contains(mShopEmployeeVos.get(postion))){
-                    mCheckedList.remove(postion);
+                ShopEmployeeVo shopEmployeeVo = mShopEmployeeVos.get(postion);
+                if(mCheckedList.contains(shopEmployeeVo)){
+                    mCheckedList.remove(shopEmployeeVo);
                 } else {
-                    mCheckedList.add(mShopEmployeeVos.get(postion));
+                    mCheckedList.add(shopEmployeeVo);
                 }
             }
         });
