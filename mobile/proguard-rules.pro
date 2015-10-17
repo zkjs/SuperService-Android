@@ -79,6 +79,8 @@
 -keep class com.zkjinshi.superservice.entity.** { *; }
 -keep class com.zkjinshi.superservice.vo.** { *; }
 -keep class com.zkjinshi.superservice.net.** { *; }
+-keep class com.zkjinshi.superservice.fragment.**{ *; }
+-keep class com.zkjinshi.superservice.activity.**{ *; }
 
 #保留扩展控件不被混淆
 -keep class android.support.**{ *; }
