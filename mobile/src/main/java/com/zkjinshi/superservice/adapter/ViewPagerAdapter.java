@@ -2,7 +2,6 @@ package com.zkjinshi.superservice.adapter;
 
 import android.content.Context;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
@@ -10,9 +9,6 @@ import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.fragment.MessageFragment;
 import com.zkjinshi.superservice.fragment.NoticeFragment;
 import com.zkjinshi.superservice.fragment.OrderFragment;
-import com.zkjinshi.superservice.fragment.SharedFragment;
-
-import java.util.ArrayList;
 
 /**
  * 开发者：JimmyZhang
