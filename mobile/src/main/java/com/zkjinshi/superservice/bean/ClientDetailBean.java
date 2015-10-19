@@ -39,7 +39,7 @@ public class ClientDetailBean implements Serializable{
 
     private List<ClientTag>     tags;
 
-    public class ClientTag{
+    public class ClientTag implements Serializable{
         public int    tagid;
         public String tag;
     }
