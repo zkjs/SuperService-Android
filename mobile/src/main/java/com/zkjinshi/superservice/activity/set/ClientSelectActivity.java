@@ -94,11 +94,7 @@ public class ClientSelectActivity extends Activity {
                         DialogUtil.getInstance().showCustomToast(ClientSelectActivity.this,
                                 "请确认手机号是否输入正确!", Gravity.CENTER);
                     } else {
-                        if(ClientDBUtil.getInstance().isClientExistByPhone(phone)){
-                            DialogUtil.getInstance().showToast(ClientSelectActivity.this, "此用户本地已存在, 请勿重复添加!");
-                        } else {
                             getClientDetail(phone);
-                        }
                     }
                     return true;
                 }
@@ -143,6 +139,7 @@ public class ClientSelectActivity extends Activity {
                     try {
                         JSONObject jsonObject = new JSONObject(jsonResult);
                         int errCode = jsonObject.getInt("err");
+
                         //验证没通过
                         if (400 == errCode) {
                             DialogUtil.getInstance().showToast(ClientSelectActivity.this,

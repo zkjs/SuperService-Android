@@ -92,7 +92,7 @@ public class ClientFactory {
        }
         values.put("order_count", orderCount);
         values.put("tags", tags);
-        values.put("bg+drawable_res", bgDrawableRes);
+        values.put("bg_drawable_res", bgDrawableRes);
         return values;
     }
 

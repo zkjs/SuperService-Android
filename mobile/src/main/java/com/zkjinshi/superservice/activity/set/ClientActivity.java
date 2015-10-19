@@ -247,9 +247,9 @@ public class ClientActivity extends AppCompatActivity implements IMessageObserve
                         List<ClientVo> clientVos = ClientFactory.getInstance().buildClientVosByClientBeans(clientDetailBeans);
 
                         for (ClientVo clientVo : clientVos) {
+                            clientVo.setContactType(ContactType.NORMAL);
                             if (!ClientDBUtil.getInstance().isClientExistByUserID(clientVo.getUserid())) {
-                                clientVo.setContactType(ContactType.NORMAL);
-                                ClientDBUtil.getInstance().addClients(clientVo);
+                                ClientDBUtil.getInstance().addClient(clientVo);
                             }
 
                             String userid = clientVo.getUserid();
@@ -308,23 +308,22 @@ public class ClientActivity extends AppCompatActivity implements IMessageObserve
         }
 
         mLocalContacts =  SortModelFactory.getInstance().convertClientVos2SortModels(clientVos);
-        if(null == mLocalContacts){
-            mLocalContacts = new ArrayList<>();
+        if(null != mLocalContacts && !mLocalContacts.isEmpty()){
+            mAllContactsList.addAll(mLocalContacts);
         }
-
-        mAllContactsList.addAll(mLocalContacts);
         this.updateListView(mAllContactsList);
     }
 
     private void updateListView(List<SortModel> mAllContactsList) {
-        if(null != mAllContactsList && !mAllContactsList.isEmpty()){
-            // 根据a-z进行排序源数据
-            Collections.sort(mAllContactsList, pinyinComparator);
-            mTvDialog.setVisibility(View.GONE);
-            mContactsAdapter.updateListView(mAllContactsList);
-        }else {
+        if(null == mAllContactsList || mAllContactsList.isEmpty()){
             mTvDialog.setVisibility(View.VISIBLE);
-            mTvDialog.setText(ClientActivity.this.getString(R.string.no_data));
+            mTvDialog.setText(ClientActivity.this.getString(R.string.current_none));
+
+        }else {
+            // 根据a-z进行排序源数据
+            mTvDialog.setVisibility(View.GONE);
+            Collections.sort(mAllContactsList, pinyinComparator);
+            mContactsAdapter.updateListView(mAllContactsList);
         }
     }
 
@@ -357,7 +356,6 @@ public class ClientActivity extends AppCompatActivity implements IMessageObserve
                 MsgUserOnlineStatusRSP userOnlineStatusRSP = gson.fromJson(message, MsgUserOnlineStatusRSP.class);
                 List<UserOnlineStatusRecord> userOnlineStatusRecords =  userOnlineStatusRSP.getResult();
                 if(null != userOnlineStatusRecords && !userOnlineStatusRecords.isEmpty()){
-
                     mAllContactsList.removeAll(mAllContactsList);
                     for(UserOnlineStatusRecord userOnlineStatusRecord : userOnlineStatusRecords){
                         String userID = userOnlineStatusRecord.getUserid();

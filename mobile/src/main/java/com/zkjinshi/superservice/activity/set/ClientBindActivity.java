@@ -178,7 +178,7 @@ public class ClientBindActivity extends Activity {
             @Override
             public void onClick(View v) {
                 if(ClientDBUtil.getInstance().isClientExistByPhone(mClientBean.getPhone())){
-                    DialogUtil.getInstance().showCustomToast(ClientBindActivity.this, "客户已存在,请勿重复添加.", Gravity.CENTER);
+                    DialogUtil.getInstance().showCustomToast(ClientBindActivity.this, "此用户本地已存在,请勿重复添加.", Gravity.CENTER);
                 }else if (null != mClientBean) {
                     //绑定客户
                     bindClient(mUserID, mToken, mShopID, mClientBean);

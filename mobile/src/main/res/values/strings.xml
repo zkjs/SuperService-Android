@@ -37,6 +37,7 @@
     <string name="latest_contact">最近联系</string>
 
     <string name="no_data">暂无数据</string>
+    <string name="current_none">暂无</string>
     <string name="member_detail">会员信息</string>
     <string name="account_type">账号类型</string>
     <string name="debt_member">挂账会员</string>

@@ -63,23 +63,6 @@ public class ClientDBUtil {
         return addResult;
     }
 
-    public long addClients(ClientVo clientVo){
-        ContentValues values = ClientFactory.getInstance().buildAddContentValues(clientVo);
-        long addResult    = -1;
-        SQLiteDatabase db = null;
-        try {
-            db        = helper.getWritableDatabase();
-            addResult = db.insert(DBOpenHelper.CLIENT_TBL, null, values);
-        } catch (Exception e) {
-            LogUtil.getInstance().info(LogLevel.ERROR, TAG + ".addClient->" + e.getMessage());
-            e.printStackTrace();
-        } finally{
-            if(null != db)
-                db.close();
-        }
-        return addResult;
-    }
-
     /**
      * 更新非正式客户
      * @param client
@@ -260,7 +243,7 @@ public class ClientDBUtil {
         SQLiteDatabase db = null;
         try {
             db = helper.getReadableDatabase();
-            cursor = db.query(DBOpenHelper.SHOP_EMPLOYEE_TBL,
+            cursor = db.query(DBOpenHelper.CLIENT_TBL,
                     new String[]{" bg_drawable_res "},
                     " userid = ? ",
                     new String[] { clientID },
@@ -287,17 +270,18 @@ public class ClientDBUtil {
      * @param clientID
      * @param bgRes
      */
-    public long updateClientBgDrawabelResByClientID(String clientID, int bgRes) {
+    public long updateClientBgDrawableResByClientID(String clientID, int bgRes) {
         long updateReslut = -1;
         SQLiteDatabase db = null;
         ContentValues values = null;
         try {
             db        = helper.getWritableDatabase();
             values    = new ContentValues();
+
             values.put("bg_drawable_res", bgRes);
-            updateReslut = db.update(DBOpenHelper.CLIENT_TBL, values, "userid", new String[] { clientID });
+            updateReslut = db.update(DBOpenHelper.CLIENT_TBL, values, " userid = ? ", new String[] { clientID });
         } catch (Exception e) {
-            LogUtil.getInstance().info(LogLevel.ERROR, TAG + ".updateClient->" + e.getMessage());
+            LogUtil.getInstance().info(LogLevel.ERROR, TAG + ".updateClientBgDrawabelResByClientID->" + e.getMessage());
             e.printStackTrace();
         } finally{
             if(null != db)

@@ -114,7 +114,7 @@ public class ContactsSortAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             sortModel.setBgDrawableRes(bgDrawableRes);
         } else {
             int bgRes = RandomDrawbleUtil.getRandomDrawable();
-            ClientDBUtil.getInstance().updateClientBgDrawabelResByClientID(clientID, bgRes);
+            ClientDBUtil.getInstance().updateClientBgDrawableResByClientID(clientID, bgRes);
             sortModel.setBgDrawableRes(bgRes);
         }
 
