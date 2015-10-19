@@ -62,6 +62,7 @@ public class ClientFactory {
         SexType     setType     = client.getSex();
         int    orderCount  = client.getOrder_count();
         String tags        = client.getTags();
+        int bgDrawableRes  = client.getBgDrawableRes();
 
         values.put("userid", userId);
         values.put("id", id);
@@ -91,6 +92,7 @@ public class ClientFactory {
        }
         values.put("order_count", orderCount);
         values.put("tags", tags);
+        values.put("bg+drawable_res", bgDrawableRes);
         return values;
     }
 
@@ -125,6 +127,7 @@ public class ClientFactory {
             client.setOrder_count(cursor.getInt(21));
             client.setTags(cursor.getString(22));
             client.setIsOnline(getOnlineStatus(cursor.getInt(23)));
+            client.setBgDrawableRes(cursor.getInt(24));
         return  client;
     }
 
@@ -241,6 +244,7 @@ public class ClientFactory {
         values.put("order_count", client.getOrder_count());
         values.put("tags", client.getTags());
         values.put("online_status", client.getIsOnline().getValue());
+        values.put("bg_drawable_res", client.getBgDrawableRes());
         return values;
     }
 

@@ -60,9 +60,9 @@ public class TeamEditContactsAdapter extends RecyclerView.Adapter<RecyclerView.V
         this.mList    = list;
         this.mCheckedMap = new HashMap<>();
         this.options  = new DisplayImageOptions.Builder()
-                .showImageOnLoading(R.drawable.img_hotel_zhanwei)
-                .showImageForEmptyUri(R.drawable.img_hotel_zhanwei)// 设置图片Uri为空或是错误的时候显示的图片
-                .showImageOnFail(R.drawable.img_hotel_zhanwei)// 设置图片加载或解码过程中发生错误显示的图片
+                .showImageOnLoading(null)
+                .showImageForEmptyUri(null)// 设置图片Uri为空或是错误的时候显示的图片
+                .showImageOnFail(null)// 设置图片加载或解码过程中发生错误显示的图片
                 .cacheInMemory(true) // 设置下载的图片是否缓存在内存中
                 .cacheOnDisk(true) // 设置下载的图片是否缓存在SD卡中
                 .build();
@@ -100,87 +100,78 @@ public class TeamEditContactsAdapter extends RecyclerView.Adapter<RecyclerView.V
         ShopEmployeeVo employeeVo = mList.get(position);
         int section = getSectionForPosition(position);
 
-        //显示客户名称
-        final String employeeName = employeeVo.getName();
         if (position == getPositionForSection(section)) {
             ((ContactViewHolder)holder).tvLetter.setVisibility(View.VISIBLE);
-            ((ContactViewHolder)holder).tvLetter.setText(employeeVo.getDept_name());
+            String deptName = employeeVo.getDept_name();
+            if(!TextUtils.isEmpty(deptName)){
+                ((ContactViewHolder)holder).tvLetter.setText(deptName);
+            }
         } else {
             ((ContactViewHolder)holder).tvLetter.setVisibility(View.GONE);
         }
 
-        if(!TextUtils.isEmpty(employeeName)){
+        //显示客户名称
+        final String employeeName = employeeVo.getName();
+        if(!TextUtils.isEmpty(employeeName)) {
             final String firstName = employeeName.substring(0, 1);
-            ((ContactViewHolder)holder).tvContactName.setText(employeeName);
-            ((ContactViewHolder)holder).tvContactAvatar.setText(firstName);
+            ((ContactViewHolder) holder).tvContactAvatar.setText(firstName);
+            ((ContactViewHolder) holder).tvContactName.setText(employeeName);
+        }
 
-            //根据url显示图片
-            String avatarUrl = ProtocolUtil.getAvatarUrl(employeeVo.getEmpid());
-            ImageLoader.getInstance().displayImage(avatarUrl, ((ContactViewHolder) holder).civContactAvatar, options, new ImageLoadingListener() {
-                @Override
-                public void onLoadingStarted(String imageUri, View view) {
-                    ((ContactViewHolder)holder).tvContactAvatar.setVisibility(View.VISIBLE);
-                    if(null == ((ContactViewHolder)holder).tvContactAvatar.getBackground()){
-                        ((ContactViewHolder)holder).tvContactAvatar.setBackgroundResource(RandomDrawbleUtil.getRandomDrawable());
-                    }
-                }
-
-                @Override
-                public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-                    ((ContactViewHolder)holder).tvContactAvatar.setVisibility(View.VISIBLE);
-                    if(null == ((ContactViewHolder)holder).tvContactAvatar.getBackground()){
-                        ((ContactViewHolder)holder).tvContactAvatar.setBackgroundResource(RandomDrawbleUtil.getRandomDrawable());
-                    }
-                }
-
-                @Override
-                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                    view.setVisibility(View.VISIBLE);
-                    if(((ContactViewHolder)holder).civContactAvatar.getBackground() == null){
-                        ((CircleImageView)view).setImageBitmap(loadedImage);
-                    }
-                    ((ContactViewHolder)holder).tvContactAvatar.setVisibility(View.GONE);
-                    ((ContactViewHolder)holder).tvContactAvatar.setBackgroundDrawable(null);
-                }
-
-                @Override
-                public void onLoadingCancelled(String imageUri, View view) {
-                    ((ContactViewHolder)holder).tvContactAvatar.setVisibility(View.VISIBLE);
-                    if(null == ((ContactViewHolder)holder).tvContactAvatar.getBackground()){
-                        ((ContactViewHolder)holder).tvContactAvatar.setBackgroundResource(RandomDrawbleUtil.getRandomDrawable());
-                    }
-                }
-            });
-
-            //设置显示在线状态时间
-            if(employeeVo.getOnline_status() == OnlineStatus.ONLINE) {
-                ((ContactViewHolder)holder).tvContactOnLine.setTextColor(Color.BLUE);
-                ((ContactViewHolder)holder).tvContactOnLine.setText(mContext.getString(R.string.online));
-            } else {
-                ((ContactViewHolder)holder).tvContactOnLine.setTextColor(Color.GRAY);
-                String strLastOnline  = mContext.getString(R.string.offline);
-                Long   lastOnlineTime = employeeVo.getLastOnLineTime();
-                if(lastOnlineTime != 0){
-                    strLastOnline +=  mContext.getString(R.string.last_online_time )
-                                      + " : "
-                                      + TimeUtil.getChatTime(lastOnlineTime);
-                }
-                ((ContactViewHolder)holder).tvContactOnLine.setText(strLastOnline);
+        //根据url显示图片
+        String avatarUrl = ProtocolUtil.getAvatarUrl(employeeVo.getEmpid());
+        ImageLoader.getInstance().displayImage(avatarUrl, ((ContactViewHolder) holder).civContactAvatar, options, new ImageLoadingListener() {
+            @Override
+            public void onLoadingStarted(String imageUri, View view) {
+                ((ContactViewHolder) holder).civContactAvatar.setBackgroundColor(Color.TRANSPARENT);
+                ((ContactViewHolder) holder).tvContactAvatar.setBackgroundResource(RandomDrawbleUtil.getRandomDrawable());
             }
 
-            //set the checkbox
-            ((ContactViewHolder) holder).cbCheck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        mCheckedMap.put(position, isChecked);
-                }
-            });
-
-            if(mCheckedMap.containsKey(position) && mCheckedMap.get(position)){
-                ((ContactViewHolder) holder).cbCheck.setChecked(true);
-            } else {
-                ((ContactViewHolder) holder).cbCheck.setChecked(false);
+            @Override
+            public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+                ((ContactViewHolder) holder).civContactAvatar.setBackgroundColor(Color.TRANSPARENT);
+                ((ContactViewHolder) holder).tvContactAvatar.setBackgroundResource(RandomDrawbleUtil.getRandomDrawable());
             }
+
+            @Override
+            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+            }
+
+            @Override
+            public void onLoadingCancelled(String imageUri, View view) {
+                ((ContactViewHolder) holder).civContactAvatar.setBackgroundColor(Color.TRANSPARENT);
+                ((ContactViewHolder) holder).tvContactAvatar.setBackgroundResource(RandomDrawbleUtil.getRandomDrawable());
+            }
+        });
+
+        //设置显示在线状态时间
+        if(employeeVo.getOnline_status() == OnlineStatus.ONLINE) {
+            ((ContactViewHolder)holder).tvContactOnLine.setTextColor(Color.BLUE);
+            ((ContactViewHolder)holder).tvContactOnLine.setText(mContext.getString(R.string.online));
+        } else {
+            ((ContactViewHolder)holder).tvContactOnLine.setTextColor(Color.GRAY);
+            String strLastOnline  = mContext.getString(R.string.offline);
+            Long   lastOnlineTime = employeeVo.getLastOnLineTime();
+            if(lastOnlineTime != 0){
+                strLastOnline +=  mContext.getString(R.string.last_online_time )
+                        + " : "
+                        + TimeUtil.getChatTime(lastOnlineTime);
+            }
+            ((ContactViewHolder)holder).tvContactOnLine.setText(strLastOnline);
+        }
+
+        //set the checkbox
+        ((ContactViewHolder) holder).cbCheck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                mCheckedMap.put(position, isChecked);
+            }
+        });
+
+        if(mCheckedMap.containsKey(position) && mCheckedMap.get(position)){
+            ((ContactViewHolder) holder).cbCheck.setChecked(true);
+        } else {
+            ((ContactViewHolder) holder).cbCheck.setChecked(false);
         }
     }
 

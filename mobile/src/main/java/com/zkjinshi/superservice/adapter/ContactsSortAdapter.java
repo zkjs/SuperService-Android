@@ -1,6 +1,7 @@
 package com.zkjinshi.superservice.adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -14,8 +15,14 @@ import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.listener.RecyclerItemClickListener;
+import com.zkjinshi.superservice.sqlite.ClientDBUtil;
+import com.zkjinshi.superservice.sqlite.ShopEmployeeDBUtil;
+import com.zkjinshi.superservice.utils.ProtocolUtil;
+import com.zkjinshi.superservice.utils.RandomDrawbleUtil;
 import com.zkjinshi.superservice.vo.OnlineStatus;
 import com.zkjinshi.superservice.vo.SortModel;
 import com.zkjinshi.superservice.view.CircleImageView;
@@ -46,9 +53,9 @@ public class ContactsSortAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         this.mList    = list;
 
         this.options = new DisplayImageOptions.Builder()
-                .showImageOnLoading(R.mipmap.ic_launcher)// 设置图片下载期间显示的图片
-                .showImageForEmptyUri(R.mipmap.ic_launcher)// 设置图片Uri为空或是错误的时候显示的图片
-                .showImageOnFail(R.mipmap.ic_launcher)// 设置图片加载或解码过程中发生错误显示的图片
+                .showImageOnLoading(Color.TRANSPARENT)// 设置图片下载期间显示的图片
+                .showImageForEmptyUri(Color.TRANSPARENT)// 设置图片Uri为空或是错误的时候显示的图片
+                .showImageOnFail(Color.TRANSPARENT)// 设置图片加载或解码过程中发生错误显示的图片
                 .cacheInMemory(true) // 设置下载的图片是否缓存在内存中
                 .cacheOnDisk(true) // 设置下载的图片是否缓存在SD卡中
                 .build();
@@ -83,10 +90,11 @@ public class ContactsSortAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
         //根据position获取分类的首字母的Char ascii值
-        SortModel sortModel = mList.get(position);
+        final SortModel sortModel = mList.get(position);
         int section = getSectionForPosition(position);
+
         //是否显示首字母
         if (position == getPositionForSection(section)) {
             ((ClientViewHolder)holder).tvLetter.setVisibility(View.VISIBLE);
@@ -94,24 +102,58 @@ public class ContactsSortAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             if("?".equals(sortLetter)){
                 ((ClientViewHolder)holder).tvLetter.setText(mContext.getString(R.string.latest_contact));
             }else {
-                ((ClientViewHolder)holder).tvLetter.setText(sortModel.getSortLetters());
+                ((ClientViewHolder)holder).tvLetter.setText(sortLetter);
             }
         } else {
             ((ClientViewHolder)holder).tvLetter.setVisibility(View.GONE);
         }
 
+        String clientID    = sortModel.getClientID();
+        int bgDrawableRes =  ClientDBUtil.getInstance().queryBgDrawableResByClientID(sortModel.getClientID());
+        if(bgDrawableRes != 0){
+            sortModel.setBgDrawableRes(bgDrawableRes);
+        } else {
+            int bgRes = RandomDrawbleUtil.getRandomDrawable();
+            ClientDBUtil.getInstance().updateClientBgDrawabelResByClientID(clientID, bgRes);
+            sortModel.setBgDrawableRes(bgRes);
+        }
+
         //根据url显示图片
-        String avatarUrl = sortModel.getAvatarUrl();
-        ImageLoader.getInstance().displayImage(avatarUrl, ((ClientViewHolder)holder).civContactAvatar, options);
+        String avatarUrl = ProtocolUtil.getAvatarUrl(clientID);
+        ImageLoader.getInstance().displayImage(avatarUrl, ((ClientViewHolder) holder).civContactAvatar, options, new ImageLoadingListener() {
+            @Override
+            public void onLoadingStarted(String imageUri, View view) {
+                ((ClientViewHolder) holder).tvContactAvatar.setBackgroundResource(sortModel.getBgDrawableRes());
+                ((ClientViewHolder) holder).civContactAvatar.setBackgroundColor(Color.TRANSPARENT);
+            }
+
+            @Override
+            public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+                ((ClientViewHolder) holder).civContactAvatar.setBackgroundColor(Color.TRANSPARENT);
+                ((ClientViewHolder) holder).tvContactAvatar.setBackgroundResource(sortModel.getBgDrawableRes());
+            }
+
+            @Override
+            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+            }
+
+            @Override
+            public void onLoadingCancelled(String imageUri, View view) {
+                ((ClientViewHolder) holder).civContactAvatar.setBackgroundColor(Color.TRANSPARENT);
+                ((ClientViewHolder) holder).tvContactAvatar.setBackgroundResource(sortModel.getBgDrawableRes());
+            }
+        });
 
         //显示客户名称
         String clientName = sortModel.getName();
         if(!TextUtils.isEmpty(clientName)){
-            //去除wen
+            ((ClientViewHolder) holder).tvContactAvatar.setText(clientName.substring(0, 1));
+            //去除问号
             if("?".equals(clientName.trim().substring(0, 1))){
                 ((ClientViewHolder)holder).tvContactName.setText(clientName.substring(1));
+            } else {
+                ((ClientViewHolder)holder).tvContactName.setText(clientName);
             }
-            ((ClientViewHolder)holder).tvContactName.setText(this.mList.get(position).getName());
         }
 
         //设置显示在线状态时间
@@ -135,6 +177,7 @@ public class ContactsSortAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
         public TextView         tvLetter;
         public CircleImageView  civContactAvatar;
+        public TextView         tvContactAvatar;
         public TextView         tvContactName;
         public TextView         tvContactDes;
         public RelativeLayout   rlContactStatus;
@@ -149,6 +192,7 @@ public class ContactsSortAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             super(view);
             tvLetter         = (TextView) view.findViewById(R.id.catalog);
             civContactAvatar = (CircleImageView) view.findViewById(R.id.civ_contact_avatar);
+            tvContactAvatar  = (TextView) view.findViewById(R.id.tv_contact_avatar);
             tvContactName    = (TextView) view.findViewById(R.id.tv_contact_name);
             tvContactDes     = (TextView) view.findViewById(R.id.tv_contact_des);
             rlContactStatus  = (RelativeLayout) view.findViewById(R.id.rl_contact_status);

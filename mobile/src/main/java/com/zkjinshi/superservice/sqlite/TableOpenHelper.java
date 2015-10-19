@@ -111,8 +111,9 @@ public class TableOpenHelper {
                     + " contact_type  int, "
                     + " sex           int, "
                     + " order_count   int, "
-                    + " tags          text, " //
-                    + " online_status int " //
+                    + " tags          text, "
+                    + " online_status int, "
+                    + " bg_drawable_res  int " //背景颜色资源值
                     + " ) ";
 
     /** 创建区域信息表 */
@@ -173,7 +174,8 @@ public class TableOpenHelper {
                     + " dept_id       int,"  //部门
                     + " desc          text," //备注描述
                     + " shop_id       text,"  //商家ID
-                    + " dept_name     text"  //部门名称
+                    + " dept_name     text,"  //部门名称
+                    + " bg_color_res  int"    //背景颜色资源值
                     + " ) ";
 
     /** 商家部门表 */

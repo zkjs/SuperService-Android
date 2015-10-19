@@ -161,6 +161,7 @@ public class SortModelFactory {
 
         sortModel.setClientID(clientID);
         sortModel.setIsOnLine(clientVo.getIsOnline());
+        sortModel.setBgDrawableRes(clientVo.getBgDrawableRes());
         return sortModel;
     }
 

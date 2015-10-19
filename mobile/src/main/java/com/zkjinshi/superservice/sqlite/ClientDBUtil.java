@@ -248,4 +248,61 @@ public class ClientDBUtil {
         }
         return clientVo;
     }
+
+    /**
+     * 根据客户ID查询头像背景颜色值
+     * @param clientID
+     * @return
+     */
+    public int queryBgDrawableResByClientID(String clientID) {
+        int    bgColorRes = 0;
+        Cursor cursor = null;
+        SQLiteDatabase db = null;
+        try {
+            db = helper.getReadableDatabase();
+            cursor = db.query(DBOpenHelper.SHOP_EMPLOYEE_TBL,
+                    new String[]{" bg_drawable_res "},
+                    " userid = ? ",
+                    new String[] { clientID },
+                    null, null, null);
+
+            if(cursor.moveToFirst()){
+                bgColorRes = cursor.getInt(0);
+            }
+        } catch (Exception e) {
+            LogUtil.getInstance().info(LogLevel.ERROR, TAG + ".queryBgDrawableResByClientID->"+e.getMessage());
+            e.printStackTrace();
+        } finally{
+            if(null != db)
+                db.close();
+
+            if(null != cursor)
+                cursor.close();
+        }
+        return bgColorRes;
+    }
+
+    /**
+     * 根据客户ID更新客户背景值
+     * @param clientID
+     * @param bgRes
+     */
+    public long updateClientBgDrawabelResByClientID(String clientID, int bgRes) {
+        long updateReslut = -1;
+        SQLiteDatabase db = null;
+        ContentValues values = null;
+        try {
+            db        = helper.getWritableDatabase();
+            values    = new ContentValues();
+            values.put("bg_drawable_res", bgRes);
+            updateReslut = db.update(DBOpenHelper.CLIENT_TBL, values, "userid", new String[] { clientID });
+        } catch (Exception e) {
+            LogUtil.getInstance().info(LogLevel.ERROR, TAG + ".updateClient->" + e.getMessage());
+            e.printStackTrace();
+        } finally{
+            if(null != db)
+                db.close();
+        }
+        return updateReslut;
+    }
 }

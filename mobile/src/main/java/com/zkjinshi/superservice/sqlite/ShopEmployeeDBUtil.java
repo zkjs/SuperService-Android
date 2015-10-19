@@ -180,7 +180,7 @@ public class ShopEmployeeDBUtil {
         SQLiteDatabase db = null;
         try {
             db = helper.getReadableDatabase();
-            cursor = db.rawQuery(" select * from " + DBOpenHelper.SHOP_EMPLOYEE_TBL + " where empid = ? ", new String[] { empID });
+            cursor = db.rawQuery(" select * from " + DBOpenHelper.SHOP_EMPLOYEE_TBL + " empid = ? ", new String[] { empID });
             if(cursor.getCount() > 0){
                 return true;
             }
@@ -195,6 +195,37 @@ public class ShopEmployeeDBUtil {
                 cursor.close();
         }
         return false;
+    }
+
+    /**
+     * 根据empID查询默认背景颜色资源值
+     * @return
+     */
+    public int queryBgColorResByEmpID(String empID) {
+        int    bgColorRes = 0;
+        Cursor cursor = null;
+        SQLiteDatabase db = null;
+        try {
+            db = helper.getReadableDatabase();
+            cursor = db.query(DBOpenHelper.SHOP_EMPLOYEE_TBL,
+                              new String[]{" bg_color_res "},
+                              " empid = ? ",
+                              new String[] {empID},
+                              null, null, null);
+            if(cursor.moveToFirst()){
+                bgColorRes = cursor.getInt(0);
+            }
+        } catch (Exception e) {
+            LogUtil.getInstance().info(LogLevel.ERROR, TAG + ".queryBgColorResByEmpID->"+e.getMessage());
+            e.printStackTrace();
+        } finally{
+            if(null != db)
+                db.close();
+
+            if(null != cursor)
+                cursor.close();
+        }
+        return bgColorRes;
     }
 
     /**
