@@ -325,7 +325,11 @@ public class EmployeeAddActivity extends Activity {
         if( excelList != null && excelList.size() > 0){
             for(ShopEmployeeVo shopEmployeeVo : excelList){
                 if(!TextUtils.isEmpty(shopEmployeeVo.getPhone()) && !map.containsKey(shopEmployeeVo.getPhone())){
-                    shopEmployeeVo.setRoleid(2);
+                    if(shopEmployeeVo.getDept_name().equals("管理层")){
+                        shopEmployeeVo.setRoleid(1);
+                    }else{
+                        shopEmployeeVo.setRoleid(2);
+                    }
                     allList.add(shopEmployeeVo);
                     map.put(shopEmployeeVo.getPhone(),shopEmployeeVo.getPhone());
                 }
