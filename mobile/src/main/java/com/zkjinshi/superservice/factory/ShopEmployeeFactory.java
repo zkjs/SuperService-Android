@@ -67,6 +67,7 @@ public class ShopEmployeeFactory {
         values.put("desc", shopEmployeeVo.getDesc());
         values.put("shop_id", shopEmployeeVo.getShop_id());
         values.put("dept_name", shopEmployeeVo.getDept_name());
+        values.put("bg_color_res", shopEmployeeVo.getBg_color_res());
         return values;
     }
 
@@ -99,6 +100,7 @@ public class ShopEmployeeFactory {
         shopEmployeeVo.setDesc(cursor.getString(15));
         shopEmployeeVo.setShop_id(cursor.getString(16));
         shopEmployeeVo.setDept_name(cursor.getString(17));
+        shopEmployeeVo.setBg_color_res(cursor.getInt(18));
         return  shopEmployeeVo;
     }
 

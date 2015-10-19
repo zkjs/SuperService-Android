@@ -95,7 +95,6 @@ public class TeamEditActivity extends Activity implements IMessageObserver{
     }
 
     private void initView() {
-
         mIbtnBack = (ImageButton) findViewById(R.id.ibtn_back);
         mTvTitle  = (TextView)    findViewById(R.id.tv_title);
         mRcvTeamContacts     = (RecyclerView) findViewById(R.id.rcv_team_contacts);

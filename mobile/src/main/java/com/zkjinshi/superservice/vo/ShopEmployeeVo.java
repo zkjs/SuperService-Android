@@ -29,6 +29,7 @@ public class ShopEmployeeVo implements Serializable{
     private String         desc;
     private String         shop_id;
     private String         dept_name;
+    private int            bg_color_res;//颜色资源值
 
     public String getEmpid() {
         return empid;
@@ -172,5 +173,13 @@ public class ShopEmployeeVo implements Serializable{
 
     public void setDept_name(String dept_name) {
         this.dept_name = dept_name;
+    }
+
+    public int getBg_color_res() {
+        return bg_color_res;
+    }
+
+    public void setBg_color_res(int bg_color_res) {
+        this.bg_color_res = bg_color_res;
     }
 }

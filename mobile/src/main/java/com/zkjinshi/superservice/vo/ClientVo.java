@@ -34,6 +34,7 @@ public class ClientVo {
     private int         order_count;
     private String      tags;
     private OnlineStatus    isOnline;
+    private int             bgDrawableRes;
 
     public int getUser_level() {
         return user_level;
@@ -225,5 +226,13 @@ public class ClientVo {
 
     public void setIsOnline(OnlineStatus isOnline) {
         this.isOnline = isOnline;
+    }
+
+    public int getBgDrawableRes() {
+        return bgDrawableRes;
+    }
+
+    public void setBgDrawableRes(int bgDrawableRes) {
+        this.bgDrawableRes = bgDrawableRes;
     }
 }

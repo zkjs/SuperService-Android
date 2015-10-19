@@ -298,21 +298,22 @@ public class ClientActivity extends AppCompatActivity implements IMessageObserve
      * @return
      */
     public void showLocalUnNormalClientList() {
+        if(null != mAllContactsList && !mAllContactsList.isEmpty()){
+            mAllContactsList.removeAll(mAllContactsList);
+        }
+
         List<ClientVo> clientVos = ClientDBUtil.getInstance().queryUnNormalClient();
         for(ClientVo clientVo : clientVos){
             mLocalClientMap.put(clientVo.getUserid(), clientVo);
         }
 
         mLocalContacts =  SortModelFactory.getInstance().convertClientVos2SortModels(clientVos);
-        if(null != mLocalContacts  && !mLocalContacts.isEmpty()){
-            if(null != mAllContactsList && !mAllContactsList.isEmpty()){
-                mAllContactsList.removeAll(mAllContactsList);
-            }
-            mAllContactsList.addAll(mLocalContacts);
+        if(null == mLocalContacts){
+            mLocalContacts = new ArrayList<>();
         }
 
+        mAllContactsList.addAll(mLocalContacts);
         this.updateListView(mAllContactsList);
-
     }
 
     private void updateListView(List<SortModel> mAllContactsList) {

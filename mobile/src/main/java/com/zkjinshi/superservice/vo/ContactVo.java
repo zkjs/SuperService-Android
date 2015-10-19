@@ -16,17 +16,19 @@ public class ContactVo {
 	private String sortKey;
     private String clientID;
 	private OnlineStatus isOnLine;
+	private int	bgDrawableRes;
 
 	public ContactVo() {}
 
-	public ContactVo(long contactID, String clientID, String name,
-                      String number, String sortKey, OnlineStatus isOnLine) {
+	public ContactVo(long contactID, String clientID, String name,String number,
+					  String sortKey, OnlineStatus isOnLine, int bgDrawableRes) {
 		this.contactID = contactID;
 		this.name		= name;
 		this.number  	= number;
 		this.sortKey 	= sortKey;
 		this.clientID  = clientID;
 		this.isOnLine 	= isOnLine;
+		this.bgDrawableRes 	= bgDrawableRes;
 		if(number!=null){
 			this.simpleNumber=number.replaceAll("\\-|\\s", "");
 		}
@@ -89,7 +91,15 @@ public class ContactVo {
         return null;
     }
 
-    @Override
+	public int getBgDrawableRes() {
+		return bgDrawableRes;
+	}
+
+	public void setBgDrawableRes(int bgDrawableRes) {
+		this.bgDrawableRes = bgDrawableRes;
+	}
+
+	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
