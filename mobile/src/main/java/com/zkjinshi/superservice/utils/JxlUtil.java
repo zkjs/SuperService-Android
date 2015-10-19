@@ -38,7 +38,7 @@ public class JxlUtil {
     private static final String TAG = JxlUtil.class.getSimpleName();
 
     /**开始解析的行数**/
-    private static final int START_ROW = 4;
+    private static final int START_ROW = 3;
 
 
     /**
