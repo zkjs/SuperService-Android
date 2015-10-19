@@ -4,6 +4,7 @@ import android.app.Activity;
 
 import android.content.ContentResolver;
 import android.database.Cursor;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.util.Log;
@@ -161,13 +162,16 @@ public class EmployeeAddActivity extends Activity {
     }
 
     private void initData() {
-        //获取团队联系人列表
-        employeeVoList = ShopEmployeeDBUtil.getInstance().queryAll();
-        //得到手机通讯录联系人信息
-        getPhoneContacts();
+//        //获取团队联系人列表
+//        employeeVoList = ShopEmployeeDBUtil.getInstance().queryAll();
+//        //得到手机通讯录联系人信息
+//        getPhoneContacts();
+//
+//        contactsAdapter = new ContactsAdapter(this,contactLocalList);
+//        listView.setAdapter(contactsAdapter);
 
-        contactsAdapter = new ContactsAdapter(this,contactLocalList);
-        listView.setAdapter(contactsAdapter);
+        LoadPhoneContactTask loadPhoneContactTask = new LoadPhoneContactTask();
+        loadPhoneContactTask.execute();
 
     }
 
@@ -450,5 +454,34 @@ public class EmployeeAddActivity extends Activity {
         }
         map = null;
     }
+
+    /**
+     * 加载手机联系人
+     */
+    class LoadPhoneContactTask extends AsyncTask<Void,Void,Void>{
+
+
+        protected void onPreExecute() {
+            //第一个执行方法
+            super.onPreExecute();
+            DialogUtil.getInstance().showProgressDialog(EmployeeAddActivity.this);
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            //获取团队联系人列表
+            employeeVoList = ShopEmployeeDBUtil.getInstance().queryAll();
+            //得到手机通讯录联系人信息
+            getPhoneContacts();
+            return null;
+        }
+
+        protected void onPostExecute(Void voids) {
+            contactsAdapter = new ContactsAdapter(EmployeeAddActivity.this,contactLocalList);
+            listView.setAdapter(contactsAdapter);
+            DialogUtil.getInstance().cancelProgressDialog();
+        }
+    }
+
 
 }
