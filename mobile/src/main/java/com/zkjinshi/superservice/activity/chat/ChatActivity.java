@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.support.v4.app.RemoteInput;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -40,6 +42,8 @@ import com.zkjinshi.superservice.activity.chat.action.MessageListViewManager;
 import com.zkjinshi.superservice.activity.chat.action.MoreViewPagerManager;
 import com.zkjinshi.superservice.activity.chat.action.QuickMenuManager;
 import com.zkjinshi.superservice.activity.chat.action.VoiceRecordManager;
+import com.zkjinshi.superservice.activity.set.EmployeeAddActivity;
+import com.zkjinshi.superservice.activity.set.TeamEditActivity;
 import com.zkjinshi.superservice.bean.BookOrderBean;
 import com.zkjinshi.superservice.sqlite.ChatRoomDBUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
@@ -67,7 +71,7 @@ import static android.view.View.VISIBLE;
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class ChatActivity extends Activity implements CompoundButton.OnCheckedChangeListener {
+public class ChatActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener {
 
     private final static String TAG = ChatActivity.class.getSimpleName();
 
@@ -77,8 +81,13 @@ public class ChatActivity extends Activity implements CompoundButton.OnCheckedCh
     private String        mClientID;
     private BookOrderBean bookOrder;
 
-    private TextView titleTv;
-    private ImageButton backIBtn;
+//    private TextView titleTv;
+//    private ImageButton backIBtn;
+
+    private Toolbar       mToolbar;
+    private TextView      mTvCenterTitle;
+    private TextView      mTvBottomTitle;
+
     private EditText mMsgTextInput;
     private Button mBtnMsgSend;
 
@@ -121,7 +130,18 @@ public class ChatActivity extends Activity implements CompoundButton.OnCheckedCh
     }
 
     private void initView() {
-        titleTv = (TextView)findViewById(R.id.header_bar_tv_title);
+
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        mToolbar.setTitle("");
+        mToolbar.setNavigationIcon(R.drawable.ic_fanhui);
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        mTvCenterTitle = (TextView) findViewById(R.id.tv_center_title);
+        mTvBottomTitle = (TextView) findViewById(R.id.tv_online_status);
+
+//        titleTv = (TextView)findViewById(R.id.header_bar_tv_title);
+//        backIBtn = (ImageButton)findViewById(R.id.header_bar_btn_back);
+
         mMsgTextInput = (EditText) findViewById(R.id.et_msg_text_input);
         mBtnMsgSend   = (Button)   findViewById(R.id.btn_msg_send);
         faceLinearLayout = (LinearLayout) findViewById(R.id.face_ll);
@@ -132,14 +152,20 @@ public class ChatActivity extends Activity implements CompoundButton.OnCheckedCh
         startAudioBtn    = (TextView) findViewById(R.id.say_btn);
         animAreaLayout   = (RelativeLayout) findViewById(R.id.voice_rcd_hint_anim_area);
         cancelAreaLayout = (RelativeLayout) findViewById(R.id.voice_rcd_hint_cancel_area);
-        backIBtn = (ImageButton)findViewById(R.id.header_bar_btn_back);
     }
 
     private void initData() {
-        titleTv.setText("聊天");
-        backIBtn.setVisibility(View.VISIBLE);
+//        titleTv.setText("聊天");
+//        backIBtn.setVisibility(View.VISIBLE);
         mSessionID = getIntent().getStringExtra("session_id");
-        mShopID = getIntent().getStringExtra("shop_id");
+        mShopID    = getIntent().getStringExtra("shop_id");
+
+        String sessionName =  getIntent().getStringExtra("sessionName");
+        if(!TextUtils.isEmpty(sessionName)){
+            mTvCenterTitle.setText(sessionName);
+        }
+
+        mTvBottomTitle.setText("聊天对象在线状态");
         mChatRoom  = ChatRoomDBUtil.getInstance().queryChatRoomBySessionId(mSessionID);
         if(null != mChatRoom){
             if(TextUtils.isEmpty(mShopID)){
@@ -182,12 +208,42 @@ public class ChatActivity extends Activity implements CompoundButton.OnCheckedCh
     }
 
     private void initListener() {
-        backIBtn.setOnClickListener(new View.OnClickListener() {
+//        backIBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                ChatActivity.this.finish();
+//            }
+//        });
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(View v) {
                 ChatActivity.this.finish();
             }
         });
+
+        mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(android.view.MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.add_chat_object:
+                        break;
+
+                    case R.id.start_group_chat:
+                        break;
+
+                    case R.id.transfer_chat_to_others:
+                        break;
+
+                    case R.id.offline_to_this_chat:
+                        break;
+
+                    case R.id.finish_this_chat:
+                        break;
+                }
+                return true;
+            }
+        });
+
         faceCb.setOnCheckedChangeListener(this);
         moreCb.setOnCheckedChangeListener(this);
 

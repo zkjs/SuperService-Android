@@ -8,7 +8,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +15,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.zkjinshi.base.log.LogLevel;
 import com.zkjinshi.base.log.LogUtil;
 import com.zkjinshi.base.net.core.WebSocketManager;
@@ -26,26 +24,28 @@ import com.zkjinshi.base.net.protocol.ProtocolMSG;
 import com.zkjinshi.base.util.Constants;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.base.util.DisplayUtil;
-import com.zkjinshi.filechoser.activity.FileListActivity;
 import com.zkjinshi.superservice.R;
+import com.zkjinshi.superservice.activity.chat.ChatActivity;
 import com.zkjinshi.superservice.adapter.TeamContactsAdapter;
 import com.zkjinshi.superservice.bean.TeamContactBean;
 import com.zkjinshi.superservice.entity.EmpStatusRecord;
+import com.zkjinshi.superservice.entity.MsgBuildSession;
+import com.zkjinshi.superservice.entity.MsgBuildSessionRSP;
 import com.zkjinshi.superservice.entity.MsgEmpStatus;
 import com.zkjinshi.superservice.entity.MsgEmpStatusRSP;
+import com.zkjinshi.superservice.entity.MsgIMSessionUser;
+import com.zkjinshi.superservice.entity.MsgSessionMemberInfo;
+import com.zkjinshi.superservice.entity.MsgShopSessionSearch;
+import com.zkjinshi.superservice.entity.MsgShopSessionSearchRSP;
 import com.zkjinshi.superservice.factory.ShopEmployeeFactory;
 import com.zkjinshi.superservice.listener.GetTeamContactsListener;
 import com.zkjinshi.superservice.listener.RecyclerItemClickListener;
-import com.zkjinshi.superservice.net.MethodType;
-import com.zkjinshi.superservice.net.NetRequest;
-import com.zkjinshi.superservice.net.NetRequestListener;
-import com.zkjinshi.superservice.net.NetRequestTask;
-import com.zkjinshi.superservice.net.NetResponse;
+import com.zkjinshi.superservice.sqlite.MessageDBUtil;
 import com.zkjinshi.superservice.sqlite.ShopEmployeeDBUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
-import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.view.AutoSideBar;
 import com.zkjinshi.superservice.vo.IdentityType;
+import com.zkjinshi.superservice.vo.MsgAdmin;
 import com.zkjinshi.superservice.vo.OnlineStatus;
 import com.zkjinshi.superservice.vo.ShopEmployeeVo;
 import com.zkjinshi.superservice.vo.WorkStatus;
@@ -87,7 +87,12 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
     private String mUserID;
     private String mShopID;
     private String mToken;
+    private String mUserName;
+
     private IdentityType mUserType;
+
+    private MsgIMSessionUser mFromUser;
+    private MsgIMSessionUser mToUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,6 +132,7 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
         mUserID     = CacheUtil.getInstance().getUserId();
         mToken      = CacheUtil.getInstance().getToken();
         mShopID     = CacheUtil.getInstance().getShopID();
+        mUserName   = CacheUtil.getInstance().getUserName();
         mUserType   = CacheUtil.getInstance().getLoginIdentity();
 
         mRvTeamContacts.setHasFixedSize(true);
@@ -175,23 +181,28 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
                     public void getContactsDone(List<TeamContactBean> teamContacts) {
                         List<ShopEmployeeVo> shopEmployeeVos = ShopEmployeeFactory.getInstance().buildShopEmployees(teamContacts);
                         List<String> strLetters = null;//首字母显示数组
-                        List<String> empids     = null;//员工ID数组
+                        List<String> empids = null;//员工ID数组
                         if (null != shopEmployeeVos && !shopEmployeeVos.isEmpty()) {
                             strLetters = new ArrayList<>();
                             empids = new ArrayList<>();
 
                             for (ShopEmployeeVo shopEmployeeVo : shopEmployeeVos) {
+
+                                if(shopEmployeeVo.getEmpid().equals(mUserID)){
+                                    continue;
+                                }
+
                                 shopEmployeeVo.setShop_id(mShopID);
                                 ShopEmployeeDBUtil.getInstance().addShopEmployee(shopEmployeeVo);
                                 mShopEmployeeVos.add(shopEmployeeVo);
 
                                 empids.add(shopEmployeeVo.getEmpid());
-                                String deptID   = shopEmployeeVo.getDept_id()+"";
+                                String deptID = shopEmployeeVo.getDept_id() + "";
                                 String deptName = shopEmployeeVo.getDept_name();
                                 String sortLetter = null;
-                                if(!TextUtils.isEmpty(deptName)){
+                                if (!TextUtils.isEmpty(deptName)) {
                                     sortLetter = deptName.substring(0, 1);
-                                }else {
+                                } else {
                                     sortLetter = deptID.substring(0, 1);
                                 }
 
@@ -223,7 +234,7 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
 
                         Gson gson = new Gson();
                         String jsonMsgEmpStatus = gson.toJson(msgEmpStatus, MsgEmpStatus.class);
-                        LogUtil.getInstance().info(LogLevel.INFO, "jsonMsgEmpStatus:"+jsonMsgEmpStatus);
+                        LogUtil.getInstance().info(LogLevel.INFO, "jsonMsgEmpStatus:" + jsonMsgEmpStatus);
                         WebSocketManager.getInstance().sendMessage(jsonMsgEmpStatus);
                     }
                 }
@@ -248,7 +259,7 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
 
                     case R.id.menu_team_jia:
                         Intent intent = new Intent(TeamContactsActivity.this, EmployeeAddActivity.class);
-                        startActivityForResult(intent,ADD_REQUEST_CODE);
+                        startActivityForResult(intent, ADD_REQUEST_CODE);
                         overridePendingTransition(R.anim.activity_new, R.anim.activity_out);
                         break;
 
@@ -261,7 +272,6 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
                 return true;
             }
         });
-
 
         mAutoSideBar.setOnTouchingLetterChangedListener(new AutoSideBar.OnTouchingLetterChangedListener() {
             @Override
@@ -276,9 +286,71 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
         mTeamContactAdapter.setOnItemClickListener(new RecyclerItemClickListener() {
             @Override
             public void onItemClick(View view, int postion) {
-                DialogUtil.getInstance().showCustomToast(TeamContactsActivity.this, "TODO:进入客户聊天界面", Gravity.CENTER);
-            }
+
+                ShopEmployeeVo shopEmployeeVo = mShopEmployeeVos.get(postion);
+                String empID = shopEmployeeVo.getEmpid();
+                String empName = shopEmployeeVo.getName();
+                String sessionID = buildSingleSessionID(mShopID, mUserID, empID);
+
+                if (null != mToUser) {
+                    mToUser = null;
+                }
+                mToUser = new MsgIMSessionUser();
+                mToUser.setShopid(mShopID);
+                mToUser.setUserid(empID);
+                mToUser.setUsername(empName);
+                mToUser.setIsadmin(MsgAdmin.NOTADMIN.getValue());
+
+                //TODO: 本地判断此sessionID是否存在
+                if (!MessageDBUtil.getInstance().isMessageExistsBySessionID(sessionID)) {
+                    //TODO: 后台服务器判断此sessionID是否存在
+                    MsgShopSessionSearch sessionSearch = new MsgShopSessionSearch();
+                    sessionSearch.setType(ProtocolMSG.MSG_ShopSessionSearch);
+                    sessionSearch.setTimestamp(System.currentTimeMillis());
+                    sessionSearch.setShopid(mShopID);
+                    sessionSearch.setSessionid(sessionID);
+
+                    Gson gson = new Gson();
+                    String sessionSearchJson = gson.toJson(sessionSearch, MsgShopSessionSearch.class);
+                    WebSocketManager.getInstance().sendMessage(sessionSearchJson);
+                } else {
+                    //进入聊天界面
+                    goChatActivity(mShopID, sessionID, mToUser.getUsername());
+                }
+           }
         });
+    }
+
+    /**
+     * 进入聊天界面方法
+     * @param mShopID
+     * @param sessionID
+     */
+    private void goChatActivity(String mShopID, String sessionID, String sessionName) {
+        //开启单聊界面
+        Intent goChat = new Intent(TeamContactsActivity.this, ChatActivity.class);
+        goChat.putExtra("shop_id", mShopID);
+        goChat.putExtra("session_id", sessionID);
+        goChat.putExtra("session_name", sessionName);
+        goChat.putExtra("session_name", sessionName);
+        TeamContactsActivity.this.startActivity(goChat);
+    }
+
+    /**
+     * 构建单聊sessionID
+     * @param shopID
+     * @param mUserID
+     * @param empID
+     * @return
+     */
+    private String buildSingleSessionID(String shopID, String mUserID, String empID) {
+        if(mUserID.compareTo(empID) < 0){
+            return "single_" + shopID + "_" + mUserID + "_" + empID;
+        }else if(mUserID.compareTo(empID) > 0){
+            return "single_" + shopID + "_" + empID + "_" + mUserID;
+        } else {
+            return null;
+        }
     }
 
     @Override
@@ -304,12 +376,16 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
 
     private void addObservers() {
         MessageSubject.getInstance().addObserver(this, ProtocolMSG.MSG_ShopEmpStatus_RSP);
+        MessageSubject.getInstance().addObserver(this, ProtocolMSG.MSG_ShopSessionSearch_RSP);
+        MessageSubject.getInstance().addObserver(this, ProtocolMSG.MSG_BuildSession_RSP);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         MessageSubject.getInstance().removeObserver(this, ProtocolMSG.MSG_ShopEmpStatus_RSP);
+        MessageSubject.getInstance().removeObserver(this, ProtocolMSG.MSG_ShopSessionSearch_RSP);
+        MessageSubject.getInstance().removeObserver(this, ProtocolMSG.MSG_BuildSession_RSP);
     }
 
     @Override
@@ -375,10 +451,81 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
                 }
             }
 
+            //会话查询协议
+            if (type == ProtocolMSG.MSG_ShopSessionSearch_RSP) {
+                //TODO: 判断服务器此sessionID是否存在
+                MsgShopSessionSearchRSP msgShopSessionSearchRSP = gson.fromJson(message,
+                        MsgShopSessionSearchRSP.class);
+                int result = msgShopSessionSearchRSP.getResult();
+                List<MsgSessionMemberInfo> msgSessionMemberInfos = msgShopSessionSearchRSP.getDetail();
+
+                //成功
+                if(result <= 0 && null != msgSessionMemberInfos && !msgSessionMemberInfos.isEmpty()){
+                    //开启单聊界面
+                    String sessionID = msgShopSessionSearchRSP.getSessionid();
+                    String shopID    = msgShopSessionSearchRSP.getShopid();
+                    goChatActivity(mShopID, sessionID, mToUser.getUsername());
+                }else {
+                    if(null == mFromUser){
+                        mFromUser = new MsgIMSessionUser();
+                        mFromUser.setShopid(mShopID);
+                        mFromUser.setUserid(mUserID);
+                        mFromUser.setUsername(mUserName);
+                        mFromUser.setIsadmin(MsgAdmin.ISADMIN.getValue());
+                    }
+                    if(null != mFromUser && null != mToUser){
+                        String sessionName = mFromUser.getUsername() + mToUser.getUsername() + "会话";
+                        String fromID = mFromUser.getUserid();
+                        String toID   = mToUser.getUserid();
+
+                        String sessionID   = buildSingleSessionID(mShopID, fromID, toID);
+                        sendBuildNewSessionMsg(mShopID, sessionID, sessionName, mFromUser, mToUser);
+                    }
+                }
+            }
+
+            //建立会话协议回复
+            if (type == ProtocolMSG.MSG_BuildSession_RSP) {
+                MsgBuildSessionRSP msgBuildSessionRSP = gson.fromJson(message, MsgBuildSessionRSP.class);
+                //创建会话成功 进入聊天界面
+                if(msgBuildSessionRSP.getResult() <= 0){
+                    String sessionID = msgBuildSessionRSP.getSessionid();
+                    goChatActivity(mShopID, sessionID, mToUser.getUsername());
+                }
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
         Log.i(Constants.ZKJINSHI_BASE_TAG, TAG + ".onNetReceiveSucceed()->message:" + message);
+    }
+
+    /**
+     * 发送创建新会话请求
+     * @param shopID
+     * @param sessionID
+     * @param sessionName
+     * @param fromUser
+     * @param toUser
+     */
+    private void sendBuildNewSessionMsg(String shopID, String sessionID, String sessionName,
+                                   MsgIMSessionUser fromUser, MsgIMSessionUser toUser) {
+
+        List<MsgIMSessionUser> msgIMSessionUsers = new ArrayList<>();
+        MsgBuildSession msgBuildSession = new MsgBuildSession();
+        msgBuildSession.setType(ProtocolMSG.MSG_BuildSession);
+        msgBuildSession.setTimestamp(System.currentTimeMillis());
+        msgBuildSession.setSessionid(sessionID);
+        msgBuildSession.setSessionname(sessionName);
+        msgBuildSession.setShopid(shopID);
+        msgBuildSession.setUserid(fromUser.getUserid());
+
+        msgIMSessionUsers.add(fromUser);
+        msgIMSessionUsers.add(toUser);
+        msgBuildSession.setDetail(msgIMSessionUsers);
+
+        Gson gson = new Gson();
+        String msgBuildSessionJson = gson.toJson(msgBuildSession, MsgBuildSession.class);
+        WebSocketManager.getInstance().sendMessage(msgBuildSessionJson);
     }
 
 }

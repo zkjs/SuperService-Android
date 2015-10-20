@@ -288,6 +288,14 @@ public class ProtocolMSG {
     public static int MSG_OfflineMssage = 227;
     public static int MSG_OfflineMssage_RSP = 228;
 
+    //构建会话,可用于建商家内部群组或重建客服会话
+    public static int MSG_BuildSession      = 233;
+    public static int MSG_BuildSession_RSP  = 234;
+
+    //加入会话
+    public static int MSG_JoinSession = 235;
+    public static int MSG_JoinSession_RSP = 236;
+
     // 消息规则预埋
     public static int MSG_RuleAdd = 500;
     public static int MSG_RuleAdd_RSP = 501;
