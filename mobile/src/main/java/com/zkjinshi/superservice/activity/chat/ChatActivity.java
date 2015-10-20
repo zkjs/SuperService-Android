@@ -160,7 +160,7 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
         mSessionID = getIntent().getStringExtra("session_id");
         mShopID    = getIntent().getStringExtra("shop_id");
 
-        String sessionName =  getIntent().getStringExtra("sessionName");
+        String sessionName = getIntent().getStringExtra("session_name");
         if(!TextUtils.isEmpty(sessionName)){
             mTvCenterTitle.setText(sessionName);
         }
