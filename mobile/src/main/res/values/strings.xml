@@ -82,5 +82,7 @@
     <string name="transfer_chat_to_others">将会话转给队友</string>
     <string name="offline_to_this_chat">对该会话离线</string>
     <string name="finish_this_chat">结束会话</string>
+    <string name="with">与 </string>
+    <string name="chating"> 对话中</string>
 
 </resources>

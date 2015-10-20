@@ -15,6 +15,7 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -51,6 +52,8 @@ import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.utils.FileUtil;
 import com.zkjinshi.superservice.utils.MediaPlayerUtil;
 import com.zkjinshi.superservice.vo.ChatRoomVo;
+import com.zkjinshi.superservice.vo.IdentityType;
+import com.zkjinshi.superservice.vo.OnlineStatus;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -159,14 +162,20 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
 //        backIBtn.setVisibility(View.VISIBLE);
         mSessionID = getIntent().getStringExtra("session_id");
         mShopID    = getIntent().getStringExtra("shop_id");
-
         String sessionName = getIntent().getStringExtra("session_name");
+        int onlineStatus = getIntent().getIntExtra("online_status", 1);
+
         if(!TextUtils.isEmpty(sessionName)){
-            mTvCenterTitle.setText(sessionName);
+            mTvCenterTitle.setText(getString(R.string.with) + sessionName + (getString(R.string.chating)));
         }
 
-        mTvBottomTitle.setText("聊天对象在线状态");
-        mChatRoom  = ChatRoomDBUtil.getInstance().queryChatRoomBySessionId(mSessionID);
+        if(onlineStatus == OnlineStatus.ONLINE.getValue()){
+            mTvBottomTitle.setText("对象"+ getString(R.string.online));
+        }else {
+            mTvBottomTitle.setText("对象"+ getString(R.string.offline));
+        }
+
+        mChatRoom = ChatRoomDBUtil.getInstance().queryChatRoomBySessionId(mSessionID);
         if(null != mChatRoom){
             if(TextUtils.isEmpty(mShopID)){
                 mShopID    = mChatRoom.getShopId();
@@ -357,6 +366,14 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
             }
         });
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_activity_chat, menu);
+        return true;
+    }
+
 
     public void resetKeyboard(){
         hideFaceLayout();

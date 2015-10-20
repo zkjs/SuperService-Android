@@ -332,7 +332,6 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
         goChat.putExtra("shop_id", mShopID);
         goChat.putExtra("session_id", sessionID);
         goChat.putExtra("session_name", sessionName);
-        goChat.putExtra("session_name", sessionName);
         TeamContactsActivity.this.startActivity(goChat);
     }
 
@@ -478,7 +477,7 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
                         String fromID = mFromUser.getUserid();
                         String toID   = mToUser.getUserid();
 
-                        String sessionID   = buildSingleSessionID(mShopID, fromID, toID);
+                        String sessionID = buildSingleSessionID(mShopID, fromID, toID);
                         sendBuildNewSessionMsg(mShopID, sessionID, sessionName, mFromUser, mToUser);
                     }
                 }

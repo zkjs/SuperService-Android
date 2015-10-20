@@ -22,4 +22,5 @@
         android:id="@+id/finish_this_chat"
         android:title="@string/finish_this_chat"
         app:showAsAction="never" />
+
 </menu>
