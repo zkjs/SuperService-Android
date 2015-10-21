@@ -17,7 +17,6 @@ public class ContactLocalVo implements Serializable{
     private String contactName;
     private Long contactid;
     private Long photoid;
-    private Bitmap contactPhoto;
     private boolean hasAdd;
 
     public boolean isHasAdd() {
@@ -60,11 +59,4 @@ public class ContactLocalVo implements Serializable{
         this.photoid = photoid;
     }
 
-    public Bitmap getContactPhoto() {
-        return contactPhoto;
-    }
-
-    public void setContactPhoto(Bitmap contactPhoto) {
-        this.contactPhoto = contactPhoto;
-    }
 }

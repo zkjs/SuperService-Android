@@ -1,6 +1,12 @@
 package com.zkjinshi.superservice.adapter;
 
+import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +22,7 @@ import com.zkjinshi.superservice.view.CircleImageView;
 import com.zkjinshi.superservice.vo.ContactLocalVo;
 import com.zkjinshi.superservice.vo.ShopEmployeeVo;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -32,10 +39,14 @@ public class ContactsAdapter extends BaseAdapter{
     private LayoutInflater mInflater;//得到一个LayoutInfalter对象用来导入布局
     private ArrayList<ContactLocalVo> contactLocalList;
     private HashMap<Integer,Integer> checkedHashmap = new HashMap<Integer,Integer>();
+    private Context context;
+    private ContentResolver resolver;
 
     public ContactsAdapter(Context context,ArrayList<ContactLocalVo> dataList) {
         this.mInflater = LayoutInflater.from(context);
         this.contactLocalList = dataList;
+        this.context = context;
+        resolver = context.getContentResolver();
     }
 
     public ArrayList<ContactLocalVo> getContactLocalList() {
@@ -83,9 +94,13 @@ public class ContactsAdapter extends BaseAdapter{
         }
 
         ContactLocalVo contactLocalVo = contactLocalList.get(position);
+        Bitmap contactPhoto = null;
         if(contactLocalVo.getPhotoid() > 0){
             holder.avatarText.setVisibility(View.GONE);
-            holder.avatar.setImageBitmap(contactLocalVo.getContactPhoto());
+            Uri uri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, contactLocalVo.getContactid());
+            InputStream input = ContactsContract.Contacts.openContactPhotoInputStream(resolver, uri);
+            contactPhoto = BitmapFactory.decodeStream(input);
+            holder.avatar.setImageBitmap(contactPhoto);
         }else{
             holder.avatarText.setVisibility(View.VISIBLE);
             String nameIndex = contactLocalVo.getContactName().substring(0,1);

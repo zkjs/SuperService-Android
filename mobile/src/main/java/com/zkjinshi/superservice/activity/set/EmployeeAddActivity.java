@@ -136,21 +136,10 @@ public class EmployeeAddActivity extends Activity {
                 Long contactid = phoneCursor.getLong(PHONES_CONTACT_ID_INDEX);
                 //得到联系人头像ID
                 Long photoid = phoneCursor.getLong(PHONES_PHOTO_ID_INDEX);
-                //得到联系人头像Bitamp
-                Bitmap contactPhoto = null;
-                //photoid 大于0 表示联系人有头像 如果没有给此人设置头像则给他一个默认的
-                if(photoid > 0 ) {
-                    Uri uri =ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI,contactid);
-                    InputStream input = ContactsContract.Contacts.openContactPhotoInputStream(resolver, uri);
-                    contactPhoto = BitmapFactory.decodeStream(input);
-                }else {
-                    //contactPhoto = BitmapFactory.decodeResource(getResources(), R.drawable.img_hotel_zhanwei);
-                }
 
                 ContactLocalVo contactLocalVo = new ContactLocalVo();
                 contactLocalVo.setContactid(contactid);
                 contactLocalVo.setContactName(contactName);
-                contactLocalVo.setContactPhoto(contactPhoto);
                 contactLocalVo.setPhoneNumber(phoneNumber);
                 contactLocalVo.setPhotoid(photoid);
                 if(!isExsitInEmployeeVoList(phoneNumber)){
