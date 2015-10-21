@@ -160,6 +160,14 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
 
         if(!TextUtils.isEmpty(sessionName)){
             mTvCenterTitle.setText(getString(R.string.with) + sessionName + (getString(R.string.chating)));
+        }else{
+            ChatRoomVo chatRoomVo = ChatRoomDBUtil.getInstance().queryChatRoomBySessionId(mSessionID);
+            if(null != chatRoomVo){
+                String title = chatRoomVo.getTitle();
+                if(!TextUtils.isEmpty(title)){
+                    mTvCenterTitle.setText(getString(R.string.with) + title + (getString(R.string.chating)));
+                }
+            }
         }
 
         if(onlineStatus == OnlineStatus.ONLINE.getValue()){
