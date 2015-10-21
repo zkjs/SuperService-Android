@@ -249,7 +249,7 @@ public class ClientDBUtil {
                     new String[] { clientID },
                     null, null, null);
 
-            if(cursor.moveToFirst()){
+            if(null != cursor && cursor.getCount() > 0){
                 bgColorRes = cursor.getInt(0);
             }
         } catch (Exception e) {

@@ -117,7 +117,6 @@ public class TeamEditActivity extends Activity implements IMessageObserver{
         mRcvTeamContacts.setLayoutManager(mLayoutManager);
 
         mShopEmployeeVos = ShopEmployeeDBUtil.getInstance().queryAllByDeptIDAsc();
-        LogUtil.getInstance().info(LogLevel.INFO, "mShopEmployeeVos:"+mShopEmployeeVos);
 
         //需要获得在线状态的用户
         List<String> empids = new ArrayList<>();

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -105,12 +106,15 @@ public class TagAddActivity extends Activity {
                 DialogUtil.getInstance().cancelProgressDialog();
                 Log.i(TAG, "errorCode:" + errorCode);
                 Log.i(TAG, "errorMessage:" + errorMessage);
+                DialogUtil.getInstance().showCustomToast(TagAddActivity.this,
+                                TagAddActivity.this.getString(
+                                R.string.net_exception_please_try_it_later),
+                                Gravity.CENTER);
             }
 
             @Override
             public void onNetworkRequestCancelled() {
                 DialogUtil.getInstance().cancelProgressDialog();
-
             }
 
             @Override

@@ -222,12 +222,17 @@ public class ClientDetailActivity extends Activity {
         //TODO: 2.特权标签处理
 
         //3. 客户信息标签处理
+        List<Tag> tagList = mTvTagClient.getTags();
+        if(null != tagList && !tagList.isEmpty()){
+            mTvTagClient.removeAllTags();
+        }
+
         final List<ClientDetailBean.ClientTag> tags = client.getTags();
         if(null != tags && !tags.isEmpty()){
             for(ClientDetailBean.ClientTag clientTag : tags){
                 mTvTagClient.addTag(createTag(clientTag.tagid, clientTag.tag, null));
             }
-            mTvTagClient.addTag(createTag("     +     "));
+            mTvTagClient.addTag(createTag("    +    "));
         }
     }
 
