@@ -2,6 +2,8 @@ package com.zkjinshi.superservice.vo;
 
 import android.graphics.Bitmap;
 
+import java.io.Serializable;
+
 /**
  *  本地通讯录Vo
  * 开发者：dujiande
@@ -9,7 +11,7 @@ import android.graphics.Bitmap;
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class ContactLocalVo {
+public class ContactLocalVo implements Serializable{
 
     private  String phoneNumber;
     private String contactName;

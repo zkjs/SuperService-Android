@@ -46,6 +46,11 @@ public class ContactsAdapter extends BaseAdapter{
         this.contactLocalList = contactLocalList;
     }
 
+    public void refreshData(ArrayList<ContactLocalVo> dataList){
+        this.contactLocalList = dataList;
+        notifyDataSetChanged();
+    }
+
     @Override
     public int getCount() {
         return contactLocalList.size();

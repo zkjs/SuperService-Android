@@ -46,6 +46,7 @@ import android.provider.ContactsContract.CommonDataKinds.Photo;
 import android.text.TextUtils;
 
 import java.io.InputStream;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -118,6 +119,7 @@ public class EmployeeAddActivity extends Activity {
 
     /**得到手机通讯录联系人信息**/
     private void getPhoneContacts() {
+        contactLocalList = new ArrayList<ContactLocalVo>();
         ContentResolver resolver = getContentResolver();
         // 获取手机联系人
         Cursor phoneCursor = resolver.query(Phone.CONTENT_URI,PHONES_PROJECTION, null, null, null);
@@ -158,18 +160,22 @@ public class EmployeeAddActivity extends Activity {
 
             }
             phoneCursor.close();
+            CacheUtil.getInstance().saveListCache("contactLocalList", contactLocalList);
         }
     }
 
     private void initData() {
-//        //获取团队联系人列表
-//        employeeVoList = ShopEmployeeDBUtil.getInstance().queryAll();
-//        //得到手机通讯录联系人信息
-//        getPhoneContacts();
-//
-//        contactsAdapter = new ContactsAdapter(this,contactLocalList);
-//        listView.setAdapter(contactsAdapter);
-
+        contactsAdapter = new ContactsAdapter(this,contactLocalList);
+        listView.setAdapter(contactsAdapter);
+        String listStr =  CacheUtil.getInstance().getListStrCache("contactLocalList");
+        if(!TextUtils.isEmpty(listStr)){
+            Type listType = new TypeToken<ArrayList<ContactLocalVo>>(){}.getType();
+            Gson gson = new Gson();
+            contactLocalList = gson.fromJson(listStr, listType);
+            if (null != contactLocalList && !contactLocalList.isEmpty()) {
+               contactsAdapter.refreshData(contactLocalList);
+            }
+        }
         LoadPhoneContactTask loadPhoneContactTask = new LoadPhoneContactTask();
         loadPhoneContactTask.execute();
 
@@ -481,8 +487,8 @@ public class EmployeeAddActivity extends Activity {
         }
 
         protected void onPostExecute(Void voids) {
-            contactsAdapter = new ContactsAdapter(EmployeeAddActivity.this,contactLocalList);
-            listView.setAdapter(contactsAdapter);
+
+            contactsAdapter.refreshData(contactLocalList);
             DialogUtil.getInstance().cancelProgressDialog();
         }
     }
