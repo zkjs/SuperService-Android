@@ -154,6 +154,8 @@ public class TeamContactsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                     }else {
                         ((ContactViewHolder)holder).tvLetter.setText(deptName);
                     }
+                } else {
+                    ((ContactViewHolder)holder).tvLetter.setText("#");
                 }
             } else {
                 /** 不显示首字母 */

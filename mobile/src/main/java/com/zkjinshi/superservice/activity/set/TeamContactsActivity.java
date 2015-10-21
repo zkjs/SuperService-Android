@@ -142,14 +142,6 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
         mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRvTeamContacts.setLayoutManager(mLayoutManager);
 
-        //TODO: 1.服务器获得最近 5位联系人列表的客户列表
-        showDataList();
-    }
-
-    /**
-     * 初始化待显示数据并展示
-     */
-    private void showDataList() {
         // 创建商店排序对象
         if(null == mFirstShopEmployee){
             mFirstShopEmployee = new ShopEmployeeVo();
@@ -159,9 +151,24 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
             mFirstShopEmployee.setEmpid(System.currentTimeMillis() + "");
         }
 
-        if(null == mShopEmployeeVos){
-            mShopEmployeeVos = new ArrayList<>();
-        }else{
+        mShopEmployeeVos = new ArrayList<>();
+        mShopEmployeeVos.add(0, mFirstShopEmployee);
+        mTeamContactAdapter = new TeamContactsAdapter(TeamContactsActivity.this, mShopEmployeeVos);
+        mRvTeamContacts.setAdapter(mTeamContactAdapter);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //TODO: 1.服务器获得最近 5位联系人列表的客户列表
+        showDataList();
+    }
+
+    /**
+     * 初始化待显示数据并展示
+     */
+    private void showDataList() {
+        if(null != mShopEmployeeVos && !mShopEmployeeVos.isEmpty()){
             mShopEmployeeVos.removeAll(mShopEmployeeVos);
         }
 
@@ -169,20 +176,16 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
             mShopEmployeeVos.add(0, mFirstShopEmployee);
         }
 
-        if(null == mTeamContactAdapter){
-            String shopEmployeesJson = CacheUtil.getInstance().getListStrCache("shop_employees");
-            if(!TextUtils.isEmpty(shopEmployeesJson)){
-                Gson gson = new Gson();
-                List<ShopEmployeeVo> shopEmployeeVos = gson.fromJson(shopEmployeesJson,
-                                new TypeToken<ArrayList<ShopEmployeeVo>>() {}.getType());
+        String shopEmployeesJson = CacheUtil.getInstance().getListStrCache("shop_employees");
+        if(!TextUtils.isEmpty(shopEmployeesJson)){
+            Gson gson = new Gson();
+            List<ShopEmployeeVo> shopEmployeeVos = gson.fromJson(shopEmployeesJson,
+                            new TypeToken<ArrayList<ShopEmployeeVo>>() {}.getType());
 
-                if(shopEmployeeVos != null && !shopEmployeeVos.isEmpty()){
-                    mShopEmployeeVos.addAll(shopEmployeeVos);
-                }
-
+            if(shopEmployeeVos != null && !shopEmployeeVos.isEmpty()){
+                mShopEmployeeVos.addAll(shopEmployeeVos);
             }
-            mTeamContactAdapter = new TeamContactsAdapter(TeamContactsActivity.this, mShopEmployeeVos);
-            mRvTeamContacts.setAdapter(mTeamContactAdapter);
+            mTeamContactAdapter.updateListView(mShopEmployeeVos);
         }
 
         //获取团队列表
@@ -196,7 +199,6 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
                         List<String> strLetters = null;//首字母显示数组
                         List<String> empids = null;//员工ID数组
                         if (null != shopEmployeeVos && !shopEmployeeVos.isEmpty()) {
-
                             strLetters = new ArrayList<>();
                             empids = new ArrayList<>();
 
@@ -207,9 +209,13 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
                                     shopEmployeeVoIterator.remove();
                                 }
                             }
+
+                            if(null != mShopEmployeeVos && !mShopEmployeeVos.isEmpty()){
+                                mShopEmployeeVos.removeAll(mShopEmployeeVos);
+                            }
+
                             //加入本地缓存
                             CacheUtil.getInstance().saveListCache("shop_employees", shopEmployeeVos);
-
                             for (ShopEmployeeVo shopEmployeeVo : shopEmployeeVos) {
                                 if(shopEmployeeVo.getEmpid().equals(mUserID)){
                                     continue;
@@ -237,7 +243,6 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
                                 }
                             }
 
-
                             String[] sortArray = strLetters.toArray(new String[strLetters.size()]);
                             if (sortArray.length > 0) {
                                 mAutoSideBar.setSortArray(sortArray);
@@ -245,6 +250,8 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
                                 mRlSideBar.removeAllViews();
                                 mRlSideBar.addView(mAutoSideBar);
                             }
+
+                            mShopEmployeeVos.add(0, mFirstShopEmployee);
                             mTeamContactAdapter.updateListView(mShopEmployeeVos);
                         }
 

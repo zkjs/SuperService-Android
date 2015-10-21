@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.zkjinshi.base.util.DialogUtil;
+import com.zkjinshi.base.view.CustomDialog;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.bean.ClientDetailBean;
 //import com.zkjinshi.superservice.factory.UnRegClientFactory;
@@ -269,7 +270,7 @@ public class ClientBindActivity extends Activity {
      * 邀请对话框
      */
     private void showSuccessDialog() {
-        AlertDialog.Builder builder=new AlertDialog.Builder(this);
+        CustomDialog.Builder builder=new CustomDialog.Builder(this);
         builder.setTitle(getString(R.string.app_name));
         builder.setMessage("绑定当前用户成功！继续绑定？");
         builder.setPositiveButton("确定", new DialogInterface.OnClickListener() { //设置确定按钮
@@ -293,7 +294,7 @@ public class ClientBindActivity extends Activity {
      * 邀请对话框
      */
     private void showFailedDialog() {
-        AlertDialog.Builder builder=new AlertDialog.Builder(this);
+        CustomDialog.Builder builder=new CustomDialog.Builder(this);
         builder.setTitle(getString(R.string.app_name));
         builder.setMessage("此用户已被绑定，只能添加为本地联系人。确认添加？");
         builder.setPositiveButton("确定", new DialogInterface.OnClickListener() { //设置确定按钮
