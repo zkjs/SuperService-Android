@@ -138,87 +138,84 @@ public class OrderFragment extends Fragment{
 
 
     private void loadOrderList(final long lastTimeStamp) {
-        userVo = UserDBUtil.getInstance().queryUserById(CacheUtil.getInstance().getUserId());
-        if(null != userVo){
-            String url = ProtocolUtil.getSempOrderUrl();
-            Log.i(TAG,url);
-            NetRequest netRequest = new NetRequest(url);
-            HashMap<String,String> bizMap = new HashMap<String,String>();
-            bizMap.put("salesid",userVo.getUserId());
-            bizMap.put("token",userVo.getToken());
-            bizMap.put("shopid",userVo.getShopId());
-            bizMap.put("status","0,1,2,3,4,5");
-            if(lastTimeStamp == 0){
-                bizMap.put("page","1");
-            }else{
-                bizMap.put("pagetime",""+lastTimeStamp);
+        String url = ProtocolUtil.getSempOrderUrl();
+        Log.i(TAG,url);
+        NetRequest netRequest = new NetRequest(url);
+        HashMap<String,String> bizMap = new HashMap<String,String>();
+        bizMap.put("salesid",CacheUtil.getInstance().getUserId());
+        bizMap.put("token",CacheUtil.getInstance().getToken());
+        bizMap.put("shopid",CacheUtil.getInstance().getShopID());
+        bizMap.put("status","0,1,2,3,4,5");
+        if(lastTimeStamp == 0){
+            bizMap.put("page","1");
+        }else{
+            bizMap.put("pagetime",""+lastTimeStamp);
+        }
+
+        bizMap.put("pagedata",""+orderAdapter.getPagedata()*2);
+        netRequest.setBizParamMap(bizMap);
+        NetRequestTask netRequestTask = new NetRequestTask(getActivity(),netRequest, NetResponse.class);
+        netRequestTask.methodType = MethodType.PUSH;
+        netRequestTask.setNetRequestListener(new NetRequestListener() {
+            @Override
+            public void onNetworkRequestError(int errorCode, String errorMessage) {
+                Log.i(TAG, "errorCode:" + errorCode);
+                Log.i(TAG, "errorMessage:" + errorMessage);
             }
 
-            bizMap.put("pagedata",""+orderAdapter.getPagedata()*2);
-            netRequest.setBizParamMap(bizMap);
-            NetRequestTask netRequestTask = new NetRequestTask(getActivity(),netRequest, NetResponse.class);
-            netRequestTask.methodType = MethodType.PUSH;
-            netRequestTask.setNetRequestListener(new NetRequestListener() {
-                @Override
-                public void onNetworkRequestError(int errorCode, String errorMessage) {
-                    Log.i(TAG, "errorCode:" + errorCode);
-                    Log.i(TAG, "errorMessage:" + errorMessage);
-                }
+            @Override
+            public void onNetworkRequestCancelled() {
 
-                @Override
-                public void onNetworkRequestCancelled() {
+            }
 
-                }
+            @Override
+            public void onNetworkResponseSucceed(NetResponse result) {
+                Log.i(TAG, "result.rawResult:" + result.rawResult);
+                try{
+                    ArrayList<OrderBean> orderList = new Gson().fromJson(result.rawResult, new TypeToken< ArrayList<OrderBean>>(){}.getType());
 
-                @Override
-                public void onNetworkResponseSucceed(NetResponse result) {
-                    Log.i(TAG, "result.rawResult:" + result.rawResult);
-                    try{
-                        ArrayList<OrderBean> orderList = new Gson().fromJson(result.rawResult, new TypeToken< ArrayList<OrderBean>>(){}.getType());
+                    if(lastTimeStamp == 0){
+                        ArrayList<OrderBean> upList = getUpList(orderList);
+                        orderAdapter.refreshingAction(upList);
 
-                        if(lastTimeStamp == 0){
-                            ArrayList<OrderBean> upList = getUpList(orderList);
-                            orderAdapter.refreshingAction(upList);
+                        ArrayList<OrderBean> downList = getDownList(orderList);
+                        orderMoreAdapter.refreshingAction(downList);
+                        timeTips.setText(orderMoreAdapter.getTimeTips());
 
-                            ArrayList<OrderBean> downList = getDownList(orderList);
-                            orderMoreAdapter.refreshingAction(downList);
-                            timeTips.setText(orderMoreAdapter.getTimeTips());
+                        swipeRefreshLayout.setRefreshing(false);
 
-                            swipeRefreshLayout.setRefreshing(false);
+                    }else{
+                        ArrayList<OrderBean> upList = getUpList(orderList);
+                        orderAdapter.loadMoreAction(upList);
 
-                        }else{
-                            ArrayList<OrderBean> upList = getUpList(orderList);
-                            orderAdapter.loadMoreAction(upList);
+                        ArrayList<OrderBean> downList = getDownList(orderList);
+                        orderMoreAdapter.refreshingAction(downList);
+                        timeTips.setText(orderMoreAdapter.getTimeTips());
 
-                            ArrayList<OrderBean> downList = getDownList(orderList);
-                            orderMoreAdapter.refreshingAction(downList);
-                            timeTips.setText(orderMoreAdapter.getTimeTips());
-
-                            swipeRefreshLayout.setRefreshing(false);
-                        }
-                    }catch (Exception e){
-                        Log.e(TAG,e.getMessage());
-                        BaseBean baseBean = new Gson().fromJson(result.rawResult,BaseBean.class);
-                        if(baseBean!= null && baseBean.isSet() && baseBean.getErr().equals("400")){
-                            DialogUtil.getInstance().showToast(getActivity(),"Token 失效，请重新登录");
-                            CacheUtil.getInstance().setLogin(false);
-                            Intent intent = new Intent(getActivity(),LoginActivity.class);
-                            getActivity().startActivity(intent);
-                            getActivity().finish();
-
-                        }
+                        swipeRefreshLayout.setRefreshing(false);
                     }
+                }catch (Exception e){
+                    Log.e(TAG,e.getMessage());
+                    BaseBean baseBean = new Gson().fromJson(result.rawResult,BaseBean.class);
+                    if(baseBean!= null && baseBean.isSet() && baseBean.getErr().equals("400")){
+                        DialogUtil.getInstance().showToast(getActivity(),"Token 失效，请重新登录");
+                        CacheUtil.getInstance().setLogin(false);
+                        Intent intent = new Intent(getActivity(),LoginActivity.class);
+                        getActivity().startActivity(intent);
+                        getActivity().finish();
 
+                    }
                 }
 
-                @Override
-                public void beforeNetworkRequestStart() {
+            }
 
-                }
-            });
-            netRequestTask.isShowLoadingDialog = false;
-            netRequestTask.execute();
-        }
+            @Override
+            public void beforeNetworkRequestStart() {
+
+            }
+        });
+        netRequestTask.isShowLoadingDialog = false;
+        netRequestTask.execute();
     }
 
     private ArrayList<OrderBean> getDownList(ArrayList<OrderBean> orderList) {
