@@ -28,8 +28,7 @@
                     android:id="@+id/civ_member_avatar"
                     android:layout_centerVertical="true"
                     android:layout_width="72dp"
-                    android:layout_height="72dp"
-                    android:background="@drawable/ic_launcher"/>
+                    android:layout_height="72dp"/>
 
             </RelativeLayout>
 
@@ -43,7 +42,6 @@
                         android:padding="5dp"
                         android:id="@+id/tv_member_name"
                         android:layout_width="wrap_content"
-                        android:text="林先生"
                         android:textSize="16sp"
                         android:textColor="@color/white"
                         android:layout_height="wrap_content" />
@@ -57,7 +55,6 @@
                             android:paddingRight="10dp"
                             android:id="@+id/tv_member_phone"
                             android:layout_width="wrap_content"
-                            android:text="18912345678"
                             android:textSize="16sp"
                             android:textColor="@color/white"
                             android:layout_height="wrap_content" />
@@ -120,7 +117,6 @@
                 android:textColor="@color/black"
                 android:layout_alignParentRight="true"
                 android:textSize="16sp"
-                android:text="挂账会员"
                 android:layout_height="wrap_content" />
 
         </RelativeLayout>
@@ -155,7 +151,6 @@
                 android:layout_width="wrap_content"
                 android:textColor="@color/black"
                 android:textSize="16sp"
-                android:text="39"
                 android:layout_toLeftOf="@+id/tv_times_chinese"
                 android:inputType="number"
                 android:layout_height="wrap_content" />

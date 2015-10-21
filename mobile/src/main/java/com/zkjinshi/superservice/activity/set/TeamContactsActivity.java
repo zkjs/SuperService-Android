@@ -15,6 +15,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.zkjinshi.base.log.LogLevel;
 import com.zkjinshi.base.log.LogUtil;
 import com.zkjinshi.base.net.core.WebSocketManager;
@@ -55,6 +56,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -168,6 +170,17 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
         }
 
         if(null == mTeamContactAdapter){
+            String shopEmployeesJson = CacheUtil.getInstance().getListStrCache("shop_employees");
+            if(!TextUtils.isEmpty(shopEmployeesJson)){
+                Gson gson = new Gson();
+                List<ShopEmployeeVo> shopEmployeeVos = gson.fromJson(shopEmployeesJson,
+                                new TypeToken<ArrayList<ShopEmployeeVo>>() {}.getType());
+
+                if(shopEmployeeVos != null && !shopEmployeeVos.isEmpty()){
+                    mShopEmployeeVos.addAll(shopEmployeeVos);
+                }
+
+            }
             mTeamContactAdapter = new TeamContactsAdapter(TeamContactsActivity.this, mShopEmployeeVos);
             mRvTeamContacts.setAdapter(mTeamContactAdapter);
         }
@@ -179,21 +192,31 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
                 mUserID, mToken, mShopID, new GetTeamContactsListener() {
                     @Override
                     public void getContactsDone(List<TeamContactBean> teamContacts) {
-                        List<ShopEmployeeVo> shopEmployeeVos = ShopEmployeeFactory.getInstance().buildShopEmployees(teamContacts);
+                        ArrayList<ShopEmployeeVo> shopEmployeeVos = (ArrayList) ShopEmployeeFactory.getInstance().buildShopEmployees(teamContacts);
                         List<String> strLetters = null;//首字母显示数组
                         List<String> empids = null;//员工ID数组
                         if (null != shopEmployeeVos && !shopEmployeeVos.isEmpty()) {
+
                             strLetters = new ArrayList<>();
                             empids = new ArrayList<>();
 
-                            for (ShopEmployeeVo shopEmployeeVo : shopEmployeeVos) {
+                            Iterator<ShopEmployeeVo> shopEmployeeVoIterator = shopEmployeeVos.iterator();
+                            while(shopEmployeeVoIterator.hasNext()){
+                                String empID = shopEmployeeVoIterator.next().getEmpid();
+                                if(empID.equals(mUserID)){
+                                    shopEmployeeVoIterator.remove();
+                                }
+                            }
+                            //加入本地缓存
+                            CacheUtil.getInstance().saveListCache("shop_employees", shopEmployeeVos);
 
+                            for (ShopEmployeeVo shopEmployeeVo : shopEmployeeVos) {
                                 if(shopEmployeeVo.getEmpid().equals(mUserID)){
                                     continue;
                                 }
 
-                                shopEmployeeVo.setShop_id(mShopID);
                                 ShopEmployeeDBUtil.getInstance().addShopEmployee(shopEmployeeVo);
+                                shopEmployeeVo.setShop_id(mShopID);
                                 mShopEmployeeVos.add(shopEmployeeVo);
 
                                 empids.add(shopEmployeeVo.getEmpid());
@@ -214,6 +237,7 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
                                 }
                             }
 
+
                             String[] sortArray = strLetters.toArray(new String[strLetters.size()]);
                             if (sortArray.length > 0) {
                                 mAutoSideBar.setSortArray(sortArray);
@@ -221,7 +245,6 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
                                 mRlSideBar.removeAllViews();
                                 mRlSideBar.addView(mAutoSideBar);
                             }
-
                             mTeamContactAdapter.updateListView(mShopEmployeeVos);
                         }
 
@@ -286,6 +309,8 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
         mTeamContactAdapter.setOnItemClickListener(new RecyclerItemClickListener() {
             @Override
             public void onItemClick(View view, int postion) {
+
+                DialogUtil.getInstance().showProgressDialog(TeamContactsActivity.this, "进入聊天中...");
 
                 ShopEmployeeVo shopEmployeeVo = mShopEmployeeVos.get(postion);
                 String empID = shopEmployeeVo.getEmpid();

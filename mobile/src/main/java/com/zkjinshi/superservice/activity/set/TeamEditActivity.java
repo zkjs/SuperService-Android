@@ -116,17 +116,20 @@ public class TeamEditActivity extends Activity implements IMessageObserver{
         mRcvTeamContacts.setLayoutManager(mLayoutManager);
 
         mShopEmployeeVos = ShopEmployeeDBUtil.getInstance().queryAllByDeptIDAsc();
-        mContactsAdapter = new TeamEditContactsAdapter(TeamEditActivity.this, mShopEmployeeVos);
-        mRcvTeamContacts.setAdapter(mContactsAdapter);
 
         //需要获得在线状态的用户
-        List<String> empids = null;
+        List<String> empids = new ArrayList<>();
         for (ShopEmployeeVo shopEmployeeVo : mShopEmployeeVos) {
-            if(empids == null){
-                empids = new ArrayList<>();
+            String empID = shopEmployeeVo.getEmpid();
+            if(empID.equals(mUserID)){
+                mShopEmployeeVos.remove(shopEmployeeVo);
+                continue;
             }
-            empids.add(shopEmployeeVo.getEmpid());
+            empids.add(empID);
         }
+
+        mContactsAdapter = new TeamEditContactsAdapter(TeamEditActivity.this, mShopEmployeeVos);
+        mRcvTeamContacts.setAdapter(mContactsAdapter);
 
         //批量请求客户是否在线
         MsgEmpStatus msgEmpStatus = new MsgEmpStatus();
@@ -237,7 +240,6 @@ public class TeamEditActivity extends Activity implements IMessageObserver{
             public void onNetworkResponseSucceed(NetResponse result) {
                 DialogUtil.getInstance().cancelProgressDialog();
                 Log.i(TAG, "result.rawResult:" + result.rawResult);
-                System.out.print(":" + result.rawResult);
                 String jsonResult = result.rawResult;
                 try {
                     JSONObject jsonObject = new JSONObject(jsonResult);

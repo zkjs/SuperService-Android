@@ -84,9 +84,6 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
     private String        mClientID;
     private BookOrderBean bookOrder;
 
-//    private TextView titleTv;
-//    private ImageButton backIBtn;
-
     private Toolbar       mToolbar;
     private TextView      mTvCenterTitle;
     private TextView      mTvBottomTitle;
@@ -134,6 +131,7 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
 
     private void initView() {
 
+        DialogUtil.getInstance().cancelProgressDialog();
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         mToolbar.setTitle("");
         mToolbar.setNavigationIcon(R.drawable.ic_fanhui);
@@ -141,9 +139,6 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mTvCenterTitle = (TextView) findViewById(R.id.tv_center_title);
         mTvBottomTitle = (TextView) findViewById(R.id.tv_online_status);
-
-//        titleTv = (TextView)findViewById(R.id.header_bar_tv_title);
-//        backIBtn = (ImageButton)findViewById(R.id.header_bar_btn_back);
 
         mMsgTextInput = (EditText) findViewById(R.id.et_msg_text_input);
         mBtnMsgSend   = (Button)   findViewById(R.id.btn_msg_send);
@@ -158,8 +153,6 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
     }
 
     private void initData() {
-//        titleTv.setText("聊天");
-//        backIBtn.setVisibility(View.VISIBLE);
         mSessionID = getIntent().getStringExtra("session_id");
         mShopID    = getIntent().getStringExtra("shop_id");
         String sessionName = getIntent().getStringExtra("session_name");
@@ -217,12 +210,6 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
     }
 
     private void initListener() {
-//        backIBtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                ChatActivity.this.finish();
-//            }
-//        });
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
