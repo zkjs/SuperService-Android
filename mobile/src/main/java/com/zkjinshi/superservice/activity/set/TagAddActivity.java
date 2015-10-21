@@ -133,7 +133,6 @@ public class TagAddActivity extends Activity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
             }
 
             @Override

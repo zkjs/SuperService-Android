@@ -12,13 +12,13 @@
 
         <EditText
             android:paddingLeft="15dp"
+            android:paddingRight="15dp"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:hint="请输入标签"
             android:textColor="@color/black"
             android:textSize="16sp"
             android:singleLine="true"
-            android:maxLength="10"
             android:textColorHint="@color/grayB8B8B8"
             android:background="@android:color/white"
             android:id="@+id/et_input_tag" />
