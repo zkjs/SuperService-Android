@@ -126,7 +126,6 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
                 ViewGroup.LayoutParams.MATCH_PARENT);
         mAutoSideBar.setTextView(mTvDialog);
         mAutoSideBar.setLayoutParams(layoutParams);
-
     }
 
     private void initData() {
@@ -143,16 +142,13 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
         mRvTeamContacts.setLayoutManager(mLayoutManager);
 
         // 创建商店排序对象
-        if(null == mFirstShopEmployee){
-            mFirstShopEmployee = new ShopEmployeeVo();
-            String shopName    = CacheUtil.getInstance().getShopFullName();
-            mFirstShopEmployee.setName(shopName);
-            mFirstShopEmployee.setDept_name(shopName);
-            mFirstShopEmployee.setEmpid(System.currentTimeMillis() + "");
-        }
+        mFirstShopEmployee = new ShopEmployeeVo();
+        String shopName    = CacheUtil.getInstance().getShopFullName();
+        mFirstShopEmployee.setName(shopName);
+        mFirstShopEmployee.setDept_name(shopName);
+        mFirstShopEmployee.setEmpid(System.currentTimeMillis() + "");
 
         mShopEmployeeVos = new ArrayList<>();
-        mShopEmployeeVos.add(0, mFirstShopEmployee);
         mTeamContactAdapter = new TeamContactsAdapter(TeamContactsActivity.this, mShopEmployeeVos);
         mRvTeamContacts.setAdapter(mTeamContactAdapter);
     }
@@ -196,12 +192,11 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
                     @Override
                     public void getContactsDone(List<TeamContactBean> teamContacts) {
                         ArrayList<ShopEmployeeVo> shopEmployeeVos = (ArrayList) ShopEmployeeFactory.getInstance().buildShopEmployees(teamContacts);
-                        List<String> strLetters = null;//首字母显示数组
-                        List<String> empids = null;//员工ID数组
-                        if (null != shopEmployeeVos && !shopEmployeeVos.isEmpty()) {
-                            strLetters = new ArrayList<>();
-                            empids = new ArrayList<>();
 
+                        List<String> strLetters = new ArrayList<>();//首字母显示数组
+                        List<String> empids     = new ArrayList<>();//员工ID数组
+
+                        if (null != shopEmployeeVos && !shopEmployeeVos.isEmpty()) {
                             Iterator<ShopEmployeeVo> shopEmployeeVoIterator = shopEmployeeVos.iterator();
                             while(shopEmployeeVoIterator.hasNext()){
                                 String empID = shopEmployeeVoIterator.next().getEmpid();
@@ -255,7 +250,7 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
                             mTeamContactAdapter.updateListView(mShopEmployeeVos);
                         }
 
-                        //发送查询客户是否在线请求
+                        //发送查询团队是否在线请求
                         MsgEmpStatus msgEmpStatus = new MsgEmpStatus();
                         msgEmpStatus.setType(ProtocolMSG.MSG_ShopEmpStatus);
                         msgEmpStatus.setTimestamp(System.currentTimeMillis());
@@ -421,7 +416,6 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
 
     @Override
     public void receive(String message) {
-
         System.out.print("message:" + message);
         if(TextUtils.isEmpty(message)){
             return ;

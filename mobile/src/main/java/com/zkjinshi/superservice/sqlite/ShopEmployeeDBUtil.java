@@ -57,7 +57,7 @@ public class ShopEmployeeDBUtil {
                                 new String[] { shopEmployeeVo.getEmpid() });
 
             if(cursor.getCount() > 0){
-                addResult = db.update(DBOpenHelper.SHOP_EMPLOYEE_TBL, values, " empid = ?", new String[] {shopEmployeeVo.getEmpid()});
+                addResult = db.update(DBOpenHelper.SHOP_EMPLOYEE_TBL, values, " empid = ?", new String[] { shopEmployeeVo.getEmpid() });
             } else {
                 addResult = db.insert(DBOpenHelper.SHOP_EMPLOYEE_TBL, null, values);
             }

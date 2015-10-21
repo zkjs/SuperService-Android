@@ -113,6 +113,7 @@ public class ClientActivity extends AppCompatActivity implements IMessageObserve
     }
 
     private void initData() {
+
         mUserID = CacheUtil.getInstance().getUserId();
         mToken  = CacheUtil.getInstance().getToken();
         mShopID = CacheUtil.getInstance().getShopID();
@@ -123,7 +124,6 @@ public class ClientActivity extends AppCompatActivity implements IMessageObserve
         mLocalClientMap  = new HashMap<>();
         mAllContactsList = new ArrayList<>();
         pinyinComparator = new PinyinComparator();
-        Collections.sort(mAllContactsList, pinyinComparator);// 根据a-z进行排序源数据
         mContactsAdapter = new ContactsSortAdapter(this, mAllContactsList);
         mRcvContacts.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(this);
