@@ -51,6 +51,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -116,13 +117,16 @@ public class TeamEditActivity extends Activity implements IMessageObserver{
         mRcvTeamContacts.setLayoutManager(mLayoutManager);
 
         mShopEmployeeVos = ShopEmployeeDBUtil.getInstance().queryAllByDeptIDAsc();
+        LogUtil.getInstance().info(LogLevel.INFO, "mShopEmployeeVos:"+mShopEmployeeVos);
 
         //需要获得在线状态的用户
         List<String> empids = new ArrayList<>();
-        for (ShopEmployeeVo shopEmployeeVo : mShopEmployeeVos) {
+        Iterator<ShopEmployeeVo> shopEmployeeVoIterator = mShopEmployeeVos.iterator();
+        while (shopEmployeeVoIterator.hasNext()) {
+            ShopEmployeeVo shopEmployeeVo = shopEmployeeVoIterator.next();
             String empID = shopEmployeeVo.getEmpid();
             if(empID.equals(mUserID)){
-                mShopEmployeeVos.remove(shopEmployeeVo);
+                shopEmployeeVoIterator.remove();
                 continue;
             }
             empids.add(empID);
@@ -163,7 +167,7 @@ public class TeamEditActivity extends Activity implements IMessageObserver{
             @Override
             public void onItemClick(View view, int postion) {
                 ShopEmployeeVo shopEmployeeVo = mShopEmployeeVos.get(postion);
-                if(mCheckedList.contains(shopEmployeeVo)){
+                if (mCheckedList.contains(shopEmployeeVo)) {
                     mCheckedList.remove(shopEmployeeVo);
                 } else {
                     mCheckedList.add(shopEmployeeVo);
@@ -246,11 +250,17 @@ public class TeamEditActivity extends Activity implements IMessageObserver{
                     if (jsonObject.getBoolean("set")) {
                         for(ShopEmployeeVo shopEmployeeVo : mCheckedList){
                             mShopEmployeeVos.remove(shopEmployeeVo);
-                            ShopEmployeeDBUtil.getInstance().deleteShopEmployeeByEmpID(shopEmployeeVo.getEmpid());
+                            long delResult = -1;
+                            String empID = shopEmployeeVo.getEmpid();
+                            delResult = ShopEmployeeDBUtil.getInstance().deleteShopEmployeeByEmpID(empID);
+                            LogUtil.getInstance().info(LogLevel.INFO, "delResult" + delResult);
+                           if(delResult > 0){
+                               DialogUtil.getInstance().showToast(TeamEditActivity.this, "删除成功");
+                           }
                         }
                         mContactsAdapter.updateListView(mShopEmployeeVos);
                     } else {
-                        DialogUtil.getInstance().showToast(TeamEditActivity.this, "delete failed, retry after a while!");
+                        DialogUtil.getInstance().showToast(TeamEditActivity.this, "删除失败，请稍后再试。");
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();

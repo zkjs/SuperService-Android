@@ -271,7 +271,7 @@ public class ShopEmployeeDBUtil {
         long delResult = -1;
         try {
             db = helper.getWritableDatabase();
-            delResult = db.delete(DBOpenHelper.SHOP_EMPLOYEE_TBL, " empid = ? ", new String[]{empid});
+            delResult = db.delete(DBOpenHelper.SHOP_EMPLOYEE_TBL, " empid = ? ", new String[]{ empid });
         } catch (Exception e) {
             LogUtil.getInstance().info(LogLevel.ERROR,TAG+".deleteShopEmployeeByEmpID->"+e.getMessage());
             e.printStackTrace();
