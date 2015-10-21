@@ -109,9 +109,6 @@ public class ClientDetailActivity extends Activity {
         mUserID = CacheUtil.getInstance().getUserId();
         mToken  = CacheUtil.getInstance().getToken();
         mShopID = CacheUtil.getInstance().getShopID();
-
-        DialogUtil.getInstance().showProgressDialog(ClientDetailActivity.this);
-        getClientDetail(mPhoneNumber);
     }
 
     private void getClientDetail(String mPhoneNumber) {
@@ -163,6 +160,13 @@ public class ClientDetailActivity extends Activity {
         });
         netRequestTask.isShowLoadingDialog = true;
         netRequestTask.execute();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        DialogUtil.getInstance().showProgressDialog(ClientDetailActivity.this);
+        getClientDetail(mPhoneNumber);
     }
 
     /**
