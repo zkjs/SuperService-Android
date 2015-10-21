@@ -4,14 +4,28 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.google.gson.Gson;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
+import com.zkjinshi.superservice.activity.notice.LocNoticeController;
+import com.zkjinshi.superservice.activity.set.TeamContactsController;
+import com.zkjinshi.superservice.bean.AdminLoginBean;
+import com.zkjinshi.superservice.factory.UserFactory;
+import com.zkjinshi.superservice.net.NetRequestListener;
+import com.zkjinshi.superservice.net.NetResponse;
+import com.zkjinshi.superservice.sqlite.DBOpenHelper;
+import com.zkjinshi.superservice.sqlite.UserDBUtil;
+import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.MD5Util;
+import com.zkjinshi.superservice.utils.ProtocolUtil;
+import com.zkjinshi.superservice.vo.IdentityType;
+import com.zkjinshi.superservice.vo.UserVo;
 
 /**
  * 商家登录
@@ -67,8 +81,8 @@ public class ShopLoginActivity extends Activity{
     }
 
     private void loginRequest(){
-        String phone =  nameEt.getText().toString();
-        String password = pwdEt.getText().toString();
+        final String phone =  nameEt.getText().toString();
+        final String password = pwdEt.getText().toString();
         if(TextUtils.isEmpty(phone)){
             DialogUtil.getInstance().showToast(this,"手机号不能为空");
             return;
@@ -76,7 +90,60 @@ public class ShopLoginActivity extends Activity{
             DialogUtil.getInstance().showToast(this,"密码不能为空");
             return;
         }
-        LoginController.getInstance().requestAdminLogin(phone, MD5Util.MD5(password));
+        LoginController.getInstance().requestAdminLogin(phone, MD5Util.MD5(password),true,new NetRequestListener() {
+            @Override
+            public void onNetworkRequestError(int errorCode, String errorMessage) {
+                Log.i(TAG, "errorCode:" + errorCode);
+                Log.i(TAG, "errorMessage:" + errorMessage);
+            }
+
+            @Override
+            public void onNetworkRequestCancelled() {
+
+            }
+
+            @Override
+            public void onNetworkResponseSucceed(NetResponse result) {
+                if(null != result && !TextUtils.isEmpty(result.rawResult)){
+                    Log.i(TAG, "result.rawResult:" + result.rawResult);
+                    AdminLoginBean adminLoginBean = new Gson().fromJson(result.rawResult, AdminLoginBean.class);
+                    if (adminLoginBean.isSet()) {
+                        CacheUtil.getInstance().setToken(adminLoginBean.getToken());
+                        CacheUtil.getInstance().setUserId(adminLoginBean.getUserid());
+                        CacheUtil.getInstance().setUserPhone(phone);
+                        CacheUtil.getInstance().setUserName(adminLoginBean.getName());
+                        CacheUtil.getInstance().setShopID(adminLoginBean.getShopid());
+                        CacheUtil.getInstance().setShopFullName(adminLoginBean.getFullname());
+                        CacheUtil.getInstance().setLoginIdentity(IdentityType.BUSINESS);
+                        CacheUtil.getInstance().setPassword(password);
+                        CacheUtil.getInstance().setLogin(true);
+                        CacheUtil.getInstance().setAreaInfo(adminLoginBean.getLocid());
+                        String userID = CacheUtil.getInstance().getUserId();
+                        String token  = CacheUtil.getInstance().getToken();
+                        String shopiD = CacheUtil.getInstance().getShopID();
+                        DBOpenHelper.DB_NAME = adminLoginBean.getUserid() + ".db";
+                        LoginController.getInstance().getDeptList(userID, token, shopiD);//获取部门列表
+                        TeamContactsController.getInstance().getTeamContacts(ShopLoginActivity.this, userID, token, shopiD, null);//获取团队列表
+                        LocNoticeController.getInstance().init(ShopLoginActivity.this).requestLocTask();//获取区域信息
+                        UserVo userVo = UserFactory.getInstance().buildUserVo(adminLoginBean);
+                        UserDBUtil.getInstance().addUser(userVo);
+                        String avatarUrl = ProtocolUtil.getShopLogoUrl(adminLoginBean.getShopid());
+                        CacheUtil.getInstance().saveUserPhotoUrl(avatarUrl);
+                        Intent mainIntent = new Intent(ShopLoginActivity.this, MainActivity.class);
+                        startActivity(mainIntent);
+                        finish();
+                        overridePendingTransition(R.anim.activity_new, R.anim.activity_out);
+                    } else {
+                        DialogUtil.getInstance().showToast(ShopLoginActivity.this, "密码或者手机号不对 ");
+                    }
+                }
+            }
+
+            @Override
+            public void beforeNetworkRequestStart() {
+
+            }
+        });
     }
 
 
