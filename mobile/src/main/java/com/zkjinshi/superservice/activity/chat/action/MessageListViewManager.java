@@ -3,10 +3,14 @@ package com.zkjinshi.superservice.activity.chat.action;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.ListView;
@@ -22,6 +26,7 @@ import com.zkjinshi.base.net.observer.MessageSubject;
 import com.zkjinshi.base.net.protocol.ProtocolMSG;
 import com.zkjinshi.base.util.DeviceUtils;
 import com.zkjinshi.base.util.NetWorkUtil;
+import com.zkjinshi.base.view.CustomDialog;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.adapter.ChatAdapter;
 import com.zkjinshi.superservice.entity.MsgCustomerServiceChat;
@@ -825,29 +830,35 @@ public class MessageListViewManager implements MsgListView.IXListViewListener,
             if(ProtocolMSG.MSG_CustomerServiceTextChat_RSP == type) {
                 Gson gson = new Gson();
                 MsgCustomerServiceTextChatRSP msgTextRSP = gson.fromJson(message, MsgCustomerServiceTextChatRSP.class);
-                // 更新数据库
-                String realMsgID = msgTextRSP.getSrvmsgid() + "";//服务器返回msgID
-                long   sendTime  = msgTextRSP.getTimestamp();//服务器返回发送时间
-                String tempID    = msgTextRSP.getTempid();//临时消息ID
-                messageVector.remove(tempID);//删除消息ID集合
-                // 1、更新是否已读状态
-                MessageDBUtil.getInstance().updateMessageSendSuccess(realMsgID, tempID, sendTime);
-                //查找更新后的消息对象
-                MessageVo messageChatVo = MessageDBUtil.getInstance().queryMessageByMessageID(realMsgID);
-                // 2. 添加发送消息的集合
-                messageVector.add(realMsgID);
-                if (null != messageChatVo && !currentMessageList.isEmpty()) {
-                    for (int i = 0; i < currentMessageList.size(); i++) {
-                        if (null != currentMessageList.get(i)
-                                && null != currentMessageList.get(i).getMessageId()
-                                && currentMessageList.get(i).getMessageId().equals(tempID)) {
-                            currentMessageList.set(i, messageChatVo);
+                int result = msgTextRSP.getResult();
+                // 0:发送成功  1:发送失败  2:客人在线客服离线   3:客人离线客服在线 4:所有客服不在线
+                if(0 == result){
+                    // 更新数据库
+                    String realMsgID = msgTextRSP.getSrvmsgid() + "";//服务器返回msgID
+                    long   sendTime  = msgTextRSP.getTimestamp();//服务器返回发送时间
+                    String tempID    = msgTextRSP.getTempid();//临时消息ID
+                    messageVector.remove(tempID);//删除消息ID集合
+                    // 1、更新是否已读状态
+                    MessageDBUtil.getInstance().updateMessageSendSuccess(realMsgID, tempID, sendTime);
+                    //查找更新后的消息对象
+                    MessageVo messageChatVo = MessageDBUtil.getInstance().queryMessageByMessageID(realMsgID);
+                    // 2. 添加发送消息的集合
+                    messageVector.add(realMsgID);
+                    if (null != messageChatVo && !currentMessageList.isEmpty()) {
+                        for (int i = 0; i < currentMessageList.size(); i++) {
+                            if (null != currentMessageList.get(i)
+                                    && null != currentMessageList.get(i).getMessageId()
+                                    && currentMessageList.get(i).getMessageId().equals(tempID)) {
+                                currentMessageList.set(i, messageChatVo);
+                            }
                         }
                     }
+                    // 3、刷新页面
+                    chatAdapter.setData(currentMessageList);
+                    scrollBottom();
+                } else if(3 == result){
+                    showOfflineDialog();
                 }
-                // 3、刷新页面
-                chatAdapter.setData(currentMessageList);
-                scrollBottom();
             }
 
             /** 音频消息的回复 */
@@ -855,32 +866,37 @@ public class MessageListViewManager implements MsgListView.IXListViewListener,
                 Gson gson = new Gson();
                 MsgCustomerServiceMediaChatRSP msgMediaRSP = gson.fromJson(message,
                         MsgCustomerServiceMediaChatRSP.class);
-                // 更新数据库
-                String realMsgID = msgMediaRSP.getSrvmsgid() + "";//服务器返回msgID
-                long   sendTime  = msgMediaRSP.getTimestamp();//服务器返回发送时间
-                String tempID = msgMediaRSP.getTempid();//临时消息ID
+                int result = msgMediaRSP.getResult();
+                if(0 == result){
+                    // 更新数据库
+                    String realMsgID = msgMediaRSP.getSrvmsgid() + "";//服务器返回msgID
+                    long   sendTime  = msgMediaRSP.getTimestamp();//服务器返回发送时间
+                    String tempID = msgMediaRSP.getTempid();//临时消息ID
 
-                if(messageVector.contains(tempID)){
-                    messageVector.remove(tempID);//删除消息ID集合
-                }
+                    if(messageVector.contains(tempID)){
+                        messageVector.remove(tempID);//删除消息ID集合
+                    }
 
-                // 1、更新是否已读状态
-                MessageDBUtil.getInstance().updateMessageSendSuccess(realMsgID, tempID, sendTime);
-                //查找更新后的消息对象
-                MessageVo messageChatVo = MessageDBUtil.getInstance().queryMessageByMessageID(realMsgID);
-                // 2. 添加发送消息的集合
-                messageVector.add(realMsgID);
-                if (null != messageChatVo && !currentMessageList.isEmpty()) {
-                    for (int i = 0; i < currentMessageList.size(); i++) {
-                        if (null != currentMessageList.get(i)
-                                && null != currentMessageList.get(i).getMessageId()
-                                && currentMessageList.get(i).getMessageId().equals(tempID)) {
-                            currentMessageList.set(i, messageChatVo);
+                    // 1、更新是否已读状态
+                    MessageDBUtil.getInstance().updateMessageSendSuccess(realMsgID, tempID, sendTime);
+                    //查找更新后的消息对象
+                    MessageVo messageChatVo = MessageDBUtil.getInstance().queryMessageByMessageID(realMsgID);
+                    // 2. 添加发送消息的集合
+                    messageVector.add(realMsgID);
+                    if (null != messageChatVo && !currentMessageList.isEmpty()) {
+                        for (int i = 0; i < currentMessageList.size(); i++) {
+                            if (null != currentMessageList.get(i)
+                                    && null != currentMessageList.get(i).getMessageId()
+                                    && currentMessageList.get(i).getMessageId().equals(tempID)) {
+                                currentMessageList.set(i, messageChatVo);
+                            }
                         }
                     }
+                    chatAdapter.setData(currentMessageList);
+                    scrollBottom();
+                } else if(3 == result){
+                    showOfflineDialog();
                 }
-                chatAdapter.setData(currentMessageList);
-                scrollBottom();
             }
 
             /** 图片消息的回复 */
@@ -888,34 +904,38 @@ public class MessageListViewManager implements MsgListView.IXListViewListener,
                 Gson gson = new Gson();
                 MsgCustomerServiceImgChatRSP msgImgRSP = gson.fromJson(message,
                         MsgCustomerServiceImgChatRSP.class);
+                int result = msgImgRSP.getResult();
+                if(0 == result){
+// 更新数据库
+                    String realMsgID = msgImgRSP.getSrvmsgid() + "";//服务器返回msgID
+                    long   sendTime  = msgImgRSP.getTimestamp();//服务器返回发送时间
+                    String tempID    = msgImgRSP.getTempid();//临时消息ID
 
-                // 更新数据库
-                String realMsgID = msgImgRSP.getSrvmsgid() + "";//服务器返回msgID
-                long   sendTime  = msgImgRSP.getTimestamp();//服务器返回发送时间
-                String tempID    = msgImgRSP.getTempid();//临时消息ID
-
-                if(messageVector.contains(tempID)){
-                    messageVector.remove(tempID);//删除消息ID集合
-                }
-                // 1、更新是否已读状态
-                MessageDBUtil.getInstance().updateMessageSendSuccess(realMsgID, tempID, sendTime);
-                //查找更新后的消息对象
-                MessageVo messageChatVo = MessageDBUtil.getInstance().queryMessageByMessageID(realMsgID);
-                // 2. 添加发送消息的集合
-                messageVector.add(realMsgID);
-                if (null != messageChatVo && !currentMessageList.isEmpty()) {
-                    for (int i = 0; i < currentMessageList.size(); i++) {
-                        if (null != currentMessageList.get(i)
-                                && null != currentMessageList.get(i).getMessageId()
-                                && currentMessageList.get(i).getMessageId().equals(tempID)) {
-                            currentMessageList.set(i, messageChatVo);
+                    if(messageVector.contains(tempID)){
+                        messageVector.remove(tempID);//删除消息ID集合
+                    }
+                    // 1、更新是否已读状态
+                    MessageDBUtil.getInstance().updateMessageSendSuccess(realMsgID, tempID, sendTime);
+                    //查找更新后的消息对象
+                    MessageVo messageChatVo = MessageDBUtil.getInstance().queryMessageByMessageID(realMsgID);
+                    // 2. 添加发送消息的集合
+                    messageVector.add(realMsgID);
+                    if (null != messageChatVo && !currentMessageList.isEmpty()) {
+                        for (int i = 0; i < currentMessageList.size(); i++) {
+                            if (null != currentMessageList.get(i)
+                                    && null != currentMessageList.get(i).getMessageId()
+                                    && currentMessageList.get(i).getMessageId().equals(tempID)) {
+                                currentMessageList.set(i, messageChatVo);
+                            }
                         }
                     }
-                }
 
-                // 3、刷新页面
-                chatAdapter.setData(currentMessageList);
-                scrollBottom();
+                    // 3、刷新页面
+                    chatAdapter.setData(currentMessageList);
+                    scrollBottom();
+                } else if(3 == result){
+                    showOfflineDialog();
+                }
             }
 
             if(ProtocolMSG.MSG_CustomerServiceTextChat == type){//接收别人发送文本消息
@@ -969,5 +989,20 @@ public class MessageListViewManager implements MsgListView.IXListViewListener,
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    private void showOfflineDialog(){
+        CustomDialog.Builder customBuilder = new CustomDialog.Builder(context);
+        customBuilder.setTitle("温馨提示");
+        customBuilder.setMessage("客人不在线，请稍后再发送!");
+        customBuilder.setGravity(Gravity.CENTER);
+        customBuilder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        customBuilder.create().show();
     }
 }
