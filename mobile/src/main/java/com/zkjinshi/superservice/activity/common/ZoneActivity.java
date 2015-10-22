@@ -35,6 +35,7 @@ import com.zkjinshi.superservice.sqlite.ZoneDBUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.view.RefreshLayout;
+import com.zkjinshi.superservice.vo.IdentityType;
 import com.zkjinshi.superservice.vo.UserVo;
 
 import java.util.ArrayList;
@@ -124,9 +125,17 @@ public class ZoneActivity extends Activity implements SwipeRefreshLayout.OnRefre
         findViewById(R.id.back_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(ZoneActivity.this,MoreActivity.class));
-                finish();
-                overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
+                //CacheUtil.getInstance().setLoginIdentity(IdentityType.BUSINESS);
+                if(CacheUtil.getInstance().getLoginIdentity() == IdentityType.BUSINESS){
+                    startActivity(new Intent(ZoneActivity.this,ShopLoginActivity.class));
+                    finish();
+                    overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
+                }else{
+                    startActivity(new Intent(ZoneActivity.this,MoreActivity.class));
+                    finish();
+                    overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
+                }
+
             }
         });
 
