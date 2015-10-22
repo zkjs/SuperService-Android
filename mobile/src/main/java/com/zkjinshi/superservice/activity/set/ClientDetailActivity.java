@@ -219,6 +219,24 @@ public class ClientDetailActivity extends Activity {
         mTvRecordTimes.setText(client.getOrder_count() + "");
 
         //TODO: 1.客户偏好标签处理
+        String   likeDesc   = client.getLike_desc();
+        if(!TextUtils.isEmpty(likeDesc)){
+            String[] clientLike = likeDesc.split(",");
+
+            //清空编号标签
+            List<Tag> lieDescList = mTvTagPreference.getTags();
+            if(null != lieDescList && !lieDescList.isEmpty()){
+                mTvTagPreference.removeAllTags();
+            }
+
+            if(clientLike.length > 0){
+                for(int i=0; i<clientLike.length; i++){
+                    mTvTagPreference.addTag(createTag(clientLike[i], null));
+                }
+                mTvTagClient.addTag(createTag("    +    "));
+            }
+        }
+
         //TODO: 2.特权标签处理
 
         //3. 客户信息标签处理

@@ -129,10 +129,12 @@ public class TagAddActivity extends Activity {
                         // TODO:弹出添加对话框
                         DialogUtil.getInstance().showToast(TagAddActivity.this, TagAddActivity.this.
                                                              getString(R.string.add_tag_successed));
+                        TagAddActivity.this.finish();
                     } else {
                         //弹出添加失败提醒
                         DialogUtil.getInstance().showToast(TagAddActivity.this, TagAddActivity.this.
                                                                  getString(R.string.add_tag_failed));
+                        TagAddActivity.this.finish();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
