@@ -116,7 +116,6 @@ public class ShopLoginActivity extends Activity{
                         CacheUtil.getInstance().setShopFullName(adminLoginBean.getFullname());
                         CacheUtil.getInstance().setLoginIdentity(IdentityType.BUSINESS);
                         CacheUtil.getInstance().setPassword(password);
-                        CacheUtil.getInstance().setLogin(true);
                         CacheUtil.getInstance().setAreaInfo(adminLoginBean.getLocid());
                         String userID = CacheUtil.getInstance().getUserId();
                         String token  = CacheUtil.getInstance().getToken();
@@ -129,7 +128,8 @@ public class ShopLoginActivity extends Activity{
                         UserDBUtil.getInstance().addUser(userVo);
                         String avatarUrl = ProtocolUtil.getShopLogoUrl(adminLoginBean.getShopid());
                         CacheUtil.getInstance().saveUserPhotoUrl(avatarUrl);
-                        Intent mainIntent = new Intent(ShopLoginActivity.this, MainActivity.class);
+                       // Intent mainIntent = new Intent(ShopLoginActivity.this, MainActivity.class);
+                        Intent mainIntent = new Intent(ShopLoginActivity.this, ZoneActivity.class);
                         startActivity(mainIntent);
                         finish();
                         overridePendingTransition(R.anim.activity_new, R.anim.activity_out);
