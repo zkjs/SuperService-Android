@@ -95,12 +95,20 @@ public class ProtocolUtil {
     }
 
     /**
-     * 会员信息 获取客人详细信息
+     * 会员信息 获取客人基础信息
+     * @return
+     */
+    public static String getClientBasicUrl(){
+
+        return ConfigUtil.getInst().getHttpDomain()+"semp/sempsuforphone";
+    }
+
+    /**
+     * 会员信息 查询客人详细信息 vip+用户信息+偏好
      * @return
      */
     public static String getClientDetailUrl(){
-
-        return ConfigUtil.getInst().getHttpDomain()+"semp/sempsuforphone";
+        return ConfigUtil.getInst().getHttpDomain()+"semp/seevipuser";
     }
 
     /**

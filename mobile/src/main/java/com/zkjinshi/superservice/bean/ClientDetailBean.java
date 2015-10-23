@@ -1,7 +1,5 @@
 package com.zkjinshi.superservice.bean;
 
-import com.zkjinshi.superservice.vo.SortModel;
-
 import java.io.Serializable;
 import java.util.List;
 
@@ -14,10 +12,12 @@ import java.util.List;
  */
 public class ClientDetailBean implements Serializable{
 
+    //客户基本信息
     private int    id;
     private String userid;
     private String shopid;
-    private String salesid;
+    private String salesid;//绑定服务员ID
+    private String salesname;//绑定服务员姓名
     private int    user_level;
     private String level_desc;
     private String card_no;
@@ -38,11 +38,6 @@ public class ClientDetailBean implements Serializable{
     private int       order_count;
 
     private List<ClientTag>     tags;
-
-    public class ClientTag implements Serializable{
-        public int    tagid;
-        public String tag;
-    }
 
     public int getUser_level() {
         return user_level;
@@ -218,5 +213,13 @@ public class ClientDetailBean implements Serializable{
 
     public void setTags(List<ClientTag> tags) {
         this.tags = tags;
+    }
+
+    public String getSalesname() {
+        return salesname;
+    }
+
+    public void setSalesname(String salesname) {
+        this.salesname = salesname;
     }
 }

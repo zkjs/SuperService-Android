@@ -21,7 +21,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.base.view.CustomDialog;
 import com.zkjinshi.superservice.R;
-import com.zkjinshi.superservice.bean.ClientDetailBean;
+import com.zkjinshi.superservice.bean.ClientBaseBean;
 //import com.zkjinshi.superservice.factory.UnRegClientFactory;
 import com.zkjinshi.superservice.factory.ClientFactory;
 import com.zkjinshi.superservice.factory.UnRegClientFactory;
@@ -78,7 +78,7 @@ public class ClientBindActivity extends Activity {
     private Button      mBtnCancell;
 
     private CircleImageView  mCivMemberAvatar;
-    private ClientDetailBean mClientBean;
+    private ClientBaseBean   mClientBean;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,7 +114,7 @@ public class ClientBindActivity extends Activity {
         mToken  = CacheUtil.getInstance().getToken();
         mShopID = CacheUtil.getInstance().getShopID();
 
-        mClientBean = (ClientDetailBean) getIntent().getSerializableExtra("client_bean");
+        mClientBean = (ClientBaseBean) getIntent().getSerializableExtra("client_bean");
         showClient(mClientBean);
     }
 
@@ -122,7 +122,7 @@ public class ClientBindActivity extends Activity {
      * 显示会员信息在界面上
      * @param client
      */
-    private void showClient(ClientDetailBean client) {
+    private void showClient(ClientBaseBean client) {
         String userID = client.getUserid();
         if(!TextUtils.isEmpty(userID)) {
             String imageUrl = Constants.GET_USER_AVATAR + userID + ".jpg";
@@ -202,7 +202,7 @@ public class ClientBindActivity extends Activity {
      * @param shopID
      * @param mClientBean
      */
-    private void bindClient(String userID, String token, String shopID, ClientDetailBean mClientBean) {
+    private void bindClient(String userID, String token, String shopID, ClientBaseBean mClientBean) {
         NetRequest netRequest = new NetRequest(ProtocolUtil.getAddUserUrl());
         HashMap<String,String> bizMap = new HashMap<>();
         bizMap.put("salesid", userID);
@@ -301,8 +301,8 @@ public class ClientBindActivity extends Activity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
-                String phone = mClientBean.getPhone();
-                ClientVo clientVo = ClientFactory.getInstance().convertClientDetailBean2ClientVO(mClientBean);
+                String   phone    = mClientBean.getPhone();
+                ClientVo clientVo = ClientFactory.getInstance().convertClientBaseBean2ClientVO(mClientBean);
                 clientVo.setContactType(ContactType.UNNORMAL);
                 if(!ClientDBUtil.getInstance().isClientExistByPhone(phone)){
                     long addResult = ClientDBUtil.getInstance().addClient(clientVo);

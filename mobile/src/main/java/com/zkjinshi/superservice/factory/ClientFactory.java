@@ -3,6 +3,7 @@ package com.zkjinshi.superservice.factory;
 import android.content.ContentValues;
 import android.database.Cursor;
 
+import com.zkjinshi.superservice.bean.ClientBaseBean;
 import com.zkjinshi.superservice.bean.ClientDetailBean;
 import com.zkjinshi.superservice.vo.ClientVo;
 import com.zkjinshi.superservice.vo.ContactType;
@@ -263,6 +264,26 @@ public class ClientFactory {
         clientVo.setOther_desc(clientBean.getOther_desc());
         clientVo.setCreated(clientBean.getCreated());
         clientVo.setModified(clientBean.getModified());
+        clientVo.setUsername(clientBean.getUsername());
+        clientVo.setPhone(clientBean.getPhone());
+        clientVo.setCompany(clientBean.getCompany());
+        clientVo.setPosition(clientBean.getPosition());
+        clientVo.setIs_bill(clientBean.getIs_bill());
+        clientVo.setSex(getSexType(clientBean.getSex()));
+        clientVo.setOrder_count(clientBean.getOrder_count());
+        if(null != clientBean.getTags() && clientBean.getTags().size() > 0){
+            String[] tagsArray = new String[clientBean.getTags().size()];
+            clientVo.setTags(tagsArray.toString());
+        }
+        return clientVo;
+    }
+
+    public ClientVo convertClientBaseBean2ClientVO(ClientBaseBean clientBean) {
+        ClientVo clientVo = new ClientVo();
+        clientVo.setSalesid(clientBean.getSalesid());
+        clientVo.setUser_level(clientBean.getUser_level());
+        clientVo.setLevel_desc(clientBean.getLevel_desc());
+        clientVo.setCard_no(clientBean.getCard_no());
         clientVo.setUsername(clientBean.getUsername());
         clientVo.setPhone(clientBean.getPhone());
         clientVo.setCompany(clientBean.getCompany());

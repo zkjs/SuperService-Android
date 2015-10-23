@@ -208,10 +208,10 @@ public class ShopEmployeeDBUtil {
         try {
             db = helper.getReadableDatabase();
             cursor = db.query(DBOpenHelper.SHOP_EMPLOYEE_TBL,
-                              new String[]{" bg_color_res "},
-                              " empid = ? ",
-                              new String[] {empID},
-                              null, null, null);
+                    new String[]{" bg_color_res "},
+                    " empid = ? ",
+                    new String[]{empID},
+                    null, null, null);
             if(cursor.moveToFirst()){
                 bgColorRes = cursor.getInt(0);
             }
@@ -272,6 +272,24 @@ public class ShopEmployeeDBUtil {
         try {
             db = helper.getWritableDatabase();
             delResult = db.delete(DBOpenHelper.SHOP_EMPLOYEE_TBL, " empid = ? ", new String[]{ empid });
+        } catch (Exception e) {
+            LogUtil.getInstance().info(LogLevel.ERROR,TAG+".deleteShopEmployeeByEmpID->"+e.getMessage());
+            e.printStackTrace();
+        }finally{
+            if(null != db)
+                db.close();
+        }
+        return delResult;
+    }
+
+    public long deleteShopEmployeeByEmpIDs(List<String> empIDList) {
+        SQLiteDatabase db = null;
+        long delResult = 0;
+        try {
+            db = helper.getWritableDatabase();
+            for(String empID : empIDList){
+                delResult += db.delete(DBOpenHelper.SHOP_EMPLOYEE_TBL, " empid = ? ", new String[] {empID});
+            }
         } catch (Exception e) {
             LogUtil.getInstance().info(LogLevel.ERROR,TAG+".deleteShopEmployeeByEmpID->"+e.getMessage());
             e.printStackTrace();
