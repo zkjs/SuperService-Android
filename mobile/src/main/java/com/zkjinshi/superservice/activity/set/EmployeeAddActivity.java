@@ -20,12 +20,10 @@ import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.filechoser.activity.FileListActivity;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.adapter.ContactsAdapter;
-import com.zkjinshi.superservice.bean.BaseBean;
 import com.zkjinshi.superservice.bean.ImportSempBean;
 import com.zkjinshi.superservice.net.ExtNetRequestListener;
 import com.zkjinshi.superservice.net.MethodType;
 import com.zkjinshi.superservice.net.NetRequest;
-import com.zkjinshi.superservice.net.NetRequestListener;
 import com.zkjinshi.superservice.net.NetRequestTask;
 import com.zkjinshi.superservice.net.NetResponse;
 import com.zkjinshi.superservice.sqlite.ShopDepartmentDBUtil;
@@ -37,16 +35,11 @@ import com.zkjinshi.superservice.vo.ContactLocalVo;
 import com.zkjinshi.superservice.vo.DepartmentVo;
 import com.zkjinshi.superservice.vo.ShopEmployeeVo;
 
-import android.content.ContentUris;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.provider.ContactsContract.CommonDataKinds.Photo;
 import android.text.TextUtils;
 
-import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -398,7 +391,6 @@ public class EmployeeAddActivity extends Activity {
                 }catch (Exception e){
                     Log.e(TAG,e.getMessage());
                 }
-
             }
 
             @Override
@@ -461,7 +453,6 @@ public class EmployeeAddActivity extends Activity {
      * 加载手机联系人
      */
     class LoadPhoneContactTask extends AsyncTask<Void,Void,Void>{
-
 
         protected void onPreExecute() {
             //第一个执行方法

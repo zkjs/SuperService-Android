@@ -3,7 +3,6 @@ package com.zkjinshi.superservice.adapter;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -176,7 +175,9 @@ public class TeamContactsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 shopEmployeeVo.setBg_color_res(bgColorRes);
             }else {
                 shopEmployeeVo.setBg_color_res(RandomDrawbleUtil.getRandomDrawable());
-                ShopEmployeeDBUtil.getInstance().addShopEmployee(shopEmployeeVo);
+                if(ShopEmployeeDBUtil.getInstance().isEmployeeExistByEmpID(empID)){
+                    ShopEmployeeDBUtil.getInstance().updateShopEmployee(shopEmployeeVo);
+                }
             }
 
             String empAvatarUrl = ProtocolUtil.getAvatarUrl(empID);

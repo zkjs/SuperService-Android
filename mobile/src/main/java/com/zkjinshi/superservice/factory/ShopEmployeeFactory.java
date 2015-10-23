@@ -134,4 +134,37 @@ public class ShopEmployeeFactory {
         }
         return shopEmployeeVos;
     }
+
+    public ContentValues buildUpdateContentValues(ShopEmployeeVo shopEmployeeVo) {
+        ContentValues values = new ContentValues();
+        values.put("empcode", shopEmployeeVo.getEmpcode());
+        values.put("name", shopEmployeeVo.getName());
+        values.put("roleid", shopEmployeeVo.getRoleid());
+        values.put("email", shopEmployeeVo.getEmail());
+        values.put("phone", shopEmployeeVo.getPhone());
+        values.put("phone2", shopEmployeeVo.getPhone2());
+        values.put("fax", shopEmployeeVo.getFax());
+        values.put("created", shopEmployeeVo.getCreated());
+        values.put("locationid", shopEmployeeVo.getLocationid());
+        values.put("role_name", shopEmployeeVo.getRole_name());
+
+        OnlineStatus onlineStatus = shopEmployeeVo.getOnline_status();
+
+        if(null != onlineStatus ){
+            values.put("online_status", onlineStatus.getValue());
+        }
+
+        WorkStatus workStatus = shopEmployeeVo.getWork_status();
+        if(null != onlineStatus ){
+            values.put("work_status", workStatus.getValue());
+        }
+
+        values.put("last_online_time", shopEmployeeVo.getLastOnLineTime());
+        values.put("dept_id", shopEmployeeVo.getDept_id());
+        values.put("desc", shopEmployeeVo.getDesc());
+        values.put("shop_id", shopEmployeeVo.getShop_id());
+        values.put("dept_name", shopEmployeeVo.getDept_name());
+        values.put("bg_color_res", shopEmployeeVo.getBg_color_res());
+        return values;
+    }
 }

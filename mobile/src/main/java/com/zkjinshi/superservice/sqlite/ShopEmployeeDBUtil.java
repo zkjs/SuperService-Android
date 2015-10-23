@@ -74,6 +74,23 @@ public class ShopEmployeeDBUtil {
         return addResult;
     }
 
+    public long updateShopEmployee(ShopEmployeeVo shopEmployeeVo){
+        ContentValues values = ShopEmployeeFactory.getInstance().buildUpdateContentValues(shopEmployeeVo);
+        long updateResult    = -1;
+        SQLiteDatabase db = null;
+        try {
+            db        = helper.getWritableDatabase();
+            updateResult = db.update(DBOpenHelper.SHOP_EMPLOYEE_TBL, values, " empid = ?", new String[] { shopEmployeeVo.getEmpid() });
+        } catch (Exception e) {
+            LogUtil.getInstance().info(LogLevel.ERROR, TAG + ".updateShopEmployee->" + e.getMessage());
+            e.printStackTrace();
+        } finally{
+            if(null != db)
+                db.close();
+        }
+        return updateResult;
+    }
+
     /**
      * @param shopEmployeeVos
      * @return
