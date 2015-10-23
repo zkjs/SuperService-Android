@@ -23,6 +23,7 @@ import com.zkjinshi.superservice.sqlite.UserDBUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
 
 import com.zkjinshi.superservice.utils.Constants;
+import com.zkjinshi.superservice.utils.MD5Util;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.vo.IdentityType;
 import com.zkjinshi.superservice.vo.UserVo;
@@ -67,7 +68,7 @@ public class SplashActivity extends Activity{
     private void silentProcessData(){
         LoginController.getInstance().init(this);
         if(IdentityType.BUSINESS ==  CacheUtil.getInstance().getLoginIdentity()){
-            LoginController.getInstance().requestAdminLogin(CacheUtil.getInstance().getUserPhone(),CacheUtil.getInstance().getPassword(),false,new NetRequestListener() {
+            LoginController.getInstance().requestAdminLogin(CacheUtil.getInstance().getUserPhone(), MD5Util.MD5(CacheUtil.getInstance().getPassword()),false,new NetRequestListener() {
                 @Override
                 public void onNetworkRequestError(int errorCode, String errorMessage) {
                     Log.i(TAG, "errorCode:" + errorCode);
