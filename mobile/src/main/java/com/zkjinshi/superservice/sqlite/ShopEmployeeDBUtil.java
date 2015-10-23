@@ -294,9 +294,9 @@ public class ShopEmployeeDBUtil {
             for(String empID : empIDList){
                 //delResult += db.delete(DBOpenHelper.SHOP_EMPLOYEE_TBL, " empid = ? ", new String[] {empID});
                 if(sql.equals("")){
-                    sql = " "+empID;
+                    sql = "'"+empID+"'";
                 }else{
-                    sql = sql+","+empID;
+                    sql = sql+","+"'"+empID+"'";
                 }
 
             }
