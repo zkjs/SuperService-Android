@@ -335,7 +335,9 @@ public class EmployeeAddActivity extends Activity {
         for(ContactLocalVo contactLocalVo : contactLocalList){
             if(contactLocalVo.isHasAdd()){
                 ShopEmployeeVo shopEmployeeVo = new ShopEmployeeVo();
-                shopEmployeeVo.setPhone(contactLocalVo.getPhoneNumber());
+                String phone = contactLocalVo.getPhoneNumber();
+                phone = phone.replaceAll(" ","");
+                shopEmployeeVo.setPhone(phone);
                 shopEmployeeVo.setName(contactLocalVo.getContactName());
                 shopEmployeeVo.setRoleid(2);
                 shopEmployeeVo.setDept_id(0);

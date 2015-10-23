@@ -15,6 +15,7 @@ import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
 
 import com.zkjinshi.superservice.utils.DepartmentDialog;
+import com.zkjinshi.superservice.utils.StringUtil;
 import com.zkjinshi.superservice.vo.DepartmentVo;
 import com.zkjinshi.superservice.vo.ShopEmployeeVo;
 
@@ -104,6 +105,9 @@ public class EmployeeHandAddActivity extends Activity {
 
         if(TextUtils.isEmpty(phone)){
             DialogUtil.getInstance().showToast(this,"手机号码不能为空");
+            return;
+        }else if(!StringUtil.isPhoneNumber(phone)){
+            DialogUtil.getInstance().showToast(this,"手机号码格式不正确");
             return;
         } else if(TextUtils.isEmpty(name)){
             DialogUtil.getInstance().showToast(this,"姓名不能为空");
