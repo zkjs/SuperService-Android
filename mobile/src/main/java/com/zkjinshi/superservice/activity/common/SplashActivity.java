@@ -8,6 +8,8 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.zkjinshi.base.log.LogLevel;
+import com.zkjinshi.base.log.LogUtil;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
 
@@ -68,6 +70,7 @@ public class SplashActivity extends Activity{
     private void silentProcessData(){
         LoginController.getInstance().init(this);
         if(IdentityType.BUSINESS ==  CacheUtil.getInstance().getLoginIdentity()){
+            LogUtil.getInstance().info(LogLevel.INFO,"管理员静默开始登陆。。。");
             LoginController.getInstance().requestAdminLogin(CacheUtil.getInstance().getUserPhone(), MD5Util.MD5(CacheUtil.getInstance().getPassword()),false,new NetRequestListener() {
                 @Override
                 public void onNetworkRequestError(int errorCode, String errorMessage) {
@@ -107,6 +110,7 @@ public class SplashActivity extends Activity{
                             UserDBUtil.getInstance().addUser(userVo);
                             String avatarUrl = ProtocolUtil.getShopLogoUrl(adminLoginBean.getShopid());
                             CacheUtil.getInstance().saveUserPhotoUrl(avatarUrl);
+                            LogUtil.getInstance().info(LogLevel.INFO, "管理员静默成功登陆。。。");
                         }
                     }
                 }
@@ -117,6 +121,7 @@ public class SplashActivity extends Activity{
                 }
             });
         }else{
+            LogUtil.getInstance().info(LogLevel.INFO, "服务员静默开始登陆。。。");
             LoginController.getInstance().requestLogin(CacheUtil.getInstance().getUserPhone(),false,new NetRequestListener() {
                 @Override
                 public void onNetworkRequestError(int errorCode, String errorMessage) {
@@ -153,6 +158,7 @@ public class SplashActivity extends Activity{
                         UserDBUtil.getInstance().addUser(userVo);
                         String avatarUrl = Constants.AVATAR_PRE_URL+userVo.getUserId()+".jpg";
                         CacheUtil.getInstance().saveUserPhotoUrl(avatarUrl);
+                        LogUtil.getInstance().info(LogLevel.INFO, "服务员静默成功登陆。。。");
                     }
                 }
 

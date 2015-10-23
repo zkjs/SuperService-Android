@@ -7,6 +7,8 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.zkjinshi.base.log.LogLevel;
+import com.zkjinshi.base.log.LogUtil;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.notice.LocNoticeController;
@@ -106,12 +108,13 @@ public class LoginController {
     }
 
     /**
-     * 获取团队联系人列表
+     * 获取部门列表
      * @param userID
      * @param token
      * @param shopID
      */
     public void getDeptList(String userID, String token, final String shopID) {
+        LogUtil.getInstance().info(LogLevel.INFO,"获取部门列表开始。。。");
         NetRequest netRequest = new NetRequest(ProtocolUtil.getDeptListUrl());
         HashMap<String,String> bizMap = new HashMap<>();
         bizMap.put("salesid", userID);
@@ -134,6 +137,7 @@ public class LoginController {
             @Override
             public void onNetworkResponseSucceed(NetResponse result) {
                 Log.i(TAG, "result.rawResult:" + result.rawResult);
+                LogUtil.getInstance().info(LogLevel.INFO, "获取部门列表结束。。。");
                 String jsonResult = result.rawResult;
                 if (result.rawResult.contains("set") || jsonResult.contains("err")) {
                     return ;

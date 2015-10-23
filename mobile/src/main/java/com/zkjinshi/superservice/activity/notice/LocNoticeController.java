@@ -6,6 +6,8 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
+import com.zkjinshi.base.log.LogLevel;
+import com.zkjinshi.base.log.LogUtil;
 import com.zkjinshi.superservice.adapter.ZoneAdapter;
 import com.zkjinshi.superservice.bean.ZoneBean;
 import com.zkjinshi.superservice.net.MethodType;
@@ -49,6 +51,7 @@ public class LocNoticeController {
     }
 
     public void requestLocTask(){
+        LogUtil.getInstance().info(LogLevel.INFO,"获取监听区域开始。。。");
         NetRequest netRequest = new NetRequest(ProtocolUtil.getZonelistUrl());
         HashMap<String,String> bizMap = new HashMap<String,String>();
         bizMap.put("salesid", CacheUtil.getInstance().getUserId());
@@ -72,6 +75,7 @@ public class LocNoticeController {
             @Override
             public void onNetworkResponseSucceed(NetResponse result) {
                 Log.i(TAG, "result.rawResult:" + result.rawResult);
+                LogUtil.getInstance().info(LogLevel.INFO, "获取监听区域结束。。。");
                 try {
                     ArrayList<ZoneBean> zoneList = new Gson().fromJson(result.rawResult, new TypeToken<ArrayList<ZoneBean>>() {
                     }.getType());

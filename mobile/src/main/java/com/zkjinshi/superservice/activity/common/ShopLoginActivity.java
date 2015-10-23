@@ -11,6 +11,8 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.google.gson.Gson;
+import com.zkjinshi.base.log.LogLevel;
+import com.zkjinshi.base.log.LogUtil;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.notice.LocNoticeController;
@@ -90,6 +92,7 @@ public class ShopLoginActivity extends Activity{
             DialogUtil.getInstance().showToast(this,"密码不能为空");
             return;
         }
+        LogUtil.getInstance().info(LogLevel.INFO,"管理员开始登陆。。。");
         LoginController.getInstance().requestAdminLogin(phone, MD5Util.MD5(password),true,new NetRequestListener() {
             @Override
             public void onNetworkRequestError(int errorCode, String errorMessage) {
@@ -133,6 +136,7 @@ public class ShopLoginActivity extends Activity{
                         startActivity(mainIntent);
                         finish();
                         overridePendingTransition(R.anim.activity_new, R.anim.activity_out);
+                        LogUtil.getInstance().info(LogLevel.INFO, "管理员成功登陆。。。");
                     } else {
                         DialogUtil.getInstance().showToast(ShopLoginActivity.this, "密码或者手机号不对 ");
                     }
