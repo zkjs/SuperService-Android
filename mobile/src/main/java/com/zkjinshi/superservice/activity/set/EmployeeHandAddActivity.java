@@ -124,7 +124,7 @@ public class EmployeeHandAddActivity extends Activity {
             shopEmployeeVo.setRoleid(2);
         }
 
-        Intent intent = new Intent();
+        Intent intent = getIntent();
         intent.putExtra(EmployeeHandAddActivity.CREATE_RESULT,shopEmployeeVo);
         setResult(RESULT_OK, intent);
         finish();

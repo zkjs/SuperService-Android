@@ -78,7 +78,7 @@ public class EmployeeAddActivity extends Activity {
 
     //
     public static final int EXCEL_REQUEST_CODE = 4;
-    public static final int HAND_REQUEST_CODE = 5;
+    public static final int HAND_REQUEST_CODE = 115;
 
     private TextView handText;
     private TextView importText;
