@@ -116,19 +116,6 @@ public class TeamEditActivity extends Activity {
 
         mShopEmployeeVos = ShopEmployeeDBUtil.getInstance().queryAllByDeptIDAsc();
 
-        //需要获得在线状态的用户
-        List<String> empids = new ArrayList<>();
-        Iterator<ShopEmployeeVo> shopEmployeeVoIterator = mShopEmployeeVos.iterator();
-        while (shopEmployeeVoIterator.hasNext()) {
-            ShopEmployeeVo shopEmployeeVo = shopEmployeeVoIterator.next();
-            String empID = shopEmployeeVo.getEmpid();
-            if(empID.equals(mUserID)){
-                shopEmployeeVoIterator.remove();
-                continue;
-            }
-            empids.add(empID);
-        }
-
         mContactsAdapter = new TeamEditContactsAdapter(TeamEditActivity.this, mShopEmployeeVos);
         mRcvTeamContacts.setAdapter(mContactsAdapter);
     }
@@ -232,7 +219,7 @@ public class TeamEditActivity extends Activity {
                     JSONObject jsonObject = new JSONObject(jsonResult);
                     if (jsonObject.getBoolean("set")) {
                         long delResult = -1;
-                        delResult = ShopEmployeeDBUtil.getInstance().deleteShopEmployeeByEmpID(shopEmployeeVos.get(0));
+                        delResult = ShopEmployeeDBUtil.getInstance().deleteShopEmployeeByEmpIDs(shopEmployeeVos);
                         LogUtil.getInstance().info(LogLevel.INFO, "delResult" + delResult);
                            if(delResult > 0){
                                DialogUtil.getInstance().showToast(TeamEditActivity.this, "删除成功");

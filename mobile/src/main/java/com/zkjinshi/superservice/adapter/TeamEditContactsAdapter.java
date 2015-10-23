@@ -144,21 +144,7 @@ public class TeamEditContactsAdapter extends RecyclerView.Adapter<RecyclerView.V
             }
         });
 
-        //设置显示在线状态时间
-        if(employeeVo.getOnline_status() == OnlineStatus.ONLINE) {
-            ((ContactViewHolder)holder).tvContactOnLine.setTextColor(Color.BLUE);
-            ((ContactViewHolder)holder).tvContactOnLine.setText(mContext.getString(R.string.online));
-        } else {
-            ((ContactViewHolder)holder).tvContactOnLine.setTextColor(Color.GRAY);
-            String strLastOnline  = mContext.getString(R.string.offline);
-            Long   lastOnlineTime = employeeVo.getLastOnLineTime();
-            if(lastOnlineTime != 0){
-                strLastOnline +=  mContext.getString(R.string.last_online_time )
-                        + " : "
-                        + TimeUtil.getChatTime(lastOnlineTime);
-            }
-            ((ContactViewHolder)holder).tvContactOnLine.setText(strLastOnline);
-        }
+        ((ContactViewHolder)holder).tvContactOnLine.setVisibility(View.INVISIBLE);
 
         //set the checkbox
         ((ContactViewHolder) holder).cbCheck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {

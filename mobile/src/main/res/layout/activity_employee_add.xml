@@ -3,6 +3,7 @@
     android:layout_width="match_parent" android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/white">
+
     <RelativeLayout
         android:id="@+id/title"
         android:layout_width="match_parent"
@@ -16,7 +17,7 @@
             android:layout_centerVertical="true"
             android:src="@drawable/header_ibtn_back"
             android:scaleType="centerInside"
-            android:background="#00000000"/>
+            android:background="@null"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -35,7 +36,7 @@
             android:layout_alignParentRight="true"
             android:src="@drawable/ic_wancheng"
             android:scaleType="centerInside"
-            android:background="#00000000"/>
+            android:background="@null"/>
 
     </RelativeLayout>
 

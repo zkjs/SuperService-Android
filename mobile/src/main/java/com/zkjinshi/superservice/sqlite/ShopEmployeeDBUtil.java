@@ -200,7 +200,7 @@ public class ShopEmployeeDBUtil {
         SQLiteDatabase db = null;
         try {
             db = helper.getReadableDatabase();
-            cursor = db.rawQuery(" select * from " + DBOpenHelper.SHOP_EMPLOYEE_TBL + " empid = ? ", new String[] { empID });
+            cursor = db.rawQuery(" select * from " + DBOpenHelper.SHOP_EMPLOYEE_TBL + " where empid = ? ", new String[]{empID});
             if(cursor.getCount() > 0){
                 return true;
             }
