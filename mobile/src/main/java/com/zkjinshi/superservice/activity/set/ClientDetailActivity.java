@@ -21,6 +21,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.bean.ClientDetailBean;
+import com.zkjinshi.superservice.bean.ClientTag;
 import com.zkjinshi.superservice.net.MethodType;
 import com.zkjinshi.superservice.net.NetRequest;
 import com.zkjinshi.superservice.net.NetRequestListener;
@@ -30,6 +31,8 @@ import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.view.CircleImageView;
+
+import org.w3c.dom.Text;
 
 import java.util.HashMap;
 import java.util.List;
@@ -101,14 +104,16 @@ public class ClientDetailActivity extends Activity {
         mTvTagClient     = (TagView)         findViewById(R.id.tv_client_tag);
         mEtRemark        = (EditText)        findViewById(R.id.et_remark);
         mTvExclusiceServer = (TextView)      findViewById(R.id.tv_exclusive_server);
-
     }
 
     private void initData() {
-        mPhoneNumber  = getIntent().getStringExtra("phone_number");
+        mPhoneNumber = getIntent().getStringExtra("phone_number");
         mUserID = CacheUtil.getInstance().getUserId();
         mToken  = CacheUtil.getInstance().getToken();
         mShopID = CacheUtil.getInstance().getShopID();
+
+        DialogUtil.getInstance().showProgressDialog(ClientDetailActivity.this);
+        getClientDetail(mPhoneNumber);
     }
 
     private void getClientDetail(String mPhoneNumber) {
@@ -118,7 +123,6 @@ public class ClientDetailActivity extends Activity {
         bizMap.put("token", mToken);
         bizMap.put("shopid", mShopID);
         bizMap.put("phone", mPhoneNumber);
-        bizMap.put("set", "9");
         netRequest.setBizParamMap(bizMap);
         NetRequestTask netRequestTask = new NetRequestTask(this, netRequest, NetResponse.class);
         netRequestTask.methodType = MethodType.PUSH;
@@ -162,36 +166,6 @@ public class ClientDetailActivity extends Activity {
         netRequestTask.execute();
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        DialogUtil.getInstance().showProgressDialog(ClientDetailActivity.this);
-        getClientDetail(mPhoneNumber);
-    }
-
-    /**
-     * 邀请对话框
-     */
-    private void showInviteDialog() {
-        AlertDialog.Builder builder=new AlertDialog.Builder(this);
-        builder.setTitle(getString(R.string.app_name));
-        builder.setMessage("此用户尚未成为会员？邀请当前用户加入?");
-        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() { //设置确定按钮
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-                //TODO: 发送短信邀请
-            }
-        });
-        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() { //设置取消按钮
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-        builder.create().show();
-    }
-
     /**
      * 显示会员信息在界面上
      * @param client
@@ -218,7 +192,7 @@ public class ClientDetailActivity extends Activity {
         }
         mTvRecordTimes.setText(client.getOrder_count() + "");
 
-        //TODO: 1.客户偏好标签处理
+        //1.客户偏好标签处理
         String   likeDesc   = client.getLike_desc();
         if(!TextUtils.isEmpty(likeDesc)){
             String[] clientLike = likeDesc.split(",");
@@ -231,9 +205,13 @@ public class ClientDetailActivity extends Activity {
 
             if(clientLike.length > 0){
                 for(int i=0; i<clientLike.length; i++){
-                    mTvTagPreference.addTag(createTag(clientLike[i], null));
+                    String preference = clientLike[i];
+                    if(TextUtils.isEmpty(preference)){
+                        continue;
+                    }else {
+                        mTvTagPreference.addTag(createTag(preference, null));
+                    }
                 }
-                mTvTagClient.addTag(createTag("    +    "));
             }
         }
 
@@ -245,12 +223,12 @@ public class ClientDetailActivity extends Activity {
             mTvTagClient.removeAllTags();
         }
 
-        final List<ClientDetailBean.ClientTag> tags = client.getTags();
+        final List<ClientTag> tags = client.getTags();
         if(null != tags && !tags.isEmpty()){
-            for(ClientDetailBean.ClientTag clientTag : tags){
+            for(ClientTag clientTag : tags){
                 mTvTagClient.addTag(createTag(clientTag.tagid, clientTag.tag, null));
             }
-            mTvTagClient.addTag(createTag("    +    "));
+            mTvTagClient.addTag(createTag("   +   "));
         }
     }
 

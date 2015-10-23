@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
+import com.zkjinshi.superservice.bean.ClientBaseBean;
 import com.zkjinshi.superservice.bean.ClientDetailBean;
 import com.zkjinshi.superservice.net.MethodType;
 import com.zkjinshi.superservice.net.NetRequest;
@@ -50,7 +51,7 @@ public class ClientSelectActivity extends Activity {
     private TextView        mTvTitle;
     private EditText        mEtClientPhone;
 
-    private ClientDetailBean        mClientBean;
+    private ClientBaseBean  mClientBean;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,7 +105,7 @@ public class ClientSelectActivity extends Activity {
     }
 
     private void getClientDetail(final String phoneNumber) {
-        NetRequest netRequest = new NetRequest(ProtocolUtil.getClientDetailUrl());
+        NetRequest netRequest = new NetRequest(ProtocolUtil.getClientBasicUrl());
         HashMap<String,String> bizMap = new HashMap<>();
         bizMap.put("empid", mUserID);
         bizMap.put("token", mToken);
@@ -157,7 +158,7 @@ public class ClientSelectActivity extends Activity {
                     }
                 } else {
                     Gson gson = new Gson();
-                    mClientBean = gson.fromJson(jsonResult, ClientDetailBean.class);
+                    mClientBean = gson.fromJson(jsonResult, ClientBaseBean.class);
                     Intent clienBind = new Intent(ClientSelectActivity.this, ClientBindActivity.class);
                     clienBind.putExtra("client_bean", mClientBean);
                     ClientSelectActivity.this.startActivity(clienBind);

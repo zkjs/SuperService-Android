@@ -83,7 +83,7 @@ public class ClientActivity extends AppCompatActivity implements IMessageObserve
 
     private List<SortModel>         mAllContactsList;
     private List<SortModel>         mLocalContacts;
-    private Map<String, ClientVo>   mLocalClientMap;
+    private Map<String, SortModel>  mLocalClientMap;
     private PinyinComparator     pinyinComparator;
     private ContactsSortAdapter  mContactsAdapter;
 
@@ -113,7 +113,6 @@ public class ClientActivity extends AppCompatActivity implements IMessageObserve
     }
 
     private void initData() {
-
         mUserID = CacheUtil.getInstance().getUserId();
         mToken  = CacheUtil.getInstance().getToken();
         mShopID = CacheUtil.getInstance().getShopID();
@@ -248,16 +247,19 @@ public class ClientActivity extends AppCompatActivity implements IMessageObserve
 
                         for (ClientVo clientVo : clientVos) {
                             clientVo.setContactType(ContactType.NORMAL);
+                            clientVo.setIsOnline(OnlineStatus.OFFLINE);
+
                             if (!ClientDBUtil.getInstance().isClientExistByUserID(clientVo.getUserid())) {
                                 ClientDBUtil.getInstance().addClient(clientVo);
                             }
 
-                            String userid = clientVo.getUserid();
+                            String    userid    = clientVo.getUserid();
+                            SortModel sortModel = SortModelFactory.getInstance().buildSortModelByMyClientVo(clientVo);
+
                             if (mLocalClientMap.containsKey(userid)) {
                                 mAllContactsList.remove(mLocalClientMap.get(userid));
                             }
-                            mLocalClientMap.put(userid, clientVo);
-                            SortModel sortModel = SortModelFactory.getInstance().buildSortModelByMyClientVo(clientVo);
+                            mLocalClientMap.put(userid, sortModel);
                             mAllContactsList.add(sortModel);
                         }
 
@@ -304,12 +306,10 @@ public class ClientActivity extends AppCompatActivity implements IMessageObserve
 
         List<ClientVo> clientVos = ClientDBUtil.getInstance().queryUnNormalClient();
         for(ClientVo clientVo : clientVos){
-            mLocalClientMap.put(clientVo.getUserid(), clientVo);
-        }
-
-        mLocalContacts =  SortModelFactory.getInstance().convertClientVos2SortModels(clientVos);
-        if(null != mLocalContacts && !mLocalContacts.isEmpty()){
-            mAllContactsList.addAll(mLocalContacts);
+            SortModel sortModel =  SortModelFactory.getInstance().buildSortModelByMyClientVo(clientVo);
+            sortModel.setIsOnLine(OnlineStatus.OFFLINE);
+            mLocalClientMap.put(sortModel.getClientID(), sortModel);
+            mAllContactsList.add(sortModel);
         }
         this.updateListView(mAllContactsList);
     }
@@ -356,19 +356,14 @@ public class ClientActivity extends AppCompatActivity implements IMessageObserve
                 MsgUserOnlineStatusRSP userOnlineStatusRSP = gson.fromJson(message, MsgUserOnlineStatusRSP.class);
                 List<UserOnlineStatusRecord> userOnlineStatusRecords =  userOnlineStatusRSP.getResult();
                 if(null != userOnlineStatusRecords && !userOnlineStatusRecords.isEmpty()){
-                    mAllContactsList.removeAll(mAllContactsList);
                     for(UserOnlineStatusRecord userOnlineStatusRecord : userOnlineStatusRecords){
                         String userID = userOnlineStatusRecord.getUserid();
                         if(mLocalClientMap.containsKey(userID)){
                             int onlineStatus = userOnlineStatusRecord.getOnlinestatus();
-                            ClientVo clientVo = mLocalClientMap.get(userID);
-                            clientVo.setIsOnline(OnlineStatus.OFFLINE.getValue() == onlineStatus ?
-                                                      OnlineStatus.OFFLINE : OnlineStatus.ONLINE);
-                            SortModel sortModel = SortModelFactory.getInstance().buildSortModelByMyClientVo(clientVo);
-                            mAllContactsList.add(sortModel);
+                            mLocalClientMap.get(userID).setIsOnLine(onlineStatus == OnlineStatus.ONLINE.getValue() ?
+                                                                    OnlineStatus.ONLINE : OnlineStatus.OFFLINE);
                         }
                     }
-
                     this.updateListView(mAllContactsList);
                 }
             }

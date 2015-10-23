@@ -66,7 +66,7 @@ public class TeamEditActivity extends Activity implements IMessageObserver{
 
     private final static String TAG = TeamEditActivity.class.getSimpleName();
 
-    private List<ShopEmployeeVo> mCheckedList;
+    private List<String> mCheckedList;
 
     private ImageButton   mIbtnBack;
     private TextView      mTvTitle;
@@ -166,10 +166,11 @@ public class TeamEditActivity extends Activity implements IMessageObserver{
             @Override
             public void onItemClick(View view, int postion) {
                 ShopEmployeeVo shopEmployeeVo = mShopEmployeeVos.get(postion);
-                if (mCheckedList.contains(shopEmployeeVo)) {
-                    mCheckedList.remove(shopEmployeeVo);
+                String empID = shopEmployeeVo.getEmpid();
+                if (mCheckedList.contains(empID)) {
+                    mCheckedList.remove(empID);
                 } else {
-                    mCheckedList.add(shopEmployeeVo);
+                    mCheckedList.add(empID);
                 }
             }
         });
@@ -211,7 +212,7 @@ public class TeamEditActivity extends Activity implements IMessageObserver{
      * @param shopID
      * @param shopEmployeeVos
      */
-    private void deleteEmployees(String userID, String token, final String shopID, List<ShopEmployeeVo> shopEmployeeVos) {
+    private void deleteEmployees(String userID, String token, final String shopID, List<String> shopEmployeeVos) {
         String deleteList = convertList2String(shopEmployeeVos);
 
         DialogUtil.getInstance().showProgressDialog(this);
@@ -247,16 +248,13 @@ public class TeamEditActivity extends Activity implements IMessageObserver{
                 try {
                     JSONObject jsonObject = new JSONObject(jsonResult);
                     if (jsonObject.getBoolean("set")) {
-                        for(ShopEmployeeVo shopEmployeeVo : mCheckedList){
-                            mShopEmployeeVos.remove(shopEmployeeVo);
-                            long delResult = -1;
-                            String empID = shopEmployeeVo.getEmpid();
-                            delResult = ShopEmployeeDBUtil.getInstance().deleteShopEmployeeByEmpID(empID);
-                            LogUtil.getInstance().info(LogLevel.INFO, "delResult" + delResult);
-                           if(delResult > 0){
-                               DialogUtil.getInstance().showToast(TeamEditActivity.this, "删除成功");
-                           }
-                        }
+                        long delResult = -1;
+                        delResult = ShopEmployeeDBUtil.getInstance().deleteShopEmployeeByEmpIDs(mCheckedList);
+                        LogUtil.getInstance().info(LogLevel.INFO, "delResult" + delResult);
+                       if(delResult > 0){
+                           DialogUtil.getInstance().showToast(TeamEditActivity.this, "删除成功");
+                       }
+                        mShopEmployeeVos = ShopEmployeeDBUtil.getInstance().queryAllByDeptIDAsc();
                         mContactsAdapter.updateListView(mShopEmployeeVos);
                     } else {
                         DialogUtil.getInstance().showToast(TeamEditActivity.this, "删除失败，请稍后再试。");
@@ -337,7 +335,7 @@ public class TeamEditActivity extends Activity implements IMessageObserver{
                                 shopEmployeeVo.setWork_status(WorkStatus.OFFWORK);
                             }
                             //更新数据库
-                            ShopEmployeeDBUtil.getInstance().addShopEmployee(shopEmployeeVo);
+//                            ShopEmployeeDBUtil.getInstance().addShopEmployee(shopEmployeeVo);
                             mShopEmployeeVos.remove(i);
                             mShopEmployeeVos.add(i, shopEmployeeVo);
                         }
@@ -356,7 +354,7 @@ public class TeamEditActivity extends Activity implements IMessageObserver{
      * 弹出选择部门对话框
      * @param shopEmployeeVos
      */
-    private void showChangeDepartmentDialog(final List<ShopEmployeeVo> shopEmployeeVos){
+    private void showChangeDepartmentDialog(final List<String> shopEmployeeVos){
         //弹出选择部门对话框
         DepartmentDialog dialog = new DepartmentDialog(TeamEditActivity.this);
         dialog.setClickOneListener(new DepartmentDialog.ClickOneListener() {
@@ -375,13 +373,13 @@ public class TeamEditActivity extends Activity implements IMessageObserver{
      * @param shopEmployeeVos
      * @return
      */
-    private String convertList2String(List<ShopEmployeeVo> shopEmployeeVos) {
+    private String convertList2String(List<String> shopEmployeeVos) {
         StringBuilder sb = new StringBuilder();
         for(int i=0; i<shopEmployeeVos.size(); i++){
             if(i == shopEmployeeVos.size()-1){
-                sb.append(shopEmployeeVos.get(i).getEmpid());
+                sb.append(shopEmployeeVos.get(i));
             }else {
-                sb.append(shopEmployeeVos.get(i).getEmpid() +  ",");
+                sb.append(shopEmployeeVos.get(i)+  ",");
             }
         }
         return sb.toString();
