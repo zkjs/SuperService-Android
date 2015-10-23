@@ -17,6 +17,7 @@ import com.google.gson.reflect.TypeToken;
 import com.zkjinshi.base.util.DisplayUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.adapter.DeptAdapter;
+import com.zkjinshi.superservice.net.ExtNetRequestListener;
 import com.zkjinshi.superservice.net.MethodType;
 import com.zkjinshi.superservice.net.NetRequest;
 import com.zkjinshi.superservice.net.NetRequestListener;
@@ -99,7 +100,7 @@ public class DepartmentDialog  extends Dialog {
         netRequest.setBizParamMap(bizMap);
         NetRequestTask netRequestTask = new NetRequestTask(context,netRequest, NetResponse.class);
         netRequestTask.methodType = MethodType.PUSH;
-        netRequestTask.setNetRequestListener(new NetRequestListener() {
+        netRequestTask.setNetRequestListener(new ExtNetRequestListener(context) {
             @Override
             public void onNetworkRequestError(int errorCode, String errorMessage) {
                 Log.i(TAG, "errorCode:" + errorCode);

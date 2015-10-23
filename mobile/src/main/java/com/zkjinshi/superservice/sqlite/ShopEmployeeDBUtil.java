@@ -4,12 +4,15 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.text.TextUtils;
 
 import com.zkjinshi.base.log.LogLevel;
 import com.zkjinshi.base.log.LogUtil;
 import com.zkjinshi.superservice.ServiceApplication;
 import com.zkjinshi.superservice.factory.ShopEmployeeFactory;
 import com.zkjinshi.superservice.vo.ShopEmployeeVo;
+
+import org.dom4j.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -287,8 +290,20 @@ public class ShopEmployeeDBUtil {
         long delResult = 0;
         try {
             db = helper.getWritableDatabase();
+            String sql = "";
             for(String empID : empIDList){
-                delResult += db.delete(DBOpenHelper.SHOP_EMPLOYEE_TBL, " empid = ? ", new String[] {empID});
+                //delResult += db.delete(DBOpenHelper.SHOP_EMPLOYEE_TBL, " empid = ? ", new String[] {empID});
+                if(sql.equals("")){
+                    sql = " "+empID;
+                }else{
+                    sql = sql+","+empID;
+                }
+
+            }
+            if(!TextUtils.isEmpty(sql)){
+                sql = "delete from "+DBOpenHelper.SHOP_EMPLOYEE_TBL+" where empid in ("+sql+")";
+                db.execSQL(sql);
+                delResult = 1;
             }
         } catch (Exception e) {
             LogUtil.getInstance().info(LogLevel.ERROR,TAG+".deleteShopEmployeeByEmpID->"+e.getMessage());

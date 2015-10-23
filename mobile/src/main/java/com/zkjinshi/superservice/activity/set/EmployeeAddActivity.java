@@ -22,6 +22,7 @@ import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.adapter.ContactsAdapter;
 import com.zkjinshi.superservice.bean.BaseBean;
 import com.zkjinshi.superservice.bean.ImportSempBean;
+import com.zkjinshi.superservice.net.ExtNetRequestListener;
 import com.zkjinshi.superservice.net.MethodType;
 import com.zkjinshi.superservice.net.NetRequest;
 import com.zkjinshi.superservice.net.NetRequestListener;
@@ -254,7 +255,7 @@ public class EmployeeAddActivity extends Activity {
             netRequest.setBizParamMap(bizMap);
             NetRequestTask netRequestTask = new NetRequestTask(this,netRequest, NetResponse.class);
             netRequestTask.methodType = MethodType.PUSH;
-            netRequestTask.setNetRequestListener(new NetRequestListener() {
+            netRequestTask.setNetRequestListener(new ExtNetRequestListener(this) {
                 @Override
                 public void onNetworkRequestError(int errorCode, String errorMessage) {
                     Log.i(TAG, "errorCode:" + errorCode);
@@ -367,7 +368,7 @@ public class EmployeeAddActivity extends Activity {
         netRequest.setBizParamMap(bizMap);
         NetRequestTask netRequestTask = new NetRequestTask(this,netRequest, NetResponse.class);
         netRequestTask.methodType = MethodType.PUSH;
-        netRequestTask.setNetRequestListener(new NetRequestListener() {
+        netRequestTask.setNetRequestListener(new ExtNetRequestListener(this) {
             @Override
             public void onNetworkRequestError(int errorCode, String errorMessage) {
                 Log.i(TAG, "errorCode:" + errorCode);

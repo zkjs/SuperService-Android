@@ -30,6 +30,7 @@ import com.zkjinshi.superservice.bean.BookOrderBean;
 import com.zkjinshi.superservice.bean.NoticeBean;
 import com.zkjinshi.superservice.entity.MsgEmpStatusCount;
 import com.zkjinshi.superservice.entity.MsgEmpStatusCountRSP;
+import com.zkjinshi.superservice.net.ExtNetRequestListener;
 import com.zkjinshi.superservice.net.MethodType;
 import com.zkjinshi.superservice.net.NetRequest;
 import com.zkjinshi.superservice.net.NetRequestListener;
@@ -274,7 +275,7 @@ public class NoticeFragment extends Fragment implements IMessageObserver{
                             netRequest.setBizParamMap(bizMap);
                             NetRequestTask netRequestTask = new NetRequestTask(getActivity(),netRequest, NetResponse.class);
                             netRequestTask.methodType = MethodType.PUSH;
-                            netRequestTask.setNetRequestListener(new NetRequestListener() {
+                            netRequestTask.setNetRequestListener(new ExtNetRequestListener(getActivity()) {
                                 @Override
                                 public void onNetworkRequestError(int errorCode, String errorMessage) {
                                     Log.i(TAG, "errorCode:" + errorCode);

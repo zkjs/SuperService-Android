@@ -25,6 +25,7 @@ import com.zkjinshi.superservice.bean.ClientBaseBean;
 //import com.zkjinshi.superservice.factory.UnRegClientFactory;
 import com.zkjinshi.superservice.factory.ClientFactory;
 import com.zkjinshi.superservice.factory.UnRegClientFactory;
+import com.zkjinshi.superservice.net.ExtNetRequestListener;
 import com.zkjinshi.superservice.net.MethodType;
 import com.zkjinshi.superservice.net.NetRequest;
 import com.zkjinshi.superservice.net.NetRequestListener;
@@ -218,7 +219,7 @@ public class ClientBindActivity extends Activity {
         netRequest.setBizParamMap(bizMap);
         NetRequestTask netRequestTask = new NetRequestTask(this, netRequest, NetResponse.class);
         netRequestTask.methodType = MethodType.PUSH;
-        netRequestTask.setNetRequestListener(new NetRequestListener() {
+        netRequestTask.setNetRequestListener(new ExtNetRequestListener(this) {
             @Override
             public void onNetworkRequestError(int errorCode, String errorMessage) {
                 Log.i(TAG, "errorCode:" + errorCode);
