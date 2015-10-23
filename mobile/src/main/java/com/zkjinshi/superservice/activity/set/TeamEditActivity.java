@@ -151,6 +151,8 @@ public class TeamEditActivity extends Activity {
                 } else {
                     mCheckedList.add(empID);
                 }
+                mRlChangeDepartment.setTag(mCheckedList);
+                mRlDelete.setTag(mCheckedList);
             }
         });
 
@@ -158,6 +160,7 @@ public class TeamEditActivity extends Activity {
             @Override
             public void onClick(View v) {
                 /** 1.获得待操作数据 */
+                mCheckedList = (ArrayList<String>)v.getTag();
                 if (null != mCheckedList && !mCheckedList.isEmpty()) {
                     showChangeDepartmentDialog(mCheckedList);
                 } else {
@@ -172,6 +175,7 @@ public class TeamEditActivity extends Activity {
         mRlDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mCheckedList = (ArrayList<String>)v.getTag();
                 /** 获得待删除数据 */
                 if (null != mCheckedList && !mCheckedList.isEmpty()) {
                     deleteEmployees(mUserID, mToken, mShopID, mCheckedList);
@@ -191,7 +195,7 @@ public class TeamEditActivity extends Activity {
      * @param shopID
      * @param shopEmployeeVos
      */
-    private void deleteEmployees(String userID, String token, final String shopID, List<String> shopEmployeeVos) {
+    private void deleteEmployees(String userID, String token, final String shopID, final List<String> shopEmployeeVos) {
         String deleteList = convertList2String(shopEmployeeVos);
 
         DialogUtil.getInstance().showProgressDialog(this);
@@ -228,10 +232,10 @@ public class TeamEditActivity extends Activity {
                     JSONObject jsonObject = new JSONObject(jsonResult);
                     if (jsonObject.getBoolean("set")) {
                         long delResult = -1;
-                        delResult = ShopEmployeeDBUtil.getInstance().deleteShopEmployeeByEmpIDs(mCheckedList);
+                        delResult = ShopEmployeeDBUtil.getInstance().deleteShopEmployeeByEmpID(shopEmployeeVos.get(0));
                         LogUtil.getInstance().info(LogLevel.INFO, "delResult" + delResult);
-                       if(delResult > 0){
-                           DialogUtil.getInstance().showToast(TeamEditActivity.this, "删除成功");
+                           if(delResult > 0){
+                               DialogUtil.getInstance().showToast(TeamEditActivity.this, "删除成功");
                        }
                         mShopEmployeeVos = ShopEmployeeDBUtil.getInstance().queryAllByDeptIDAsc();
                         mContactsAdapter.updateListView(mShopEmployeeVos);

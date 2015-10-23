@@ -33,19 +33,16 @@ import com.zkjinshi.superservice.entity.MsgEmpStatusCountRSP;
 import com.zkjinshi.superservice.net.ExtNetRequestListener;
 import com.zkjinshi.superservice.net.MethodType;
 import com.zkjinshi.superservice.net.NetRequest;
-import com.zkjinshi.superservice.net.NetRequestListener;
 import com.zkjinshi.superservice.net.NetRequestTask;
 import com.zkjinshi.superservice.net.NetResponse;
 import com.zkjinshi.superservice.sqlite.ComingDBUtil;
 import com.zkjinshi.superservice.sqlite.ShopEmployeeDBUtil;
-import com.zkjinshi.superservice.sqlite.ZoneDBUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.view.CircleStatusView;
 import com.zkjinshi.superservice.vo.ComingVo;
 import com.zkjinshi.superservice.entity.MsgPushTriggerLocNotificationM2S;
 import com.zkjinshi.superservice.vo.IdentityType;
-import com.zkjinshi.superservice.vo.ZoneVo;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -252,101 +249,98 @@ public class NoticeFragment extends Fragment implements IMessageObserver{
                     String shopId = msgLocNotification.getShopid();
                     String locId = msgLocNotification.getLocid();
                     String userName = msgLocNotification.getUsername();
-                    ZoneVo zoneVo = ZoneDBUtil.getInstance().queryZoneByLocId(locId);
-                    if(null != zoneVo){
-                        comingVo = new ComingVo();
-                        comingVo.setLocId(locId);
-                        comingVo.setUserId(userId);
-                        comingVo.setArriveTime(System.currentTimeMillis());
-                        String location = zoneVo.getLocDesc();
-                        if(!TextUtils.isEmpty(location)){
-                            comingVo.setLocation(location);
-                        }
-                        if(!TextUtils.isEmpty(userName)){
-                            comingVo.setUserName(userName);
-                        }
-                        if(!TextUtils.isEmpty(userId) && !TextUtils.isEmpty(shopId)){
-                            NetRequest netRequest = new NetRequest(ProtocolUtil.getSempNoticeUrl());
-                            HashMap<String,String> bizMap = new HashMap<String,String>();
-                            bizMap.put("salesid", CacheUtil.getInstance().getUserId());
-                            bizMap.put("token", CacheUtil.getInstance().getToken());
-                            bizMap.put("uid", userId);
-                            bizMap.put("shopid", shopId);
-                            netRequest.setBizParamMap(bizMap);
-                            NetRequestTask netRequestTask = new NetRequestTask(getActivity(),netRequest, NetResponse.class);
-                            netRequestTask.methodType = MethodType.PUSH;
-                            netRequestTask.setNetRequestListener(new ExtNetRequestListener(getActivity()) {
-                                @Override
-                                public void onNetworkRequestError(int errorCode, String errorMessage) {
-                                    Log.i(TAG, "errorCode:" + errorCode);
-                                    Log.i(TAG, "errorMessage:" + errorMessage);
-                                }
+                    String locDesc = msgLocNotification.getLocdesc();
+                    comingVo = new ComingVo();
+                    comingVo.setLocId(locId);
+                    comingVo.setUserId(userId);
+                    comingVo.setArriveTime(System.currentTimeMillis());
+                    if(!TextUtils.isEmpty(locDesc)){
+                        comingVo.setLocation(locDesc);
+                    }
+                    if(!TextUtils.isEmpty(userName)){
+                        comingVo.setUserName(userName);
+                    }
+                    if(!TextUtils.isEmpty(userId) && !TextUtils.isEmpty(shopId)){
+                        NetRequest netRequest = new NetRequest(ProtocolUtil.getSempNoticeUrl());
+                        HashMap<String,String> bizMap = new HashMap<String,String>();
+                        bizMap.put("salesid", CacheUtil.getInstance().getUserId());
+                        bizMap.put("token", CacheUtil.getInstance().getToken());
+                        bizMap.put("uid", userId);
+                        bizMap.put("shopid", shopId);
+                        netRequest.setBizParamMap(bizMap);
+                        NetRequestTask netRequestTask = new NetRequestTask(getActivity(),netRequest, NetResponse.class);
+                        netRequestTask.methodType = MethodType.PUSH;
+                        netRequestTask.setNetRequestListener(new ExtNetRequestListener(getActivity()) {
+                            @Override
+                            public void onNetworkRequestError(int errorCode, String errorMessage) {
+                                Log.i(TAG, "errorCode:" + errorCode);
+                                Log.i(TAG, "errorMessage:" + errorMessage);
+                            }
 
-                                @Override
-                                public void onNetworkRequestCancelled() {
+                            @Override
+                            public void onNetworkRequestCancelled() {
 
-                                }
+                            }
 
-                                @Override
-                                public void onNetworkResponseSucceed(NetResponse result) {
-                                    Log.i(TAG, "result.rawResult:" + result.rawResult);
-                                    try {
-                                        NoticeBean noticeBean = new Gson().fromJson(result.rawResult, NoticeBean.class);
-                                        if (null != noticeBean && noticeBean.isSet()) {
-                                            String vip = noticeBean.getUser_level();
-                                            if (!TextUtils.isEmpty(vip)) {
-                                                comingVo.setVip(vip);
+                            @Override
+                            public void onNetworkResponseSucceed(NetResponse result) {
+                                Log.i(TAG, "result.rawResult:" + result.rawResult);
+                                try {
+                                    NoticeBean noticeBean = new Gson().fromJson(result.rawResult, NoticeBean.class);
+                                    if (null != noticeBean && noticeBean.isSet()) {
+                                        String vip = noticeBean.getUser_level();
+                                        if (!TextUtils.isEmpty(vip)) {
+                                            comingVo.setVip(vip);
+                                        }
+                                        String phoneNum = noticeBean.getPhone();
+                                        if (!TextUtils.isEmpty(phoneNum)) {
+                                            comingVo.setPhoneNum(phoneNum);
+                                        }
+                                        BookOrderBean bookOrderBean = noticeBean.getOrder();
+                                        if (null != bookOrderBean) {
+                                            String roomType = bookOrderBean.getRoomType();
+                                            if (!TextUtils.isEmpty(roomType)) {
+                                                comingVo.setRoomType(roomType);
                                             }
-                                            String phoneNum = noticeBean.getPhone();
-                                            if (!TextUtils.isEmpty(phoneNum)) {
-                                                comingVo.setPhoneNum(phoneNum);
+                                            String checkInDate = bookOrderBean.getArrivalDate();
+                                            String checkOutDate = bookOrderBean.getDepartureDate();
+                                            if (!TextUtils.isEmpty(checkInDate)) {
+                                                comingVo.setCheckInDate(checkInDate);
                                             }
-                                            BookOrderBean bookOrderBean = noticeBean.getOrder();
-                                            if (null != bookOrderBean) {
-                                                String roomType = bookOrderBean.getRoomType();
-                                                if (!TextUtils.isEmpty(roomType)) {
-                                                    comingVo.setRoomType(roomType);
-                                                }
-                                                String checkInDate = bookOrderBean.getArrivalDate();
-                                                String checkOutDate = bookOrderBean.getDepartureDate();
-                                                if (!TextUtils.isEmpty(checkInDate)) {
-                                                    comingVo.setCheckInDate(checkInDate);
-                                                }
-                                                if (!TextUtils.isEmpty(checkOutDate)) {
-                                                    comingVo.setCheckOutDate(checkOutDate);
-                                                }
-                                                String orderStatus = bookOrderBean.getStatus();
-                                                if (!TextUtils.isEmpty(orderStatus)) {
-                                                    comingVo.setOrderStatus(Integer.parseInt(orderStatus));
-                                                }
-                                                if (!TextUtils.isEmpty(checkInDate) && !TextUtils.isEmpty(checkOutDate)) {
-                                                    int stayDays = TimeUtil.daysBetween(checkInDate, checkOutDate);
-                                                    comingVo.setStayDays(stayDays);
-                                                }
+                                            if (!TextUtils.isEmpty(checkOutDate)) {
+                                                comingVo.setCheckOutDate(checkOutDate);
                                             }
-                                            if (null != comingVo) {
-                                                ComingDBUtil.getInstance().addComing(comingVo);
-                                                notifyComingList.add(comingVo);
-                                                mNotificationAdapter.setComingList(notifyComingList);
+                                            String orderStatus = bookOrderBean.getStatus();
+                                            if (!TextUtils.isEmpty(orderStatus)) {
+                                                comingVo.setOrderStatus(Integer.parseInt(orderStatus));
+                                            }
+                                            if (!TextUtils.isEmpty(checkInDate) && !TextUtils.isEmpty(checkOutDate)) {
+                                                int stayDays = TimeUtil.daysBetween(checkInDate, checkOutDate);
+                                                comingVo.setStayDays(stayDays);
                                             }
                                         }
-                                    } catch (Exception e) {
-                                        Log.e(TAG, e.getMessage());
+                                        if (null != comingVo) {
+                                            ComingDBUtil.getInstance().addComing(comingVo);
+                                            notifyComingList.add(comingVo);
+                                            mNotificationAdapter.setComingList(notifyComingList);
+                                        }
                                     }
-
+                                } catch (Exception e) {
+                                    Log.e(TAG, e.getMessage());
                                 }
 
-                                @Override
-                                public void beforeNetworkRequestStart() {
+                            }
 
-                                }
-                            });
-                            netRequestTask.isShowLoadingDialog = false;
-                            netRequestTask.execute();
-                        }
+                            @Override
+                            public void beforeNetworkRequestStart() {
+
+                            }
+                        });
+                        netRequestTask.isShowLoadingDialog = false;
+                        netRequestTask.execute();
                     }
-
                 }
+
             }else if(type == ProtocolMSG.MSG_ShopEmpStatusCount_RSP){//在线/离线和上下班状态统计
                 if(null == gson){
                     gson = new Gson();

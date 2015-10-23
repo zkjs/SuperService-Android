@@ -23,7 +23,6 @@ public class DBOpenHelper extends SQLiteOpenHelper {
     public static final String MEMBER_TBL = "membertbl";//聊天室成员表
     public static final String USER_TBL = "user_tbl";// 客户表名
     public static final String CLIENT_TBL = "client_tbl";// 客户表名
-    public static final String ZONE_TBL = "zone_tbl";//个人区域信息表
     public static final String COMING_TBL = "coming_tbl";//到店信息表
     public static final String UNREG_CLIENT_TBL = "unreg_client_tbl";//尚未注册的本地客户列表
     public static final String SHOP_EMPLOYEE_TBL = "shop_employee_tbl";//商家员工列表

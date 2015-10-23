@@ -116,22 +116,6 @@ public class TableOpenHelper {
                     + " bg_drawable_res  int " //背景颜色资源值
                     + " ) ";
 
-    /** 创建区域信息表 */
-    public static String ZONE_TBL_SQL =
-            " create table if not exists "
-                    + DBOpenHelper.ZONE_TBL
-                    + " ( "
-                    + " loc_id  integer primary key, "
-                    + " shop_id   text, "
-                    + " sensor_id   integer, "
-                    + " uuid      text, "
-                    + " major     integer, "
-                    + " minior   integer, "
-                    + " locdesc   text, "
-                    + " status     integer, "
-                    + " remark      text "
-                    + " ) ";
-
     /** 创建到店信息表 */
     public static String COMING_TBL_SQL =
             " create table if not exists "
@@ -201,7 +185,6 @@ public class TableOpenHelper {
                 DBOpenHelper.MEMBER_TBL,//成员表
                 DBOpenHelper.USER_TBL,//app用户表
                 DBOpenHelper.CLIENT_TBL,//客户表
-                DBOpenHelper.ZONE_TBL,//个人区域信息表
                 DBOpenHelper.COMING_TBL,//到店信息表
                 DBOpenHelper.SHOP_EMPLOYEE_TBL,//商家员工表
                 DBOpenHelper.SHOP_DEPARTMENT_TBL//商家部门表

@@ -102,7 +102,7 @@ public class NotificationHelper {
             notificationBuilder = new NotificationCompat.Builder(context);
             String contactName = msgPushTriggerLocNotificationM2S.getUsername();
             notificationBuilder.setContentTitle("" + contactName);
-            notificationBuilder.setContentText("欢迎" + contactName+"先生/女生光临酒店");
+            notificationBuilder.setContentText("欢迎" + contactName+"先生/女士光临酒店");
             notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
             String contactId = msgPushTriggerLocNotificationM2S.getUserid();
             String imageUrl = Constants.GET_USER_AVATAR + contactId + ".jpg";

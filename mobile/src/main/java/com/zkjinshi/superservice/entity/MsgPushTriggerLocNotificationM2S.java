@@ -21,6 +21,7 @@ public class MsgPushTriggerLocNotificationM2S implements Serializable{
     private String  userid;//客人的userid
     private String  username;//username
     private String  locid;   //客人所在区域
+    private String locdesc;//客人区域描述
 
     public int getType() {
         return type;
@@ -92,5 +93,13 @@ public class MsgPushTriggerLocNotificationM2S implements Serializable{
 
     public void setLocid(String locid) {
         this.locid = locid;
+    }
+
+    public String getLocdesc() {
+        return locdesc;
+    }
+
+    public void setLocdesc(String locdesc) {
+        this.locdesc = locdesc;
     }
 }

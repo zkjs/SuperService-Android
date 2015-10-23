@@ -15,24 +15,17 @@ import com.zkjinshi.base.log.LogLevel;
 import com.zkjinshi.base.log.LogUtil;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
-import com.zkjinshi.superservice.activity.notice.LocNoticeController;
 import com.zkjinshi.superservice.activity.set.TeamContactsController;
 import com.zkjinshi.superservice.bean.SempLoginBean;
 import com.zkjinshi.superservice.factory.UserFactory;
-import com.zkjinshi.superservice.net.MethodType;
-import com.zkjinshi.superservice.net.NetRequest;
 import com.zkjinshi.superservice.net.NetRequestListener;
-import com.zkjinshi.superservice.net.NetRequestTask;
 import com.zkjinshi.superservice.net.NetResponse;
 import com.zkjinshi.superservice.sqlite.DBOpenHelper;
 import com.zkjinshi.superservice.sqlite.UserDBUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.Constants;
-import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.vo.IdentityType;
 import com.zkjinshi.superservice.vo.UserVo;
-
-import java.util.HashMap;
 
 /**
  * 开发者：dujiande
@@ -189,7 +182,6 @@ public class LoginActivity extends Activity implements VerifyPhoneControler.Succ
 
                     LoginController.getInstance().getDeptList(userID, token, shopiD);//获取部门列表
                     TeamContactsController.getInstance().getTeamContacts(LoginActivity.this, userID, token, shopiD, null);//获取团队列表
-                    LocNoticeController.getInstance().init(LoginActivity.this).requestLocTask();//获取区域信息
 
                     UserVo userVo = UserFactory.getInstance().buildUserVo(sempLoginbean);
                     UserDBUtil.getInstance().addUser(userVo);

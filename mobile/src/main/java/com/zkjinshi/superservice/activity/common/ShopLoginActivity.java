@@ -7,7 +7,6 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
-import android.widget.Button;
 import android.widget.EditText;
 
 import com.google.gson.Gson;
@@ -15,7 +14,6 @@ import com.zkjinshi.base.log.LogLevel;
 import com.zkjinshi.base.log.LogUtil;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
-import com.zkjinshi.superservice.activity.notice.LocNoticeController;
 import com.zkjinshi.superservice.activity.set.TeamContactsController;
 import com.zkjinshi.superservice.bean.AdminLoginBean;
 import com.zkjinshi.superservice.factory.UserFactory;
@@ -126,7 +124,6 @@ public class ShopLoginActivity extends Activity{
                         DBOpenHelper.DB_NAME = adminLoginBean.getUserid() + ".db";
                         LoginController.getInstance().getDeptList(userID, token, shopiD);//获取部门列表
                         TeamContactsController.getInstance().getTeamContacts(ShopLoginActivity.this, userID, token, shopiD, null);//获取团队列表
-                        LocNoticeController.getInstance().init(ShopLoginActivity.this).requestLocTask();//获取区域信息
                         UserVo userVo = UserFactory.getInstance().buildUserVo(adminLoginBean);
                         UserDBUtil.getInstance().addUser(userVo);
                         String avatarUrl = ProtocolUtil.getShopLogoUrl(adminLoginBean.getShopid());

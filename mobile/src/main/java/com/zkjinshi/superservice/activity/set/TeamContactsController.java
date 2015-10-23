@@ -59,7 +59,6 @@ public class TeamContactsController {
     public void getTeamContacts(final Context context, String userID,
                                   String token, final String shopID,
                                   final GetTeamContactsListener listener){
-        LogUtil.getInstance().info(LogLevel.INFO,"获取团队联系人列表开始。。。");
         NetRequest netRequest = new NetRequest(ProtocolUtil.getTeamListUrl());
         HashMap<String,String> bizMap = new HashMap<>();
         bizMap.put("salesid", userID);
@@ -83,7 +82,6 @@ public class TeamContactsController {
 
             @Override
             public void onNetworkResponseSucceed(NetResponse result) {
-                LogUtil.getInstance().info(LogLevel.INFO,"获取团队联系人列表结束。。。");
                 DialogUtil.getInstance().cancelProgressDialog();
                 Log.i(TAG, "result.rawResult:" + result.rawResult);
                 String jsonResult = result.rawResult;
