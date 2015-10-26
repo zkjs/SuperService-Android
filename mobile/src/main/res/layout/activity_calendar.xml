@@ -25,9 +25,8 @@
             android:layout_height="wrap_content"
             android:text="选择日期"
             android:textColor="@android:color/white"
-            android:textSize="24sp"
-            android:layout_centerVertical="true"
-            android:layout_toRightOf="@+id/back_btn"/>
+            android:textSize="18sp"
+            android:layout_centerInParent="true"/>
 
     </RelativeLayout>
 

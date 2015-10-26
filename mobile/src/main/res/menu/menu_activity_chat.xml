@@ -1,0 +1,26 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools" tools:context=".MainActivity">
+
+    <item
+        android:id="@+id/add_chat_object"
+        android:title="@string/add_chat_object"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/start_group_chat"
+        android:title="@string/start_group_chat"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/transfer_chat_to_others"
+        android:title="@string/transfer_chat_to_others"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/offline_to_this_chat"
+        android:title="@string/offline_to_this_chat"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/finish_this_chat"
+        android:title="@string/finish_this_chat"
+        app:showAsAction="never" />
+
+</menu>

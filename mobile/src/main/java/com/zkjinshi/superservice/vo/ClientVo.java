@@ -1,5 +1,6 @@
 package com.zkjinshi.superservice.vo;
 
+
 /**
  * 客户数据表操作对象
  * 开发者：vincent
@@ -9,76 +10,229 @@ package com.zkjinshi.superservice.vo;
  */
 public class ClientVo {
 
-    private String clientID;        //客户ID 主键
-    private String avatarName;      //头像图片名称
-    private String avatarUrl;       //头像图片网络url
-    private String clientName;      //客户姓名
-    private String clientPhone;     //客户手机
-    private String clientCompany;   //客户所在公司
-    private String clientPosition;  //客户职位
-    private OnAccountStatus onAccount;       //是否挂账会员 0:挂账会员 1 非挂账会员
+    private int    id;
+    private String userid;
+    private String shopid;
+    private String salesid;
+    private int    user_level;
+    private String level_desc;
+    private String card_no;
+    private String is_special;
+    private String nationality;
+    private String like_desc;
+    private String taboo_desc;
+    private String other_desc;
+    private long   created;
+    private long   modified;
+    private String username;
+    private String phone;
+    private String company;
+    private String position;
+    private int    is_bill;
+    private ContactType contactType;
+    private SexType     sex;
+    private int         order_count;
+    private String      tags;
+    private OnlineStatus    isOnline;
+    private int             bgDrawableRes;
 
-    public String getClientID() {
-        return clientID;
+    public int getUser_level() {
+        return user_level;
     }
 
-    public void setClientID(String clientID) {
-        this.clientID = clientID;
+    public void setUser_level(int user_level) {
+        this.user_level = user_level;
     }
 
-    public String getAvatarName() {
-        return avatarName;
+    public int getId() {
+        return id;
     }
 
-    public void setAvatarName(String avatarName) {
-        this.avatarName = avatarName;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public String getAvatarUrl() {
-        return avatarUrl;
+    public String getUserid() {
+        return userid;
     }
 
-    public void setAvatarUrl(String avatarUrl) {
-        this.avatarUrl = avatarUrl;
+    public void setUserid(String userid) {
+        this.userid = userid;
     }
 
-    public String getClientName() {
-        return clientName;
+    public String getShopid() {
+        return shopid;
     }
 
-    public void setClientName(String clientName) {
-        this.clientName = clientName;
+    public void setShopid(String shopid) {
+        this.shopid = shopid;
     }
 
-    public String getClientPhone() {
-        return clientPhone;
+    public String getSalesid() {
+        return salesid;
     }
 
-    public void setClientPhone(String clientPhone) {
-        this.clientPhone = clientPhone;
+    public void setSalesid(String salesid) {
+        this.salesid = salesid;
     }
 
-    public String getClientCompany() {
-        return clientCompany;
+    public String getLevel_desc() {
+        return level_desc;
     }
 
-    public void setClientCompany(String clientCompany) {
-        this.clientCompany = clientCompany;
+    public void setLevel_desc(String level_desc) {
+        this.level_desc = level_desc;
     }
 
-    public String getClientPosition() {
-        return clientPosition;
+    public String getCard_no() {
+        return card_no;
     }
 
-    public void setClientPosition(String clientPosition) {
-        this.clientPosition = clientPosition;
+    public void setCard_no(String card_no) {
+        this.card_no = card_no;
     }
 
-    public OnAccountStatus isOnAccount() {
-        return onAccount;
+    public String getIs_special() {
+        return is_special;
     }
 
-    public void setOnAccount(OnAccountStatus onAccount) {
-        this.onAccount = onAccount;
+    public void setIs_special(String is_special) {
+        this.is_special = is_special;
+    }
+
+    public String getNationality() {
+        return nationality;
+    }
+
+    public void setNationality(String nationality) {
+        this.nationality = nationality;
+    }
+
+    public String getLike_desc() {
+        return like_desc;
+    }
+
+    public void setLike_desc(String like_desc) {
+        this.like_desc = like_desc;
+    }
+
+    public String getTaboo_desc() {
+        return taboo_desc;
+    }
+
+    public void setTaboo_desc(String taboo_desc) {
+        this.taboo_desc = taboo_desc;
+    }
+
+    public String getOther_desc() {
+        return other_desc;
+    }
+
+    public void setOther_desc(String other_desc) {
+        this.other_desc = other_desc;
+    }
+
+    public long getCreated() {
+        return created;
+    }
+
+    public void setCreated(long created) {
+        this.created = created;
+    }
+
+    public long getModified() {
+        return modified;
+    }
+
+    public void setModified(long modified) {
+        this.modified = modified;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getCompany() {
+        return company;
+    }
+
+    public void setCompany(String company) {
+        this.company = company;
+    }
+
+    public String getPosition() {
+        return position;
+    }
+
+    public void setPosition(String position) {
+        this.position = position;
+    }
+
+    public int getIs_bill() {
+        return is_bill;
+    }
+
+    public void setIs_bill(int is_bill) {
+        this.is_bill = is_bill;
+    }
+
+    public ContactType getContactType() {
+        return contactType;
+    }
+
+    public void setContactType(ContactType contactType) {
+        this.contactType = contactType;
+    }
+
+    public SexType getSex() {
+        return sex;
+    }
+
+    public void setSex(SexType sex) {
+        this.sex = sex;
+    }
+
+    public int getOrder_count() {
+        return order_count;
+    }
+
+    public void setOrder_count(int order_count) {
+        this.order_count = order_count;
+    }
+
+    public String getTags() {
+        return tags;
+    }
+
+    public void setTags(String tags) {
+        this.tags = tags;
+    }
+
+    public OnlineStatus getIsOnline() {
+        return isOnline;
+    }
+
+    public void setIsOnline(OnlineStatus isOnline) {
+        this.isOnline = isOnline;
+    }
+
+    public int getBgDrawableRes() {
+        return bgDrawableRes;
+    }
+
+    public void setBgDrawableRes(int bgDrawableRes) {
+        this.bgDrawableRes = bgDrawableRes;
     }
 }

@@ -1,10 +1,10 @@
 package com.zkjinshi.superservice.activity.common;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
@@ -14,30 +14,32 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.zkjinshi.base.net.core.WebSocketManager;
-import com.zkjinshi.base.util.DeviceUtils;
 import com.zkjinshi.base.util.DialogUtil;
-import com.zkjinshi.base.util.ImageUtil;
 import com.zkjinshi.superservice.R;
-import com.zkjinshi.superservice.activity.set.ContactsActivity;
+import com.zkjinshi.superservice.activity.set.ClientActivity;
+import com.zkjinshi.superservice.activity.set.EmployeeAddActivity;
+import com.zkjinshi.superservice.activity.set.TeamContactsActivity;
 import com.zkjinshi.superservice.bean.BaseBean;
 import com.zkjinshi.superservice.listener.MessageListener;
+import com.zkjinshi.superservice.net.ExtNetRequestListener;
 import com.zkjinshi.superservice.net.MethodType;
 import com.zkjinshi.superservice.net.NetRequest;
 import com.zkjinshi.superservice.net.NetRequestListener;
 import com.zkjinshi.superservice.net.NetRequestTask;
 import com.zkjinshi.superservice.net.NetResponse;
+import com.zkjinshi.superservice.sqlite.DBOpenHelper;
 import com.zkjinshi.superservice.sqlite.UserDBUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
-import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.utils.task.ImgAsyncTask;
-import com.zkjinshi.superservice.vo.SexType;
+import com.zkjinshi.superservice.vo.IdentityType;
 import com.zkjinshi.superservice.vo.UserVo;
 
 import java.io.File;
@@ -67,6 +69,9 @@ public class MainActivity extends AppCompatActivity {
     private RelativeLayout avatarLayout;
     private MessageListener messageListener;
     private UserVo userVo;
+    private ImageButton setIbtn;
+
+
 
     private void initView(){
         avatarIv = (ImageView)findViewById(R.id.avatar_iv);
@@ -74,13 +79,14 @@ public class MainActivity extends AppCompatActivity {
         shopnameTv = (TextView)findViewById(R.id.shop_name_tv);
         onlineCbx = (CheckBox)findViewById(R.id.online_cbx);
         avatarLayout = (RelativeLayout)findViewById(R.id.avatar_rlt);
+        setIbtn = (ImageButton)findViewById(R.id.edit_avatar_ibtn);
     }
 
     private void initData(){
         messageListener = new MessageListener();
         initService(messageListener);
         userVo = UserDBUtil.getInstance().queryUserById(CacheUtil.getInstance().getUserId());
-        mainActivityController.setUserPhoto(CacheUtil.getInstance().getUserPhotoUrl(), avatarIv);
+
         if(null != userVo){
             String userName = userVo.getUserName();
             if(!TextUtils.isEmpty(userName)){
@@ -92,6 +98,21 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         onlineCbx.setChecked(CacheUtil.getInstance().getOnline());
+
+        TextView teamTv = (TextView)findViewById(R.id.team_tv);
+        if(IdentityType.BUSINESS ==  CacheUtil.getInstance().getLoginIdentity()){
+            onlineCbx.setVisibility(View.GONE);
+            teamTv.setText("团队管理");
+            setIbtn.setVisibility(View.GONE);
+           // String avatarUrl = ProtocolUtil.getShopBackUrl(userVo.getShopId());
+           // mainActivityController.setUserPhoto(CacheUtil.getInstance().getUserPhotoUrl(), avatarIv);
+        }else{
+            onlineCbx.setVisibility(View.VISIBLE);
+            teamTv.setText("团队联系人");
+            mainActivityController.setUserPhoto(CacheUtil.getInstance().getUserPhotoUrl(), avatarIv);
+            setIbtn.setVisibility(View.VISIBLE);
+        }
+
 
 
     }
@@ -119,11 +140,14 @@ public class MainActivity extends AppCompatActivity {
                 startActivityForResult(intent, REQUEST_IMAGE);
             }
         });
+
         //团队联系人点击事件
         findViewById(R.id.team_tv).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent myTeamContacts = new Intent(MainActivity.this, TeamContactsActivity.class);
+               // Intent myTeamContacts = new Intent(MainActivity.this, EmployeeAddActivity.class);
+                MainActivity.this.startActivity(myTeamContacts);
             }
         });
 
@@ -131,7 +155,7 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.client_tv).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent myClient = new Intent(MainActivity.this, ContactsActivity.class);
+                Intent myClient = new Intent(MainActivity.this, ClientActivity.class);
                 MainActivity.this.startActivity(myClient);
             }
         });
@@ -148,7 +172,25 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.exit_tv).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                finish();
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setTitle("退出")
+                        .setMessage("确定退出该账户？")
+                        .setCancelable(true)
+                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                CacheUtil.getInstance().setLogin(false);
+                                startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                                finish();
+                                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                            }
+                        })
+                        .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+                builder.create().show();
             }
         });
 
@@ -197,8 +239,8 @@ public class MainActivity extends AppCompatActivity {
         netRequest.setFileMap(fileMap);
 
         NetRequestTask netRequestTask = new NetRequestTask(this,netRequest, NetResponse.class);
-        netRequestTask.methodType = MethodType.POST;
-        netRequestTask.setNetRequestListener(new NetRequestListener() {
+        netRequestTask.methodType = MethodType.PUSH;
+        netRequestTask.setNetRequestListener(new ExtNetRequestListener(this) {
             @Override
             public void onNetworkRequestError(int errorCode, String errorMessage) {
                 Log.i(TAG, "errorCode:" + errorCode);
@@ -236,6 +278,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setTitle(R.string.app_name);
          setContentView(R.layout.activity_main);
+        DBOpenHelper.DB_NAME = CacheUtil.getInstance().getUserId() + ".db";
         mainActivityController = new MainActivityController(this);
         mainActivityController.onCreate();
         initView();

@@ -4,13 +4,13 @@
     android:background="@android:color/white"
     android:layout_height="60dp">
 
-    <ImageView
+    <com.zkjinshi.superservice.view.CircleImageView
         android:id="@+id/message_notice_photo_iv"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_centerVertical="true"
         android:layout_marginLeft="8dp"
-        android:src="@drawable/img_hotel_zhanwei"
+        android:background="@drawable/img_hotel_zhanwei"
         android:scaleType="fitXY"/>
     
     <RelativeLayout
@@ -26,7 +26,7 @@
             android:layout_width="wrap_content"
             android:textColor="#101010"
             android:textSize="14sp"
-            android:text="张三"
+            android:text="@null"
             android:layout_height="wrap_content" />
 
         <TextView

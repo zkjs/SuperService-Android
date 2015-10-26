@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="reply_label">开始说话</string>
+    <string name="voice_reply">语音回复</string>
+
+    <string-array name="reply_choices">
+        <item>Yes</item>
+        <item>No</item>
+        <item>Maybe</item>
+    </string-array>
+
+</resources>

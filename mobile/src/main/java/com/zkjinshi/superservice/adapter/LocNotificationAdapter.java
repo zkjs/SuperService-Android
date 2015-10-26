@@ -3,20 +3,27 @@ package com.zkjinshi.superservice.adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.zkjinshi.base.util.DialogUtil;
+import com.zkjinshi.base.util.DisplayUtil;
+import com.zkjinshi.base.util.IntentUtil;
+import com.zkjinshi.base.util.TimeUtil;
 import com.zkjinshi.superservice.R;
+import com.zkjinshi.superservice.listener.RecyclerItemClickListener;
+import com.zkjinshi.superservice.utils.Constants;
+import com.zkjinshi.superservice.view.CircleStatusView;
+import com.zkjinshi.superservice.vo.ComingVo;
 import com.zkjinshi.superservice.view.CircleImageView;
-import com.zkjinshi.superservice.vo.LocNotificationVo;
 
-import java.util.List;
+import java.util.ArrayList;
 
 /**
  * 开发者：vincent
@@ -26,20 +33,29 @@ import java.util.List;
  */
 public class LocNotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private Context mActivity;
+    private Context context;
 
-    private List<LocNotificationVo> mList;
+    private  ArrayList<ComingVo> comingList;
     private DisplayImageOptions     options;
+    private RecyclerItemClickListener itemClickListener;
 
-    public LocNotificationAdapter(Activity activity, List<LocNotificationVo> list) {
+    public void setComingList(ArrayList<ComingVo> comingList) {
+        if(null ==  comingList){
+            this.comingList = new ArrayList<ComingVo>();
+        }else{
+            this.comingList = comingList;
+        }
+        notifyDataSetChanged();
+    }
 
-        this.mActivity = activity;
-        this.mList    = list;
+    public LocNotificationAdapter(Activity activity, ArrayList<ComingVo> comingList) {
 
+        this.context = activity;
+        this.setComingList(comingList);
         this.options = new DisplayImageOptions.Builder()
-                .showImageOnLoading(R.mipmap.ic_launcher)// 设置图片下载期间显示的图片
-                .showImageForEmptyUri(R.mipmap.ic_launcher)// 设置图片Uri为空或是错误的时候显示的图片
-                .showImageOnFail(R.mipmap.ic_launcher)// 设置图片加载或解码过程中发生错误显示的图片
+                .showImageOnLoading(R.drawable.img_hotel_zhanwei)// 设置图片下载期间显示的图片
+                .showImageForEmptyUri(R.drawable.img_hotel_zhanwei)// 设置图片Uri为空或是错误的时候显示的图片
+                .showImageOnFail(R.drawable.img_hotel_zhanwei)// 设置图片加载或解码过程中发生错误显示的图片
                 .cacheInMemory(true) // 设置下载的图片是否缓存在内存中
                 .cacheOnDisk(true) // 设置下载的图片是否缓存在SD卡中
                 .build();
@@ -47,55 +63,82 @@ public class LocNotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mActivity).inflate(R.layout.item_loc_notification, null);
+        View view = LayoutInflater.from(context).inflate(R.layout.item_loc_notification, null);
         NoticeViewHolder localHolder = new NoticeViewHolder(view);
         return localHolder;
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        LocNotificationVo notificationVo = mList.get(position);
+        ComingVo comingVo = comingList.get(position);
 
-        ImageLoader.getInstance().displayImage("", ((NoticeViewHolder) holder).civOrderStatus, options);
-        ImageLoader.getInstance().displayImage("", ((NoticeViewHolder) holder).civClientAvatar, options);
-        ((NoticeViewHolder) holder).tvVip.setText("VIP#");
-        ((NoticeViewHolder) holder).tvClientName.setText(notificationVo.getUsername());
-        ((NoticeViewHolder) holder).tvClientInfo.setText(notificationVo.getUserid());
-        ((NoticeViewHolder) holder).tvClientNotice.setText("VIP#");
-        ((NoticeViewHolder) holder).tvTodo.setText("VIP#");
-        ((NoticeViewHolder) holder).tvOrderInfo.setText("VIP#");
-        ((NoticeViewHolder) holder).tvTimeInfo.setText(notificationVo.getTimestamp()+"");
-
+        String userId = comingVo.getUserId();
+        String imageUrl = Constants.GET_USER_AVATAR + userId + ".jpg";
+        if(!TextUtils.isEmpty(imageUrl)){
+            ImageLoader.getInstance().displayImage(imageUrl, ((NoticeViewHolder) holder).civClientAvatar, options);
+        }
+        String vip = comingVo.getVip();
+        if(!TextUtils.isEmpty(vip)){
+            ((NoticeViewHolder) holder).tvVip.setText("VIP"+vip);
+        }
+        String userName = comingVo.getUserName();
+        if(!TextUtils.isEmpty(userName)){
+            ((NoticeViewHolder) holder).tvClientName.setText(userName);
+        }
+        String location = comingVo.getLocation();
+        if(!TextUtils.isEmpty(location)){
+            ((NoticeViewHolder) holder).tvClientInfo.setText("到达"+location);
+        }
+        String roomType = comingVo.getRoomType();
+        int stayDays = comingVo.getStayDays();
+        String checkInDate = comingVo.getCheckInDate();
+        if(!TextUtils.isEmpty(roomType)){
+            ((NoticeViewHolder) holder).tvClientNotice.setText("需要办理入住手续");
+            ((NoticeViewHolder) holder).tvOrderInfo.setText(roomType+"|"+stayDays+"晚|"+checkInDate+"入住");
+        }else{
+            ((NoticeViewHolder) holder).tvOrderInfo.setText("无订单信息");
+        }
+        ((NoticeViewHolder) holder).tvTodo.setText("请做好迎接");
+        ((NoticeViewHolder) holder).tvTimeInfo.setText(TimeUtil.getChatTime(comingVo.getArriveTime()));
+        final String phoneNum = comingVo.getPhoneNum();
         ((NoticeViewHolder) holder).ivDianHua.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DialogUtil.getInstance().showToast(mActivity, "ivDianHua onClick");
+                IntentUtil.callPhone(context,phoneNum);
             }
         });
-
         ((NoticeViewHolder) holder).ivDuiHua.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DialogUtil.getInstance().showToast(mActivity, "ivDuiHua onClick");
+                IntentUtil.startSendMessage("",phoneNum,context);
             }
         });
 
         ((NoticeViewHolder) holder).ivFenXiang.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DialogUtil.getInstance().showToast(mActivity, "ivFenXiang onClick");
+                IntentUtil.startSendMessage("", phoneNum, context);
             }
         });
+        LinearLayout.LayoutParams contentLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        if(position == 0){
+            contentLayoutParams.setMargins(0,DisplayUtil.dip2px(context,12),DisplayUtil.dip2px(context,8),DisplayUtil.dip2px(context,6));
+        }else if(position == getItemCount()-1){
+            contentLayoutParams.setMargins(0, DisplayUtil.dip2px(context, 6), DisplayUtil.dip2px(context, 8), DisplayUtil.dip2px(context, 6));
+        }else{
+            contentLayoutParams.setMargins(0, DisplayUtil.dip2px(context, 6), DisplayUtil.dip2px(context, 8), DisplayUtil.dip2px(context, 6));
+        }
+        ((NoticeViewHolder) holder).contentLayout.setLayoutParams(contentLayoutParams);
     }
 
     @Override
     public int getItemCount() {
-        return mList.size();
+        return comingList.size();
     }
 
-    public static class NoticeViewHolder extends RecyclerView.ViewHolder{
+    public class NoticeViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
-        CircleImageView civOrderStatus;
+        CircleStatusView ibtnOrderStatus;
         CircleImageView civClientAvatar;
         TextView  tvVip;
         TextView  tvClientName;
@@ -108,10 +151,11 @@ public class LocNotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         ImageView ivDianHua;
         ImageView ivDuiHua;
         ImageView ivFenXiang;
+        LinearLayout contentLayout;
 
         public NoticeViewHolder(View view) {
             super(view);
-            civOrderStatus  = (CircleImageView) view.findViewById(R.id.civ_order_status);
+            ibtnOrderStatus = (CircleStatusView) view.findViewById(R.id.ibtn_order_status);
             civClientAvatar = (CircleImageView) view.findViewById(R.id.civ_client_avatar);
             tvVip           = (TextView)  view.findViewById(R.id.tv_vip);
             tvClientName    = (TextView)  view.findViewById(R.id.tv_client_name);
@@ -124,6 +168,20 @@ public class LocNotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             ivDianHua       = (ImageView) view.findViewById(R.id.iv_dianhua);
             ivDuiHua        = (ImageView) view.findViewById(R.id.iv_duihua);
             ivFenXiang      = (ImageView) view.findViewById(R.id.iv_fenxiang);
+            contentLayout = (LinearLayout)view.findViewById(R.id.content_layout);
+            view.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            if(null != itemClickListener){
+                itemClickListener.onItemClick(v,getAdapterPosition());
+            }
         }
     }
+
+    public void setOnItemClickListener(RecyclerItemClickListener itemClickListener) {
+        this.itemClickListener = itemClickListener;
+    }
+
 }

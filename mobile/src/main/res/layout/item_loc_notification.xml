@@ -7,7 +7,6 @@
 
     <FrameLayout
         android:layout_width="35dp"
-        android:textColor="@color/gray616161"
         android:layout_height="match_parent">
 
         <View
@@ -17,8 +16,8 @@
             android:layout_height="match_parent">
         </View>
 
-        <com.zkjinshi.superservice.view.CircleImageView
-            android:id="@+id/civ_order_status"
+        <com.zkjinshi.superservice.view.CircleStatusView
+            android:id="@+id/ibtn_order_status"
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_gravity="center"/>
@@ -26,8 +25,11 @@
     </FrameLayout>
 
     <LinearLayout
-        android:padding="10dp"
-        android:background="@color/white"
+        android:id="@+id/content_layout"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginBottom="6dp"
+        android:background="@drawable/radius_frame_bg"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -45,6 +47,7 @@
                 <com.zkjinshi.superservice.view.CircleImageView
                     android:id="@+id/civ_client_avatar"
                     android:layout_width="40dp"
+                    android:src="@drawable/img_hotel_zhanwei"
                     android:layout_height="40dp" />
 
             </RelativeLayout>
@@ -57,7 +60,7 @@
                 <TextView
                     android:id="@+id/tv_vip"
                     android:textSize="16sp"
-                    android:text="VIP#"
+                    android:text="VIP3"
                     android:textColor="@color/gray616161"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />

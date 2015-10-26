@@ -3,9 +3,31 @@ package com.zkjinshi.superservice.activity.common;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.text.TextUtils;
+import android.util.Log;
 
+import com.google.gson.Gson;
+import com.zkjinshi.base.log.LogLevel;
+import com.zkjinshi.base.log.LogUtil;
 import com.zkjinshi.superservice.R;
+
+import com.zkjinshi.superservice.activity.set.TeamContactsController;
+import com.zkjinshi.superservice.bean.AdminLoginBean;
+import com.zkjinshi.superservice.bean.SempLoginBean;
+import com.zkjinshi.superservice.factory.UserFactory;
+import com.zkjinshi.superservice.net.NetRequestListener;
+import com.zkjinshi.superservice.net.NetResponse;
+import com.zkjinshi.superservice.sqlite.DBOpenHelper;
+import com.zkjinshi.superservice.sqlite.UserDBUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
+
+import com.zkjinshi.superservice.utils.Constants;
+import com.zkjinshi.superservice.utils.MD5Util;
+import com.zkjinshi.superservice.utils.ProtocolUtil;
+import com.zkjinshi.superservice.vo.IdentityType;
+import com.zkjinshi.superservice.vo.UserVo;
+
 
 /**
  * 应用启动页面
@@ -16,19 +38,168 @@ import com.zkjinshi.superservice.utils.CacheUtil;
  */
 public class SplashActivity extends Activity{
 
+    public static final String TAG = SplashActivity.class.getSimpleName();
+
+    private static final int SPLASH_DELAY_MILLIS = 3000;
+
+    private static final int GO_LOGIN = 1000;
+    private static final int GO_HOME = 1001;
+
+    private void initView(){
+
+    }
+
+    private void initData(){
+        // 判断用户是否登录，如果登录则进入主页面
+        if (CacheUtil.getInstance().isLogin()) {
+            //启动应用静默处理数据
+            silentProcessData();
+            // 使用Handler的postDelayed方法，3秒后执行跳转到MainActivity
+            handler.sendEmptyMessageDelayed(GO_HOME, SPLASH_DELAY_MILLIS);
+        } else {
+            handler.sendEmptyMessageDelayed(GO_LOGIN, SPLASH_DELAY_MILLIS);
+        }
+    }
+
+    private void initListeners(){
+
+    }
+
+    private void silentProcessData(){
+        LoginController.getInstance().init(this);
+        if(IdentityType.BUSINESS ==  CacheUtil.getInstance().getLoginIdentity()){
+            LoginController.getInstance().requestAdminLogin(CacheUtil.getInstance().getUserPhone(), MD5Util.MD5(CacheUtil.getInstance().getPassword()),false,new NetRequestListener() {
+                @Override
+                public void onNetworkRequestError(int errorCode, String errorMessage) {
+                    Log.i(TAG, "errorCode:" + errorCode);
+                    Log.i(TAG, "errorMessage:" + errorMessage);
+                }
+
+                @Override
+                public void onNetworkRequestCancelled() {
+
+                }
+
+                @Override
+                public void onNetworkResponseSucceed(NetResponse result) {
+                    if(null != result && !TextUtils.isEmpty(result.rawResult)){
+                        Log.i(TAG, "result.rawResult:" + result.rawResult);
+                        AdminLoginBean adminLoginBean = new Gson().fromJson(result.rawResult, AdminLoginBean.class);
+                        if (adminLoginBean.isSet()) {
+                            CacheUtil.getInstance().setToken(adminLoginBean.getToken());
+                            CacheUtil.getInstance().setUserId(adminLoginBean.getUserid());
+                            CacheUtil.getInstance().setUserPhone(CacheUtil.getInstance().getUserPhone());
+                            CacheUtil.getInstance().setUserName(adminLoginBean.getName());
+                            CacheUtil.getInstance().setShopID(adminLoginBean.getShopid());
+                            CacheUtil.getInstance().setShopFullName(adminLoginBean.getFullname());
+                            CacheUtil.getInstance().setLoginIdentity(IdentityType.BUSINESS);
+                            CacheUtil.getInstance().setPassword(CacheUtil.getInstance().getPassword());
+                            CacheUtil.getInstance().setLogin(true);
+                            CacheUtil.getInstance().setAreaInfo(adminLoginBean.getLocid());
+                            String userID = CacheUtil.getInstance().getUserId();
+                            String token = CacheUtil.getInstance().getToken();
+                            String shopiD = CacheUtil.getInstance().getShopID();
+                            DBOpenHelper.DB_NAME = adminLoginBean.getUserid() + ".db";
+                            LoginController.getInstance().getDeptList(userID, token, shopiD);//获取部门列表
+                            TeamContactsController.getInstance().getTeamContacts(SplashActivity.this, userID, token, shopiD, null);//获取团队列表
+                            UserVo userVo = UserFactory.getInstance().buildUserVo(adminLoginBean);
+                            UserDBUtil.getInstance().addUser(userVo);
+                            String avatarUrl = ProtocolUtil.getShopLogoUrl(adminLoginBean.getShopid());
+                            CacheUtil.getInstance().saveUserPhotoUrl(avatarUrl);
+                        }
+                    }
+                }
+
+                @Override
+                public void beforeNetworkRequestStart() {
+
+                }
+            });
+        }else{
+            LoginController.getInstance().requestLogin(CacheUtil.getInstance().getUserPhone(),false,new NetRequestListener() {
+                @Override
+                public void onNetworkRequestError(int errorCode, String errorMessage) {
+                    Log.i(TAG, "errorCode:" + errorCode);
+                    Log.i(TAG, "errorMessage:" + errorMessage);
+                }
+
+                @Override
+                public void onNetworkRequestCancelled() {
+
+                }
+
+                @Override
+                public void onNetworkResponseSucceed(NetResponse result) {
+                    Log.i(TAG, "result.rawResult:" + result.rawResult);
+                    SempLoginBean sempLoginbean = new Gson().fromJson(result.rawResult, SempLoginBean.class);
+                    if (sempLoginbean.isSet()) {
+                        //更新为最新的token和userid
+                        CacheUtil.getInstance().setToken(sempLoginbean.getToken());
+                        CacheUtil.getInstance().setUserId(sempLoginbean.getSalesid());
+                        CacheUtil.getInstance().setUserPhone(CacheUtil.getInstance().getUserPhone());
+                        CacheUtil.getInstance().setUserName(sempLoginbean.getName());
+                        CacheUtil.getInstance().setShopID(sempLoginbean.getShopid());
+                        CacheUtil.getInstance().setShopFullName(sempLoginbean.getFullname());
+                        CacheUtil.getInstance().setLoginIdentity(IdentityType.WAITER);
+                        String userID = CacheUtil.getInstance().getUserId();
+                        String token  = CacheUtil.getInstance().getToken();
+                        String shopiD = CacheUtil.getInstance().getShopID();
+                        DBOpenHelper.DB_NAME = sempLoginbean.getSalesid() + ".db";
+                        LoginController.getInstance().getDeptList(userID, token, shopiD);//获取部门列表
+                        TeamContactsController.getInstance().getTeamContacts(SplashActivity.this, userID, token, shopiD, null);//获取团队列表
+                        UserVo userVo = UserFactory.getInstance().buildUserVo(sempLoginbean);
+                        UserDBUtil.getInstance().addUser(userVo);
+                        String avatarUrl = Constants.AVATAR_PRE_URL+userVo.getUserId()+".jpg";
+                        CacheUtil.getInstance().saveUserPhotoUrl(avatarUrl);
+                    }
+                }
+
+                @Override
+                public void beforeNetworkRequestStart() {
+
+                }
+            });
+        }
+    }
+
+    private void goLogin() {
+        Intent loginIntent = new Intent(SplashActivity.this, LoginActivity.class);
+        SplashActivity.this.startActivity(loginIntent);
+        SplashActivity.this.finish();
+        overridePendingTransition(R.anim.activity_new, R.anim.activity_out);
+    }
+
+    private void goHome() {
+        Intent mainIntent = new Intent(SplashActivity.this, MainActivity.class);
+        SplashActivity.this.startActivity(mainIntent);
+        SplashActivity.this.finish();
+        overridePendingTransition(R.anim.activity_new, R.anim.activity_out);
+    }
+
+    Handler handler = new Handler() {
+
+        @Override
+        public void handleMessage(android.os.Message msg) {
+            switch (msg.what) {
+                case GO_LOGIN:
+                    goLogin();
+                    break;
+                case GO_HOME:
+                    goHome();
+                    break;
+                default:
+                    break;
+            }
+            super.handleMessage(msg);
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-        LoginController.getInstance().init(this);
-
-        if(CacheUtil.getInstance().isLogin()){
-            LoginController.getInstance().requestLogin(CacheUtil.getInstance().getUserPhone());
-        }else{
-            Intent intent = new Intent(this, LoginActivity.class);
-            startActivity(intent);
-            finish();
-            overridePendingTransition(R.anim.activity_new, R.anim.activity_out);
-        }
+        initView();
+        initData();
+        initListeners();
     }
 }

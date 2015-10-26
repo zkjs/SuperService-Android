@@ -178,20 +178,24 @@ public class ProtocolMSG {
     public static int MSG_EmpWorkStatus_search_RSP = 121;
 
     //商家员工情况列表
-    public static int MSG_ShopEmplist = 122;
-    public static int MSG_ShopEmplist_RSP = 123;
+    public static int MSG_ShopEmpStatus = 122;
+    public static int MSG_ShopEmpStatus_RSP = 123;
 
-    //酒店预订
-    public static int MSG_ShopRes_form = 124;
-    public static int MSG_ShopRes_form_RSP = 125;
+    //在线/离线和上下班状态统计
+    public static int MSG_ShopEmpStatusCount = 124;
+    public static int MSG_ShopEmpStatusCount_RSP = 125;
 
     //酒店确认信
     public static int MSG_ShopConf_letter = 126;
     public static int MSG_ShopConf_letter_RSP = 127;
 
-    //客户会员卡信息
-    public static int MSG_ShopSendUsercard_loc = 128;
-    public static int MSG_ShopSendUsercard_emp = 129;
+    //客户是否在线状态
+    public static int MSG_UserOnlineStatus = 128;
+    public static int MSG_UserOnlineStatus_RSP = 129;
+
+//    客户会员卡信息
+//    public static int MSG_ShopSendUsercard_loc = 128;
+//    public static int MSG_ShopSendUsercard_emp = 129;
     public static int MSG_ShopSendUsercard_RSP = 130;
 
     //将客人userid转发给员工
@@ -283,6 +287,14 @@ public class ProtocolMSG {
 
     public static int MSG_OfflineMssage = 227;
     public static int MSG_OfflineMssage_RSP = 228;
+
+    //构建会话,可用于建商家内部群组或重建客服会话
+    public static int MSG_BuildSession      = 233;
+    public static int MSG_BuildSession_RSP  = 234;
+
+    //加入会话
+    public static int MSG_JoinSession = 235;
+    public static int MSG_JoinSession_RSP = 236;
 
     // 消息规则预埋
     public static int MSG_RuleAdd = 500;

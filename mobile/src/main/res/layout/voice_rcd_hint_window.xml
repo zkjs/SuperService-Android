@@ -29,7 +29,7 @@
                 android:background="@mipmap/amp1"
                 android:visibility="invisible" />
             
-            <com.zkjinshi.svip.view.AudioRecordingAnimationView
+            <com.zkjinshi.superservice.view.AudioRecordingAnimationView
                 android:id="@+id/voice_rcd_hint_anim2"
                 android:layout_width="150dp"
                 android:layout_height="100dp"

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/mainscreen"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:layout_gravity="center"
+    android:background="@color/bg_item_normal_color"
+    android:orientation="vertical" >
+
+    <include layout="@layout/head_bar_file" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/dirHorizonList"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:cacheColorHint="@android:color/transparent"
+        android:divider="#e3e3e3"
+        android:dividerHeight="1.0dp"
+        android:fadingEdge="none"
+        android:scrollbars="none"
+        android:scrollingCache="false"
+        android:visibility="visible" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@drawable/gray_shadow_shape" />
+
+    <ListView
+        android:id="@+id/file_listview"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1.0"
+        android:gravity="center"
+        android:orientation="vertical" />
+
+    <include
+        android:id="@+id/empty_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1.0"
+        layout="@layout/empty_view"
+        android:visibility="gone" />
+
+</LinearLayout>

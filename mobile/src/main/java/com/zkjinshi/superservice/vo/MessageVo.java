@@ -17,7 +17,7 @@ public class MessageVo {
     private String      content;
     private long        sendTime;
     private String      title;
-    private String         voiceTime;
+    private String      voiceTime;
     private MimeType    mimeType;
     private SendStatus  sendStatus;
     private boolean     isRead;

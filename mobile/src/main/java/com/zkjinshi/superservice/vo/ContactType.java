@@ -9,8 +9,8 @@ package com.zkjinshi.superservice.vo;
  */
 public enum ContactType {
 
-    LOCAL(0),//本地电话本联系人
-    SERVER(1);//服务器上获取到联系人
+    UNNORMAL(0),   //非正式用户
+    NORMAL(1);      //正式用户 已注册手机客户端的客户
 
     private ContactType(int value){
         this.value = value;

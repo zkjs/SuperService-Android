@@ -15,13 +15,18 @@ import com.zkjinshi.base.log.LogUtil;
  */
 public class DBOpenHelper extends SQLiteOpenHelper {
 
+
     public static String DB_NAME = "super_service.db";//根据每个用户创建一份数据库
-    public static final int VERSION = 1;// 数据库版本
+    public static final int VERSION = 2;// 数据库版本
     public static final String MESSAGE_TBL = "messagetbl";// 消息表名
     public static final String CHAT_ROOM_TBL = "chatroomtbl";//聊天室表名
     public static final String MEMBER_TBL = "membertbl";//聊天室成员表
     public static final String USER_TBL = "user_tbl";// 客户表名
     public static final String CLIENT_TBL = "client_tbl";// 客户表名
+    public static final String COMING_TBL = "coming_tbl";//到店信息表
+    public static final String UNREG_CLIENT_TBL = "unreg_client_tbl";//尚未注册的本地客户列表
+    public static final String SHOP_EMPLOYEE_TBL = "shop_employee_tbl";//商家员工列表
+    public static final String SHOP_DEPARTMENT_TBL = "shop_department_tbl";//商家部门表
 
     public DBOpenHelper(Context context) {
         super(context, DB_NAME, null, VERSION);

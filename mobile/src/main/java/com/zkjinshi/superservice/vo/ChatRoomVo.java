@@ -9,94 +9,94 @@ package com.zkjinshi.superservice.vo;
  */
 public class ChatRoomVo {
 
-    private String  shopid; //主键 ShopID
-    private String  shopName;  //聊天室商家名称
-    private String  sessionid; //聊天室ID
-    private String  remark;    //备注
-    private long    created;   //创建时间
-    private long    endtime;   //结束时间
-    private String  enduserid; //结束人ID
-    private String  clientid;  //创建人ID
-    private String  clientname;//创建人姓名
-    private VisibleStatus  isVisible;//是否UI显示
+    private String chatId;
+    private String shopId;
+    private String createrId;
+    private long createTime;
+    private String title;
+    private ChatType chatType;
+    private long lastAction;
+    private boolean enabled;//是否被删除
+    private String imageUrl;
+    private int noticeCount;
 
-    public String getShopid() {
-        return shopid;
+    public String getChatId() {
+        return chatId;
     }
 
-    public void setShopid(String shopid) {
-        this.shopid = shopid;
+    public void setChatId(String chatId) {
+        this.chatId = chatId;
     }
 
-    public String getShopName() {
-        return shopName;
+    public String getShopId() {
+        return shopId;
     }
 
-    public void setShopName(String shopName) {
-        this.shopName = shopName;
+    public void setShopId(String shopId) {
+        this.shopId = shopId;
     }
 
-    public String getSessionid() {
-        return sessionid;
+    public String getCreaterId() {
+        return createrId;
     }
 
-    public void setSessionid(String sessionid) {
-        this.sessionid = sessionid;
+    public void setCreaterId(String createrId) {
+        this.createrId = createrId;
     }
 
-    public String getRemark() {
-        return remark;
+    public long getCreateTime() {
+        return createTime;
     }
 
-    public void setRemark(String remark) {
-        this.remark = remark;
+    public void setCreateTime(long createTime) {
+        this.createTime = createTime;
     }
 
-    public long getCreated() {
-        return created;
+    public String getTitle() {
+        return title;
     }
 
-    public void setCreated(long created) {
-        this.created = created;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
-    public long getEndtime() {
-        return endtime;
+    public ChatType getChatType() {
+        return chatType;
     }
 
-    public void setEndtime(long endtime) {
-        this.endtime = endtime;
+    public void setChatType(ChatType chatType) {
+        this.chatType = chatType;
     }
 
-    public String getEnduserid() {
-        return enduserid;
+    public long getLastAction() {
+        return lastAction;
     }
 
-    public void setEnduserid(String enduserid) {
-        this.enduserid = enduserid;
+    public void setLastAction(long lastAction) {
+        this.lastAction = lastAction;
     }
 
-    public String getClientid() {
-        return clientid;
+    public boolean isEnabled() {
+        return enabled;
     }
 
-    public void setClientid(String clientid) {
-        this.clientid = clientid;
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 
-    public String getClientname() {
-        return clientname;
+    public String getImageUrl() {
+        return imageUrl;
     }
 
-    public void setClientname(String clientname) {
-        this.clientname = clientname;
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
-    public VisibleStatus getIsVisible() {
-        return isVisible;
+    public int getNoticeCount() {
+        return noticeCount;
     }
 
-    public void setIsVisible(VisibleStatus isVisible) {
-        this.isVisible = isVisible;
+    public void setNoticeCount(int noticeCount) {
+        this.noticeCount = noticeCount;
     }
 }

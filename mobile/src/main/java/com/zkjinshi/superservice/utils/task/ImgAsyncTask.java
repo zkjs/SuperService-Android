@@ -54,8 +54,10 @@ public class ImgAsyncTask extends AsyncTask<Void,Void,Bitmap> {
         if (displayBitmap != null) {
             int screenHeight = DeviceUtils.getScreenHeight(activity);
             int screanWidth = DeviceUtils.getScreenWidth(activity);
-            int height = (int)(0.29*screenHeight);
-            int width = (int)(0.71*screanWidth);
+//            int height = (int)(0.29*screenHeight);
+//            int width = (int)(0.71*screanWidth);
+            int height = 190;
+            int width = 270;
             displayBitmap = ImageUtil.cropBitmap(displayBitmap, width, height);
 
             savePath = FileUtil.getInstance().getImageTempPath() + System.currentTimeMillis() + ".jpg";

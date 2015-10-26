@@ -106,7 +106,7 @@ public class RequestUtil {
         HttpResponse response = httpClient.execute(httpPost);
         int respCode = 0;
         if (response != null && null != response.getStatusLine() && ((respCode = response.getStatusLine().getStatusCode()) == HttpStatus.SC_OK )) {
-            resultInfo = EntityUtils.toString(response.getEntity());
+            resultInfo = EntityUtils.toString(response.getEntity(),"UTF-8");
         }
         return  resultInfo;
     }

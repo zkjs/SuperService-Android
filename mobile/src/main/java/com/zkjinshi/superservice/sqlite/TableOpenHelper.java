@@ -41,19 +41,18 @@ public class TableOpenHelper {
      */
     public static String CHAT_ROOM_TBL_SQL =
             "create table if not exists "
-                    + DBOpenHelper.CHAT_ROOM_TBL
-                    + "("
-                    + " session_id text primary key, "
-                    + " shop_name text, "//聊天室名称
-                    + " shop_id text, "//商家id
-                    + " remark text, "//备注
-                    + " created long, "//创建时间
-                    + " end_time long, "//会话结束时间
-                    + " end_user_id text, "//会话结束人
-                    + " client_id text, "//会话创建人
-                    + " client_name text , "//会话创建姓名
-                    + " is_visible integer"//是否显示此聊天室 //0:隐藏 //1:显示
-                    + " )";
+                + DBOpenHelper.CHAT_ROOM_TBL + "("
+                + " chat_id text primary key, "//聊天室id
+                + " shop_id text , "//商家id
+                + " chat_type int, " // 对应chatType 枚举类型
+                + " create_time long, "//创建聊天室时间
+                + " creater_id text, "//创建者id
+                + " image_url text, "//聊天室头像链接
+                + " title text, "//聊天室标题
+                + " last_action long, "//资料更新时间戳	更新聊天室群成员资料凭证
+                + " enabled int, " // 聊天室是否可用 true 1 false 0
+                + " notice_count int "//消息未读数
+                + ")";
 
     /**
      * 创建membertbl表sql语句
@@ -62,8 +61,8 @@ public class TableOpenHelper {
             "create table if not exists "
                     + DBOpenHelper.MEMBER_TBL
                     + "("
+                    + " userid text primary key , "//用户ID
                     + " session_id text , "
-                    + " userid text, "//用户ID
                     + " logintype integer, "//用户类型 0:app用户  1:商家员工 默认为:0
                     + " shopid text, "//商家ID
                     + " empid text, "//员工ID
@@ -90,14 +89,89 @@ public class TableOpenHelper {
             " create table if not exists "
                     + DBOpenHelper.CLIENT_TBL
                     + " ( "
-                    + " client_id       text primary key, " //主键
-                    + " client_name     text, " //客户姓名
-                    + " client_phone    text, " //客户手机
-                    + " avatar_name     text, " //图片名称
-                    + " avatar_url      text, " //图片url
-                    + " client_company  text, " //客户公司
-                    + " client_position text, " //客户职位
-                    + " on_account      integer "   //是否挂账会员 0:挂账会员 1 非挂账会员
+                    + " userid        text primary key, "
+                    + " id            int, "
+                    + " shopid        text, "
+                    + " salesid       text, "
+                    + " user_level    int, "
+                    + " level_desc    text, "
+                    + " card_no       text, "
+                    + " is_special    text, "
+                    + " nationality   text, "
+                    + " like_desc     text, "
+                    + " taboo_desc    text, "
+                    + " other_desc    text, "
+                    + " created       text, "
+                    + " modified      text, "
+                    + " username      text, "
+                    + " phone         text, "
+                    + " company       text, "
+                    + " position      text, "
+                    + " is_bill       int, "
+                    + " contact_type  int, "
+                    + " sex           int, "
+                    + " order_count   int, "
+                    + " tags          text, "
+                    + " online_status int, "
+                    + " bg_drawable_res  int " //背景颜色资源值
+                    + " ) ";
+
+    /** 创建到店信息表 */
+    public static String COMING_TBL_SQL =
+            " create table if not exists "
+                    + DBOpenHelper.COMING_TBL
+                    + " ( "
+                    + "  _id integer primary key autoincrement , "
+                    + " user_id text , "
+                    + " loc_id text, "
+                    + " vip text, "
+                    + " user_name text, "
+                    + " location text, "
+                    + " phone_num text, "
+                    + " room_type text, "
+                    + " check_in_date text, "
+                    + " check_out_date text, "
+                    + " stay_days integer, "
+                    + " arrive_time long, "
+                    + " order_status integer "
+                    + " ) ";
+
+    /** 商家员工信息表 */
+    public final static String SHOP_EMPLOYEE_TBL_SQL =
+            " create table if not exists "
+                    + DBOpenHelper.SHOP_EMPLOYEE_TBL
+                    + " ( "
+                    + " empid         text primary key, " //员工ID
+                    + " empcode       text, "//工号
+                    + " name          text, "//用户名
+                    + " roleid        int,  "//所属角色
+                    + " email         text, "//邮箱
+                    + " phone         text, "//手机
+                    + " phone2        text, "//其它号码
+                    + " fax           text, "//传真
+                    + " created       long, "//增加时间
+                    + " locationid    int,"//区域ID
+                    + " role_name     text,"//角色名称
+                    + " online_status int,"// 服务器在线状态
+                    + " work_status   int,"//是否上班中
+                    + " last_online_time  long, "//上一次在线时间
+                    + " dept_id       int,"  //部门
+                    + " desc          text," //备注描述
+                    + " shop_id       text,"  //商家ID
+                    + " dept_name     text,"  //部门名称
+                    + " bg_color_res  int"    //背景颜色资源值
+                    + " ) ";
+
+    /** 商家部门表 */
+    public final static String SHOP_DEPARTMENT_TBL_SQL =
+            " create table if not exists "
+                    + DBOpenHelper.SHOP_DEPARTMENT_TBL
+                    + " ( "
+                    + " deptid        int primary key, " //部门ID
+                    + " shopid        text, "//商家ID
+                    + " dept_code     text, "//部门编号
+                    + " dept_name     int,  "//部门名称
+                    + " description   text "//描述
                     + " ) ";
 
     /**
@@ -109,8 +183,11 @@ public class TableOpenHelper {
                 DBOpenHelper.MESSAGE_TBL,//消息表
                 DBOpenHelper.CHAT_ROOM_TBL,//聊天室表
                 DBOpenHelper.MEMBER_TBL,//成员表
-                DBOpenHelper.USER_TBL,//客户表
+                DBOpenHelper.USER_TBL,//app用户表
                 DBOpenHelper.CLIENT_TBL,//客户表
+                DBOpenHelper.COMING_TBL,//到店信息表
+                DBOpenHelper.SHOP_EMPLOYEE_TBL,//商家员工表
+                DBOpenHelper.SHOP_DEPARTMENT_TBL//商家部门表
         };
     }
 

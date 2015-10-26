@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -18,22 +17,20 @@ import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.adapter.ZoneAdapter;
 
 import com.zkjinshi.superservice.bean.BaseBean;
-import com.zkjinshi.superservice.bean.SempLoginBean;
 import com.zkjinshi.superservice.bean.ZoneBean;
 
-import com.zkjinshi.superservice.factory.UserFactory;
+import com.zkjinshi.superservice.net.ExtNetRequestListener;
 import com.zkjinshi.superservice.net.MethodType;
 import com.zkjinshi.superservice.net.NetRequest;
-import com.zkjinshi.superservice.net.NetRequestListener;
 import com.zkjinshi.superservice.net.NetRequestTask;
 import com.zkjinshi.superservice.net.NetResponse;
 
-import com.zkjinshi.superservice.sqlite.DBOpenHelper;
 import com.zkjinshi.superservice.sqlite.UserDBUtil;
 
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.view.RefreshLayout;
+import com.zkjinshi.superservice.vo.IdentityType;
 import com.zkjinshi.superservice.vo.UserVo;
 
 import java.util.ArrayList;
@@ -86,8 +83,8 @@ public class ZoneActivity extends Activity implements SwipeRefreshLayout.OnRefre
         bizMap.put("shopid",userVo.getShopId());
         netRequest.setBizParamMap(bizMap);
         NetRequestTask netRequestTask = new NetRequestTask(this,netRequest, NetResponse.class);
-        netRequestTask.methodType = MethodType.POST;
-        netRequestTask.setNetRequestListener(new NetRequestListener() {
+        netRequestTask.methodType = MethodType.PUSH;
+        netRequestTask.setNetRequestListener(new ExtNetRequestListener(this) {
             @Override
             public void onNetworkRequestError(int errorCode, String errorMessage) {
                 Log.i(TAG, "errorCode:" + errorCode);
@@ -123,9 +120,17 @@ public class ZoneActivity extends Activity implements SwipeRefreshLayout.OnRefre
         findViewById(R.id.back_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(ZoneActivity.this,MoreActivity.class));
-                finish();
-                overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
+                //CacheUtil.getInstance().setLoginIdentity(IdentityType.BUSINESS);
+                if(CacheUtil.getInstance().getLoginIdentity() == IdentityType.BUSINESS){
+                    startActivity(new Intent(ZoneActivity.this,ShopLoginActivity.class));
+                    finish();
+                    overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
+                }else{
+                    startActivity(new Intent(ZoneActivity.this,MoreActivity.class));
+                    finish();
+                    overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
+                }
+
             }
         });
 
@@ -150,8 +155,8 @@ public class ZoneActivity extends Activity implements SwipeRefreshLayout.OnRefre
         bizMap.put("locid",locid);
         netRequest.setBizParamMap(bizMap);
         NetRequestTask netRequestTask = new NetRequestTask(this,netRequest, NetResponse.class);
-        netRequestTask.methodType = MethodType.POST;
-        netRequestTask.setNetRequestListener(new NetRequestListener() {
+        netRequestTask.methodType = MethodType.PUSH;
+        netRequestTask.setNetRequestListener(new ExtNetRequestListener(this) {
             @Override
             public void onNetworkRequestError(int errorCode, String errorMessage) {
                 Log.i(TAG, "errorCode:" + errorCode);
@@ -169,6 +174,7 @@ public class ZoneActivity extends Activity implements SwipeRefreshLayout.OnRefre
                 BaseBean baseBean = new Gson().fromJson(result.rawResult, BaseBean.class);
                 if (baseBean.isSet()) {
                     CacheUtil.getInstance().setLogin(true);
+                    CacheUtil.getInstance().setAreaInfo(zoneAdapter.getCheckedIds());
                     startActivity(new Intent(ZoneActivity.this, MainActivity.class));
                     finish();
                     overridePendingTransition(R.anim.activity_new, R.anim.activity_out);

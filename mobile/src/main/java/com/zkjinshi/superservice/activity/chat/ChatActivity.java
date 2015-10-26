@@ -7,11 +7,15 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.support.v4.app.RemoteInput;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -39,6 +43,8 @@ import com.zkjinshi.superservice.activity.chat.action.MessageListViewManager;
 import com.zkjinshi.superservice.activity.chat.action.MoreViewPagerManager;
 import com.zkjinshi.superservice.activity.chat.action.QuickMenuManager;
 import com.zkjinshi.superservice.activity.chat.action.VoiceRecordManager;
+import com.zkjinshi.superservice.activity.set.EmployeeAddActivity;
+import com.zkjinshi.superservice.activity.set.TeamEditActivity;
 import com.zkjinshi.superservice.bean.BookOrderBean;
 import com.zkjinshi.superservice.sqlite.ChatRoomDBUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
@@ -46,6 +52,8 @@ import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.utils.FileUtil;
 import com.zkjinshi.superservice.utils.MediaPlayerUtil;
 import com.zkjinshi.superservice.vo.ChatRoomVo;
+import com.zkjinshi.superservice.vo.IdentityType;
+import com.zkjinshi.superservice.vo.OnlineStatus;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -66,7 +74,7 @@ import static android.view.View.VISIBLE;
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class ChatActivity extends Activity implements CompoundButton.OnCheckedChangeListener {
+public class ChatActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener {
 
     private final static String TAG = ChatActivity.class.getSimpleName();
 
@@ -76,8 +84,10 @@ public class ChatActivity extends Activity implements CompoundButton.OnCheckedCh
     private String        mClientID;
     private BookOrderBean bookOrder;
 
-    private TextView titleTv;
-    private ImageButton backIBtn;
+    private Toolbar       mToolbar;
+    private TextView      mTvCenterTitle;
+    private TextView      mTvBottomTitle;
+
     private EditText mMsgTextInput;
     private Button mBtnMsgSend;
 
@@ -106,6 +116,9 @@ public class ChatActivity extends Activity implements CompoundButton.OnCheckedCh
 
     private ChatRoomVo mChatRoom;
 
+    private String remoteAction;
+    private String remoteMessage;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -117,7 +130,16 @@ public class ChatActivity extends Activity implements CompoundButton.OnCheckedCh
     }
 
     private void initView() {
-        titleTv = (TextView)findViewById(R.id.header_bar_tv_title);
+
+        DialogUtil.getInstance().cancelProgressDialog();
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        mToolbar.setTitle("");
+        mToolbar.setNavigationIcon(R.drawable.ic_fanhui);
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        mTvCenterTitle = (TextView) findViewById(R.id.tv_center_title);
+        mTvBottomTitle = (TextView) findViewById(R.id.tv_online_status);
+
         mMsgTextInput = (EditText) findViewById(R.id.et_msg_text_input);
         mBtnMsgSend   = (Button)   findViewById(R.id.btn_msg_send);
         faceLinearLayout = (LinearLayout) findViewById(R.id.face_ll);
@@ -128,20 +150,38 @@ public class ChatActivity extends Activity implements CompoundButton.OnCheckedCh
         startAudioBtn    = (TextView) findViewById(R.id.say_btn);
         animAreaLayout   = (RelativeLayout) findViewById(R.id.voice_rcd_hint_anim_area);
         cancelAreaLayout = (RelativeLayout) findViewById(R.id.voice_rcd_hint_cancel_area);
-        backIBtn = (ImageButton)findViewById(R.id.header_bar_btn_back);
     }
 
     private void initData() {
-        titleTv.setText("聊天");
-        backIBtn.setVisibility(View.VISIBLE);
         mSessionID = getIntent().getStringExtra("session_id");
-        mShopID = getIntent().getStringExtra("shop_id");
-        mChatRoom  = ChatRoomDBUtil.getInstance().queryChatRoomBySessionId(mSessionID);
+        mShopID    = getIntent().getStringExtra("shop_id");
+        String sessionName = getIntent().getStringExtra("session_name");
+        int onlineStatus = getIntent().getIntExtra("online_status", 1);
+
+        if(!TextUtils.isEmpty(sessionName)){
+            mTvCenterTitle.setText(getString(R.string.with) + sessionName + (getString(R.string.chating)));
+        }else{
+            ChatRoomVo chatRoomVo = ChatRoomDBUtil.getInstance().queryChatRoomBySessionId(mSessionID);
+            if(null != chatRoomVo){
+                String title = chatRoomVo.getTitle();
+                if(!TextUtils.isEmpty(title)){
+                    mTvCenterTitle.setText(getString(R.string.with) + title + (getString(R.string.chating)));
+                }
+            }
+        }
+
+        if(onlineStatus == OnlineStatus.ONLINE.getValue()){
+            mTvBottomTitle.setText("对象"+ getString(R.string.online));
+        }else {
+            mTvBottomTitle.setText("对象"+ getString(R.string.offline));
+        }
+
+        mChatRoom = ChatRoomDBUtil.getInstance().queryChatRoomBySessionId(mSessionID);
         if(null != mChatRoom){
             if(TextUtils.isEmpty(mShopID)){
-                mShopID    = mChatRoom.getShopid();
+                mShopID    = mChatRoom.getShopId();
             }
-            mClientID  = mChatRoom.getClientid();
+            mClientID  = mChatRoom.getCreaterId();
         }
         mUserID    = CacheUtil.getInstance().getUserId();
         bookOrder  = (BookOrderBean) getIntent().getSerializableExtra("bookOrder");
@@ -166,15 +206,48 @@ public class ChatActivity extends Activity implements CompoundButton.OnCheckedCh
                 messageListViewManager.sendBookTextMessage(bookOrderStr);
             }
         }
+        //增加远程手表语音自动回复
+        remoteAction = getIntent().getAction();
+        if(!TextUtils.isEmpty(remoteAction) && remoteAction.equals(Constants.ACTION_VOICE_RELAY)){
+            remoteMessage = getRemoteInputText(getIntent()).toString();
+            if(!TextUtils.isEmpty(remoteMessage)){
+                messageListViewManager.sendTextMessage(remoteMessage);
+                remoteMessage = null;
+            }
+        }
     }
 
     private void initListener() {
-        backIBtn.setOnClickListener(new View.OnClickListener() {
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(View v) {
                 ChatActivity.this.finish();
             }
         });
+
+        mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(android.view.MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.add_chat_object:
+                        break;
+
+                    case R.id.start_group_chat:
+                        break;
+
+                    case R.id.transfer_chat_to_others:
+                        break;
+
+                    case R.id.offline_to_this_chat:
+                        break;
+
+                    case R.id.finish_this_chat:
+                        break;
+                }
+                return true;
+            }
+        });
+
         faceCb.setOnCheckedChangeListener(this);
         moreCb.setOnCheckedChangeListener(this);
 
@@ -288,6 +361,14 @@ public class ChatActivity extends Activity implements CompoundButton.OnCheckedCh
             }
         });
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_activity_chat, menu);
+        return true;
+    }
+
 
     public void resetKeyboard(){
         hideFaceLayout();
@@ -562,5 +643,18 @@ public class ChatActivity extends Activity implements CompoundButton.OnCheckedCh
             }
         }
         return super.onTouchEvent(event);
+    }
+
+    /**
+     * 获取远程wear端输入文本
+     * @param intent
+     * @return
+     */
+    private CharSequence getRemoteInputText(Intent intent) {
+        Bundle remoteInput = RemoteInput.getResultsFromIntent(intent);
+        if (remoteInput != null) {
+            return remoteInput.getCharSequence(Constants.EXTRA_VOICE_REPLY);
+        }
+        return null;
     }
 }

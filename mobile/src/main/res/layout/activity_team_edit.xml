@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:background="@color/white"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include layout="@layout/activity_title"> </include>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rcv_team_contacts"
+        android:layout_width="match_parent"
+        android:layout_weight="1"
+        android:layout_height="0dp"
+        android:cacheColorHint="#000000"
+        android:layout_alignLeft="@id/rl_side_bar"
+        android:divider="#e3e3e3"
+        android:dividerHeight="1.0dp"
+        android:fadingEdge="none"
+        android:scrollbars="none"
+        android:scrollingCache="false"
+        android:visibility="visible" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:background="@drawable/bg_gradient_white_to_gray"></View>
+
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:orientation="horizontal">
+
+        <RelativeLayout
+            android:id="@+id/rl_change_department"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/bg_rl_change_department"
+            android:clickable="true"
+            android:gravity="center">
+
+            <TextView
+                android:drawableLeft="@drawable/ic_down"
+                android:drawablePadding="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#101010"
+                android:textSize="16sp"
+                android:text="@string/change_department"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rl_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/bg_rl_delete"
+            android:clickable="true"
+            android:gravity="center">
+
+            <TextView
+                android:drawableLeft="@drawable/bg_ic_quxiao"
+                android:textSize="16sp"
+                android:drawablePadding="5dp"
+                android:textColor="@color/white"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/delete"/>
+
+        </RelativeLayout>
+    </LinearLayout>
+
+</LinearLayout>

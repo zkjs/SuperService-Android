@@ -2,27 +2,24 @@ package com.zkjinshi.superservice.activity.common;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.util.Log;
 
 import com.google.gson.Gson;
-import com.zkjinshi.base.util.DialogUtil;
-import com.zkjinshi.superservice.R;
-import com.zkjinshi.superservice.bean.SempLoginBean;
-import com.zkjinshi.superservice.factory.UserFactory;
+import com.google.gson.reflect.TypeToken;
+import com.zkjinshi.base.log.LogLevel;
+import com.zkjinshi.base.log.LogUtil;
 import com.zkjinshi.superservice.net.MethodType;
 import com.zkjinshi.superservice.net.NetRequest;
 import com.zkjinshi.superservice.net.NetRequestListener;
 import com.zkjinshi.superservice.net.NetRequestTask;
 import com.zkjinshi.superservice.net.NetResponse;
-import com.zkjinshi.superservice.sqlite.DBOpenHelper;
-import com.zkjinshi.superservice.sqlite.UserDBUtil;
-import com.zkjinshi.superservice.utils.CacheUtil;
-import com.zkjinshi.superservice.utils.Constants;
+import com.zkjinshi.superservice.sqlite.ShopDepartmentDBUtil;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
-import com.zkjinshi.superservice.vo.UserVo;
+import com.zkjinshi.superservice.vo.DepartmentVo;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * 开发者：dujiande
@@ -52,16 +49,60 @@ public class LoginController {
 
     }
 
-    /*
-* 请求登录
-* */
-    public void requestLogin(final String phone){
+    /**
+     * 服务员请求登录
+     * @param phone
+     */
+    public void requestLogin(final String phone,boolean isLoading,NetRequestListener netRequestListener){
         NetRequest netRequest = new NetRequest(ProtocolUtil.getSempLoginUrl());
         HashMap<String,String> bizMap = new HashMap<String,String>();
-        bizMap.put("phone",phone);
+        bizMap.put("phone", phone);
         netRequest.setBizParamMap(bizMap);
         NetRequestTask netRequestTask = new NetRequestTask(activity,netRequest, NetResponse.class);
-        netRequestTask.methodType = MethodType.POST;
+        netRequestTask.methodType = MethodType.PUSH;
+        if(null != netRequestListener){
+            netRequestTask.setNetRequestListener(netRequestListener);
+        }
+        netRequestTask.isShowLoadingDialog = isLoading;
+        netRequestTask.execute();
+    }
+
+    /**
+     * 管理员请求登录
+     * @param phone
+     */
+    public void requestAdminLogin(final String phone,final String password,boolean isLoading,NetRequestListener netRequestListener){
+        String url = ProtocolUtil.getAdminLoginUrl();
+        Log.i(TAG, url);
+        NetRequest netRequest = new NetRequest(url);
+        HashMap<String,String> bizMap = new HashMap<String,String>();
+        bizMap.put("phone",phone);
+        bizMap.put("password", password);
+        netRequest.setBizParamMap(bizMap);
+        NetRequestTask netRequestTask = new NetRequestTask(activity,netRequest, NetResponse.class);
+        netRequestTask.methodType = MethodType.PUSH;
+        if(null != netRequestListener){
+            netRequestTask.setNetRequestListener(netRequestListener);
+        }
+        netRequestTask.isShowLoadingDialog = isLoading;
+        netRequestTask.execute();
+    }
+
+    /**
+     * 获取部门列表
+     * @param userID
+     * @param token
+     * @param shopID
+     */
+    public void getDeptList(String userID, String token, final String shopID) {
+        NetRequest netRequest = new NetRequest(ProtocolUtil.getDeptListUrl());
+        HashMap<String,String> bizMap = new HashMap<>();
+        bizMap.put("salesid", userID);
+        bizMap.put("token", token);
+        bizMap.put("shopid", shopID);
+        netRequest.setBizParamMap(bizMap);
+        NetRequestTask netRequestTask = new NetRequestTask(context, netRequest, NetResponse.class);
+        netRequestTask.methodType = MethodType.PUSH;
         netRequestTask.setNetRequestListener(new NetRequestListener() {
             @Override
             public void onNetworkRequestError(int errorCode, String errorMessage) {
@@ -71,48 +112,32 @@ public class LoginController {
 
             @Override
             public void onNetworkRequestCancelled() {
-
             }
 
             @Override
             public void onNetworkResponseSucceed(NetResponse result) {
                 Log.i(TAG, "result.rawResult:" + result.rawResult);
-                SempLoginBean sempLoginbean = new Gson().fromJson(result.rawResult, SempLoginBean.class);
-                if (sempLoginbean.isSet()) {
-                    //更新为最新的token和userid
-                    CacheUtil.getInstance().setToken(sempLoginbean.getToken());
-                    CacheUtil.getInstance().setUserId(sempLoginbean.getSalesid());
-                    CacheUtil.getInstance().setUserPhone(phone);
-                    CacheUtil.getInstance().setUserName(sempLoginbean.getName());
-                    DBOpenHelper.DB_NAME = sempLoginbean.getSalesid() + ".db";
-                    UserVo userVo = UserFactory.getInstance().buildUserVo(sempLoginbean);
-                    UserDBUtil.getInstance().addUser(userVo);
-                    String avatarUrl = Constants.AVATAR_PRE_URL+userVo.getUserId()+".jpg";
-                    CacheUtil.getInstance().saveUserPhotoUrl(avatarUrl);
-                    if (CacheUtil.getInstance().isLogin()) {
-                        Intent intent = new Intent(activity, MainActivity.class);
-                        activity.startActivity(intent);
-                        activity.finish();
-                        activity.overridePendingTransition(R.anim.activity_new, R.anim.activity_out);
-                    } else {
-                        Intent intent = new Intent(activity, MoreActivity.class);
-                        activity.startActivity(intent);
-                        activity.finish();
-                        activity.overridePendingTransition(R.anim.activity_new, R.anim.activity_out);
-                    }
-
+                String jsonResult = result.rawResult;
+                if (result.rawResult.contains("set") || jsonResult.contains("err")) {
+                    return ;
                 } else {
-                    DialogUtil.getInstance().showToast(activity, "手机号还不是服务员 ");
+                    Gson gson = new Gson();
+                    List<DepartmentVo> departmentVos = gson.fromJson(jsonResult,
+                            new TypeToken<ArrayList<DepartmentVo>>() {}.getType());
+                    /** add to local db */
+                    if(null != departmentVos && departmentVos.isEmpty()){
+                        ShopDepartmentDBUtil.getInstance().batchAddShopDepartments(departmentVos);
+                    }
                 }
-
             }
 
             @Override
-            public void beforeNetworkRequestStart() {
-
+            public void beforeNetworkRequestStart()     {
+                //网络请求前
             }
         });
-        netRequestTask.isShowLoadingDialog = true;
+        netRequestTask.isShowLoadingDialog = false;
         netRequestTask.execute();
     }
+
 }

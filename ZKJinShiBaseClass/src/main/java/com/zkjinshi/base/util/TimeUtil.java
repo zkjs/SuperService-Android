@@ -1,6 +1,7 @@
 package com.zkjinshi.base.util;
 
 import android.annotation.SuppressLint;
+import android.util.Log;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -88,6 +89,11 @@ public class TimeUtil {
 		return result;
 	}
 
+	public static String getChatTime(String timeStr) {
+		long timesamp = timeStrToTimeStamp(timeStr);
+		return getChatTime(timesamp);
+	}
+
 	/**
 	 * 计算两个日期之间相差的天数
 	 * @param smdate 较小的时间
@@ -125,5 +131,19 @@ public class TimeUtil {
 		return Integer.parseInt(String.valueOf(between_days));
 	}
 
+	/**
+	 * 标准时间字符串转换为时间戳
+	 */
+	 public static long timeStrToTimeStamp(String timeStr){
+		 try {
+			 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			 Date d = sdf.parse(timeStr);
+			 long timeStamp = d.getTime();
+			return timeStamp;
+		 }catch (Exception e){
+			 Log.e("TimeUtil", e.getMessage());
+		 }
+		 return 0;
+	 }
 }
 

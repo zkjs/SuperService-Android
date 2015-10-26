@@ -25,6 +25,7 @@ import com.zkjinshi.base.util.ImageUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.bean.BaseBean;
 import com.zkjinshi.superservice.bean.SempLoginBean;
+import com.zkjinshi.superservice.net.ExtNetRequestListener;
 import com.zkjinshi.superservice.net.MethodType;
 import com.zkjinshi.superservice.net.NetRequest;
 import com.zkjinshi.superservice.net.NetRequestListener;
@@ -196,8 +197,8 @@ public class MoreActivity extends FragmentActivity implements MultiImageSelector
 
 
         NetRequestTask netRequestTask = new NetRequestTask(this,netRequest, NetResponse.class);
-        netRequestTask.methodType = MethodType.POST;
-        netRequestTask.setNetRequestListener(new NetRequestListener() {
+        netRequestTask.methodType = MethodType.PUSH;
+        netRequestTask.setNetRequestListener(new ExtNetRequestListener(this) {
             @Override
             public void onNetworkRequestError(int errorCode, String errorMessage) {
                 Log.i(TAG, "errorCode:" + errorCode);

@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#eeeeee"
+    android:orientation="vertical">
+    <!--标题-->
+    <RelativeLayout
+        android:id="@+id/title_layout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@android:color/holo_blue_light">
+        <ImageButton
+            android:id="@+id/back_btn_title"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/header_ibtn_back"
+            android:scaleType="center"
+            android:background="#00000000"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="账单确定"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            android:layout_centerInParent="true"/>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_below="@+id/title_layout"
+        android:background="#f5f5f5"
+        android:layout_marginBottom="50dp"
+        android:padding="10dp">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:orientation="horizontal"
+            android:background="@drawable/frame_bg">
+            <com.zkjinshi.superservice.view.CircleImageView
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_gravity="center"
+                android:scaleType="center"
+                android:clickable="true"
+                android:background="@drawable/img_hotel_zhanwei"
+                android:layout_margin="20dp"
+                android:id="@+id/avatar">
+            </com.zkjinshi.superservice.view.CircleImageView>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:gravity="center_vertical">
+                    <TextView
+                        android:id="@+id/tv_username"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="吴媛媛"
+                        android:textSize="14sp"
+                        android:textColor="#101010"/>
+
+                <TextView
+                    android:id="@+id/tv_user_info"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="VIP3  |  来店18次 | 16次订单"
+                    android:layout_marginTop="10dp"
+                    android:textSize="14sp"
+                    android:textColor="#949494"/>
+            </LinearLayout>
+        </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="350dp"
+        android:orientation="vertical"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/frame_bg"
+        android:padding="10dp">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="订单"
+                android:textSize="16sp"
+                android:textColor="#101010"/>
+
+            <TextView
+                android:id="@+id/order_text"
+                android:gravity="center_vertical"
+                android:layout_width="300dp"
+                android:layout_height="50dp"
+                android:layout_marginLeft="16dp"
+                android:paddingLeft="16dp"
+                android:background="#eeeeee"
+                android:text="豪华大床房|2晚|10/03-10/05"
+                android:textSize="16sp"
+                android:textColor="#101010"/>
+        </LinearLayout>
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            style="@style/inputStyle"
+            android:inputType="numberDecimal"
+            android:hint="请输入金额"
+            android:layout_marginTop="10dp"
+            android:id="@+id/order_rate" />
+
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="150dip"
+            android:fadingEdge="none"
+            android:divider="#f0edf0"
+            android:dividerHeight="0dp"
+            android:fadeScrollbars="true"
+            android:id="@+id/pay_listview"/>
+
+        <EditText
+            android:padding="5dp"
+            android:gravity="left|top"
+            android:layout_width="match_parent"
+            android:layout_height="68dp"
+            style="@style/inputStyle"
+            android:inputType="text"
+            android:hint="定价说明"
+            android:layout_marginTop="2dp"
+            android:id="@+id/price_remark" />
+
+    </LinearLayout>
+
+
+    </LinearLayout>
+    <include layout="@layout/register_bottom" />
+</RelativeLayout>

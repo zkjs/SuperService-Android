@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".activity.set.TeamContactsActivity">
+
+    <item
+        android:id="@+id/menu_team_search"
+        android:icon="@drawable/ic_search"
+        android:title="@string/search"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/menu_team_jia"
+        android:icon="@drawable/ic_tianjia_w"
+        android:title="@string/action_tian_jia"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/menu_team_edit"
+        android:title="@string/action_edit"
+        android:icon="@drawable/ic_pen"
+        app:showAsAction="always" />
+
+</menu>

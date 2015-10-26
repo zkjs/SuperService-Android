@@ -79,6 +79,7 @@ public class VerifyPhoneControler {
     public void init(Context context){
         this.context = context;
         this.activity = (Activity)context;
+        mSmsCountSeconds = 60;
 
         mInputPhone     = (EditText)    activity.findViewById(R.id.et_input_phone);
         mVerifyCode     = (EditText)    activity.findViewById(R.id.et_verify_code);

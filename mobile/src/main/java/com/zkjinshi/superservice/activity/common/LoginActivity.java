@@ -11,22 +11,21 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.google.gson.Gson;
+import com.zkjinshi.base.log.LogLevel;
+import com.zkjinshi.base.log.LogUtil;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
+import com.zkjinshi.superservice.activity.set.TeamContactsController;
 import com.zkjinshi.superservice.bean.SempLoginBean;
 import com.zkjinshi.superservice.factory.UserFactory;
-import com.zkjinshi.superservice.net.MethodType;
-import com.zkjinshi.superservice.net.NetRequest;
 import com.zkjinshi.superservice.net.NetRequestListener;
-import com.zkjinshi.superservice.net.NetRequestTask;
 import com.zkjinshi.superservice.net.NetResponse;
 import com.zkjinshi.superservice.sqlite.DBOpenHelper;
 import com.zkjinshi.superservice.sqlite.UserDBUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
-import com.zkjinshi.superservice.utils.ProtocolUtil;
+import com.zkjinshi.superservice.utils.Constants;
+import com.zkjinshi.superservice.vo.IdentityType;
 import com.zkjinshi.superservice.vo.UserVo;
-
-import java.util.HashMap;
 
 /**
  * 开发者：dujiande
@@ -60,23 +59,72 @@ public class LoginActivity extends Activity implements VerifyPhoneControler.Succ
 
     private void initData() {
         LoginController.getInstance().init(this);
-        //VerifyPhoneControler.getInstance().init(this);
-        //VerifyPhoneControler.getInstance().setSuccessCallBack(this);
+        VerifyPhoneControler.getInstance().init(this);
+        VerifyPhoneControler.getInstance().setSuccessCallBack(this);
 
         //测试跳转用的
-        inputEt.setText("15757575577");
-        loginBtn.setEnabled(true);
-        loginBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String phone = inputEt.getText().toString();
-                if (TextUtils.isEmpty(phone)) {
-                    DialogUtil.getInstance().showToast(LoginActivity.this, "电话号码不能为空");
-                    return;
-                }
-                LoginController.getInstance().requestLogin(phone);
-            }
-        });
+//        inputEt.setText("14000800924");//18912345678
+//        loginBtn.setEnabled(true);
+//        loginBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                final String phone = inputEt.getText().toString();
+//                if (TextUtils.isEmpty(phone)) {
+//                    DialogUtil.getInstance().showToast(LoginActivity.this, "电话号码不能为空");
+//                    return;
+//                }
+//                LoginController.getInstance().requestLogin(phone,true,new NetRequestListener() {
+//                    @Override
+//                    public void onNetworkRequestError(int errorCode, String errorMessage) {
+//                        Log.i(TAG, "errorCode:" + errorCode);
+//                        Log.i(TAG, "errorMessage:" + errorMessage);
+//                    }
+//
+//                    @Override
+//                    public void onNetworkRequestCancelled() {
+//
+//                    }
+//
+//                    @Override
+//                    public void onNetworkResponseSucceed(NetResponse result) {
+//                        Log.i(TAG, "result.rawResult:" + result.rawResult);
+//                        SempLoginBean sempLoginbean = new Gson().fromJson(result.rawResult, SempLoginBean.class);
+//                        if (sempLoginbean.isSet()) {
+//                            //更新为最新的token和userid
+//                            CacheUtil.getInstance().setToken(sempLoginbean.getToken());
+//                            CacheUtil.getInstance().setUserId(sempLoginbean.getSalesid());
+//                            CacheUtil.getInstance().setUserPhone(phone);
+//                            CacheUtil.getInstance().setUserName(sempLoginbean.getName());
+//                            CacheUtil.getInstance().setShopID(sempLoginbean.getShopid());
+//                            CacheUtil.getInstance().setShopFullName(sempLoginbean.getFullname());
+//                            CacheUtil.getInstance().setLoginIdentity(IdentityType.WAITER);
+//                            String userID = CacheUtil.getInstance().getUserId();
+//                            String token  = CacheUtil.getInstance().getToken();
+//                            String shopiD = CacheUtil.getInstance().getShopID();
+//                            DBOpenHelper.DB_NAME = sempLoginbean.getSalesid() + ".db";
+//                            LoginController.getInstance().getDeptList(userID, token, shopiD);//获取部门列表
+//                            TeamContactsController.getInstance().getTeamContacts(LoginActivity.this, userID, token, shopiD, null);//获取团队列表
+//                            LocNoticeController.getInstance().init(LoginActivity.this).requestLocTask();//获取区域信息
+//                            UserVo userVo = UserFactory.getInstance().buildUserVo(sempLoginbean);
+//                            UserDBUtil.getInstance().addUser(userVo);
+//                            String avatarUrl = Constants.AVATAR_PRE_URL+userVo.getUserId()+".jpg";
+//                            CacheUtil.getInstance().saveUserPhotoUrl(avatarUrl);
+//                            Intent intent = new Intent(LoginActivity.this, MoreActivity.class);
+//                            startActivity(intent);
+//                            finish();
+//                            overridePendingTransition(R.anim.activity_new, R.anim.activity_out);
+//                        } else {
+//                            DialogUtil.getInstance().showToast(LoginActivity.this, "手机号还不是服务员 ");
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void beforeNetworkRequestStart() {
+//
+//                    }
+//                });
+//            }
+//        });
     }
 
     private void initListener() {
@@ -84,7 +132,7 @@ public class LoginActivity extends Activity implements VerifyPhoneControler.Succ
         findViewById(R.id.shop_register_tv).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(LoginActivity.this, ShopRegisterActivity.class));
+                startActivity(new Intent(LoginActivity.this, ShopLoginActivity.class));
                 finish();
                 overridePendingTransition(R.anim.activity_new, R.anim.activity_out);
             }
@@ -94,13 +142,65 @@ public class LoginActivity extends Activity implements VerifyPhoneControler.Succ
 
     @Override
     public void verrifySuccess() {
-        String phone = inputEt.getText().toString();
+        final String phone = inputEt.getText().toString();
         if(TextUtils.isEmpty(phone)){
             DialogUtil.getInstance().showToast(this,"电话号码不能为空");
             return;
         }
-        LoginController.getInstance().requestLogin(phone);
+        LogUtil.getInstance().info(LogLevel.INFO,"服务员开始登陆。。。");
+        LoginController.getInstance().requestLogin(phone,true,new NetRequestListener() {
+            @Override
+            public void onNetworkRequestError(int errorCode, String errorMessage) {
+                Log.i(TAG, "errorCode:" + errorCode);
+                Log.i(TAG, "errorMessage:" + errorMessage);
+            }
+
+            @Override
+            public void onNetworkRequestCancelled() {
+
+            }
+
+            @Override
+            public void onNetworkResponseSucceed(NetResponse result) {
+                Log.i(TAG, "result.rawResult:" + result.rawResult);
+                SempLoginBean sempLoginbean = new Gson().fromJson(result.rawResult, SempLoginBean.class);
+                if (sempLoginbean.isSet()) {
+                    //更新为最新的token和userid
+                    CacheUtil.getInstance().setToken(sempLoginbean.getToken());
+                    CacheUtil.getInstance().setUserId(sempLoginbean.getSalesid());
+                    CacheUtil.getInstance().setUserPhone(phone);
+                    CacheUtil.getInstance().setUserName(sempLoginbean.getName());
+                    CacheUtil.getInstance().setShopID(sempLoginbean.getShopid());
+                    CacheUtil.getInstance().setShopFullName(sempLoginbean.getFullname());
+                    CacheUtil.getInstance().setLoginIdentity(IdentityType.WAITER);
+
+                    String userID = CacheUtil.getInstance().getUserId();
+                    String token  = CacheUtil.getInstance().getToken();
+                    String shopiD = CacheUtil.getInstance().getShopID();
+
+                    DBOpenHelper.DB_NAME = sempLoginbean.getSalesid() + ".db";
+
+                    LoginController.getInstance().getDeptList(userID, token, shopiD);//获取部门列表
+                    TeamContactsController.getInstance().getTeamContacts(LoginActivity.this, userID, token, shopiD, null);//获取团队列表
+
+                    UserVo userVo = UserFactory.getInstance().buildUserVo(sempLoginbean);
+                    UserDBUtil.getInstance().addUser(userVo);
+                    String avatarUrl = Constants.AVATAR_PRE_URL+userVo.getUserId()+".jpg";
+                    CacheUtil.getInstance().saveUserPhotoUrl(avatarUrl);
+                    Intent intent = new Intent(LoginActivity.this, MoreActivity.class);
+                    startActivity(intent);
+                    finish();
+                    overridePendingTransition(R.anim.activity_new, R.anim.activity_out);
+                    LogUtil.getInstance().info(LogLevel.INFO, "服务员成功登陆。。。");
+                } else {
+                    DialogUtil.getInstance().showToast(LoginActivity.this, "手机号还不是服务员 ");
+                }
+            }
+
+            @Override
+            public void beforeNetworkRequestStart() {
+
+            }
+        });
     }
-
-
 }

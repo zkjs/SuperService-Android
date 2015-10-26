@@ -2,6 +2,7 @@ package com.zkjinshi.superservice.adapter;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.AnimationDrawable;
@@ -37,7 +38,9 @@ import com.zkjinshi.base.util.ClipboardUtil;
 import com.zkjinshi.base.util.ImageUtil;
 import com.zkjinshi.base.util.TimeUtil;
 import com.zkjinshi.superservice.R;
+import com.zkjinshi.superservice.activity.order.OrderDealActivity;
 import com.zkjinshi.superservice.bean.BookOrderBean;
+import com.zkjinshi.superservice.factory.OrderFactory;
 import com.zkjinshi.superservice.net.ext.DownloadRequestListener;
 import com.zkjinshi.superservice.net.ext.DownloadTask;
 import com.zkjinshi.superservice.utils.CacheUtil;
@@ -662,7 +665,7 @@ public class ChatAdapter extends BaseAdapter {
             vh.time.setVisibility(View.GONE);
             vh.cardLayout.setVisibility(View.GONE);
         } else if (mimeType.equals(MimeType.CARD)) {// 卡片布局
-            BookOrderBean bookOrder = new Gson().fromJson(item.getContent(), BookOrderBean.class);
+            final BookOrderBean bookOrder = new Gson().fromJson(item.getContent(), BookOrderBean.class);
             if (null != bookOrder) {
                 String roomType = bookOrder.getRoomType();
                 String arrivaDate = bookOrder.getArrivalDate();
@@ -686,6 +689,14 @@ public class ChatAdapter extends BaseAdapter {
             vh.voice.setVisibility(View.GONE);
             vh.time.setVisibility(View.GONE);
             vh.cardLayout.setVisibility(View.VISIBLE);
+            vh.contentLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent orderAdd = new Intent(context, OrderDealActivity.class);
+                    orderAdd.putExtra("book_order", OrderFactory.getInstance().buildOrderDetail(bookOrder));
+                    context.startActivity(orderAdd);
+                }
+            });
         }
     }
 

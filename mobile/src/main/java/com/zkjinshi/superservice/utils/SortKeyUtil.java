@@ -16,6 +16,7 @@ public class SortKeyUtil {
 
     public final static String chReg = "[\\u4E00-\\u9FA5]+";//中文字符串匹配
     //String chReg="[^\\u4E00-\\u9FA5]";//除中文外的字符匹配
+
     /**
      * 名字转拼音,取首字母
      * @param name

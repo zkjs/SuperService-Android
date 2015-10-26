@@ -2,6 +2,13 @@ package com.zkjinshi.superservice.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.text.TextUtils;
+import android.util.Log;
+
+import com.google.gson.Gson;
+import com.zkjinshi.superservice.vo.IdentityType;
+
+import java.util.ArrayList;
 
 /**
  * 缓存工具类
@@ -304,6 +311,205 @@ public class CacheUtil {
 	public void setVoiceTooShort(boolean voiceTooShort) {
 		SharedPreferences sp = context.getSharedPreferences(SVIP_CACHE, Context.MODE_PRIVATE);
 		sp.edit().putBoolean("voice_too_short", voiceTooShort).commit();
+	}
+
+	public void setShopID(String shopID) {
+		if (null == context) {
+			return;
+		}
+		SharedPreferences sp = context.getSharedPreferences(SVIP_CACHE, Context.MODE_PRIVATE);
+		sp.edit().putString("shop_id", shopID).commit();
+	}
+
+	public String getShopID() {
+		if (null == context) {
+			return null;
+		}
+		SharedPreferences sp = context.getSharedPreferences(SVIP_CACHE, Context.MODE_PRIVATE);
+		return sp.getString("shop_id", null);
+	}
+
+	public void setShopFullName(String shopFullName) {
+		if (null == context) {
+			return;
+		}
+		SharedPreferences sp = context.getSharedPreferences(SVIP_CACHE, Context.MODE_PRIVATE);
+		sp.edit().putString("shop_full_name", shopFullName).commit();
+	}
+
+	public String getShopFullName() {
+		if (null == context) {
+			return null;
+		}
+		SharedPreferences sp = context.getSharedPreferences(SVIP_CACHE, Context.MODE_PRIVATE);
+		return sp.getString("shop_full_name", null);
+	}
+
+	/**
+	 *	设置登录身份
+	 * @param identityType
+	 */
+	public void setLoginIdentity(IdentityType identityType) {
+		SharedPreferences sp = context.getSharedPreferences(SVIP_CACHE, Context.MODE_PRIVATE);
+		sp.edit().putInt("login_identity", identityType.getVlaue()).commit();
+	}
+
+	/**
+	 * 获取登录身份
+	 * @return
+	 */
+	public IdentityType getLoginIdentity() {
+		SharedPreferences sp = context.getSharedPreferences(SVIP_CACHE, Context.MODE_PRIVATE);
+		int identityValue =  sp.getInt("login_identity", 0);
+		if(identityValue == IdentityType.BUSINESS.getVlaue()){
+			return IdentityType.BUSINESS;
+		}
+		return IdentityType.WAITER;
+	}
+
+	/**
+	 * 设置区域信息
+	 * 多个区域id用,号分割
+	 * @param areaInfo
+	 */
+	public void setAreaInfo(String areaInfo) {
+		if (null == context) {
+			return;
+		}
+		SharedPreferences sp = context.getSharedPreferences(SVIP_CACHE, Context.MODE_PRIVATE);
+		sp.edit().putString("area_info", areaInfo).commit();
+	}
+
+	/**
+	 * 获取区域信息
+	 * @return
+	 */
+	public String getAreaInfo() {
+		if (null == context) {
+			return null;
+		}
+		SharedPreferences sp = context.getSharedPreferences(SVIP_CACHE, Context.MODE_PRIVATE);
+		return sp.getString("area_info", "");
+	}
+
+	/**
+	 * 设置密码
+	 *
+	 * @param password
+	 */
+	public void setPassword(String password) {
+		if (null == context) {
+			return;
+		}
+		SharedPreferences sp = context.getSharedPreferences(SVIP_CACHE, Context.MODE_PRIVATE);
+		sp.edit().putString("password", password).commit();
+	}
+
+	/**
+	 * 获取密码
+	 * @return
+	 */
+	public String getPassword() {
+		if (null == context) {
+			return null;
+		}
+		SharedPreferences sp = context.getSharedPreferences(SVIP_CACHE, Context.MODE_PRIVATE);
+		return sp.getString("password", "");
+	}
+
+	/**
+	 * 加密存入缓存
+	 *
+	 * @param cacheObj
+	 */
+	public void saveObjCache(Object cacheObj) {
+		if (null != cacheObj) {
+			Gson gson = new Gson();
+			String json = gson.toJson(cacheObj);
+			String key = cacheObj.getClass().getSimpleName();
+			try {
+				String encryptedData = Base64Encoder.encode(json);// base 64加密
+				SharedPreferences sp = context.getSharedPreferences(SVIP_CACHE,
+						Context.MODE_PRIVATE);
+				sp.edit().putString(key, encryptedData).commit();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	/**
+	 * 解密取出缓存对象
+	 *
+	 * @param cacheObj
+	 * @return
+	 */
+	public Object getObjCache(Object cacheObj) {
+		if (null == cacheObj) {
+			return null;
+		}
+		if (null != cacheObj) {
+			SharedPreferences sp = context.getSharedPreferences(SVIP_CACHE,
+					Context.MODE_PRIVATE);
+			String key = cacheObj.getClass().getSimpleName();
+			String value = "";
+			String encryptedData = sp.getString(key, "");
+			if (!TextUtils.isEmpty(encryptedData)) {
+				try {
+					value = Base64Decoder.decode(encryptedData);
+					Gson gson = new Gson();
+					cacheObj = gson.fromJson(value, cacheObj.getClass());
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return cacheObj;
+	}
+
+	/**
+	 *  存入集合缓存的通用方法
+	 * @param key
+	 * @param cacheList
+	 * @param <T>
+	 */
+	public <T> void saveListCache(String key,
+								  ArrayList<T> cacheList) {
+		if (null != cacheList && cacheList.size() > 0) {
+			Gson gson = new Gson();
+			String json = gson.toJson(cacheList);
+			try {
+				String encryptedData = Base64Encoder.encode(json);// base
+				// 64加密
+				SharedPreferences sp = context.getSharedPreferences(SVIP_CACHE,
+						Context.MODE_PRIVATE);
+				sp.edit().putString(key, encryptedData).commit();
+			} catch (Exception e) {
+				e.printStackTrace();
+				Log.e("info", "saveListCache Exception:" + e);
+			}
+		}
+	}
+
+	/**
+	 * 取集合缓存的通用方法
+	 * @param key
+	 * @return
+	 */
+	public String getListStrCache(String key) {
+		SharedPreferences sp = context.getSharedPreferences(SVIP_CACHE,
+				Context.MODE_PRIVATE);
+		String value = "";
+		String encryptedData = sp.getString(key, "");
+		if (!TextUtils.isEmpty(encryptedData)) {
+			try {
+				value = Base64Decoder.decode(encryptedData);// base 64解密
+			} catch (Exception e) {
+				e.printStackTrace();
+				Log.e("info", "getListCache Exception:" + e);
+			}
+		}
+		return value;
 	}
 
 }

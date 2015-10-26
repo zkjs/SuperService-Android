@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import com.zkjinshi.base.net.protocol.ProtocolMSG;
 import com.zkjinshi.superservice.entity.MsgClientLogin;
 import com.zkjinshi.superservice.utils.CacheUtil;
+import com.zkjinshi.superservice.vo.IdentityType;
 
 /**
  * 登录请求帮助类
@@ -33,8 +34,11 @@ public class LoginRequestTool {
         }
         msgClientLogin.setLogintype(1);
         msgClientLogin.setVersion("");
-        msgClientLogin.setPlatform("");
+        msgClientLogin.setPlatform("A");
         msgClientLogin.setAppid("");
+        msgClientLogin.setShopid("120");//TODO JimmyZhang 写死，后期需要做修改
+        msgClientLogin.setLoc(CacheUtil.getInstance().getAreaInfo());//"1,3,2,6"
+        msgClientLogin.setRoleid(1);//TODO JimmyZhang 写死，后期需要做修改
         return msgClientLogin;
     }
 }

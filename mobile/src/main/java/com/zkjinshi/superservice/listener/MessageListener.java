@@ -20,7 +20,6 @@ import com.zkjinshi.base.net.core.WebSocketClient;
 import com.zkjinshi.base.net.core.WebSocketManager;
 import com.zkjinshi.base.net.protocol.ProtocolMSG;
 import com.zkjinshi.base.util.Constants;
-import com.zkjinshi.base.util.VibratorHelper;
 import com.zkjinshi.base.view.CustomDialog;
 import com.zkjinshi.superservice.ServiceApplication;
 import com.zkjinshi.superservice.activity.common.LoginActivity;
@@ -28,14 +27,12 @@ import com.zkjinshi.superservice.entity.MsgCustomerServiceImgChat;
 import com.zkjinshi.superservice.entity.MsgCustomerServiceMediaChat;
 import com.zkjinshi.superservice.entity.MsgCustomerServiceTextChat;
 import com.zkjinshi.superservice.entity.MsgPushTriggerLocNotificationM2S;
-import com.zkjinshi.superservice.entity.MsgUserDefine;
 import com.zkjinshi.superservice.factory.MessageFactory;
 import com.zkjinshi.superservice.notification.NotificationHelper;
 import com.zkjinshi.superservice.request.LoginRequestManager;
 import com.zkjinshi.superservice.sqlite.ChatRoomDBUtil;
 import com.zkjinshi.superservice.sqlite.MessageDBUtil;
 import com.zkjinshi.superservice.utils.FileUtil;
-import com.zkjinshi.superservice.utils.MediaPlayerUtil;
 import com.zkjinshi.superservice.vo.MessageVo;
 
 import org.json.JSONException;
@@ -70,6 +67,10 @@ public class MessageListener extends Handler implements IMessageListener {
             JSONObject messageObj = new JSONObject(message);
             int type = messageObj.getInt("type");
 
+            if (type == ProtocolMSG.MSG_ClientLogin_RSP) {
+                return;
+            }
+
             if (type == ProtocolMSG.MSG_ServerRepeatLogin) {//重复登录
                 WebSocketManager.getInstance().logoutIM(ServiceApplication.getContext());
                 notifyMessage = new Message();
@@ -88,16 +89,9 @@ public class MessageListener extends Handler implements IMessageListener {
                                          MsgCustomerServiceTextChat.class);
                 /** 处理消息入库 （数据库相关操作） */
                 long resultCount = MessageDBUtil.getInstance().addMessage(msgText);
+                ChatRoomDBUtil.getInstance().addChatRoom(msgText);
                 if(resultCount > 0){
                     MessageVo messageVo = MessageFactory.getInstance().buildMessageVoByMsgText(msgText);
-                    String sessionId = messageVo.getSessionId();
-                    if(!TextUtils.isEmpty(sessionId)) {
-                        if(ChatRoomDBUtil.getInstance().isChatRoomExistsBySessionID(sessionId)){
-                            ChatRoomDBUtil.getInstance().addChatRoom(messageVo);
-                        } else {
-                            ChatRoomDBUtil.getInstance().updateChatRoom(messageVo);
-                        }
-                    }
                     NotificationHelper.getInstance().showNotification(ServiceApplication.getContext(), messageVo);
                 }
             }
@@ -115,17 +109,9 @@ public class MessageListener extends Handler implements IMessageListener {
                 String audioPath = FileUtil.getInstance().getAudioPath() + mediaName;
                 /** 消息表中添加音频消息记录 */
                 long resultCount = MessageDBUtil.getInstance().addMessage(msgMediaChat);
+                ChatRoomDBUtil.getInstance().addChatRoom(msgMediaChat);
                 if(resultCount > 0){
                     MessageVo messageVO = MessageFactory.getInstance().buildMessageVoByMsgMedia(msgMediaChat, audioPath);
-                    /** insert or update into table ChatRoom */
-                    String sessionId = messageVO.getSessionId();
-                    if(!TextUtils.isEmpty(sessionId)) {
-                        if(ChatRoomDBUtil.getInstance().isChatRoomExistsBySessionID(sessionId)){
-                            ChatRoomDBUtil.getInstance().addChatRoom(messageVO);
-                        } else {
-                            ChatRoomDBUtil.getInstance().updateChatRoom(messageVO);
-                        }
-                    }
                     NotificationHelper.getInstance().showNotification(ServiceApplication.getContext(), messageVO);
                 }
             }
@@ -139,17 +125,10 @@ public class MessageListener extends Handler implements IMessageListener {
                                             MsgCustomerServiceImgChat.class);
                 /** 消息表中添加图片消息记录 */
                 long resultCount = MessageDBUtil.getInstance().addMessage(msgImgChat);
+                ChatRoomDBUtil.getInstance().addChatRoom(msgImgChat);
                 if(resultCount > 0){
                     MessageVo imageMessageVo = MessageFactory.getInstance().buildMessageVoByMsgImg(
                             msgImgChat);
-                    String sessionId = imageMessageVo.getSessionId();
-                    if(!TextUtils.isEmpty(sessionId)) {
-                        if(ChatRoomDBUtil.getInstance().isChatRoomExistsBySessionID(sessionId)){
-                            ChatRoomDBUtil.getInstance().addChatRoom(imageMessageVo);
-                        } else {
-                            ChatRoomDBUtil.getInstance().updateChatRoom(imageMessageVo);
-                        }
-                    }
                     NotificationHelper.getInstance().showNotification(ServiceApplication.getContext(), imageMessageVo);
                 }
             }
@@ -160,12 +139,9 @@ public class MessageListener extends Handler implements IMessageListener {
                     gson = new Gson();
                 }
                 LogUtil.getInstance().info(LogLevel.INFO, "用户到店通知");
-                MediaPlayerUtil.playNotifyVoice(ServiceApplication.getContext());
-                VibratorHelper.vibratorShark(ServiceApplication.getContext());
                 MsgPushTriggerLocNotificationM2S msgLocNotification = gson.fromJson(message,
-                        MsgPushTriggerLocNotificationM2S.class);
-                //TODO JimmyZhang 对到店通知进行数据库插入操作
-
+                                                    MsgPushTriggerLocNotificationM2S.class);
+                NotificationHelper.getInstance().showNotification(ServiceApplication.getContext(), msgLocNotification);
             }
 
         } catch (JSONException e) {

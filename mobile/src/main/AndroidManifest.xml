@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.zkjinshi.superservice" >
+    package="com.zkjinshi.superservice"
+    android:versionCode="15"
+    android:versionName="1.1.4">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
@@ -34,10 +36,37 @@
         android:name=".ServiceApplication">
 
         <activity
-            android:name=".activity.set.ContactsActivity"
+            android:name=".activity.common.SplashActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="com.zkjinshi.filechoser.activity.FileListActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar">
+        </activity>
+
+        <activity
+            android:name=".activity.common.MainActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.MaterialSheetFab">
+
+        </activity>
+
+        <activity
+            android:name=".activity.set.ClientActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
 
         </activity>
 
@@ -46,6 +75,14 @@
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar">
+        </activity>
+
+
+        <activity
+            android:name=".activity.notice.OnlineListActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.MaterialSheetFab">
         </activity>
 
         <activity
@@ -74,31 +111,35 @@
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar">
+
         </activity>
+
+        <activity
+            android:name=".activity.common.TestActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar">
+
+        </activity>
+
+
         <activity
             android:name=".activity.common.LoginActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar">
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+
         </activity>
+
         <activity
-            android:name=".activity.common.SplashActivity"
+            android:name=".activity.chat.ChatActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar">
+            android:launchMode="singleTask"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="com.zkjinshi.superservice.intent.action.RELAY"/>
             </intent-filter>
-        </activity>
-
-        <activity
-            android:name=".activity.common.MainActivity"
-            android:label="@string/app_name"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.MaterialSheetFab">
-
         </activity>
 
         <activity
@@ -117,6 +158,21 @@
             android:name=".activity.order.OrderDealActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+
+        </activity>
+
+        <activity
+            android:name=".activity.order.OrderGoodsActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar">
+        </activity>
+
+        <activity
+            android:name=".activity.order.OrderPayActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar">
 
         </activity>
@@ -126,6 +182,69 @@
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar">
+        </activity>
+
+        <activity
+            android:name=".activity.set.EmployeeAddActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+
+        </activity>
+
+        <activity
+            android:name=".activity.set.ClientDetailActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar">
+        </activity>
+
+        <activity
+            android:name=".activity.set.TagAddActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/window_dialog_style">
+        </activity>
+
+        <activity
+            android:name=".activity.set.TeamContactsActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" >
+        </activity>
+
+        <activity
+            android:name=".activity.set.TeamEditActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" >
+        </activity>
+
+        <activity
+            android:name=".activity.set.ClientSelectActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar">
+        </activity>
+
+        <activity
+            android:name=".activity.set.ClientBindActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar">
+        </activity>
+        <activity
+            android:name=".activity.common.ShopLoginActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTask"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+        </activity>
+        <activity
+            android:name=".activity.set.EmployeeHandAddActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         </activity>
 
         <!--IM消息服务-->

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="60dp"
+    android:background="@drawable/bg_file_list_item"
+    android:orientation="horizontal"
+    android:descendantFocusability="blocksDescendants" >
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_weight="1.0"
+        android:layout_height="60dp" >
+
+        <ImageView
+            android:id="@+id/browserItemIcon"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="8dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_folder" />
+
+        <TextView
+            android:id="@+id/browserItemText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="12dp"
+            android:layout_toRightOf="@id/browserItemIcon"
+            android:ellipsize="marquee"
+            android:gravity="center_vertical"
+            android:singleLine="true"
+            android:textColor="#323232"
+            android:textSize="14sp" />
+
+        <ImageView
+            android:id="@+id/browserItemTimeIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/browserItemText"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="2dp"
+            android:layout_toRightOf="@id/browserItemIcon"
+            android:scaleType="centerInside"
+            android:src="@drawable/browser_item_file_last_modify_time" />
+
+        <TextView
+            android:id="@+id/browserItemInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/browserItemText"
+            android:layout_toRightOf="@id/browserItemTimeIcon"
+            android:ellipsize="marquee"
+            android:gravity="center_vertical|left"
+            android:textColor="#acacac"
+            android:textSize="10sp" />
+
+        <TextView
+            android:id="@+id/browserItemfileSize"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/browserItemText"
+            android:layout_marginRight="15dp"
+            android:layout_toRightOf="@id/browserItemIcon"
+            android:gravity="center_vertical|right"
+            android:textColor="#acacac"
+            android:textSize="10sp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_alignParentBottom="true"
+            android:background="#dfdfdd" />
+    </RelativeLayout>
+
+</LinearLayout>
