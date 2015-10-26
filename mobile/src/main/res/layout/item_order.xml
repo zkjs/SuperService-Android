@@ -2,23 +2,31 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="142dp"
     android:orientation="horizontal">
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="35dp"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center">
         <View
-            android:layout_centerHorizontal="true"
-            android:layout_width="1dp"
+            android:id="@+id/time_axis_cut_line_up"
+            android:layout_gravity="center"
+            android:layout_width="0.5dp"
             android:background="@color/gray"
-            android:layout_height="match_parent">
+            android:layout_height="0dp"
+            android:layout_weight="1.0">
         </View>
         <com.zkjinshi.superservice.view.CircleStatusView
             android:id="@+id/civ_left_icon"
             android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_centerInParent="true"
-           >
-        </com.zkjinshi.superservice.view.CircleStatusView>
-    </RelativeLayout>
+            android:layout_height="20dp"/>
+        <View
+            android:layout_gravity="center"
+            android:layout_width="0.5dp"
+            android:background="@color/gray"
+            android:layout_height="0dp"
+            android:layout_weight="1.0">
+        </View>
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/content_layout"

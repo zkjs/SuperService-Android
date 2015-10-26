@@ -184,10 +184,13 @@ public class OrderAdapter extends RecyclerView.Adapter {
 
         LinearLayout.LayoutParams contentLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         if(position == 0){
+            holder.upCutLineView.setVisibility(View.INVISIBLE);
             contentLayoutParams.setMargins(0, DisplayUtil.dip2px(context, 12),DisplayUtil.dip2px(context,8),DisplayUtil.dip2px(context,6));
         }else if(position == getItemCount()-1){
+            holder.upCutLineView.setVisibility(View.VISIBLE);
             contentLayoutParams.setMargins(0, DisplayUtil.dip2px(context, 6), DisplayUtil.dip2px(context, 8), DisplayUtil.dip2px(context, 6));
         }else{
+            holder.upCutLineView.setVisibility(View.VISIBLE);
             contentLayoutParams.setMargins(0, DisplayUtil.dip2px(context, 6), DisplayUtil.dip2px(context, 8), DisplayUtil.dip2px(context, 6));
         }
         holder.contentLayout.setLayoutParams(contentLayoutParams);
@@ -206,7 +209,7 @@ public class OrderAdapter extends RecyclerView.Adapter {
     class OrderViewHolder extends  RecyclerView.ViewHolder implements View.OnClickListener{
 
         public int position;
-
+        public View upCutLineView;
         public CircleStatusView leftIcon;
         public CircleImageView avatar;
         public TextView  name;
@@ -221,6 +224,8 @@ public class OrderAdapter extends RecyclerView.Adapter {
 
         public OrderViewHolder(View itemView) {
             super(itemView);
+
+            upCutLineView = (View)itemView.findViewById(R.id.time_axis_cut_line_up);
             leftIcon = (CircleStatusView)itemView.findViewById(R.id.civ_left_icon);
             avatar = (CircleImageView)itemView.findViewById(R.id.civ_avatar);
             name = (TextView )itemView.findViewById(R.id.tv_name);
