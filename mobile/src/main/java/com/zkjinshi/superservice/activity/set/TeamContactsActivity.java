@@ -420,13 +420,14 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
                             //获得员工是否服务器在线
                             if(empStatusRecord.getOnlinestatus() == OnlineStatus.ONLINE.getValue()){
                                 shopEmployeeVo.setOnline_status(OnlineStatus.ONLINE);
-
                                 //获得登录时间
-                                Long lastLoginTime = empStatusRecord.getLogintimestamp();
-                                shopEmployeeVo.setLastOnLineTime(lastLoginTime);
+                                Long LatestOnlineTime = empStatusRecord.getLogintimestamp();
+                                shopEmployeeVo.setLastOnLineTime(LatestOnlineTime);
 
                             } else {
                                 shopEmployeeVo.setOnline_status(OnlineStatus.OFFLINE);
+                                Long LatestOnlineTime = ShopEmployeeDBUtil.getInstance().queryLatestOnlineByEmpID(empID);
+                                shopEmployeeVo.setLastOnLineTime(LatestOnlineTime);
                             }
 
                             //获得员工是否工作中

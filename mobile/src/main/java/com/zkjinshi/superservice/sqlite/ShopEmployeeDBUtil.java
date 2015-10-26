@@ -302,33 +302,62 @@ public class ShopEmployeeDBUtil {
         return delResult;
     }
 
+    /**
+     * 批量删除数据库员工
+     * @param empIDList
+     * @return
+     */
     public long deleteShopEmployeeByEmpIDs(List<String> empIDList) {
         SQLiteDatabase db = null;
         long delResult = 0;
         try {
             db = helper.getWritableDatabase();
-            String sql = "";
+            db.beginTransaction();
             for(String empID : empIDList){
-                //delResult += db.delete(DBOpenHelper.SHOP_EMPLOYEE_TBL, " empid = ? ", new String[] {empID});
-                if(sql.equals("")){
-                    sql = "'"+empID+"'";
-                }else{
-                    sql = sql+","+"'"+empID+"'";
-                }
-
-            }
-            if(!TextUtils.isEmpty(sql)){
-                sql = "delete from "+DBOpenHelper.SHOP_EMPLOYEE_TBL+" where empid in ("+sql+")";
-                db.execSQL(sql);
-                delResult = 1;
+                delResult += db.delete(DBOpenHelper.SHOP_EMPLOYEE_TBL, " empid = ? ", new String[] { empID });
             }
         } catch (Exception e) {
             LogUtil.getInstance().info(LogLevel.ERROR,TAG+".deleteShopEmployeeByEmpID->"+e.getMessage());
             e.printStackTrace();
         }finally{
-            if(null != db)
+            if(null != db) {
+                db.setTransactionSuccessful();
+                db.endTransaction();
                 db.close();
+            }
         }
         return delResult;
+    }
+
+    /**
+     * 查询员工最后一次服务器在线时间
+     * @param empID
+     * @return
+     */
+    public long queryLatestOnlineByEmpID(String empID) {
+        long    lateOnlineTime = 0;
+        Cursor cursor = null;
+        SQLiteDatabase db = null;
+        try {
+            db = helper.getReadableDatabase();
+            cursor = db.query(DBOpenHelper.SHOP_EMPLOYEE_TBL,
+                    new String[]{" last_online_time "},
+                    " empid = ? ",
+                    new String[]{empID},
+                    null, null, null);
+            if(cursor.moveToFirst()){
+                lateOnlineTime = cursor.getLong(0);
+            }
+        } catch (Exception e) {
+            LogUtil.getInstance().info(LogLevel.ERROR, TAG + ".queryLatestOnlineByEmpID->"+e.getMessage());
+            e.printStackTrace();
+        } finally{
+            if(null != db)
+                db.close();
+
+            if(null != cursor)
+                cursor.close();
+        }
+        return lateOnlineTime;
     }
 }

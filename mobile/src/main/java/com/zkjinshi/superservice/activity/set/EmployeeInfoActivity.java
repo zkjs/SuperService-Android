@@ -13,13 +13,12 @@ import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.zkjinshi.base.util.TimeUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.sqlite.ShopEmployeeDBUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.vo.ShopEmployeeVo;
-
-import org.w3c.dom.Text;
 
 /**
  * 开发者：vincent
@@ -70,7 +69,6 @@ public class EmployeeInfoActivity extends Activity{
 
     private void initData() {
 
-
         mShopID = CacheUtil.getInstance().getShopID();
         mUserID = CacheUtil.getInstance().getUserId();
 
@@ -104,13 +102,17 @@ public class EmployeeInfoActivity extends Activity{
                 mTvShopName.setText(shopName);
             }
 
-//            ShopEmployeeDBUtil.getInstance().queryLatestOnlineByEmpID(empID);
-
+            long latestOnlineTime = ShopEmployeeDBUtil.getInstance().queryLatestOnlineByEmpID(empID);
+            if(latestOnlineTime > 0){
+                String onlineTime = TimeUtil.getChatTime(latestOnlineTime * 10);
+                mTvLatestOnline.setText(getString(R.string.latest) + onlineTime + getString(R.string.online));
+            } else {
+                mTvLatestOnline.setText(getString(R.string.offline));
+            }
         }
     }
 
     private void initListener() {
-
         mRlBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

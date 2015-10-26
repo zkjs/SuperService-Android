@@ -1,11 +1,9 @@
 package com.zkjinshi.superservice.activity.set;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 
 import com.zkjinshi.superservice.activity.chat.ChatActivity;
-import com.zkjinshi.superservice.sqlite.DBOpenHelper;
 
 /**
  * 开发者：vincent
