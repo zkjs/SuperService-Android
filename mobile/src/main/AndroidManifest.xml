@@ -247,6 +247,13 @@
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         </activity>
 
+        <activity
+            android:name=".activity.set.EmployeeInfoActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar">
+        </activity>
+
         <!--IM消息服务-->
         <service android:name="com.zkjinshi.base.net.core.MessageService"
             android:exported="false">

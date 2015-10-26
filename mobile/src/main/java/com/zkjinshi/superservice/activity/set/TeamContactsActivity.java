@@ -194,25 +194,25 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
                         ArrayList<ShopEmployeeVo> shopEmployeeVos = (ArrayList) ShopEmployeeFactory.getInstance().buildShopEmployees(teamContacts);
 
                         List<String> strLetters = new ArrayList<>();//首字母显示数组
-                        List<String> empids     = new ArrayList<>();//员工ID数组
+                        List<String> empids = new ArrayList<>();//员工ID数组
 
                         if (null != shopEmployeeVos && !shopEmployeeVos.isEmpty()) {
                             Iterator<ShopEmployeeVo> shopEmployeeVoIterator = shopEmployeeVos.iterator();
-                            while(shopEmployeeVoIterator.hasNext()){
+                            while (shopEmployeeVoIterator.hasNext()) {
                                 String empID = shopEmployeeVoIterator.next().getEmpid();
-                                if(empID.equals(mUserID)){
+                                if (empID.equals(mUserID)) {
                                     shopEmployeeVoIterator.remove();
                                 }
                             }
 
-                            if(null != mShopEmployeeVos && !mShopEmployeeVos.isEmpty()){
+                            if (null != mShopEmployeeVos && !mShopEmployeeVos.isEmpty()) {
                                 mShopEmployeeVos.removeAll(mShopEmployeeVos);
                             }
 
                             //加入本地缓存
                             CacheUtil.getInstance().saveListCache("shop_employees", shopEmployeeVos);
                             for (ShopEmployeeVo shopEmployeeVo : shopEmployeeVos) {
-                                if(shopEmployeeVo.getEmpid().equals(mUserID)){
+                                if (shopEmployeeVo.getEmpid().equals(mUserID)) {
                                     continue;
                                 }
 
@@ -317,7 +317,7 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
                 ShopEmployeeVo shopEmployeeVo = mShopEmployeeVos.get(postion);
                 String empID = shopEmployeeVo.getEmpid();
                 String empName = shopEmployeeVo.getName();
-                String sessionID = buildSingleSessionID(mShopID, mUserID, empID);
+                String sessionID = SessionIDBuilder.getInstance().buildSingleSessionID(mShopID, mUserID, empID);
 
                 if (null != mToUser) {
                     mToUser = null;
@@ -342,41 +342,10 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
                     WebSocketManager.getInstance().sendMessage(sessionSearchJson);
                 } else {
                     //进入聊天界面
-                    goChatActivity(mShopID, sessionID, mToUser.getUsername());
+                    SessionIDBuilder.getInstance().goSession(TeamContactsActivity.this, mShopID, sessionID, mToUser.getUsername());
                 }
-           }
+            }
         });
-    }
-
-    /**
-     * 进入聊天界面方法
-     * @param mShopID
-     * @param sessionID
-     */
-    private void goChatActivity(String mShopID, String sessionID, String sessionName) {
-        //开启单聊界面
-        Intent goChat = new Intent(TeamContactsActivity.this, ChatActivity.class);
-        goChat.putExtra("shop_id", mShopID);
-        goChat.putExtra("session_id", sessionID);
-        goChat.putExtra("session_name", sessionName);
-        TeamContactsActivity.this.startActivity(goChat);
-    }
-
-    /**
-     * 构建单聊sessionID
-     * @param shopID
-     * @param mUserID
-     * @param empID
-     * @return
-     */
-    private String buildSingleSessionID(String shopID, String mUserID, String empID) {
-        if(mUserID.compareTo(empID) < 0){
-            return "single_" + shopID + "_" + mUserID + "_" + empID;
-        }else if(mUserID.compareTo(empID) > 0){
-            return "single_" + shopID + "_" + empID + "_" + mUserID;
-        } else {
-            return null;
-        }
     }
 
     @Override
@@ -489,7 +458,8 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
                     //开启单聊界面
                     String sessionID = msgShopSessionSearchRSP.getSessionid();
                     String shopID    = msgShopSessionSearchRSP.getShopid();
-                    goChatActivity(mShopID, sessionID, mToUser.getUsername());
+                    SessionIDBuilder.getInstance().goSession(TeamContactsActivity.this,
+                                             mShopID, sessionID, mToUser.getUsername());
                 }else {
                     if(null == mFromUser){
                         mFromUser = new MsgIMSessionUser();
@@ -503,7 +473,7 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
                         String fromID = mFromUser.getUserid();
                         String toID   = mToUser.getUserid();
 
-                        String sessionID = buildSingleSessionID(mShopID, fromID, toID);
+                        String sessionID = SessionIDBuilder.getInstance().buildSingleSessionID(mShopID, fromID, toID);
                         sendBuildNewSessionMsg(mShopID, sessionID, sessionName, mFromUser, mToUser);
                     }
                 }
@@ -515,7 +485,7 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
                 //创建会话成功 进入聊天界面
                 if(msgBuildSessionRSP.getResult() <= 0){
                     String sessionID = msgBuildSessionRSP.getSessionid();
-                    goChatActivity(mShopID, sessionID, mToUser.getUsername());
+                    SessionIDBuilder.getInstance().goSession(TeamContactsActivity.this, mShopID, sessionID, mToUser.getUsername());
                 }
             }
         } catch (JSONException e) {

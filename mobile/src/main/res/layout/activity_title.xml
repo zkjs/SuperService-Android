@@ -9,7 +9,7 @@
     <RelativeLayout
         android:gravity="center"
         android:layout_width="56dp"
-        android:background="@drawable/bg_rl_title"
+        android:background="@drawable/bg_holo_bule_to_gray"
         android:layout_height="56dp">
 
         <ImageButton

@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:weightSum="5"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <FrameLayout
+        android:layout_weight="2"
+        android:layout_width="match_parent"
+        android:layout_height="0dp">
+
+        <ImageView
+            android:id="@+id/iv_avatar"
+            android:layout_centerInParent="true"
+            android:src="@color/TransparentGray"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/img_morentu" />
+
+       <RelativeLayout
+           android:layout_width="match_parent"
+           android:layout_height="match_parent">
+
+           <RelativeLayout
+               android:id="@+id/rl_back"
+               android:clickable="true"
+               android:layout_width="56dp"
+               android:layout_height="56dp">
+
+               <ImageView
+                   android:layout_centerInParent="true"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:background="@drawable/bg_ic_fanhui" />
+
+           </RelativeLayout>
+
+            <TextView
+                android:layout_alignParentBottom="true"
+                android:paddingLeft="10dp"
+                android:layout_marginBottom="10dp"
+                android:textSize="12sp"
+                android:id="@+id/tv_latest_online"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"/>
+
+           <TextView
+               android:paddingLeft="10dp"
+               android:layout_marginBottom="10dp"
+               android:textSize="14sp"
+               android:id="@+id/tv_shop_name"
+               android:layout_above="@+id/tv_latest_online"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:textColor="@color/white" />
+
+           <TextView
+               android:id="@+id/tv_emp_name"
+               android:padding="10dp"
+               android:textSize="18sp"
+               android:layout_above="@+id/tv_shop_name"
+               android:layout_width="wrap_content"
+               android:textColor="@color/white"
+               android:layout_height="wrap_content" />
+
+       </RelativeLayout>
+    </FrameLayout>
+
+    <RelativeLayout
+        android:layout_weight="3"
+        android:background="@color/white"
+        android:layout_width="match_parent"
+        android:layout_height="0dp">
+
+        <RelativeLayout
+            android:background="@drawable/bg_btn_default"
+            android:layout_width="match_parent"
+            android:layout_height="50dp">
+
+            <TextView
+                android:id="@+id/tv_phone"
+                android:padding="10dp"
+                android:layout_centerVertical="true"
+                android:layout_width="wrap_content"
+                android:text="@string/phone"
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:padding="10dp"
+                android:layout_toRightOf="@+id/tv_phone"
+                android:id="@+id/tv_phone_number"
+                android:layout_centerVertical="true"
+                android:layout_width="wrap_content"
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                android:layout_height="wrap_content" />
+
+            <RelativeLayout
+                android:id="@+id/id_rl_duihua"
+                android:padding="10dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true" >
+
+                <ImageView
+                    android:layout_centerVertical="true"
+                    android:id="@+id/ibtn_duihua"
+                    android:background="@drawable/bg_ic_duihua_gray_to_white"
+                    android:layout_width="21dp"
+                    android:layout_height="20dp" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/id_rl_dianhua"
+                android:padding="10dp"
+                android:layout_toLeftOf="@+id/id_rl_duihua"
+                android:layout_marginRight="10dp"
+                android:layout_width="wrap_content"
+                android:layout_centerVertical="true"
+                android:clickable="true"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:layout_centerVertical="true"
+                    android:id="@+id/ibtn_dianhua"
+                    android:background="@drawable/bg_ic_dianhua_gray_to_white"
+                    android:layout_width="14dp"
+                    android:layout_height="20dp" />
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+        <Button
+            android:id="@+id/btn_chat"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="20dp"
+            android:layout_alignParentBottom="true"
+            android:text="@string/chat"
+            android:textColor="@color/white"
+            android:background="@drawable/bg_holo_bule_to_ligth_blue"
+            android:textSize="14sp" >
+        </Button>
+
+    </RelativeLayout>
+
+</LinearLayout>

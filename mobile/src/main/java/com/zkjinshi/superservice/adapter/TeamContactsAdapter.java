@@ -1,6 +1,7 @@
 package com.zkjinshi.superservice.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
@@ -21,6 +22,7 @@ import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
+import com.zkjinshi.superservice.activity.set.EmployeeInfoActivity;
 import com.zkjinshi.superservice.factory.ShopEmployeeFactory;
 import com.zkjinshi.superservice.listener.RecyclerItemClickListener;
 import com.zkjinshi.superservice.sqlite.ShopEmployeeDBUtil;
@@ -113,6 +115,14 @@ public class TeamContactsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 ((ContactViewHolder) holder).tvContactAvatar.setText(shopName.substring(0, 1));
             }
 
+            //设置团队成员头像单击事件, 进入员工详情
+            ((ContactViewHolder) holder).flContactAvatar.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    DialogUtil.getInstance().showCustomToast(mContext, "TODO:", Gravity.CENTER);
+                }
+            });
+
             ImageLoader.getInstance().displayImage(shopLogoUrl, ((ContactViewHolder) holder).civContactAvatar, options, new ImageLoadingListener() {
                 @Override
                 public void onLoadingStarted(String imageUri, View view) {
@@ -180,6 +190,16 @@ public class TeamContactsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 }
             }
 
+            //设置团队成员头像单击事件, 进入员工详情
+            ((ContactViewHolder) holder).flContactAvatar.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent employeeInfo = new Intent(mContext, EmployeeInfoActivity.class);
+                    employeeInfo.putExtra("shop_employee", shopEmployeeVo);
+                    mContext.startActivity(employeeInfo);
+                }
+            });
+
             String empAvatarUrl = ProtocolUtil.getAvatarUrl(empID);
             ImageLoader.getInstance().displayImage(empAvatarUrl, ((ContactViewHolder) holder).civContactAvatar, options, new ImageLoadingListener() {
                 @Override
@@ -224,12 +244,6 @@ public class TeamContactsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             }
         }
 
-        ((ContactViewHolder) holder).flContactAvatar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DialogUtil.getInstance().showCustomToast(mContext, "TODO: 进入客户主界面", Gravity.CENTER);
-            }
-        });
     }
 
     public static class ContactViewHolder extends RecyclerView.ViewHolder{

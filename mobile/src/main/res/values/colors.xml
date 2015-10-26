@@ -484,6 +484,10 @@
     <color name="blue03a9f4">#03a9f4</color>
     <color name="divider_line_color">#e8e8e8</color>
 
+    <color name="blue_66c9f6">#66c9f6</color>
+    <color name="blue_039be5">#039be5</color>
+    <color name="TransparentGray">#7F000000</color>
+
     <array name="loc_notice_colors">
         <item>#666666</item>
         <item>#5c6bc0</item>
