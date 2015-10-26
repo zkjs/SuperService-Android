@@ -24,7 +24,6 @@ public class DBOpenHelper extends SQLiteOpenHelper {
     public static final String USER_TBL = "user_tbl";// 客户表名
     public static final String CLIENT_TBL = "client_tbl";// 客户表名
     public static final String COMING_TBL = "coming_tbl";//到店信息表
-    public static final String UNREG_CLIENT_TBL = "unreg_client_tbl";//尚未注册的本地客户列表
     public static final String SHOP_EMPLOYEE_TBL = "shop_employee_tbl";//商家员工列表
     public static final String SHOP_DEPARTMENT_TBL = "shop_department_tbl";//商家部门表
 
