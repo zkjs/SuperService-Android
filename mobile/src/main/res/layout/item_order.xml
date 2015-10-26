@@ -124,7 +124,7 @@
                     android:layout_height="20dp"
                     android:scaleType="centerInside"
                     android:src="@drawable/tel_btn"
-                    android:id="@+id/iv_tel" />
+                    android:id="@+id/iv_tel"/>
                 <ImageView
                     android:layout_width="20dp"
                     android:layout_height="20dp"
@@ -132,13 +132,13 @@
                     android:src="@drawable/chat_btn"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
-                    android:id="@+id/iv_chat" />
+                    android:id="@+id/iv_chat"/>
                 <ImageView
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:scaleType="centerInside"
                     android:src="@drawable/share_btn"
-                    android:id="@+id/iv_share" />
+                    android:id="@+id/iv_share"/>
             </LinearLayout>
 
         </LinearLayout>

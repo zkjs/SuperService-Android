@@ -12,12 +12,7 @@
 
         <ImageButton
             android:id="@+id/header_back_btn"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-            android:layout_centerVertical="true"
-            android:src="@drawable/header_ibtn_back"
-            android:scaleType="centerInside"
-            android:background="@null"/>
+            style="@style/backBtn"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -36,7 +31,7 @@
             android:layout_alignParentRight="true"
             android:src="@drawable/ic_wancheng"
             android:scaleType="centerInside"
-            android:background="@null"/>
+            android:background="@drawable/click_btn_bg"/>
 
     </RelativeLayout>
 
