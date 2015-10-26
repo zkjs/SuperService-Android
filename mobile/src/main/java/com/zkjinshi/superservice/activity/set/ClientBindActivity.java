@@ -1,7 +1,6 @@
 package com.zkjinshi.superservice.activity.set;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -24,22 +23,18 @@ import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.bean.ClientBaseBean;
 //import com.zkjinshi.superservice.factory.UnRegClientFactory;
 import com.zkjinshi.superservice.factory.ClientFactory;
-import com.zkjinshi.superservice.factory.UnRegClientFactory;
 import com.zkjinshi.superservice.net.ExtNetRequestListener;
 import com.zkjinshi.superservice.net.MethodType;
 import com.zkjinshi.superservice.net.NetRequest;
-import com.zkjinshi.superservice.net.NetRequestListener;
 import com.zkjinshi.superservice.net.NetRequestTask;
 import com.zkjinshi.superservice.net.NetResponse;
 import com.zkjinshi.superservice.sqlite.ClientDBUtil;
-import com.zkjinshi.superservice.sqlite.UnRegClientDBUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.view.CircleImageView;
 import com.zkjinshi.superservice.vo.ClientVo;
 import com.zkjinshi.superservice.vo.ContactType;
-import com.zkjinshi.superservice.vo.UnRegClientVo;
 
 import org.json.JSONException;
 import org.json.JSONObject;

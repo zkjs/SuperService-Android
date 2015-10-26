@@ -196,7 +196,7 @@ public class TeamContactsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
                 @Override
                 public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                                                        }
+                }
 
                 @Override
                 public void onLoadingCancelled(String imageUri, View view) {

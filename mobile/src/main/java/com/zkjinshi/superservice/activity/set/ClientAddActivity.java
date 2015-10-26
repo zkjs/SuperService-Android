@@ -15,11 +15,9 @@ import android.widget.TextView;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.sqlite.ClientDBUtil;
-import com.zkjinshi.superservice.sqlite.UnRegClientDBUtil;
 import com.zkjinshi.superservice.vo.ClientVo;
 import com.zkjinshi.superservice.vo.ContactType;
 import com.zkjinshi.superservice.vo.IsBill;
-import com.zkjinshi.superservice.vo.UnRegClientVo;
 
 /**
  * 新增客户联系人
