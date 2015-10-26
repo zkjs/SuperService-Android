@@ -213,9 +213,9 @@ public class ClientDBUtil {
         Cursor       cursor       = null;
         try{
             db = helper.getWritableDatabase();
-            cursor = db.query(DBOpenHelper.UNREG_CLIENT_TBL, null, " phone = ? ",
+            cursor = db.query(DBOpenHelper.CLIENT_TBL, null, " phone = ? ",
                     new String[]{ phone }, null, null, null);
-            if (cursor != null && cursor.getCount() > 0) {
+            if (cursor.moveToFirst()) {
                 while (cursor.moveToNext()) {
                     clientVo = ClientFactory.getInstance().buildclient(cursor);
                 }
@@ -244,13 +244,13 @@ public class ClientDBUtil {
         try {
             db = helper.getReadableDatabase();
             cursor = db.query(DBOpenHelper.CLIENT_TBL,
-                    new String[]{" bg_drawable_res "},
+                    null,
                     " userid = ? ",
                     new String[] { clientID },
                     null, null, null);
 
-            if(null != cursor && cursor.getCount() > 0){
-                bgColorRes = cursor.getInt(0);
+            if(cursor.moveToFirst()){
+                bgColorRes = cursor.getInt(24);
             }
         } catch (Exception e) {
             LogUtil.getInstance().info(LogLevel.ERROR, TAG + ".queryBgDrawableResByClientID->"+e.getMessage());

@@ -279,7 +279,7 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
             public boolean onMenuItemClick(android.view.MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.menu_team_search:
-                        DialogUtil.getInstance().showToast(TeamContactsActivity.this, "search");
+                        //TODO: search 团队成员检索
                         break;
 
                     case R.id.menu_team_jia:
