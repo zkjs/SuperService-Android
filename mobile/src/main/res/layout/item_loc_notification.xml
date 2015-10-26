@@ -5,24 +5,36 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <FrameLayout
+    <LinearLayout
         android:layout_width="35dp"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical">
 
         <View
+            android:id="@+id/time_axis_cut_line_up"
             android:layout_gravity="center"
             android:layout_width="0.5dp"
             android:background="@color/gray"
-            android:layout_height="match_parent">
+            android:layout_height="0dp"
+            android:layout_weight="1.0">
         </View>
 
         <com.zkjinshi.superservice.view.CircleStatusView
-            android:id="@+id/ibtn_order_status"
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_gravity="center"/>
 
-    </FrameLayout>
+        <View
+            android:id="@+id/time_axis_cut_line_down"
+            android:layout_gravity="center"
+            android:layout_width="0.5dp"
+            android:background="@color/gray"
+            android:layout_height="0dp"
+            android:layout_weight="1.0">
+        </View>
+
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/content_layout"
