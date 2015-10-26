@@ -122,11 +122,14 @@ public class LocNotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         });
         LinearLayout.LayoutParams contentLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         if(position == 0){
+            ((NoticeViewHolder) holder).upCutLineView.setVisibility(View.INVISIBLE);
             contentLayoutParams.setMargins(0,DisplayUtil.dip2px(context,12),DisplayUtil.dip2px(context,8),DisplayUtil.dip2px(context,6));
         }else if(position == getItemCount()-1){
             contentLayoutParams.setMargins(0, DisplayUtil.dip2px(context, 6), DisplayUtil.dip2px(context, 8), DisplayUtil.dip2px(context, 6));
+            ((NoticeViewHolder) holder).upCutLineView.setVisibility(View.VISIBLE);
         }else{
             contentLayoutParams.setMargins(0, DisplayUtil.dip2px(context, 6), DisplayUtil.dip2px(context, 8), DisplayUtil.dip2px(context, 6));
+            ((NoticeViewHolder) holder).upCutLineView.setVisibility(View.VISIBLE);
         }
         ((NoticeViewHolder) holder).contentLayout.setLayoutParams(contentLayoutParams);
     }
@@ -138,7 +141,7 @@ public class LocNotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
     public class NoticeViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
-        CircleStatusView ibtnOrderStatus;
+        View upCutLineView;
         CircleImageView civClientAvatar;
         TextView  tvVip;
         TextView  tvClientName;
@@ -155,7 +158,7 @@ public class LocNotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
         public NoticeViewHolder(View view) {
             super(view);
-            ibtnOrderStatus = (CircleStatusView) view.findViewById(R.id.ibtn_order_status);
+            upCutLineView = (View)view.findViewById(R.id.time_axis_cut_line_up);
             civClientAvatar = (CircleImageView) view.findViewById(R.id.civ_client_avatar);
             tvVip           = (TextView)  view.findViewById(R.id.tv_vip);
             tvClientName    = (TextView)  view.findViewById(R.id.tv_client_name);
