@@ -78,7 +78,6 @@
                         android:paddingRight="10dp"
                         android:id="@+id/tv_member_level"
                         android:layout_width="wrap_content"
-                        android:text="VIP009"
                         android:textSize="16sp"
                         android:textColor="@color/white"
                         android:layout_height="wrap_content" />

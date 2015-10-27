@@ -186,12 +186,15 @@ public class ClientDetailActivity extends Activity {
         }
         mTvMemberName.setText(client.getUsername());
         mTvMemberPhone.setText(client.getPhone());
+        mTvMemberLevel.setText("VIP" + client.getUser_level());
         if(client.getIs_bill() == 1) {
             mTvMemberType.setText(getString(R.string.debt_member));
         } else {
             mTvMemberType.setText(getString(R.string.not_debt_member));
         }
         mTvRecordTimes.setText(client.getOrder_count() + "");
+        String salesName = client.getSalesname();
+        mTvExclusiceServer.setText(TextUtils.isEmpty(salesName) ? salesName : getString(R.string.current_none));
 
         //1.客户偏好标签处理
         String   likeDesc   = client.getLike_desc();

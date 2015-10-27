@@ -24,8 +24,6 @@ import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.adapter.ContactsSortAdapter;
 import com.zkjinshi.superservice.bean.ClientDetailBean;
-import com.zkjinshi.superservice.entity.EmpStatusRecord;
-import com.zkjinshi.superservice.entity.MsgEmpStatusRSP;
 import com.zkjinshi.superservice.entity.MsgUserOnlineStatus;
 import com.zkjinshi.superservice.entity.MsgUserOnlineStatusRSP;
 import com.zkjinshi.superservice.entity.UserOnlineStatusRecord;
@@ -35,11 +33,9 @@ import com.zkjinshi.superservice.listener.RecyclerItemClickListener;
 import com.zkjinshi.superservice.net.ExtNetRequestListener;
 import com.zkjinshi.superservice.net.MethodType;
 import com.zkjinshi.superservice.net.NetRequest;
-import com.zkjinshi.superservice.net.NetRequestListener;
 import com.zkjinshi.superservice.net.NetRequestTask;
 import com.zkjinshi.superservice.net.NetResponse;
 import com.zkjinshi.superservice.sqlite.ClientDBUtil;
-import com.zkjinshi.superservice.sqlite.ShopEmployeeDBUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.PinyinComparator;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
@@ -47,9 +43,7 @@ import com.zkjinshi.superservice.view.SideBar;
 import com.zkjinshi.superservice.vo.ClientVo;
 import com.zkjinshi.superservice.vo.ContactType;
 import com.zkjinshi.superservice.vo.OnlineStatus;
-import com.zkjinshi.superservice.vo.ShopEmployeeVo;
 import com.zkjinshi.superservice.vo.SortModel;
-import com.zkjinshi.superservice.vo.WorkStatus;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -83,7 +77,6 @@ public class ClientActivity extends AppCompatActivity implements IMessageObserve
     private LinearLayoutManager mLayoutManager;
 
     private List<SortModel>         mAllContactsList;
-    private List<SortModel>         mLocalContacts;
     private Map<String, SortModel>  mLocalClientMap;
     private PinyinComparator     pinyinComparator;
     private ContactsSortAdapter  mContactsAdapter;
@@ -114,6 +107,7 @@ public class ClientActivity extends AppCompatActivity implements IMessageObserve
     }
 
     private void initData() {
+
         mUserID = CacheUtil.getInstance().getUserId();
         mToken  = CacheUtil.getInstance().getToken();
         mShopID = CacheUtil.getInstance().getShopID();
@@ -194,8 +188,6 @@ public class ClientActivity extends AppCompatActivity implements IMessageObserve
 
     @Override
     protected void onResume() {
-        //TODO: 1.获得本地最近5位联系人列表的客户列表
-        showLocalUnNormalClientList();
         showMyClientList(mUserID, mToken, mShopID);
         super.onResume();
     }
@@ -207,6 +199,20 @@ public class ClientActivity extends AppCompatActivity implements IMessageObserve
      * @param shopID
      */
     public void showMyClientList(String userID, String token, String shopID) {
+        //TODO: 1. 获取本地最近联系人列表
+        //TODO: 2  获取本地客户联系人列表
+        if(null != mAllContactsList && !mAllContactsList.isEmpty()){
+            mAllContactsList.removeAll(mAllContactsList);
+        }
+
+        List<ClientVo> clientVos = ClientDBUtil.getInstance().queryUnNormalClient();
+        for(ClientVo clientVo : clientVos){
+            SortModel sortModel =  SortModelFactory.getInstance().buildSortModelByMyClientVo(clientVo);
+            sortModel.setIsOnLine(OnlineStatus.OFFLINE);
+            mLocalClientMap.put(sortModel.getClientID(), sortModel);
+            mAllContactsList.add(sortModel);
+        }
+
         NetRequest netRequest = new NetRequest(ProtocolUtil.getShopUserListUrl());
         HashMap<String,String> bizMap = new HashMap<>();
         bizMap.put("salesid", userID);
@@ -222,12 +228,13 @@ public class ClientActivity extends AppCompatActivity implements IMessageObserve
                 Log.i(TAG, "errorCode:" + errorCode);
                 Log.i(TAG, "errorMessage:" + errorMessage);
                 DialogUtil.getInstance().showToast(ClientActivity.this, "网络访问失败，稍候再试。");
-
+                ClientActivity.this.updateListView(mAllContactsList);
             }
 
             @Override
             public void onNetworkRequestCancelled() {
                 DialogUtil.getInstance().cancelProgressDialog();
+                ClientActivity.this.updateListView(mAllContactsList);
             }
 
             @Override
@@ -263,7 +270,6 @@ public class ClientActivity extends AppCompatActivity implements IMessageObserve
                             mLocalClientMap.put(userid, sortModel);
                             mAllContactsList.add(sortModel);
                         }
-
                         ClientActivity.this.updateListView(mAllContactsList);
 
                         //获得需要查询是否在线的userID的集合
@@ -297,29 +303,13 @@ public class ClientActivity extends AppCompatActivity implements IMessageObserve
     }
 
     /**
-     * 获取本地非正式客人列表
-     * @return
+     * 更新listview界面展示
+     * @param mAllContactsList
      */
-    public void showLocalUnNormalClientList() {
-        if(null != mAllContactsList && !mAllContactsList.isEmpty()){
-            mAllContactsList.removeAll(mAllContactsList);
-        }
-
-        List<ClientVo> clientVos = ClientDBUtil.getInstance().queryUnNormalClient();
-        for(ClientVo clientVo : clientVos){
-            SortModel sortModel =  SortModelFactory.getInstance().buildSortModelByMyClientVo(clientVo);
-            sortModel.setIsOnLine(OnlineStatus.OFFLINE);
-            mLocalClientMap.put(sortModel.getClientID(), sortModel);
-            mAllContactsList.add(sortModel);
-        }
-        this.updateListView(mAllContactsList);
-    }
-
     private void updateListView(List<SortModel> mAllContactsList) {
         if(null == mAllContactsList || mAllContactsList.isEmpty()){
             mTvDialog.setVisibility(View.VISIBLE);
             mTvDialog.setText(ClientActivity.this.getString(R.string.current_none));
-
         }else {
             // 根据a-z进行排序源数据
             mTvDialog.setVisibility(View.GONE);

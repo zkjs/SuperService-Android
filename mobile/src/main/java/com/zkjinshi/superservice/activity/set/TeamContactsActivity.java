@@ -119,7 +119,7 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
 
         mRvTeamContacts = (RecyclerView)     findViewById(R.id.rcv_team_contacts);
         mRlSideBar      = (RelativeLayout)   findViewById(R.id.rl_side_bar);
-        mTvDialog       = (TextView) findViewById(R.id.tv_dialog);
+        mTvDialog       = (TextView)         findViewById(R.id.tv_dialog);
         mAutoSideBar    = new AutoSideBar(TeamContactsActivity.this);
         ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(
                 DisplayUtil.dip2px(TeamContactsActivity.this, 30),
