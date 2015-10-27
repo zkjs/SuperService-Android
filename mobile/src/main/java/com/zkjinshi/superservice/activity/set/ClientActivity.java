@@ -124,6 +124,8 @@ public class ClientActivity extends AppCompatActivity implements IMessageObserve
         mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRcvContacts.setLayoutManager(mLayoutManager);
         mRcvContacts.setAdapter(mContactsAdapter);
+
+        showMyClientList(mUserID, mToken, mShopID);
     }
 
     private void initListener() {
@@ -186,12 +188,6 @@ public class ClientActivity extends AppCompatActivity implements IMessageObserve
         return true;
     }
 
-    @Override
-    protected void onResume() {
-        showMyClientList(mUserID, mToken, mShopID);
-        super.onResume();
-    }
-
     /**
      * 获取我的客户列表
      * @param userID
@@ -200,18 +196,24 @@ public class ClientActivity extends AppCompatActivity implements IMessageObserve
      */
     public void showMyClientList(String userID, String token, String shopID) {
         //TODO: 1. 获取本地最近联系人列表
-        //TODO: 2  获取本地客户联系人列表
+        //  2  获取本地客户联系人列表
         if(null != mAllContactsList && !mAllContactsList.isEmpty()){
             mAllContactsList.removeAll(mAllContactsList);
         }
 
-        List<ClientVo> clientVos = ClientDBUtil.getInstance().queryUnNormalClient();
+        List<ClientVo>  clientVos  = ClientDBUtil.getInstance().queryUnNormalClient();
+        List<SortModel> sortModels = null;
         for(ClientVo clientVo : clientVos){
+            if(null == sortModels){
+                sortModels = new ArrayList<>();
+            }
             SortModel sortModel =  SortModelFactory.getInstance().buildSortModelByMyClientVo(clientVo);
             sortModel.setIsOnLine(OnlineStatus.OFFLINE);
             mLocalClientMap.put(sortModel.getClientID(), sortModel);
-            mAllContactsList.add(sortModel);
+            sortModels.add(sortModel);
         }
+        Collections.sort(sortModels, pinyinComparator);
+        mAllContactsList.addAll(sortModels);
 
         NetRequest netRequest = new NetRequest(ProtocolUtil.getShopUserListUrl());
         HashMap<String,String> bizMap = new HashMap<>();
@@ -270,6 +272,7 @@ public class ClientActivity extends AppCompatActivity implements IMessageObserve
                             mLocalClientMap.put(userid, sortModel);
                             mAllContactsList.add(sortModel);
                         }
+
                         ClientActivity.this.updateListView(mAllContactsList);
 
                         //获得需要查询是否在线的userID的集合
@@ -355,7 +358,7 @@ public class ClientActivity extends AppCompatActivity implements IMessageObserve
                                                                     OnlineStatus.ONLINE : OnlineStatus.OFFLINE);
                         }
                     }
-                    this.updateListView(mAllContactsList);
+                    updateListView(mAllContactsList);
                 }
             }
         } catch (JSONException e) {

@@ -401,7 +401,6 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
             if (type == ProtocolMSG.MSG_ShopEmpStatus_RSP) {
                 MsgEmpStatusRSP msgEmpStatusRSP = gson.fromJson(message, MsgEmpStatusRSP.class);
                 if(null != msgEmpStatusRSP && mShopID.equals(msgEmpStatusRSP.getShopid())){
-                    //TODO:获取在线状态后更新界面
                     List<EmpStatusRecord> empStatusRecords = msgEmpStatusRSP.getResult();
                     Map<String, EmpStatusRecord> empStatusRecordMap = new HashMap<>();
 
