@@ -52,6 +52,12 @@ public class LoginActivity extends Activity implements VerifyPhoneControler.Succ
         initListener();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        VerifyPhoneControler.getInstance().unregisterSmsReceiver();
+    }
+
     private void initView() {
         loginBtn = (Button)findViewById(R.id.btn_send);
         inputEt = (EditText)findViewById(R.id.et_input_phone);
@@ -60,6 +66,7 @@ public class LoginActivity extends Activity implements VerifyPhoneControler.Succ
     private void initData() {
         LoginController.getInstance().init(this);
         VerifyPhoneControler.getInstance().init(this);
+        VerifyPhoneControler.getInstance().registerSmsReceiver();
         VerifyPhoneControler.getInstance().setSuccessCallBack(this);
 
         //测试跳转用的

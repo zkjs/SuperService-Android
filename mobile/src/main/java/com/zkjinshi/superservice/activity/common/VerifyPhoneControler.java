@@ -1,11 +1,16 @@
 package com.zkjinshi.superservice.activity.common;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.telephony.SmsMessage;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
@@ -20,6 +25,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * 开发者：dujiande
@@ -38,6 +45,7 @@ public class VerifyPhoneControler {
     private final static int SMS_COUNTING_DOWN  = 10; //倒计时进行中
     private final static int SMS_COUNT_OVER     = 11; //倒计时结束
     private final static int SEND_SMS_VERIFY    = 12; //发送短信验证码
+    private final static int SEND_SMS_RECEIVE    = 13; //获取短信验证码
 
     private int       mSmsVerifyStatus = SMS_UNSEND;//初始状态
     private int       mSmsCountSeconds = 60;//短信倒计时
@@ -267,6 +275,12 @@ public class VerifyPhoneControler {
                         mBtnConfirm.setEnabled(true);
                     }
                     break;
+                case SEND_SMS_RECEIVE:
+                    if(null != mVerifyCode){
+                        String vertifyCode = msg.obj.toString();
+                        mVerifyCode.setText(vertifyCode);
+                    }
+                    break;
             }
         }
     };
@@ -303,5 +317,69 @@ public class VerifyPhoneControler {
             }
         }
     }
+
+    private String strContent;
+    private String patternCoder = "(?<!--\\d)\\d{6}(?!\\d)";
+
+    /**
+     * 匹配短信中间的6个数字（验证码等）
+     *
+     * @param patternContent
+     * @return
+     */
+    private String patternCode(String patternContent) {
+        if (TextUtils.isEmpty(patternContent)) {
+            return null;
+        }
+        Pattern p = Pattern.compile(patternCoder);
+        Matcher matcher = p.matcher(patternContent);
+        if (matcher.find()) {
+            return matcher.group();
+        }
+        return null;
+    }
+
+    private SmsReceiver smsReceiver;
+
+    public void unregisterSmsReceiver(){
+        if(null != smsReceiver){
+            context.unregisterReceiver(smsReceiver);
+        }
+    }
+
+    public void registerSmsReceiver(){
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("android.provider.Telephony.SMS_RECEIVED");
+        filter.setPriority(Integer.MAX_VALUE);
+        smsReceiver = new SmsReceiver();
+        context.registerReceiver(smsReceiver, filter);
+    }
+
+    class  SmsReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Object[] objs = (Object[]) intent.getExtras().get("pdus");
+            for (Object obj : objs) {
+                byte[] pdu = (byte[]) obj;
+                SmsMessage sms = SmsMessage.createFromPdu(pdu);
+                String message = sms.getMessageBody();
+                String from = sms.getOriginatingAddress();
+                if (!TextUtils.isEmpty(from)) {
+                    strContent = from + "   " + message;
+                    if (!TextUtils.isEmpty(from)) {
+                        String code = patternCode(message);
+                        if (!TextUtils.isEmpty(code)) {
+                            strContent = code;
+                            Message receiveMessage = new Message();
+                            receiveMessage.obj = strContent;
+                            receiveMessage.what = SEND_SMS_RECEIVE;
+                            handler.sendMessage(receiveMessage);
+                        }
+                    }
+                }
+            }
+        }
+    };
 
 }

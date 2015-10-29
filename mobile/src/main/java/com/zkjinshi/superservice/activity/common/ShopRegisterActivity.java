@@ -33,13 +33,20 @@ public class ShopRegisterActivity extends Activity  implements VerifyPhoneContro
         initListener();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        VerifyPhoneControler.getInstance().unregisterSmsReceiver();
+    }
+
     private void initView() {
         registerBtn  = (Button)findViewById(R.id.btn_send);
     }
 
     private void initData() {
-        //VerifyPhoneControler.getInstance().init(this);
-        //VerifyPhoneControler.getInstance().setSuccessCallBack(this);
+        VerifyPhoneControler.getInstance().init(this);
+        VerifyPhoneControler.getInstance().registerSmsReceiver();
+        VerifyPhoneControler.getInstance().setSuccessCallBack(this);
 
         //测试跳转用的
         registerBtn.setEnabled(true);
