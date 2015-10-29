@@ -202,18 +202,21 @@ public class ClientActivity extends AppCompatActivity implements IMessageObserve
         }
 
         List<ClientVo>  clientVos  = ClientDBUtil.getInstance().queryUnNormalClient();
-        List<SortModel> sortModels = null;
-        for(ClientVo clientVo : clientVos){
-            if(null == sortModels){
-                sortModels = new ArrayList<>();
+
+        if(null != clientVos && !clientVos.isEmpty()){
+            List<SortModel> sortModels = null;
+            for(ClientVo clientVo : clientVos){
+                if(null == sortModels){
+                    sortModels = new ArrayList<>();
+                }
+                SortModel sortModel =  SortModelFactory.getInstance().buildSortModelByMyClientVo(clientVo);
+                sortModel.setIsOnLine(OnlineStatus.OFFLINE);
+                mLocalClientMap.put(sortModel.getClientID(), sortModel);
+                sortModels.add(sortModel);
             }
-            SortModel sortModel =  SortModelFactory.getInstance().buildSortModelByMyClientVo(clientVo);
-            sortModel.setIsOnLine(OnlineStatus.OFFLINE);
-            mLocalClientMap.put(sortModel.getClientID(), sortModel);
-            sortModels.add(sortModel);
+            Collections.sort(sortModels, pinyinComparator);
+            mAllContactsList.addAll(sortModels);
         }
-        Collections.sort(sortModels, pinyinComparator);
-        mAllContactsList.addAll(sortModels);
 
         NetRequest netRequest = new NetRequest(ProtocolUtil.getShopUserListUrl());
         HashMap<String,String> bizMap = new HashMap<>();

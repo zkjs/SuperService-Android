@@ -253,8 +253,8 @@ public class TeamContactsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         public CircleImageView  civContactAvatar;
         public TextView         tvContactAvatar;
         public TextView         tvContactName;
-        public RelativeLayout   rlContactStatus;
-        public TextView         tvContactStatus;
+//        public RelativeLayout   rlContactStatus;
+//        public TextView         tvContactStatus;
         public RelativeLayout   rlContactOnStatus;
         public TextView         tvContactOnLine;
 
@@ -267,8 +267,8 @@ public class TeamContactsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             civContactAvatar = (CircleImageView) view.findViewById(R.id.civ_contact_avatar);
             tvContactAvatar = (TextView) view.findViewById(R.id.tv_contact_avatar);
             tvContactName    = (TextView) view.findViewById(R.id.tv_contact_name);
-            rlContactStatus  = (RelativeLayout) view.findViewById(R.id.rl_contact_status);
-            tvContactStatus    = (TextView) view.findViewById(R.id.tv_contact_status);
+//            rlContactStatus  = (RelativeLayout) view.findViewById(R.id.rl_contact_status);
+//            tvContactStatus    = (TextView) view.findViewById(R.id.tv_contact_status);
             rlContactOnStatus  = (RelativeLayout) view.findViewById(R.id.rl_contact_on_status);
             tvContactOnLine    = (TextView) view.findViewById(R.id.tv_contact_on_line);
             this.mItemClickListener = itemClickListener;

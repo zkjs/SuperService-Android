@@ -80,9 +80,6 @@ public class TeamEditActivity extends Activity {
     private String mShopID;
     private String mToken;
 
-    public TeamEditActivity() {
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -121,6 +118,7 @@ public class TeamEditActivity extends Activity {
     }
 
     private void initListener() {
+
         mIbtnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

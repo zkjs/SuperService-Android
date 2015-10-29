@@ -144,7 +144,7 @@ public class TeamEditContactsAdapter extends RecyclerView.Adapter<RecyclerView.V
             }
         });
 
-        ((ContactViewHolder)holder).tvContactOnLine.setVisibility(View.INVISIBLE);
+//        ((ContactViewHolder)holder).tvContactOnLine.setVisibility(View.INVISIBLE);
 
         //set the checkbox
         ((ContactViewHolder) holder).cbCheck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -202,10 +202,10 @@ public class TeamEditContactsAdapter extends RecyclerView.Adapter<RecyclerView.V
         public CircleImageView  civContactAvatar;
         public TextView         tvContactAvatar;
         public TextView         tvContactName;
-        public RelativeLayout   rlContactStatus;
-        public TextView         tvContactStatus;
-        public RelativeLayout   rlContactOnStatus;
-        public TextView         tvContactOnLine;
+//        public RelativeLayout   rlContactStatus;
+//        public TextView         tvContactStatus;
+//        public RelativeLayout   rlContactOnStatus;
+//        public TextView         tvContactOnLine;
         public CheckBox         cbCheck;
 
         private RecyclerItemClickListener mItemClickListener;
@@ -216,10 +216,10 @@ public class TeamEditContactsAdapter extends RecyclerView.Adapter<RecyclerView.V
             civContactAvatar = (CircleImageView) view.findViewById(R.id.civ_contact_avatar);
             tvContactAvatar  = (TextView) view.findViewById(R.id.tv_contact_avatar);
             tvContactName    = (TextView) view.findViewById(R.id.tv_contact_name);
-            rlContactStatus  = (RelativeLayout) view.findViewById(R.id.rl_contact_status);
-            tvContactStatus    = (TextView) view.findViewById(R.id.tv_contact_status);
-            rlContactOnStatus  = (RelativeLayout) view.findViewById(R.id.rl_contact_on_status);
-            tvContactOnLine    = (TextView) view.findViewById(R.id.tv_contact_on_line);
+//            rlContactStatus  = (RelativeLayout) view.findViewById(R.id.rl_contact_status);
+//            tvContactStatus    = (TextView) view.findViewById(R.id.tv_contact_status);
+//            rlContactOnStatus  = (RelativeLayout) view.findViewById(R.id.rl_contact_on_status);
+//            tvContactOnLine    = (TextView) view.findViewById(R.id.tv_contact_on_line);
             cbCheck            = (CheckBox) view.findViewById(R.id.cb_check);
 
             this.mItemClickListener = itemClickListener;

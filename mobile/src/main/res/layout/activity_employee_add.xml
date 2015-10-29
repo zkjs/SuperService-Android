@@ -100,8 +100,7 @@
         android:layout_height="34dp"
         android:orientation="horizontal"
         android:background="#dedede"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
+        android:padding="8dp"
         android:gravity="center_vertical">
 
         <TextView
@@ -124,11 +123,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fadingEdge="none"
-        android:divider="#f0edf0"
-        android:dividerHeight="1dp"
+        android:divider="@null"
         android:fadeScrollbars="true"
         android:id="@+id/contact_listview">
     </ListView>
-
 
 </LinearLayout>
