@@ -12,7 +12,7 @@ import java.util.ArrayList;
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class OrderDetailBean implements Serializable {
+public class OrderDetailBean extends BaseBean {
 
     private OrderRoomBean room;//订房信息
     private ArrayList<OrderUsersBean> users;//入住人信息

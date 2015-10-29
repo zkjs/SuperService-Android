@@ -44,6 +44,7 @@ public class SplashActivity extends Activity{
 
     private static final int GO_LOGIN = 1000;
     private static final int GO_HOME = 1001;
+    private static final int GO_GUIDE = 1002;
 
     private void initView(){
 
@@ -57,7 +58,7 @@ public class SplashActivity extends Activity{
             // 使用Handler的postDelayed方法，3秒后执行跳转到MainActivity
             handler.sendEmptyMessageDelayed(GO_HOME, SPLASH_DELAY_MILLIS);
         } else {
-            handler.sendEmptyMessageDelayed(GO_LOGIN, SPLASH_DELAY_MILLIS);
+            handler.sendEmptyMessageDelayed(GO_GUIDE, SPLASH_DELAY_MILLIS);
         }
     }
 
@@ -162,6 +163,13 @@ public class SplashActivity extends Activity{
         }
     }
 
+    private void goGuide() {
+        Intent guideIntent = new Intent(SplashActivity.this, GuideActivity.class);
+        SplashActivity.this.startActivity(guideIntent);
+        SplashActivity.this.finish();
+        overridePendingTransition(R.anim.activity_new, R.anim.activity_out);
+    }
+
     private void goLogin() {
         Intent loginIntent = new Intent(SplashActivity.this, LoginActivity.class);
         SplashActivity.this.startActivity(loginIntent);
@@ -186,6 +194,10 @@ public class SplashActivity extends Activity{
                     break;
                 case GO_HOME:
                     goHome();
+                    break;
+                case GO_GUIDE:
+                    //goGuide();
+                    goLogin();
                     break;
                 default:
                     break;

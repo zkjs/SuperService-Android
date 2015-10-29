@@ -6,6 +6,9 @@
     <color name="selected_color">#87CEEB</color>
     <color name="unselect_color">#505152</color>
 
+    <color name="theme_700">#455A64</color>
+    <color name="theme_100">#CFD8DC</color>
+
     <color name="white">#FFFFFF</color>
     <!-- 白色 -->
 

@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -151,7 +152,13 @@ public class OrderDealActivity extends Activity {
                 Log.i(TAG, "result.rawResult:" + result.rawResult);
                 try {
                     orderDetailBean = new Gson().fromJson(result.rawResult, OrderDetailBean.class);
-                    initData();
+                    if(orderDetailBean.isSet()){
+                        initData();
+                    }else{
+                        DialogUtil.getInstance().showToast(OrderDealActivity.this,"api 错误");
+                        finish();
+                    }
+
                 } catch (Exception e) {
                     Log.e(TAG, e.getMessage());
                 }

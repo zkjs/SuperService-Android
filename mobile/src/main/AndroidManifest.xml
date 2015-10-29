@@ -248,6 +248,13 @@
         </activity>
 
         <activity
+            android:name=".activity.common.GuideActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+        </activity>
+
+        <activity
             android:name=".activity.set.EmployeeInfoActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
