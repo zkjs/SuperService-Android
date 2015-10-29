@@ -70,7 +70,6 @@ public class EmployeeAddActivity extends Activity {
     /**联系人的ID**/
     private static final int PHONES_CONTACT_ID_INDEX = 3;
 
-    //
     public static final int EXCEL_REQUEST_CODE = 4;
     public static final int HAND_REQUEST_CODE = 115;
 
@@ -89,8 +88,6 @@ public class EmployeeAddActivity extends Activity {
 
     private boolean hasGetDept = false;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -103,13 +100,10 @@ public class EmployeeAddActivity extends Activity {
     }
 
     private void initView() {
-        handText = (TextView)findViewById(R.id.hand_input_tv);
+        handText   = (TextView)findViewById(R.id.hand_input_tv);
         importText = (TextView)findViewById(R.id.import_name_tv);
-        listView = (ListView)findViewById(R.id.contact_listview);
-
+        listView   = (ListView)findViewById(R.id.contact_listview);
     }
-
-
 
     /**得到手机通讯录联系人信息**/
     private void getPhoneContacts() {
@@ -256,9 +250,7 @@ public class EmployeeAddActivity extends Activity {
                 }
 
                 @Override
-                public void onNetworkRequestCancelled() {
-
-                }
+                public void onNetworkRequestCancelled() {}
 
                 @Override
                 public void onNetworkResponseSucceed(NetResponse result) {
@@ -290,7 +282,6 @@ public class EmployeeAddActivity extends Activity {
 
                 @Override
                 public void beforeNetworkRequestStart() {
-
                 }
             });
             netRequestTask.isShowLoadingDialog = true;

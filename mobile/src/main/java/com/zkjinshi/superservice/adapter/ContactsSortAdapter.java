@@ -180,8 +180,8 @@ public class ContactsSortAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         public TextView         tvContactAvatar;
         public TextView         tvContactName;
         public TextView         tvContactDes;
-        public RelativeLayout   rlContactStatus;
-        public TextView         tvContactStatus;
+//        public RelativeLayout   rlContactStatus;
+//        public TextView         tvContactStatus;
         public RelativeLayout   rlContactOnStatus;
         public TextView         tvContactOnLine;
         public TextView         tvContactOnShop;
@@ -195,8 +195,8 @@ public class ContactsSortAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             tvContactAvatar  = (TextView) view.findViewById(R.id.tv_contact_avatar);
             tvContactName    = (TextView) view.findViewById(R.id.tv_contact_name);
             tvContactDes     = (TextView) view.findViewById(R.id.tv_contact_des);
-            rlContactStatus  = (RelativeLayout) view.findViewById(R.id.rl_contact_status);
-            tvContactStatus    = (TextView) view.findViewById(R.id.tv_contact_status);
+//            rlContactStatus  = (RelativeLayout) view.findViewById(R.id.rl_contact_status);
+//            tvContactStatus    = (TextView) view.findViewById(R.id.tv_contact_status);
             rlContactOnStatus  = (RelativeLayout) view.findViewById(R.id.rl_contact_on_status);
             tvContactOnLine    = (TextView) view.findViewById(R.id.tv_contact_on_line);
             tvContactOnShop    = (TextView) view.findViewById(R.id.tv_contact_on_shop);
