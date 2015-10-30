@@ -119,7 +119,7 @@
 
                 <TextView
                     android:id="@+id/tv_order_info"
-                    android:padding="10dp"
+                    android:padding="5dp"
                     android:background="@color/whiteF5F5F5"
                     android:textColor="@color/gray616161"
                     android:text="无订单消息"
@@ -141,8 +141,8 @@
             <ImageView
                 android:id="@+id/iv_clock"
                 android:layout_alignParentLeft="true"
-                android:layout_width="19dp"
-                android:layout_height="19dp"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
                 android:layout_centerVertical="true"
                 android:background="@drawable/ic_clock"
                 />
@@ -161,8 +161,8 @@
             <ImageView
                 android:id="@+id/iv_fenxiang"
                 android:layout_alignParentRight="true"
-                android:layout_width="20dp"
-                android:layout_height="18dp"
+                android:layout_width="15dp"
+                android:layout_height="13.50dp"
                 android:layout_centerVertical="true"
                 android:background="@drawable/ic_fenxiang"
                 />
@@ -170,8 +170,8 @@
             <ImageView
                 android:id="@+id/iv_duihua"
                 android:layout_toLeftOf="@+id/iv_fenxiang"
-                android:layout_width="21dp"
-                android:layout_height="20dp"
+                android:layout_width="15.75dp"
+                android:layout_height="15dp"
                 android:layout_marginRight="15dp"
                 android:layout_centerVertical="true"
                 android:background="@drawable/ic_duihua" />
@@ -179,8 +179,8 @@
             <ImageView
                 android:id="@+id/iv_dianhua"
                 android:layout_toLeftOf="@+id/iv_duihua"
-                android:layout_width="14dp"
-                android:layout_height="20dp"
+                android:layout_width="10.50dp"
+                android:layout_height="15dp"
                 android:layout_marginRight="15dp"
                 android:layout_centerVertical="true"
                 android:background="@drawable/ic_dianhua" />

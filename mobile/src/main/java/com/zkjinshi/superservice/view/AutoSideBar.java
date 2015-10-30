@@ -67,7 +67,7 @@ public class AutoSideBar extends View {
 			//设置字体显示颜色
 			paint.setColor(Color.parseColor("#808080"));
 			// paint.setColor(Color.WHITE);
-			paint.setTypeface(Typeface.DEFAULT_BOLD);
+			// paint.setTypeface(Typeface.DEFAULT_BOLD);// 去除加粗
 			paint.setAntiAlias(true);
 			paint.setTextSize(DisplayUtil.sp2px(getContext(), 16));
 			// 选中的状态

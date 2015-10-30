@@ -81,8 +81,6 @@ public class OrderFragment extends Fragment{
         orderMoreAdapter = new OrderMoreAdapter(new ArrayList<OrderBean>());
         rcyOrderMore.setAdapter(orderMoreAdapter);
 
-
-
         moreStatsuView.setStatus(CircleStatusView.CircleStatus.STATUS_MORE);
         moreStatsuView.invalidate();
 
