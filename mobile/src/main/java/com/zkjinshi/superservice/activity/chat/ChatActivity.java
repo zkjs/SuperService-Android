@@ -243,7 +243,7 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
 
                     case R.id.finish_this_chat:
                         //执行解散回话操作
-
+                        messageListViewManager.sendDisableSession();
                         break;
                 }
                 return true;

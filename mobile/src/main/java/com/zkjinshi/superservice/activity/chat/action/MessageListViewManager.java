@@ -24,6 +24,7 @@ import com.zkjinshi.base.net.core.WebSocketManager;
 import com.zkjinshi.base.net.observer.IMessageObserver;
 import com.zkjinshi.base.net.observer.MessageSubject;
 import com.zkjinshi.base.net.protocol.ProtocolMSG;
+import com.zkjinshi.base.net.queue.QueueType;
 import com.zkjinshi.base.util.DeviceUtils;
 import com.zkjinshi.base.util.NetWorkUtil;
 import com.zkjinshi.base.view.CustomDialog;
@@ -36,11 +37,14 @@ import com.zkjinshi.superservice.entity.MsgCustomerServiceMediaChat;
 import com.zkjinshi.superservice.entity.MsgCustomerServiceMediaChatRSP;
 import com.zkjinshi.superservice.entity.MsgCustomerServiceTextChat;
 import com.zkjinshi.superservice.entity.MsgCustomerServiceTextChatRSP;
+import com.zkjinshi.superservice.entity.MsgShopDisbandSession;
+import com.zkjinshi.superservice.entity.MsgShopDisbandSessionRSP;
 import com.zkjinshi.superservice.factory.MessageFactory;
 import com.zkjinshi.superservice.net.NetRequest;
 import com.zkjinshi.superservice.net.NetRequestListener;
 import com.zkjinshi.superservice.net.NetRequestTask;
 import com.zkjinshi.superservice.net.NetResponse;
+import com.zkjinshi.superservice.request.MsgShopDisbandSessionTool;
 import com.zkjinshi.superservice.sqlite.ChatRoomDBUtil;
 import com.zkjinshi.superservice.sqlite.MessageDBUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
@@ -161,6 +165,7 @@ public class MessageListViewManager implements MsgListView.IXListViewListener,
         MessageSubject.getInstance().addObserver(this, ProtocolMSG.MSG_CustomerServiceTextChat);
         MessageSubject.getInstance().addObserver(this, ProtocolMSG.MSG_CustomerServiceMediaChat);
         MessageSubject.getInstance().addObserver(this, ProtocolMSG.MSG_CustomerServiceImgChat);
+        MessageSubject.getInstance().addObserver(this, ProtocolMSG.MSG_ShopDisbandSession_RSP);
     }
 
     /**
@@ -173,6 +178,19 @@ public class MessageListViewManager implements MsgListView.IXListViewListener,
         MessageSubject.getInstance().removeObserver(this, ProtocolMSG.MSG_CustomerServiceTextChat);
         MessageSubject.getInstance().removeObserver(this, ProtocolMSG.MSG_CustomerServiceMediaChat);
         MessageSubject.getInstance().removeObserver(this, ProtocolMSG.MSG_CustomerServiceImgChat);
+        MessageSubject.getInstance().removeObserver(this, ProtocolMSG.MSG_ShopDisbandSession_RSP);
+    }
+
+    /**
+     * 解散回话
+     */
+    public void sendDisableSession(){
+        MsgShopDisbandSession msgShopDisbandSession = MsgShopDisbandSessionTool.buildMsgShopDisbandSession(mShopID,mSessionID);
+        if(null != msgShopDisbandSession){
+            Gson gson = new Gson();
+            String jsonStr = gson.toJson(msgShopDisbandSession);
+            WebSocketManager.getInstance().sendMessage(jsonStr, QueueType.FIRST);
+        }
     }
 
     /**
@@ -187,7 +205,7 @@ public class MessageListViewManager implements MsgListView.IXListViewListener,
         messageVector.add(tempMessageId);
 
         /** 1、IM发送文本消息 */
-        mMessageVo = buildTextMessageVo( mShopID, mSessionID,
+        mMessageVo = buildTextMessageVo(mShopID, mSessionID,
                 content, tempMessageId, tempSendTime,
                 SendStatus.SENDING, defaultRuleType);
 
@@ -825,10 +843,13 @@ public class MessageListViewManager implements MsgListView.IXListViewListener,
         try {
             JSONObject messageObj = new JSONObject(message);
             int type = messageObj.getInt("type");
+            Gson gson = null;
 
             /** 文本消息的回复 */
             if(ProtocolMSG.MSG_CustomerServiceTextChat_RSP == type) {
-                Gson gson = new Gson();
+                if(null == gson){
+                    gson = new Gson();
+                }
                 MsgCustomerServiceTextChatRSP msgTextRSP = gson.fromJson(message, MsgCustomerServiceTextChatRSP.class);
                 int result = msgTextRSP.getResult();
                 // 0:发送成功  1:发送失败  2:客人在线客服离线   3:客人离线客服在线 4:所有客服不在线
@@ -863,7 +884,9 @@ public class MessageListViewManager implements MsgListView.IXListViewListener,
 
             /** 音频消息的回复 */
             if(ProtocolMSG.MSG_CustomerServiceMediaChat_RSP == type) {
-                Gson gson = new Gson();
+                if(null == gson){
+                    gson = new Gson();
+                }
                 MsgCustomerServiceMediaChatRSP msgMediaRSP = gson.fromJson(message,
                         MsgCustomerServiceMediaChatRSP.class);
                 int result = msgMediaRSP.getResult();
@@ -901,12 +924,13 @@ public class MessageListViewManager implements MsgListView.IXListViewListener,
 
             /** 图片消息的回复 */
             if(ProtocolMSG.MSG_CustomerServiceImgChat_RSP == type) {
-                Gson gson = new Gson();
+                if(null == gson){
+                    gson = new Gson();
+                }
                 MsgCustomerServiceImgChatRSP msgImgRSP = gson.fromJson(message,
                         MsgCustomerServiceImgChatRSP.class);
                 int result = msgImgRSP.getResult();
                 if(0 == result){
-// 更新数据库
                     String realMsgID = msgImgRSP.getSrvmsgid() + "";//服务器返回msgID
                     long   sendTime  = msgImgRSP.getTimestamp();//服务器返回发送时间
                     String tempID    = msgImgRSP.getTempid();//临时消息ID
@@ -939,7 +963,9 @@ public class MessageListViewManager implements MsgListView.IXListViewListener,
             }
 
             if(ProtocolMSG.MSG_CustomerServiceTextChat == type){//接收别人发送文本消息
-                Gson gson = new Gson();
+                if(null == gson){
+                    gson = new Gson();
+                }
                 MsgCustomerServiceTextChat msgText = gson.fromJson(message, MsgCustomerServiceTextChat.class);
                 String sessionID = msgText.getSessionid();
                 if(sessionID.equals(mSessionID)){
@@ -954,7 +980,9 @@ public class MessageListViewManager implements MsgListView.IXListViewListener,
             }
 
             if(ProtocolMSG.MSG_CustomerServiceImgChat == type){//接收别人发送的图片消息
-                Gson gson = new Gson();
+                if(null == gson){
+                    gson = new Gson();
+                }
                 MsgCustomerServiceImgChat msgImg = gson.fromJson(message,
                         MsgCustomerServiceImgChat.class);
                 String sessionID = msgImg.getSessionid();
@@ -971,7 +999,9 @@ public class MessageListViewManager implements MsgListView.IXListViewListener,
             }
 
             if (ProtocolMSG.MSG_CustomerServiceMediaChat ==  type){//接收别人发送的语音消息
-                Gson gson = new Gson();
+                if(null == gson){
+                    gson = new Gson();
+                }
                 MsgCustomerServiceMediaChat msgMedia = gson.fromJson(message,
                         MsgCustomerServiceMediaChat.class);
                 String sessionID = msgMedia.getSessionid();
@@ -986,9 +1016,41 @@ public class MessageListViewManager implements MsgListView.IXListViewListener,
                 }
             }
 
+            if(ProtocolMSG.MSG_ShopDisbandSession_RSP == type){//解散回话
+                if(null == gson){
+                    gson = new Gson();
+                }
+                MsgShopDisbandSessionRSP msgShopDisbandSessionRSP = gson.fromJson(message,MsgShopDisbandSessionRSP.class);
+                if(null != msgShopDisbandSessionRSP){
+                    int result = msgShopDisbandSessionRSP.getResult();
+                    if(0 == result){
+                        //解散回话成功
+                        showDisbandSessionDialog();
+                    }
+                }
+            }
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    private void showDisbandSessionDialog(){
+        CustomDialog.Builder customBuilder = new CustomDialog.Builder(context);
+        customBuilder.setTitle("温馨提示");
+        customBuilder.setMessage("解散回话成功!");
+        customBuilder.setGravity(Gravity.CENTER);
+        customBuilder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                if(context instanceof Activity){
+                    ((Activity)context).finish();
+                }
+            }
+        });
+        customBuilder.create().show();
     }
 
     private void showOfflineDialog(){
