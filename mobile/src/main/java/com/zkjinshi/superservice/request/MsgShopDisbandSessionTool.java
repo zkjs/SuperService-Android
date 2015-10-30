@@ -1,7 +1,6 @@
 package com.zkjinshi.superservice.request;
 
 import com.zkjinshi.base.net.protocol.ProtocolMSG;
-import com.zkjinshi.superservice.entity.MsgShopDisbandSession;
 import com.zkjinshi.superservice.utils.CacheUtil;
 
 /**
