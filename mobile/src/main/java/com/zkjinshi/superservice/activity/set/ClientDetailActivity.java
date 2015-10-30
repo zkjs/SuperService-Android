@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -58,7 +59,7 @@ public class ClientDetailActivity extends Activity {
     private String      mToken;
     private String      mShopID;
 
-    private ImageButton mIbtnBack;
+    private RelativeLayout mRlBack;
     private TextView    mTvTitle;
     private ImageButton mIbtnDianhua;
     private ImageButton mIbtnDuiHua;
@@ -87,7 +88,7 @@ public class ClientDetailActivity extends Activity {
     }
 
     private void initView() {
-        mIbtnBack        = (ImageButton)     findViewById(R.id.ibtn_back);
+        mRlBack        = (RelativeLayout)  findViewById(R.id.rl_back);
         mTvTitle         = (TextView)        findViewById(R.id.tv_title);
 
         mTvTitle.setText(getString(R.string.client_detail));
@@ -238,7 +239,7 @@ public class ClientDetailActivity extends Activity {
     }
 
     private void initListener() {
-        mIbtnBack.setOnClickListener(new View.OnClickListener() {
+        mRlBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ClientDetailActivity.this.finish();
