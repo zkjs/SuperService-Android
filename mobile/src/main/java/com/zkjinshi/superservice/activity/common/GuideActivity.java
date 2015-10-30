@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.zkjinshi.base.util.DisplayUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.view.scviewpager.DotsView;
 import com.zkjinshi.superservice.view.scviewpager.SCPositionAnimation;
@@ -55,15 +56,25 @@ public class GuideActivity  extends FragmentActivity {
         mPageAdapter.setFragmentBackgroundColor(R.color.theme_100);
         mViewPager.setAdapter(mPageAdapter);
 
+
         mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                Log.i(TAG,"onPageScrolled("+position+","+positionOffset+","+positionOffsetPixels+")");
+                //Log.i(TAG,"onPageScrolled("+position+","+positionOffset+","+positionOffsetPixels+")");
+                if( positionOffset== 0.0 && positionOffset ==0){
+                   mPageAdapter.runInAnimation(position);
+                    if(position-1 >= 0){
+                        mPageAdapter.runOutAnimation(position-1);
+                    }
+                    if(position+1 < NUM_PAGES){
+                        mPageAdapter.runOutAnimation(position+1);
+                    }
+                }
             }
 
             @Override
             public void onPageSelected(int position) {
-                Log.i(TAG,"onPageSelected("+position+")");
+               // Log.i(TAG,"onPageSelected("+position+")");
                 mDotsView.selectDot(position);
                 if(position > 1){
                     findViewById(R.id.people_main).setVisibility(View.INVISIBLE);
@@ -74,7 +85,7 @@ public class GuideActivity  extends FragmentActivity {
 
             @Override
             public void onPageScrollStateChanged(int state) {
-                Log.i(TAG,"onPageScrollStateChanged("+state+")");
+               // Log.i(TAG,"onPageScrollStateChanged("+state+")");
             }
         });
 
@@ -82,7 +93,7 @@ public class GuideActivity  extends FragmentActivity {
         //第一页
         View font1 = findViewById(R.id.page0_font);
         SCViewAnimation font1Animation = new SCViewAnimation(font1);
-        font1Animation.addPageAnimation(new SCPositionAnimation(this, 0, -size.x, 0));
+        font1Animation.addPageAnimation(new SCPositionAnimation(this, 0, 0, size.y/2));
         mViewPager.addAnimation(font1Animation);
 
         View name = findViewById(R.id.page0_name);
@@ -93,9 +104,13 @@ public class GuideActivity  extends FragmentActivity {
         //第二页
         View font2 = findViewById(R.id.page1_font);
         SCViewAnimation font2Animation = new SCViewAnimation(font2);
+//        int distance = DisplayUtil.dip2px(this, 300);
+//        font2Animation.startToPosition(null,size.y) ;
+//        font2Animation.addPageAnimation(new SCPositionAnimation(this, 0,0,-distance));
+//        font2Animation.addPageAnimation(new SCPositionAnimation(this, 1,0,distance));
         font2Animation.startToPosition(size.x,null);
         font2Animation.addPageAnimation(new SCPositionAnimation(this, 0,-size.x,0));
-        font2Animation.addPageAnimation(new SCPositionAnimation(this, 1,-size.x,0));
+        font2Animation.addPageAnimation(new SCPositionAnimation(this, 1, -size.x, 0));
         mViewPager.addAnimation(font2Animation);
         //第三页
         View font3 = findViewById(R.id.page2_font);

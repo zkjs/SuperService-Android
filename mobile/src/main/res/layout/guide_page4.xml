@@ -36,7 +36,7 @@
         android:layout_width="150dp"
         android:layout_height="50dp"
         android:layout_marginBottom="60dp"
-        android:text="登录"
+        android:text="立即体验"
         style="@style/blueButton"
         android:id="@+id/btn_login"
         android:enabled="true"/>

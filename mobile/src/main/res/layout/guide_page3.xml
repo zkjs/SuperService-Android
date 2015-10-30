@@ -37,7 +37,7 @@
         android:layout_marginLeft="108dp"
         android:layout_marginTop="234dp"
         android:src="@drawable/layer_3"
-        android:id="@+id/layer_3"/>
+        android:id="@+id/layer3"/>
 
     <ImageView
         android:layout_width="wrap_content"
