@@ -14,6 +14,7 @@ import com.zkjinshi.base.util.TimeUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.listener.RecyclerItemClickListener;
 import com.zkjinshi.superservice.sqlite.ChatRoomDBUtil;
+import com.zkjinshi.superservice.sqlite.MessageDBUtil;
 import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.view.CircleImageView;
 import com.zkjinshi.superservice.vo.ChatRoomVo;
@@ -103,7 +104,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 }
             }
         }
-        int notifyCount = 0;
+        int notifyCount = MessageDBUtil.getInstance().queryNotifyCount(sessionId);
         if(notifyCount <= 0){
             ((ViewHolder)holder).noticeCountTv.setVisibility(View.GONE);
         }else if(notifyCount > 99) {

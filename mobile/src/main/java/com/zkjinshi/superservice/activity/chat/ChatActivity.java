@@ -242,6 +242,8 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
                         break;
 
                     case R.id.finish_this_chat:
+                        //执行解散回话操作
+
                         break;
                 }
                 return true;
