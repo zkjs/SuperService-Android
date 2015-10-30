@@ -1,6 +1,7 @@
 package com.zkjinshi.superservice.request;
 
 import com.zkjinshi.base.net.protocol.ProtocolMSG;
+import com.zkjinshi.superservice.entity.MsgShopDisband;
 import com.zkjinshi.superservice.utils.CacheUtil;
 
 /**
@@ -11,8 +12,8 @@ import com.zkjinshi.superservice.utils.CacheUtil;
  */
 public class MsgShopDisbandSessionTool {
 
-    public static MsgShopDisbandSession buildMsgShopDisbandSession(String shopId,String sessionId){
-        MsgShopDisbandSession msgShopDisbandSession = new MsgShopDisbandSession();
+    public static MsgShopDisband buildMsgShopDisbandSession(String shopId,String sessionId){
+        MsgShopDisband msgShopDisbandSession = new MsgShopDisband();
         msgShopDisbandSession.setType(ProtocolMSG.MSG_ShopDisbandSession);
         msgShopDisbandSession.setTimestamp(System.currentTimeMillis());
         msgShopDisbandSession.setFromid(CacheUtil.getInstance().getUserId());

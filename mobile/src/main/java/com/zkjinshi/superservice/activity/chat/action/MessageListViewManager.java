@@ -33,6 +33,8 @@ import com.zkjinshi.superservice.entity.MsgCustomerServiceMediaChat;
 import com.zkjinshi.superservice.entity.MsgCustomerServiceMediaChatRSP;
 import com.zkjinshi.superservice.entity.MsgCustomerServiceTextChat;
 import com.zkjinshi.superservice.entity.MsgCustomerServiceTextChatRSP;
+import com.zkjinshi.superservice.entity.MsgShopDisband;
+import com.zkjinshi.superservice.entity.MsgShopDisbandRSP;
 import com.zkjinshi.superservice.factory.MessageFactory;
 import com.zkjinshi.superservice.net.NetRequest;
 import com.zkjinshi.superservice.net.NetRequestListener;
@@ -178,7 +180,7 @@ public class MessageListViewManager implements MsgListView.IXListViewListener,
      * 解散回话
      */
     public void sendDisableSession(){
-        MsgShopDisbandSession msgShopDisbandSession = MsgShopDisbandSessionTool.buildMsgShopDisbandSession(mShopID,mSessionID);
+        MsgShopDisband msgShopDisbandSession = MsgShopDisbandSessionTool.buildMsgShopDisbandSession(mShopID,mSessionID);
         if(null != msgShopDisbandSession){
             Gson gson = new Gson();
             String jsonStr = gson.toJson(msgShopDisbandSession);
@@ -1013,7 +1015,7 @@ public class MessageListViewManager implements MsgListView.IXListViewListener,
                 if(null == gson){
                     gson = new Gson();
                 }
-                MsgShopDisbandSessionRSP msgShopDisbandSessionRSP = gson.fromJson(message,MsgShopDisbandSessionRSP.class);
+                MsgShopDisbandRSP msgShopDisbandSessionRSP = gson.fromJson(message,MsgShopDisbandRSP.class);
                 if(null != msgShopDisbandSessionRSP){
                     int result = msgShopDisbandSessionRSP.getResult();
                     if(0 == result){
