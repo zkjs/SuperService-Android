@@ -87,5 +87,6 @@
     <string name="net_exception_please_try_it_later">网络异常， 请稍后再试</string>
     <string name="chat">对话</string>
     <string name="latest">最近</string>
+    <string name="not_choose_yet">尚未选择</string>
 
 </resources>

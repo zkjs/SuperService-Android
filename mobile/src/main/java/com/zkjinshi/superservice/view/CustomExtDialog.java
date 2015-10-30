@@ -8,11 +8,13 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.zkjinshi.base.R;
+import com.zkjinshi.superservice.R;
 
 /**
  * 自定义提示对话框
@@ -31,16 +33,24 @@ public class CustomExtDialog extends Dialog {
 		super(context);
 	}
 
+
+
 	public static class Builder {
 
 		private Context context;
 		private String title;
 		private String message;
+		private String checkMessage;
 		private Uri imagePath;
 		private int gravity = -1;
 		private int visibility = -1;
 		private String positiveButtonText;
 		private String negativeButtonText;
+        private boolean isMessageChecked = false;
+
+        public boolean isMessageChecked() {
+            return isMessageChecked;
+        }
 
 		private OnClickListener positiveButtonClickListener,
 				negativeButtonClickListener;
@@ -56,6 +66,16 @@ public class CustomExtDialog extends Dialog {
 
 		public Builder setMessage(int message) {
 			this.message = (String) context.getText(message);
+			return this;
+		}
+
+		public Builder setCheckMessage(String checkMessage) {
+			this.checkMessage = checkMessage;
+			return this;
+		}
+
+        public Builder setCheckMessage(int checkMessage) {
+			this.checkMessage = (String) context.getText(checkMessage);
 			return this;
 		}
 
@@ -86,8 +106,7 @@ public class CustomExtDialog extends Dialog {
 
 		public Builder setPositiveButton(int positiveButtonText,
 				OnClickListener listener) {
-			this.positiveButtonText = (String) context
-					.getText(positiveButtonText);
+			this.positiveButtonText = (String) context.getText(positiveButtonText);
 			this.positiveButtonClickListener = listener;
 			return this;
 		}
@@ -101,8 +120,7 @@ public class CustomExtDialog extends Dialog {
 
 		public Builder setNegativeButton(int negativeButtonText,
 				OnClickListener listener) {
-			this.negativeButtonText = (String) context
-					.getText(negativeButtonText);
+			this.negativeButtonText = (String) context.getText(negativeButtonText);
 			this.negativeButtonClickListener = listener;
 			return this;
 		}
@@ -115,19 +133,17 @@ public class CustomExtDialog extends Dialog {
 		}
 
 		public CustomExtDialog create() {
-			LayoutInflater inflater = (LayoutInflater) context
-					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			final CustomExtDialog dialog = new CustomExtDialog(context,
-					R.style.customDialog);
-			View layout = inflater.inflate(R.layout.custom_dialog, null);
+			LayoutInflater inflater       = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			final CustomExtDialog dialog = new CustomExtDialog(context, R.style.customDialog);
+			View layout = inflater.inflate(R.layout.custom_ext_dialog, null);
 			dialog.addContentView(layout, new LayoutParams(
-					LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+                    LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 			((TextView) layout.findViewById(R.id.dialogTitle)).setText(title);
 			if (positiveButtonText != null) {
 				((TextView) layout.findViewById(R.id.dialogRightBtn))
 						.setText(positiveButtonText);
 				if (positiveButtonClickListener != null) {
-					((TextView) layout.findViewById(R.id.dialogRightBtn))
+					(layout.findViewById(R.id.dialogRightBtn))
 							.setOnClickListener(new View.OnClickListener() {
 								public void onClick(View v) {
 									positiveButtonClickListener.onClick(dialog,
@@ -136,55 +152,54 @@ public class CustomExtDialog extends Dialog {
 							});
 				}
 			} else {
-				layout.findViewById(R.id.dialogRightBtn).setVisibility(
-						View.GONE);
+				layout.findViewById(R.id.dialogRightBtn).setVisibility(View.GONE);
 			}
 			if (negativeButtonText != null) {
 				((TextView) layout.findViewById(R.id.dialogLeftBtn))
 						.setText(negativeButtonText);
 				if (negativeButtonClickListener != null) {
-					((TextView) layout.findViewById(R.id.dialogLeftBtn))
+					(layout.findViewById(R.id.dialogLeftBtn))
 							.setOnClickListener(new View.OnClickListener() {
-								public void onClick(View v) {
-									negativeButtonClickListener.onClick(dialog,
-											DialogInterface.BUTTON_NEGATIVE);
-								}
-							});
+                                public void onClick(View v) {
+                                    negativeButtonClickListener.onClick(dialog,
+                                            DialogInterface.BUTTON_NEGATIVE);
+                                }
+                            });
 				}
 			} else {
-				layout.findViewById(R.id.dialogLeftBtn)
-						.setVisibility(View.GONE);
+				layout.findViewById(R.id.dialogLeftBtn).setVisibility(View.GONE);
 			}
 			if (message != null) {
-				((ImageView) layout.findViewById(R.id.dialogIcon))
-						.setVisibility(View.GONE);
-				((TextView) layout.findViewById(R.id.dialogContent))
-						.setVisibility(View.VISIBLE);
-				((TextView) layout.findViewById(R.id.dialogContent))
-						.setText(message);
+				(layout.findViewById(R.id.dialogIcon)).setVisibility(View.GONE);
+				(layout.findViewById(R.id.dialogContent)).setVisibility(View.VISIBLE);
+				((TextView) layout.findViewById(R.id.dialogContent)).setText(message);
 			} else if (imagePath != null) {
-				((ImageView) layout.findViewById(R.id.dialogIcon))
-						.setVisibility(View.VISIBLE);
-				((TextView) layout.findViewById(R.id.dialogContent))
-						.setVisibility(View.GONE);
-				((ImageView) layout.findViewById(R.id.dialogIcon))
-						.setImageURI(imagePath);
-				((LinearLayout) layout.findViewById(R.id.dialogText))
-						.setGravity(Gravity.CENTER);
+				(layout.findViewById(R.id.dialogIcon)).setVisibility(View.VISIBLE);
+				(layout.findViewById(R.id.dialogContent)).setVisibility(View.GONE);
+				((ImageView) layout.findViewById(R.id.dialogIcon)).setImageURI(imagePath);
+				((LinearLayout) layout.findViewById(R.id.dialogText)).setGravity(gravity);
 			}
+
+			if(checkMessage != null){
+				((LinearLayout) layout.findViewById(R.id.dialog_checked)).setGravity(gravity);
+				((CheckBox) layout.findViewById(R.id.cb_check)).setOnCheckedChangeListener(
+                    new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        isMessageChecked = isChecked;
+                    }
+                });
+                ((TextView) layout.findViewById(R.id.tv_check)).setText(checkMessage);
+            }
 			if (gravity != -1) {
-				((LinearLayout) layout.findViewById(R.id.dialogText))
-						.setGravity(gravity);
+				((LinearLayout) layout.findViewById(R.id.dialogText)).setGravity(gravity);
 			}
 			if (visibility != -1) {
-				((ImageView) layout.findViewById(R.id.dialogIcon))
-						.setVisibility(View.VISIBLE);
-				LayoutParams layoutParams = ((ImageView) layout
-						.findViewById(R.id.dialogIcon)).getLayoutParams();
+				layout.findViewById(R.id.dialogIcon).setVisibility(View.VISIBLE);
+				LayoutParams layoutParams = (layout.findViewById(R.id.dialogIcon)).getLayoutParams();
 				layoutParams.width = LayoutParams.WRAP_CONTENT;
 				layoutParams.height = LayoutParams.WRAP_CONTENT;
-				((ImageView) layout
-						.findViewById(R.id.dialogIcon)).setLayoutParams(layoutParams);
+				layout.findViewById(R.id.dialogIcon).setLayoutParams(layoutParams);
 			}
 			dialog.setContentView(layout);
 			return dialog;

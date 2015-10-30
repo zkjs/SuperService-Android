@@ -29,7 +29,7 @@ public class MsgCustomerServiceMediaChat {
 
     //MsgMedia
     private int         fsize;//文件大小(字节),文件默认为aac格式
-    private String         durnum;//语音时长(秒)
+    private String      durnum;//语音时长(秒)
     private String      url;//链接
     private String      crc;//效验值
     private String      body;//文件内容(Base64编码)

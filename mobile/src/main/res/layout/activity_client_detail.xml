@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:background="@color/white"
+    android:background="@color/graye8e8e8"
     android:layout_height="match_parent">
 
     <LinearLayout
@@ -14,13 +14,13 @@
         <include layout="@layout/activity_title"> </include>
 
         <LinearLayout
+            android:padding="10dp"
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:background="@color/blue03a9f4"
+            android:background="@color/theme_primary"
             android:layout_height="wrap_content">
 
             <RelativeLayout
-                android:padding="20dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
 
@@ -28,57 +28,63 @@
                     android:id="@+id/civ_member_avatar"
                     android:layout_centerVertical="true"
                     android:layout_width="72dp"
+                    android:background="@drawable/img_hotel_zhanwei"
                     android:layout_height="72dp"/>
 
             </RelativeLayout>
 
             <LinearLayout
+                android:paddingLeft="20dp"
                 android:orientation="vertical"
-                android:gravity="center_vertical"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                    <TextView
-                        android:padding="5dp"
-                        android:id="@+id/tv_member_name"
-                        android:layout_width="wrap_content"
-                        android:textSize="16sp"
-                        android:textColor="@color/white"
-                        android:layout_height="wrap_content" />
+                <TextView
+                    android:layout_weight="1"
+                    android:layout_centerVertical="true"
+                    android:id="@+id/tv_member_name"
+                    android:layout_width="wrap_content"
+                    android:textSize="16sp"
+                    android:textColor="@color/white"
+                    android:layout_height="0dp" />
 
-                    <RelativeLayout
-                        android:padding="5dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content">
+                <RelativeLayout
+                    android:layout_weight="1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp">
 
                         <TextView
-                            android:paddingRight="10dp"
                             android:id="@+id/tv_member_phone"
                             android:layout_width="wrap_content"
-                            android:textSize="16sp"
+                            android:layout_centerVertical="true"
+                            android:textSize="14sp"
+                            android:paddingRight="10dp"
+                            android:text="18695691235"
                             android:textColor="@color/white"
                             android:layout_height="wrap_content" />
-                        
+
                         <ImageButton
                             android:layout_centerVertical="true"
                             android:layout_toRightOf="@id/tv_member_phone"
                             android:id="@+id/ibtn_dianhua"
                             android:background="@drawable/bg_ic_dianhua"
-                            android:layout_width="14dp"
-                            android:layout_height="20dp" />
+                            android:layout_width="10.50dp"
+                            android:layout_height="15dp" />
 
                     </RelativeLayout>
 
                 <RelativeLayout
-                    android:padding="5dp"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
+                    android:layout_height="0dp">
 
                     <TextView
                         android:paddingRight="10dp"
+                        android:layout_centerVertical="true"
                         android:id="@+id/tv_member_level"
                         android:layout_width="wrap_content"
-                        android:textSize="16sp"
+                        android:textSize="14sp"
                         android:textColor="@color/white"
                         android:layout_height="wrap_content" />
 
@@ -87,8 +93,8 @@
                         android:layout_toRightOf="@id/tv_member_level"
                         android:id="@+id/ibtn_duihua"
                         android:background="@drawable/bg_ic_duihua"
-                        android:layout_width="21dp"
-                        android:layout_height="20dp" />
+                        android:layout_width="15dp"
+                        android:layout_height="15.75dp" />
 
                 </RelativeLayout>
 
@@ -96,15 +102,16 @@
         </LinearLayout>
         
         <RelativeLayout
+            android:background="@color/white"
             android:layout_width="match_parent"
-            android:layout_height="50dp">
+            android:layout_height="48dp">
 
             <TextView
                 android:paddingLeft="10dp"
                 android:layout_centerVertical="true"
                 android:layout_width="wrap_content"
                 android:text="@string/account_type"
-                android:textColor="@color/grayB8B8B8"
+                android:textColor="@color/gray525252"
                 android:textSize="16sp"
                 android:layout_height="wrap_content" />
 
@@ -121,15 +128,17 @@
         </RelativeLayout>
 
         <RelativeLayout
+            android:layout_marginTop="16dp"
+            android:background="@color/white"
             android:layout_width="match_parent"
-            android:layout_height="50dp">
+            android:layout_height="48dp">
 
             <TextView
                 android:paddingLeft="10dp"
                 android:layout_centerVertical="true"
                 android:layout_width="wrap_content"
                 android:text="@string/visit_history_record"
-                android:textColor="@color/grayB8B8B8"
+                android:textColor="@color/gray525252"
                 android:textSize="16sp"
                 android:layout_height="wrap_content" />
 
@@ -157,6 +166,8 @@
         </RelativeLayout>
 
         <LinearLayout
+            android:layout_marginTop="16dp"
+            android:background="@color/white"
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -166,7 +177,7 @@
                 android:layout_centerVertical="true"
                 android:layout_width="wrap_content"
                 android:text="@string/prefrence_info"
-                android:textColor="@color/grayB8B8B8"
+                android:textColor="@color/gray525252"
                 android:textSize="16sp"
                 android:layout_height="wrap_content" />
 
@@ -174,18 +185,21 @@
                 android:id="@+id/tv_preference_tag"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="10dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
                 app:lineMargin="5dp"
                 app:tagMargin="3dp"
-                app:textPaddingBottom="3dp"
-                app:textPaddingLeft="10dp"
-                app:textPaddingRight="10dp"
-                app:textPaddingTop="3dp">
+                app:textPaddingBottom="5dp"
+                app:textPaddingLeft="20dp"
+                app:textPaddingRight="20dp"
+                app:textPaddingTop="5dp">
             </me.kaede.tagview.TagView>
 
         </LinearLayout>
 
         <LinearLayout
+            android:layout_marginTop="16dp"
+            android:background="@color/white"
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -195,7 +209,7 @@
                 android:layout_centerVertical="true"
                 android:layout_width="wrap_content"
                 android:text="@string/privilege_info"
-                android:textColor="@color/grayB8B8B8"
+                android:textColor="@color/gray525252"
                 android:textSize="16sp"
                 android:layout_height="wrap_content" />
 
@@ -211,28 +225,31 @@
                     app:textPaddingRight="10dp"
                     app:textPaddingTop="3dp">
                 </me.kaede.tagview.TagView>
-                
+
         </LinearLayout>
-        
+
         <TextView
             android:gravity="center_vertical"
-            android:padding="10dp"
+            android:paddingLeft="10dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="wrap_content"
             android:text="* 以下信息请编辑"
             android:textSize="16sp"
             android:textColor="@color/blue03a9f4" />
 
         <RelativeLayout
+            android:background="@color/white"
             android:layout_width="match_parent"
-            android:layout_height="50dp">
+            android:layout_height="48dp">
 
             <TextView
                 android:paddingLeft="10dp"
                 android:layout_centerVertical="true"
                 android:layout_width="wrap_content"
                 android:text="@string/exclusive_customer_service"
-                android:textColor="@color/grayB8B8B8"
+                android:textColor="@color/gray525252"
                 android:textSize="16sp"
                 android:layout_height="wrap_content" />
 
@@ -249,6 +266,8 @@
         </RelativeLayout>
 
         <LinearLayout
+            android:layout_marginTop="16dp"
+            android:background="@color/white"
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -258,7 +277,7 @@
                 android:layout_centerVertical="true"
                 android:layout_width="wrap_content"
                 android:text="@string/tag"
-                android:textColor="@color/grayB8B8B8"
+                android:textColor="@color/gray525252"
                 android:textSize="16sp"
                 android:layout_height="wrap_content" />
 
@@ -276,33 +295,27 @@
             </me.kaede.tagview.TagView>
 
         </LinearLayout>
+
         <RelativeLayout
+            android:layout_marginTop="16dp"
+            android:background="@color/white"
             android:padding="10dp"
             android:focusable="true"
             android:focusableInTouchMode="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <TextView
-                android:paddingRight="10dp"
-                android:id="@+id/tv_remark"
-                android:layout_width="wrap_content"
-                android:text="@string/remark"
-                android:textColor="@color/grayB8B8B8"
-                android:textSize="16sp"
-                android:layout_height="wrap_content" />
-
             <EditText
                 android:id="@+id/et_remark"
-                android:layout_toRightOf="@id/tv_remark"
-                android:layout_height="60dp"
-                android:hint="如有备注，在此说明"
+                android:layout_height="72dp"
                 android:layout_width="match_parent"
+                android:hint="@string/remark"
+                android:textColorHint="@color/gray525252"
                 android:padding="5dp"
                 android:gravity="left|top"
                 style="@style/inputStyle"
                 android:inputType="text"
-                android:maxLines="3"/>
+                android:maxLines="4" />
 
         </RelativeLayout>
 

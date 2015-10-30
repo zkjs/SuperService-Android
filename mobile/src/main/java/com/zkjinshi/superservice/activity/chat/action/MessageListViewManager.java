@@ -22,6 +22,7 @@ import com.zkjinshi.base.net.observer.MessageSubject;
 import com.zkjinshi.base.net.protocol.ProtocolMSG;
 import com.zkjinshi.base.net.queue.QueueType;
 import com.zkjinshi.base.util.DeviceUtils;
+import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.base.util.NetWorkUtil;
 import com.zkjinshi.base.view.CustomDialog;
 import com.zkjinshi.superservice.R;
@@ -185,6 +186,7 @@ public class MessageListViewManager implements MsgListView.IXListViewListener,
             Gson gson = new Gson();
             String jsonStr = gson.toJson(msgShopDisbandSession);
             WebSocketManager.getInstance().sendMessage(jsonStr, QueueType.FIRST);
+            DialogUtil.getInstance().showProgressDialog(context, "取消回话中...");
         }
     }
 
@@ -1019,6 +1021,7 @@ public class MessageListViewManager implements MsgListView.IXListViewListener,
                 if(null != msgShopDisbandSessionRSP){
                     int result = msgShopDisbandSessionRSP.getResult();
                     if(0 == result){
+                        DialogUtil.getInstance().cancelProgressDialog();;
                         //解散回话成功
                         showDisbandSessionDialog();
                     }

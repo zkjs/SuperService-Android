@@ -3,11 +3,13 @@ package com.zkjinshi.superservice.activity.common;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -22,6 +24,7 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.zkjinshi.base.net.core.WebSocketManager;
 import com.zkjinshi.base.util.DialogUtil;
+import com.zkjinshi.base.view.CustomDialog;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.set.ClientActivity;
 import com.zkjinshi.superservice.activity.set.EmployeeAddActivity;
@@ -39,6 +42,7 @@ import com.zkjinshi.superservice.sqlite.UserDBUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.utils.task.ImgAsyncTask;
+import com.zkjinshi.superservice.view.CustomExtDialog;
 import com.zkjinshi.superservice.vo.IdentityType;
 import com.zkjinshi.superservice.vo.UserVo;
 
@@ -70,8 +74,6 @@ public class MainActivity extends AppCompatActivity {
     private MessageListener messageListener;
     private UserVo userVo;
     private ImageButton setIbtn;
-
-
 
     private void initView(){
         avatarIv = (ImageView)findViewById(R.id.avatar_iv);
@@ -112,9 +114,6 @@ public class MainActivity extends AppCompatActivity {
             mainActivityController.setUserPhoto(CacheUtil.getInstance().getUserPhotoUrl(), avatarIv);
             setIbtn.setVisibility(View.VISIBLE);
         }
-
-
-
     }
 
     private void initListeners(){
@@ -173,24 +172,34 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                builder.setTitle("退出")
-                        .setMessage("确定退出该账户？")
-                        .setCancelable(true)
-                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                CacheUtil.getInstance().setLogin(false);
-                                startActivity(new Intent(MainActivity.this, LoginActivity.class));
-                                finish();
-                                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-                            }
-                        })
-                        .setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
-                            }
-                        });
-                builder.create().show();
+                final CustomExtDialog.Builder customExtBuilder = new CustomExtDialog.Builder(MainActivity.this);
+                customExtBuilder.setTitle("退出");
+                customExtBuilder.setMessage("确定退出该账户？");
+                customExtBuilder.setCheckMessage("同时退出该公司");
+                customExtBuilder.setGravity(Gravity.LEFT);
+                customExtBuilder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+                customExtBuilder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        if(customExtBuilder.isMessageChecked()){
+                            //TODO: 加入退出本公司的操作
+
+                        }
+
+                        CacheUtil.getInstance().setLogin(false);
+                        startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                        finish();
+                        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                    }
+                });
+                customExtBuilder.create().show();
             }
         });
 
