@@ -31,7 +31,7 @@ public class SCSizeAnimation extends SCPageAnimation {
     public void applyTransformation(View onView, float positionOffset) {
         ViewGroup.LayoutParams param = onView.getLayoutParams();
 
-        if(positionOffset <= 0) {
+        if(positionOffset <=  0.0001) {
             startHeigh = onView.getMeasuredHeight();
             startWidth = onView.getMeasuredWidth();
             return;

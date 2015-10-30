@@ -12,38 +12,58 @@
         android:layout_height="match_parent">
     </com.zkjinshi.superservice.view.scviewpager.SCViewPager>
 
-
     <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/bg_1"
-        android:id="@+id/bg1"/>
-
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/bg_2"
-        android:id="@+id/bg2"/>
-
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/bg_3"
-        android:id="@+id/bg3"/>
-
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/bg_4"
-        android:id="@+id/bg4"/>
-
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/p_0"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="202dp"
+        android:id="@+id/people_main"/>
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/p0"
-        android:layout_centerInParent="true"
-        android:id="@+id/people_main"/>
+        android:src="@drawable/rounded_rectangle_0"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="125dp"
+        android:id="@+id/page0_name"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/l_1"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="60dp"
+        android:id="@+id/page0_font"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/l_2"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="60dp"
+        android:id="@+id/page1_font"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/l_3"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="100dp"
+        android:id="@+id/page2_font"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/l_4"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="140dp"
+        android:id="@+id/page3_font"/>
+
 
     <com.zkjinshi.superservice.view.scviewpager.DotsView
         android:orientation="horizontal"

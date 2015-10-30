@@ -196,8 +196,7 @@ public class SplashActivity extends Activity{
                     goHome();
                     break;
                 case GO_GUIDE:
-                    //goGuide();
-                    goLogin();
+                    goGuide();
                     break;
                 default:
                     break;

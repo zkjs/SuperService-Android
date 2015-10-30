@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:background="@drawable/bg_4">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/phone"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="95dp"
+        android:layout_marginTop="71dp"
+        android:id="@+id/phone"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="110dp"
+        android:layout_marginTop="199dp"
+        android:src="@drawable/layer_5"
+        android:id="@+id/line1"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="110dp"
+        android:layout_marginTop="232dp"
+        android:src="@drawable/layer_6"
+        android:id="@+id/line2"/>
+
+    <Button
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_width="150dp"
+        android:layout_height="50dp"
+        android:layout_marginBottom="60dp"
+        android:text="登录"
+        style="@style/blueButton"
+        android:id="@+id/btn_login"
+        android:enabled="true"/>
+
+</RelativeLayout>

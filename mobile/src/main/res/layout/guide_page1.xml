@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:background="@drawable/bg_1">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/p_4"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="4dp"
+        android:layout_marginTop="251dp"
+        android:id="@+id/p1"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="112dp"
+        android:layout_marginTop="252dp"
+        android:src="@drawable/p_2"
+        android:id="@+id/p3"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="185dp"
+        android:layout_marginTop="235dp"
+        android:src="@drawable/p_5"
+        android:id="@+id/p4"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="296dp"
+        android:layout_marginTop="251dp"
+        android:src="@drawable/p_4"
+        android:id="@+id/p6"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="63dp"
+        android:layout_marginTop="233dp"
+        android:src="@drawable/p_6"
+        android:id="@+id/p2"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="244dp"
+        android:layout_marginTop="228dp"
+        android:src="@drawable/p_1"
+        android:id="@+id/p5"/>
+
+</RelativeLayout>

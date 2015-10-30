@@ -154,7 +154,7 @@ public class LoginActivity extends Activity implements VerifyPhoneControler.Succ
             DialogUtil.getInstance().showToast(this,"电话号码不能为空");
             return;
         }
-        LogUtil.getInstance().info(LogLevel.INFO,"服务员开始登陆。。。");
+        //LogUtil.getInstance().info(LogLevel.INFO,"服务员开始登陆。。。");
         LoginController.getInstance().requestLogin(phone,true,new NetRequestListener() {
             @Override
             public void onNetworkRequestError(int errorCode, String errorMessage) {
@@ -198,7 +198,7 @@ public class LoginActivity extends Activity implements VerifyPhoneControler.Succ
                     startActivity(intent);
                     finish();
                     overridePendingTransition(R.anim.activity_new, R.anim.activity_out);
-                    LogUtil.getInstance().info(LogLevel.INFO, "服务员成功登陆。。。");
+                   // LogUtil.getInstance().info(LogLevel.INFO, "服务员成功登陆。。。");
                 } else {
                     DialogUtil.getInstance().showToast(LoginActivity.this, "手机号还不是服务员 ");
                 }

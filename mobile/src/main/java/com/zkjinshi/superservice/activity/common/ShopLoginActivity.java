@@ -90,7 +90,7 @@ public class ShopLoginActivity extends Activity{
             DialogUtil.getInstance().showToast(this,"密码不能为空");
             return;
         }
-        LogUtil.getInstance().info(LogLevel.INFO,"管理员开始登陆。。。");
+       // LogUtil.getInstance().info(LogLevel.INFO,"管理员开始登陆。。。");
         LoginController.getInstance().requestAdminLogin(phone, MD5Util.MD5(password),true,new NetRequestListener() {
             @Override
             public void onNetworkRequestError(int errorCode, String errorMessage) {
@@ -133,7 +133,7 @@ public class ShopLoginActivity extends Activity{
                         startActivity(mainIntent);
                         finish();
                         overridePendingTransition(R.anim.activity_new, R.anim.activity_out);
-                        LogUtil.getInstance().info(LogLevel.INFO, "管理员成功登陆。。。");
+                       // LogUtil.getInstance().info(LogLevel.INFO, "管理员成功登陆。。。");
                     } else {
                         DialogUtil.getInstance().showToast(ShopLoginActivity.this, "密码或者手机号不对 ");
                     }

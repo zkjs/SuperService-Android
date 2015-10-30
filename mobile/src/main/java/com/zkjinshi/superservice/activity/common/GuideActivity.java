@@ -5,6 +5,7 @@ import android.graphics.Point;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -12,6 +13,7 @@ import android.view.WindowManager;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.view.scviewpager.DotsView;
 import com.zkjinshi.superservice.view.scviewpager.SCPositionAnimation;
+import com.zkjinshi.superservice.view.scviewpager.SCSizeAnimation;
 import com.zkjinshi.superservice.view.scviewpager.SCViewAnimation;
 import com.zkjinshi.superservice.view.scviewpager.SCViewAnimationUtil;
 import com.zkjinshi.superservice.view.scviewpager.SCViewPager;
@@ -26,6 +28,8 @@ import com.zkjinshi.superservice.view.scviewpager.SCViewPagerAdapter;
  * 版权所有
  */
 public class GuideActivity  extends FragmentActivity {
+
+    private static String TAG = GuideActivity.class.getSimpleName();
 
     private static final int NUM_PAGES = 4;
 
@@ -54,68 +58,61 @@ public class GuideActivity  extends FragmentActivity {
         mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                Log.i(TAG,"onPageScrolled("+position+","+positionOffset+","+positionOffsetPixels+")");
             }
 
             @Override
             public void onPageSelected(int position) {
+                Log.i(TAG,"onPageSelected("+position+")");
                 mDotsView.selectDot(position);
+                if(position > 1){
+                    findViewById(R.id.people_main).setVisibility(View.INVISIBLE);
+                }else{
+                    findViewById(R.id.people_main).setVisibility(View.VISIBLE);
+                }
             }
 
             @Override
             public void onPageScrollStateChanged(int state) {
+                Log.i(TAG,"onPageScrollStateChanged("+state+")");
             }
         });
 
         final Point size = SCViewAnimationUtil.getDisplaySize(this);
+        //第一页
+        View font1 = findViewById(R.id.page0_font);
+        SCViewAnimation font1Animation = new SCViewAnimation(font1);
+        font1Animation.addPageAnimation(new SCPositionAnimation(this, 0, -size.x, 0));
+        mViewPager.addAnimation(font1Animation);
 
-//        View atSkex = findViewById(R.id.imageview_main_activity_at_skex);
-//        SCViewAnimationUtil.prepareViewToGetSize(atSkex);
-//        SCViewAnimation atSkexAnimation = new SCViewAnimation(atSkex);
-//        atSkexAnimation.addPageAnimation(new SCPositionAnimation(getApplicationContext(), 0, 0, -(size.y - atSkex.getHeight())));
-//        atSkexAnimation.addPageAnimation(new SCPositionAnimation(getApplicationContext(), 1, -size.x, 0));
-//        mViewPager.addAnimation(atSkexAnimation);
-//
-//        View mobileView = findViewById(R.id.imageview_main_activity_mobile);
-//        SCViewAnimation mobileAnimation = new SCViewAnimation(mobileView);
-//        mobileAnimation.startToPosition((int)(size.x*1.5), null);
-//        mobileAnimation.addPageAnimation(new SCPositionAnimation(this, 0, -(int)(size.x*1.5), 0));
-//        mobileAnimation.addPageAnimation(new SCPositionAnimation(this, 1, -(int)(size.x*1.5), 0));
-//        mViewPager.addAnimation(mobileAnimation);
+        View name = findViewById(R.id.page0_name);
+        SCViewAnimation nameAnimation = new SCViewAnimation(name);
+        nameAnimation.addPageAnimation(new SCPositionAnimation(this,0,0,-size.y/2));
+        mViewPager.addAnimation(nameAnimation);
 
-        View bg1 = findViewById(R.id.bg1);
-        SCViewAnimation bg1TagAnimation = new SCViewAnimation(bg1);
-        bg1TagAnimation.addPageAnimation(new SCPositionAnimation(this, 0,-size.x,0));
-        mViewPager.addAnimation(bg1TagAnimation);
+        //第二页
+        View font2 = findViewById(R.id.page1_font);
+        SCViewAnimation font2Animation = new SCViewAnimation(font2);
+        font2Animation.startToPosition(size.x,null);
+        font2Animation.addPageAnimation(new SCPositionAnimation(this, 0,-size.x,0));
+        font2Animation.addPageAnimation(new SCPositionAnimation(this, 1,-size.x,0));
+        mViewPager.addAnimation(font2Animation);
+        //第三页
+        View font3 = findViewById(R.id.page2_font);
+        SCViewAnimation font3Animation = new SCViewAnimation(font3);
+        font3Animation.startToPosition(size.x,null);
+        font3Animation.addPageAnimation(new SCPositionAnimation(this, 1,-size.x,0));
+        font3Animation.addPageAnimation(new SCPositionAnimation(this, 2,-size.x,0));
+        mViewPager.addAnimation(font3Animation);
 
-        View bg2 = findViewById(R.id.bg2);
-        SCViewAnimation bg2TagAnimation = new SCViewAnimation(bg2);
-        bg2TagAnimation.startToPosition(size.x,null);
-        bg2TagAnimation.addPageAnimation(new SCPositionAnimation(this, 0,-size.x,0));
-        bg2TagAnimation.addPageAnimation(new SCPositionAnimation(this, 1,-size.x,0));
-        mViewPager.addAnimation(bg2TagAnimation);
+        //第四页
+        View font4 = findViewById(R.id.page3_font);
+        SCViewAnimation font4Animation = new SCViewAnimation(font4);
+        font4Animation.startToPosition(size.x,null);
+        font4Animation.addPageAnimation(new SCPositionAnimation(this, 2,-size.x,0));
+        font4Animation.addPageAnimation(new SCPositionAnimation(this, 3,-size.x,0));
+        mViewPager.addAnimation(font4Animation);
 
-        View bg3 = findViewById(R.id.bg3);
-        SCViewAnimation bg3TagAnimation = new SCViewAnimation(bg3);
-        bg3TagAnimation.startToPosition(size.x,null);
-        bg3TagAnimation.addPageAnimation(new SCPositionAnimation(this, 1,-size.x,0));
-        bg3TagAnimation.addPageAnimation(new SCPositionAnimation(this, 2,-size.x,0));
-        mViewPager.addAnimation(bg3TagAnimation);
-
-        View bg4 = findViewById(R.id.bg4);
-        SCViewAnimation bg4TagAnimation = new SCViewAnimation(bg4);
-        bg4TagAnimation.startToPosition(size.x,null);
-        bg4TagAnimation.addPageAnimation(new SCPositionAnimation(this, 2,-size.x,0));
-        bg4TagAnimation.addPageAnimation(new SCPositionAnimation(this, 3,-size.x,0));
-        mViewPager.addAnimation(bg4TagAnimation);
-
-
-    }
-
-    private void goLogin() {
-        Intent loginIntent = new Intent(GuideActivity.this, LoginActivity.class);
-        startActivity(loginIntent);
-        finish();
-        overridePendingTransition(R.anim.activity_new, R.anim.activity_out);
     }
 
 }
