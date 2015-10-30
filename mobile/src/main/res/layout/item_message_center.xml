@@ -71,7 +71,7 @@
             android:textColor="#FFFFFF"
             android:layout_alignParentRight="true"
             android:background="@drawable/blue_round_select"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:visibility="visible"
             />
     </RelativeLayout>
