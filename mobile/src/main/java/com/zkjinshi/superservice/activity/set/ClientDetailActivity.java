@@ -194,7 +194,7 @@ public class ClientDetailActivity extends Activity {
         }
         mTvRecordTimes.setText(client.getOrder_count() + "");
         String salesName = client.getSalesname();
-        mTvExclusiceServer.setText(TextUtils.isEmpty(salesName) ? salesName : getString(R.string.current_none));
+        mTvExclusiceServer.setText(TextUtils.isEmpty(salesName) ? salesName : getString(R.string.not_choose_yet));
 
         //1.客户偏好标签处理
         String   likeDesc   = client.getLike_desc();
@@ -232,6 +232,7 @@ public class ClientDetailActivity extends Activity {
             for(ClientTag clientTag : tags){
                 mTvTagClient.addTag(createTag(clientTag.tagid, clientTag.tag, null));
             }
+        }else {
             mTvTagClient.addTag(createTag("   +   "));
         }
     }

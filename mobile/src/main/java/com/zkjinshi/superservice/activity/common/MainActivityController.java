@@ -59,9 +59,7 @@ public class MainActivityController implements View.OnClickListener{
         if(!TextUtils.isEmpty(photoUrl) && photoImageView != null){
             ImageLoader.getInstance().displayImage(photoUrl, photoImageView, options);
         }
-
     }
-
 
     public void clearImageChache(){
         ImageLoader.getInstance().clearMemoryCache();
@@ -226,7 +224,6 @@ public class MainActivityController implements View.OnClickListener{
             activity.getWindow().setStatusBarColor(color);
         }
     }
-
 
     @Override
     public void onClick(View v) {
