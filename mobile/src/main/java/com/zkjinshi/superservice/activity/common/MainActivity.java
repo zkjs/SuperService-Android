@@ -190,7 +190,6 @@ public class MainActivity extends AppCompatActivity {
 
                         if(customExtBuilder.isMessageChecked()){
                             //TODO: 加入退出本公司的操作
-
                         }
 
                         CacheUtil.getInstance().setLogin(false);

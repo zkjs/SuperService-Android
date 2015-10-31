@@ -13,6 +13,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -59,7 +60,7 @@ public class ClientBindActivity extends Activity {
     private String mToken;
     private String mShopID;
 
-    private ImageButton mIbtnBack;
+    private RelativeLayout mRlBack;
     private TextView    mTvTitle;
     private ImageButton mIbtnDianhua;
     private ImageButton mIbtnDuiHua;
@@ -87,7 +88,7 @@ public class ClientBindActivity extends Activity {
     }
 
     private void initView() {
-        mIbtnBack        = (ImageButton)     findViewById(R.id.ibtn_back);
+        mRlBack        = (RelativeLayout)  findViewById(R.id.rl_back);
         mTvTitle         = (TextView)        findViewById(R.id.tv_title);
         mTvTitle.setText(getString(R.string.member_bind));
         mCivMemberAvatar = (CircleImageView) findViewById(R.id.civ_member_avatar);
@@ -145,7 +146,7 @@ public class ClientBindActivity extends Activity {
     }
 
     private void initListener() {
-        mIbtnBack.setOnClickListener(new View.OnClickListener() {
+        mRlBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ClientBindActivity.this.finish();

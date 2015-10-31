@@ -194,17 +194,12 @@ public class OrderAdapter extends RecyclerView.Adapter {
             contentLayoutParams.setMargins(0, DisplayUtil.dip2px(context, 6), DisplayUtil.dip2px(context, 8), DisplayUtil.dip2px(context, 6));
         }
         holder.contentLayout.setLayoutParams(contentLayoutParams);
-
-
-
     }
 
     @Override
     public int getItemCount() {
         return dataList.size();
     }
-
-
 
     class OrderViewHolder extends  RecyclerView.ViewHolder implements View.OnClickListener{
 
@@ -242,8 +237,6 @@ public class OrderAdapter extends RecyclerView.Adapter {
             tel.setOnClickListener(this);
             chat.setOnClickListener(this);
             share.setOnClickListener(this);
-
-
         }
 
         @Override
@@ -283,10 +276,6 @@ public class OrderAdapter extends RecyclerView.Adapter {
 
         }
 
-
-
     }
-
-
 
 }

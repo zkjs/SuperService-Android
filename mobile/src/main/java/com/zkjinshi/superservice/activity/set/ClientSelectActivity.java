@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -48,7 +49,7 @@ public class ClientSelectActivity extends Activity {
     private String          mUserID;
     private String          mToken;
     private String          mShopID;
-    private ImageButton     mIbtnBack;
+    private RelativeLayout  mRlBack;
     private TextView        mTvTitle;
     private EditText        mEtClientPhone;
 
@@ -65,7 +66,7 @@ public class ClientSelectActivity extends Activity {
     }
 
     private void initView() {
-        mIbtnBack = (ImageButton) findViewById(R.id.ibtn_back);
+        mRlBack = (RelativeLayout) findViewById(R.id.rl_back);
         mTvTitle  = (TextView) findViewById(R.id.tv_title);
         mTvTitle.setText(getString(R.string.add_clients));
         mEtClientPhone = (EditText) findViewById(R.id.et_client_phone);
@@ -78,7 +79,7 @@ public class ClientSelectActivity extends Activity {
     }
 
     private void initListener() {
-        mIbtnBack.setOnClickListener(new View.OnClickListener() {
+        mRlBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ClientSelectActivity.this.finish();

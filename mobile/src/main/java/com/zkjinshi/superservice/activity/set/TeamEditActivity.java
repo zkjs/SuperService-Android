@@ -66,7 +66,7 @@ import java.util.Map;
 public class TeamEditActivity extends Activity {
 
     private List<String>    mCheckedList;
-    private ImageButton     mIbtnBack;
+    private RelativeLayout  mRlBack;
     private TextView        mTvTitle;
     private RecyclerView    mRcvTeamContacts;
     private RelativeLayout  mRlChangeDepartment;
@@ -91,7 +91,7 @@ public class TeamEditActivity extends Activity {
     }
 
     private void initView() {
-        mIbtnBack = (ImageButton) findViewById(R.id.ibtn_back);
+        mRlBack   = (RelativeLayout) findViewById(R.id.rl_back);
         mTvTitle  = (TextView)    findViewById(R.id.tv_title);
         mRcvTeamContacts     = (RecyclerView) findViewById(R.id.rcv_team_contacts);
         mRlChangeDepartment  = (RelativeLayout) findViewById(R.id.rl_change_department);
@@ -119,7 +119,7 @@ public class TeamEditActivity extends Activity {
 
     private void initListener() {
 
-        mIbtnBack.setOnClickListener(new View.OnClickListener() {
+        mRlBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 TeamEditActivity.this.finish();
@@ -290,7 +290,7 @@ public class TeamEditActivity extends Activity {
         bizMap.put("salesid", userID);
         bizMap.put("token", token);
         bizMap.put("shopid", shopID);
-        bizMap.put("deptid", deptID+"");
+        bizMap.put("deptid", deptID + "");
         bizMap.put("changelist", changeList);
         LogUtil.getInstance().info(LogLevel.INFO, "changelist:" + changeList);
 

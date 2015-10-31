@@ -2,6 +2,8 @@ package com.zkjinshi.superservice.activity.set;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -72,6 +74,7 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
     private final static String TAG = TeamContactsActivity.class.getSimpleName();
 
     public static final int ADD_REQUEST_CODE = 1;
+    public static final int GET_CONTACTS_ONLINE_STATUS = 0X11;//获取团队成员是否在线状态
 
     private Toolbar         mToolbar;
     private TextView        mTvCenterTitle;
@@ -96,6 +99,19 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
     private MsgIMSessionUser mFromUser;
     private MsgIMSessionUser mToUser;
 
+    private Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case GET_CONTACTS_ONLINE_STATUS:
+                    String jsonMsg = (String) msg.obj;
+                    WebSocketManager.getInstance().sendMessage(jsonMsg);
+                    break;
+            }
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -108,7 +124,6 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
     }
 
     private void initView() {
-
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         mToolbar.setTitle("");
         mToolbar.setNavigationIcon(R.drawable.ic_fanhui);
@@ -148,7 +163,7 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
         mFirstShopEmployee.setDept_name(shopName);
         mFirstShopEmployee.setEmpid(System.currentTimeMillis() + "");
 
-        mShopEmployeeVos = new ArrayList<>();
+        mShopEmployeeVos    = new ArrayList<>();
         mTeamContactAdapter = new TeamContactsAdapter(TeamContactsActivity.this, mShopEmployeeVos);
         mRvTeamContacts.setAdapter(mTeamContactAdapter);
     }
@@ -259,8 +274,10 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
 
                         Gson gson = new Gson();
                         String jsonMsgEmpStatus = gson.toJson(msgEmpStatus, MsgEmpStatus.class);
-                        LogUtil.getInstance().info(LogLevel.INFO, "jsonMsgEmpStatus:" + jsonMsgEmpStatus);
-                        WebSocketManager.getInstance().sendMessage(jsonMsgEmpStatus);
+                        Message getOnlineMsg = Message.obtain();
+                        getOnlineMsg.what = GET_CONTACTS_ONLINE_STATUS;
+                        getOnlineMsg.obj  = jsonMsgEmpStatus;
+                        handler.sendMessageDelayed(getOnlineMsg, 2000);
                     }
                 }
         );
@@ -521,6 +538,7 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
         Gson gson = new Gson();
         String msgBuildSessionJson = gson.toJson(msgBuildSession, MsgBuildSession.class);
         WebSocketManager.getInstance().sendMessage(msgBuildSessionJson);
+
     }
 
 }

@@ -28,6 +28,7 @@
                 <android.support.design.widget.TabLayout
                     android:id="@+id/tabs"
                     style="@style/Widget.MaterialSheetFab.TabLayout" />
+
             </android.support.design.widget.AppBarLayout>
 
             <!-- ViewPager布局 -->
@@ -67,29 +68,79 @@
                 style="@style/Widget.MaterialSheetFab.Sheet">
 
                 <LinearLayout
+                    android:padding="5dp"
+                    android:background="@color/transparent"
+                    android:orientation="vertical"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:layout_height="wrap_content">
 
-                    <!-- 与团队对话 -->
-                    <TextView
+                    <RelativeLayout
                         android:id="@+id/fab_sheet_item_recording"
-                        style="@style/TextAppearance.MaterialSheetFab.Sheet.Item"
-                        android:drawableLeft="@drawable/ic_tuandui_b"
-                        android:drawableStart="@drawable/ic_tuandui_b"
-                        android:textColor="@android:color/black"
-                        android:textSize="16sp"
-                        android:text="@string/talk_with_team" />
+                        android:gravity="center_vertical"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
 
-                    <!-- 与客户对话 -->
-                    <TextView
+                        <!-- 与团队对话 -->
+                        <TextView
+                            android:id="@+id/tv_sheet_item_recording"
+                            android:padding="5dp"
+                            android:layout_centerVertical="true"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@android:color/black"
+                            android:textSize="16sp"
+                            android:text="@string/talk_with_team" />
+
+                        <RelativeLayout
+                            android:layout_toRightOf="@+id/tv_sheet_item_recording"
+                            android:padding="10dp"
+                            android:gravity="center"
+                            android:layout_centerVertical="true"
+                            android:background="@drawable/bg_circle_26c6da"
+                            android:layout_width="56dp"
+                            android:layout_height="56dp">
+
+                            <ImageView
+                                android:src="@drawable/ic_tuandui_w"
+                                android:layout_width="19dp"
+                                android:layout_height="11dp" />
+
+                        </RelativeLayout>
+                    </RelativeLayout>
+
+                    <RelativeLayout
                         android:id="@+id/fab_sheet_item_reminder"
-                        style="@style/TextAppearance.MaterialSheetFab.Sheet.Item"
-                        android:drawableLeft="@drawable/ic_kehu_b"
-                        android:drawableStart="@drawable/ic_kehu_b"
-                        android:textColor="@android:color/black"
-                        android:textSize="16sp"
-                        android:text="@string/talk_with_client" />
+                        android:gravity="center_vertical"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <!-- 与客户对话 -->
+                        <TextView
+                            android:padding="5dp"
+                            android:layout_centerVertical="true"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/tv_sheet_item_reminder"
+                            android:textColor="@android:color/black"
+                            android:textSize="16sp"
+                            android:text="@string/talk_with_client" />
+
+                        <RelativeLayout
+                            android:layout_toRightOf="@+id/tv_sheet_item_reminder"
+                            android:padding="10dp"
+                            android:gravity="center"
+                            android:layout_centerVertical="true"
+                            android:background="@drawable/bg_circle_ffa726"
+                            android:layout_width="56dp"
+                            android:layout_height="56dp">
+
+                            <ImageView
+                                android:src="@drawable/ic_kehu"
+                                android:layout_width="17dp"
+                                android:layout_height="18dp" />
+
+                        </RelativeLayout>
+                    </RelativeLayout>
 
                 </LinearLayout>
 

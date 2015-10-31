@@ -44,7 +44,8 @@
         android:background="@drawable/radius_frame_bg"
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:padding="5dp">
 
         <LinearLayout
             android:orientation="horizontal"

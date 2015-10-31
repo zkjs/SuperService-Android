@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.zkjinshi.base.util.DialogUtil;
@@ -34,7 +35,7 @@ public class ClientAddActivity extends Activity {
     private final static int CLIENT_UPDATE_RESULT = 0x01;
 
     private ClientVo        mClient;
-    private ImageButton     mIbtnBack;
+    private RelativeLayout  mRlBack;
     private TextView        mTvTitle;
     private EditText        mEtClientName;
     private TextView        mTvClientPhone;
@@ -87,7 +88,7 @@ public class ClientAddActivity extends Activity {
     }
 
     private void initView() {
-        mIbtnBack           = (ImageButton) findViewById(R.id.ibtn_back);
+        mRlBack           = (RelativeLayout) findViewById(R.id.rl_back);
         mTvTitle            = (TextView) findViewById(R.id.tv_title);
         mTvTitle.setText(getString(R.string.add_clients));
         mEtClientName       = (EditText) findViewById(R.id.et_client_name);
@@ -128,7 +129,7 @@ public class ClientAddActivity extends Activity {
 
     private void initListener() {
         //返回上一页
-        mIbtnBack.setOnClickListener(new View.OnClickListener() {
+        mRlBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ClientAddActivity.this.finish();
