@@ -34,7 +34,7 @@
         android:src="@drawable/l_1"
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="60dp"
+        android:layout_marginBottom="80dp"
         android:id="@+id/page0_font"/>
 
     <ImageView
@@ -43,7 +43,7 @@
         android:src="@drawable/l_2"
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="60dp"
+        android:layout_marginBottom="80dp"
         android:id="@+id/page1_font"/>
 
     <ImageView
