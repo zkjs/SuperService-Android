@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -261,6 +262,33 @@ public class OrderDealActivity extends Activity {
         }else{
             finishBtn.setText("修改订单");
         }
+
+        showGrade(5,"销售超级好，考虑非常周全");
+    }
+
+    /**
+     * 显示评分模块
+     * @param grade
+     * @param reason
+     */
+    private void showGrade(int grade,String reason){
+        findViewById(R.id.block_grade).setVisibility(View.VISIBLE);
+        int[] ids = {R.id.star1,R.id.star2,R.id.star3,R.id.star4,R.id.star5};
+        for(int i=0;i<grade;i++){
+            ImageView star = (ImageView)findViewById(ids[i]);
+            star.setImageResource(R.drawable.ic_star_pre);
+        }
+        for(int i=grade;i<5;i++){
+            ImageView star = (ImageView)findViewById(ids[i]);
+            star.setImageResource(R.drawable.ic_star_nor);
+        }
+        TextView reasonTv = (TextView)findViewById(R.id.grade_reason_tv);
+        if(TextUtils.isEmpty(reason)){
+            reasonTv.setText("理由：无");
+        }else{
+            reasonTv.setText("理由："+reason);
+        }
+
     }
 
     //初始化订单备注
