@@ -78,6 +78,7 @@ public class OrderDealActivity extends Activity {
     private TextView mTvTicket;
     private TextView mTvRemark;
     private Button finishBtn;
+    private Button successBtn;
     private ArrayList<ItemUserSettingView> customerList;
 
     private TextView        mTvArriveDate;
@@ -153,10 +154,10 @@ public class OrderDealActivity extends Activity {
                 Log.i(TAG, "result.rawResult:" + result.rawResult);
                 try {
                     orderDetailBean = new Gson().fromJson(result.rawResult, OrderDetailBean.class);
-                    if(orderDetailBean.isSet()){
+                    if (orderDetailBean.isSet()) {
                         initData();
-                    }else{
-                        DialogUtil.getInstance().showToast(OrderDealActivity.this,"api 错误");
+                    } else {
+                        DialogUtil.getInstance().showToast(OrderDealActivity.this, "api 错误");
                         finish();
                     }
 
@@ -199,6 +200,7 @@ public class OrderDealActivity extends Activity {
         mTvTicket  = (TextView)findViewById(R.id.tv_ticket);
         mTvRemark = (TextView)findViewById(R.id.tv_remark);
         finishBtn = (Button)findViewById(R.id.btn_finish);
+        successBtn = (Button)findViewById(R.id.btn_success);
 
     }
 
@@ -250,20 +252,28 @@ public class OrderDealActivity extends Activity {
 
     //初始化订单状态的显示
     private void initOrderStatus() {
-        //订单状态 默认0可取消订单 1已取消订单 2已确认订单 3已经完成的订单 4正在入住中 5已删除订单
-        //支付状态 0未支付,1已支付,3支付一部分,4已退款, 5已挂账
-
-        final String orderStatus = orderDetailBean.getRoom().getStatus();
-        String payStatus = orderDetailBean.getRoom().getPay_status();
 
         String reservation_no = orderDetailBean.getRoom().getReservation_no();
         if(TextUtils.isEmpty(reservation_no)){
             finishBtn.setText("添加订单");
         }else{
             finishBtn.setText("修改订单");
+            //订单状态 默认0可取消订单 1已取消订单 2已确认订单 3已经完成的订单 4正在入住中 5已删除订单
+            //支付状态 0未支付,1已支付,3支付一部分,4已退款, 5已挂账
+
+            String orderStatus = orderDetailBean.getRoom().getStatus();
+            String payStatus = orderDetailBean.getRoom().getPay_status();
+            if(orderStatus.equals("2")){
+                successBtn.setVisibility(View.VISIBLE);
+            }else{
+                successBtn.setVisibility(View.GONE);
+            }
+
+            if(orderStatus.equals("3")){
+                showGrade(5, "销售超级好，考虑非常周全");
+            }
         }
 
-        showGrade(5,"销售超级好，考虑非常周全");
     }
 
     /**
@@ -286,7 +296,7 @@ public class OrderDealActivity extends Activity {
         if(TextUtils.isEmpty(reason)){
             reasonTv.setText("理由：无");
         }else{
-            reasonTv.setText("理由："+reason);
+            reasonTv.setText("理由：" + reason);
         }
 
     }
@@ -331,6 +341,12 @@ public class OrderDealActivity extends Activity {
     }
 
     private void initListener() {
+        successBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                successOrder();
+            }
+        });
         finishBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -406,6 +422,59 @@ public class OrderDealActivity extends Activity {
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
         });
+    }
+
+    //订单完成操作
+    private void successOrder(){
+        String url = ProtocolUtil.getUpdateOrderUrl();
+        Log.i(TAG,url);
+        NetRequest netRequest = new NetRequest(url);
+        HashMap<String,String> bizMap = new HashMap<String,String>();
+        bizMap.put("userid",CacheUtil.getInstance().getUserId());
+        bizMap.put("token",CacheUtil.getInstance().getToken());
+        bizMap.put("reservation_no",orderDetailBean.getRoom().getReservation_no());
+        bizMap.put("status","3");
+
+        netRequest.setBizParamMap(bizMap);
+        NetRequestTask netRequestTask = new NetRequestTask(this,netRequest, NetResponse.class);
+        netRequestTask.methodType = MethodType.PUSH;
+        netRequestTask.setNetRequestListener(new ExtNetRequestListener(this) {
+            @Override
+            public void onNetworkRequestError(int errorCode, String errorMessage) {
+                Log.i(TAG, "errorCode:" + errorCode);
+                Log.i(TAG, "errorMessage:" + errorMessage);
+            }
+
+            @Override
+            public void onNetworkRequestCancelled() {
+
+            }
+
+            @Override
+            public void onNetworkResponseSucceed(NetResponse result) {
+                Log.i(TAG, "result.rawResult:" + result.rawResult);
+                try {
+                    AddOrderBean addOrderBean = new Gson().fromJson(result.rawResult, AddOrderBean.class);
+                    if(addOrderBean.isSet()){
+                        DialogUtil.getInstance().showToast(OrderDealActivity.this,"订单修改为完成状态。");
+                        finish();
+                    }else{
+                        DialogUtil.getInstance().showToast(OrderDealActivity.this,"操作失败");
+                        Log.e(TAG,addOrderBean.getErr());
+                    }
+                } catch (Exception e) {
+                    Log.e(TAG, e.getMessage());
+                }
+
+            }
+
+            @Override
+            public void beforeNetworkRequestStart() {
+
+            }
+        });
+        netRequestTask.isShowLoadingDialog = true;
+        netRequestTask.execute();
     }
 
     //修改订单
