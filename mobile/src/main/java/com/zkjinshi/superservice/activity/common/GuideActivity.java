@@ -1,26 +1,19 @@
 package com.zkjinshi.superservice.activity.common;
 
-import android.content.Intent;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-
-import com.zkjinshi.base.util.DisplayUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.view.scviewpager.DotsView;
 import com.zkjinshi.superservice.view.scviewpager.SCPositionAnimation;
-import com.zkjinshi.superservice.view.scviewpager.SCSizeAnimation;
 import com.zkjinshi.superservice.view.scviewpager.SCViewAnimation;
 import com.zkjinshi.superservice.view.scviewpager.SCViewAnimationUtil;
 import com.zkjinshi.superservice.view.scviewpager.SCViewPager;
 import com.zkjinshi.superservice.view.scviewpager.SCViewPagerAdapter;
-
-
 
 /**
  * 开发者：dujiande
