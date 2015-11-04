@@ -94,9 +94,11 @@ public class OrderDealActivity extends Activity {
     private int dayNum;
     private OrderDetailBean orderDetailBean;
     private boolean isBooking = false;
+    private boolean editAble = true;//可编辑的
     private UserVo userVo;
     private String reservationNo;
     private ArrayList<PayBean> payBeans = null;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -255,21 +257,29 @@ public class OrderDealActivity extends Activity {
 
         String reservation_no = orderDetailBean.getRoom().getReservation_no();
         if(TextUtils.isEmpty(reservation_no)){
+            editAble = true;
             finishBtn.setText("添加订单");
         }else{
-            finishBtn.setText("修改订单");
             //订单状态 默认0可取消订单 1已取消订单 2已确认订单 3已经完成的订单 4正在入住中 5已删除订单
             //支付状态 0未支付,1已支付,3支付一部分,4已退款, 5已挂账
-
             String orderStatus = orderDetailBean.getRoom().getStatus();
             String payStatus = orderDetailBean.getRoom().getPay_status();
+            if(orderStatus.equals("0") || orderStatus.equals("2")){
+                editAble = true;
+                finishBtn.setVisibility(View.VISIBLE);
+                finishBtn.setText("修改订单");
+            }else{
+                editAble = false;
+                finishBtn.setVisibility(View.GONE);
+            }
+
             if(orderStatus.equals("2")){
                 successBtn.setVisibility(View.VISIBLE);
             }else{
                 successBtn.setVisibility(View.GONE);
             }
 
-            if(orderStatus.equals("3")){
+            if(orderStatus.equals("3")) {
                 showGrade(5, "销售超级好，考虑非常周全");
             }
         }
@@ -386,6 +396,9 @@ public class OrderDealActivity extends Activity {
                 if(orderDetailBean == null){
                     return;
                 }
+                if(!editAble){
+                    return;
+                }
                 Intent intent = new Intent(OrderDealActivity.this, CalendarActivity.class);
                 if (calendarList != null) {
                     intent.putExtra("calendarList", calendarList);
@@ -402,6 +415,9 @@ public class OrderDealActivity extends Activity {
                 if(orderDetailBean == null){
                     return;
                 }
+                if(!editAble){
+                    return;
+                }
                 Intent intent = new Intent(OrderDealActivity.this, OrderGoodsActivity.class);
                 intent.putExtra("roomNum", orderDetailBean.getRoom().getRooms());
                 intent.putExtra("selelectId", orderDetailBean.getRoom().getRoom_typeid());
@@ -414,6 +430,9 @@ public class OrderDealActivity extends Activity {
             @Override
             public void onClick(View view) {
                 if(orderDetailBean == null){
+                    return;
+                }
+                if(!editAble){
                     return;
                 }
                 Intent intent = new Intent(OrderDealActivity.this, OrderPayActivity.class);
@@ -456,7 +475,7 @@ public class OrderDealActivity extends Activity {
                 try {
                     AddOrderBean addOrderBean = new Gson().fromJson(result.rawResult, AddOrderBean.class);
                     if(addOrderBean.isSet()){
-                        DialogUtil.getInstance().showToast(OrderDealActivity.this,"订单修改为完成状态。");
+                        DialogUtil.getInstance().showToast(OrderDealActivity.this, "订单修改为完成状态。");
                         finish();
                     }else{
                         DialogUtil.getInstance().showToast(OrderDealActivity.this,"操作失败");

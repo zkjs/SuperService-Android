@@ -168,6 +168,17 @@
                     zkjinshi:itemSettingTitle="￥0.00"
                     zkjinshi:itemSettingContent2="挂账"
                     android:background="#ffffff"/>
+
+                <TextView
+                    android:id="@+id/pay_reason"
+                    android:padding="5dp"
+                    android:layout_marginLeft="10dp"
+                    android:text="定价理由："
+                    android:textSize="14sp"
+                    android:textColor="@color/black"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"/>
             </LinearLayout>
             <View style="@style/GrayLineBorder"></View>
 
