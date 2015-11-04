@@ -123,6 +123,7 @@ public class TeamEditActivity extends Activity {
             @Override
             public void onClick(View v) {
                 TeamEditActivity.this.finish();
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
             }
         });
 
