@@ -17,7 +17,7 @@ public class MsgCustomerServiceTextChat {
     private String       clientid;
     private String       clientname;
     private String       shopid;
-    private String       ruletype;//用于同一协议号,不同情况的处理
+    private String       ruletype  = "DefaultChatRuleType";// "INNERSESSION",则表明是商家员工内部聊天 "DefaultChatRuleType"，客人与商家聊天
     private String       adminid;//发送消息的商家管理端用户ID
 
     private String       sessionid;//会话ID

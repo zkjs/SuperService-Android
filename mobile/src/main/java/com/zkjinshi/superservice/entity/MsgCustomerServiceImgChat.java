@@ -20,7 +20,7 @@ public class MsgCustomerServiceImgChat {
     private String      clientid;
     private String      clientname;
     private String      shopid;
-    private String      ruletype;
+    private String      ruletype =  "DefaultChatRuleType";// "INNERSESSION",则表明是商家员工内部聊天 "DefaultChatRuleType"，客人与商家聊天;
     private String      adminid;
 
     //MsgSessionID

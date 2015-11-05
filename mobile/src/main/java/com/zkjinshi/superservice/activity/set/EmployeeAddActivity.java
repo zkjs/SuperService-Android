@@ -144,6 +144,7 @@ public class EmployeeAddActivity extends Activity {
     private void initData() {
         contactsAdapter = new ContactsAdapter(this,contactLocalList);
         listView.setAdapter(contactsAdapter);
+        listView.setEmptyView(findViewById(R.id.empty_tv));
         String listStr =  CacheUtil.getInstance().getListStrCache("contactLocalList");
         if(!TextUtils.isEmpty(listStr)){
             Type listType = new TypeToken<ArrayList<ContactLocalVo>>(){}.getType();

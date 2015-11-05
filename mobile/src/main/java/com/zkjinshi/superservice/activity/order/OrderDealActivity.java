@@ -449,7 +449,7 @@ public class OrderDealActivity extends Activity {
         Log.i(TAG,url);
         NetRequest netRequest = new NetRequest(url);
         HashMap<String,String> bizMap = new HashMap<String,String>();
-        bizMap.put("userid",CacheUtil.getInstance().getUserId());
+        bizMap.put("salesid",CacheUtil.getInstance().getUserId());
         bizMap.put("token",CacheUtil.getInstance().getToken());
         bizMap.put("reservation_no",orderDetailBean.getRoom().getReservation_no());
         bizMap.put("status","3");
@@ -502,7 +502,7 @@ public class OrderDealActivity extends Activity {
         Log.i(TAG,url);
         NetRequest netRequest = new NetRequest(url);
         HashMap<String,String> bizMap = new HashMap<String,String>();
-        bizMap.put("userid",CacheUtil.getInstance().getUserId());
+        bizMap.put("salesid",CacheUtil.getInstance().getUserId());
         bizMap.put("token",CacheUtil.getInstance().getToken());
         bizMap.put("reservation_no",orderDetailBean.getRoom().getReservation_no());
         bizMap.put("status",orderDetailBean.getRoom().getStatus());
@@ -577,7 +577,7 @@ public class OrderDealActivity extends Activity {
         Log.i(TAG,url);
         NetRequest netRequest = new NetRequest(url);
         HashMap<String,String> bizMap = new HashMap<String,String>();
-        bizMap.put("empid",CacheUtil.getInstance().getUserId());
+        bizMap.put("salesid",CacheUtil.getInstance().getUserId());
         bizMap.put("token",CacheUtil.getInstance().getToken());
         bizMap.put("shopid",orderDetailBean.getRoom().getShopid());
         bizMap.put("userid",orderDetailBean.getRoom().getGuestid());
