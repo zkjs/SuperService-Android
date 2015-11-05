@@ -14,10 +14,10 @@
         <ImageView
             android:id="@+id/iv_avatar"
             android:layout_centerInParent="true"
+            android:scaleType="centerCrop"
             android:src="@color/TransparentGray"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/img_morentu" />
+            android:layout_height="match_parent"/>
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -51,20 +51,19 @@
                     android:gravity="center"
                     android:id="@+id/tv_invite_code"
                     android:layout_width="wrap_content"
-                    android:text="invite_code"
                     android:layout_height="wrap_content"
                     android:textColor="@color/white" />
 
                 <ImageButton
                     android:id="@+id/ibtn_share_invite_code"
-                    android:layout_marginLeft="10dp"
+                    android:layout_marginLeft="20dp"
                     android:layout_width="15.5dp"
                     android:layout_height="14dp"
                     android:background="@drawable/ic_bg_share"/>
 
                 <ImageButton
                     android:id="@+id/ibtn_copy_invite_code"
-                    android:layout_marginLeft="10dp"
+                    android:layout_marginLeft="20dp"
                     android:layout_width="18dp"
                     android:layout_height="18dp"
                     android:background="@drawable/ic_bg_copy"/>
@@ -75,7 +74,6 @@
                 android:id="@+id/tv_emp_name"
                 android:padding="10dp"
                 android:textSize="18sp"
-                android:text="empName"
                 android:layout_above="@+id/ll_invite_code"
                 android:layout_width="wrap_content"
                 android:textColor="@color/white"
