@@ -127,5 +127,13 @@
         android:fadeScrollbars="true"
         android:id="@+id/contact_listview">
     </ListView>
+    <TextView
+        android:id="@+id/empty_tv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="无可添加的手机联系人"
+        android:textSize="16sp"
+        android:textColor="@color/black"/>
 
 </LinearLayout>
