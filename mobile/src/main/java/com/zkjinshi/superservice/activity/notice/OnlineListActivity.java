@@ -73,8 +73,8 @@ public class OnlineListActivity extends AppCompatActivity implements IMessageObs
         backIBtn.setVisibility(View.VISIBLE);
         onlineEmpCout =  getIntent().getIntExtra("onlineEmpCout",0);
         totalEmpCount = getIntent().getIntExtra("totalEmpCount",0);
-        currentEmpTv.setText(""+onlineEmpCout);
-        totalEmpTv.setText("/"+totalEmpCount);
+        currentEmpTv.setText("" + onlineEmpCout);
+        totalEmpTv.setText("/" + totalEmpCount);
     }
 
     private void initListeners(){
@@ -138,6 +138,10 @@ public class OnlineListActivity extends AppCompatActivity implements IMessageObs
                     if(null != empStatusRecordList && !empStatusRecordList.isEmpty()){
                         empStatusList = EmpStatusFactory.getInstance().buildEmpStatusList(empStatusRecordList);
                         onlineAdapter.setEmpStatusList(empStatusList);
+                        if(null != empStatusList){
+                            onlineEmpCout = empStatusList.size();
+                        }
+                        currentEmpTv.setText("" + onlineEmpCout);
                     }
                 }
                 if(null != swipeRefreshLayout){
