@@ -17,7 +17,7 @@ public class MsgCustomerServiceTextChat {
     private String       clientid;
     private String       clientname;
     private String       shopid;
-    private String       ruletype;//用于同一协议号,不同情况的处理
+    private String       ruletype  = "DefaultChatRuleType";// "INNERSESSION",则表明是商家员工内部聊天 "DefaultChatRuleType"，客人与商家聊天
     private String       adminid;//发送消息的商家管理端用户ID
 
     private String       sessionid;//会话ID
@@ -25,7 +25,6 @@ public class MsgCustomerServiceTextChat {
     private int          isreadack;//是否要求消息已读回执 0:不需要 1:需要
     private String       textmsg;//文本消息体
     private int childtype;//0:普通Text 1:自定义json格式
-    private String RuleType = "DefaultChatRuleType";// "INNERSESSION",则表明是商家员工内部聊天 "DefaultChatRuleType"，客人与商家聊天
 
     public int getType() {
         return type;
@@ -163,14 +162,6 @@ public class MsgCustomerServiceTextChat {
         this.childtype = childtype;
     }
 
-    public String getRuleType() {
-        return RuleType;
-    }
-
-    public void setRuleType(String ruleType) {
-        RuleType = ruleType;
-    }
-
     @Override
     public String toString() {
         return "MsgCustomerServiceTextChat{" +
@@ -191,7 +182,6 @@ public class MsgCustomerServiceTextChat {
                 ", isreadack=" + isreadack +
                 ", textmsg='" + textmsg + '\'' +
                 ", childtype=" + childtype +
-                ", RuleType='" + RuleType + '\'' +
                 '}';
     }
 }
