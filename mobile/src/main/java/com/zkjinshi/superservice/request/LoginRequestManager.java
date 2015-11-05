@@ -53,7 +53,7 @@ public class LoginRequestManager implements IMessageObserver {
     public void receive(String message) {
         try {
             JSONObject messageObj = new JSONObject(message);
-            LogUtil.getInstance().info(LogLevel.INFO, "messageObj:" + messageObj.toString());
+            LogUtil.getInstance().info(LogLevel.INFO, "loginMsgObj:" + messageObj.toString());
             int type = messageObj.getInt("type");
 
             if (ProtocolMSG.MSG_ClientLogin_RSP == type) {

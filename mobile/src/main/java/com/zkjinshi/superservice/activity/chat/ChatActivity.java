@@ -36,11 +36,13 @@ import com.zkjinshi.base.net.observer.IMessageObserver;
 import com.zkjinshi.base.net.observer.MessageSubject;
 import com.zkjinshi.base.net.protocol.ProtocolMSG;
 import com.zkjinshi.base.util.DialogUtil;
+import com.zkjinshi.base.util.NetWorkUtil;
 import com.zkjinshi.base.util.SoftInputUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.chat.action.FaceViewPagerManager;
 import com.zkjinshi.superservice.activity.chat.action.MessageListViewManager;
 import com.zkjinshi.superservice.activity.chat.action.MoreViewPagerManager;
+import com.zkjinshi.superservice.activity.chat.action.NetCheckManager;
 import com.zkjinshi.superservice.activity.chat.action.QuickMenuManager;
 import com.zkjinshi.superservice.activity.chat.action.VoiceRecordManager;
 import com.zkjinshi.superservice.activity.set.EmployeeAddActivity;
@@ -100,6 +102,7 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
     private FaceViewPagerManager facePagerManager;
     private MoreViewPagerManager moreViewPagerManager;
     private VoiceRecordManager voiceRecordManager;
+    private NetCheckManager netCheckManager;
     private CheckBox faceCb, moreCb;
 
     //音频操作
@@ -198,6 +201,10 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
         //初始化录音管理器
         voiceRecordManager = new VoiceRecordManager(this, animAreaLayout, cancelAreaLayout);
         voiceRecordManager.init();
+        //网络设置
+        netCheckManager = new NetCheckManager();
+        netCheckManager.init(this);
+        netCheckManager.registernetCheckReceiver();
         //初始化快捷菜单
         QuickMenuManager.getInstance().init(this).setMessageListViewManager(messageListViewManager);
         if (null != bookOrder) {
@@ -462,6 +469,9 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
     protected void onDestroy() {
         messageListViewManager.destoryMessageListViewManager();
         MediaPlayerUtil.stop();
+        if(null != netCheckManager){
+            netCheckManager.unregisternetCheckReceiver();
+        }
         super.onDestroy();
     }
 
