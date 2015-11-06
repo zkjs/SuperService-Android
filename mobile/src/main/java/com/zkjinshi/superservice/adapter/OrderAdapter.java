@@ -233,10 +233,11 @@ public class OrderAdapter extends RecyclerView.Adapter {
             share = (ImageView)itemView.findViewById(R.id.iv_share);
             contentLayout = (LinearLayout)itemView.findViewById(R.id.content_layout);
 
-            order.setOnClickListener(this);
+
             tel.setOnClickListener(this);
             chat.setOnClickListener(this);
             share.setOnClickListener(this);
+            contentLayout.setOnClickListener(this);
         }
 
         @Override
@@ -244,7 +245,7 @@ public class OrderAdapter extends RecyclerView.Adapter {
             OrderBean orderBean = dataList.get(position);
 
             switch (view.getId()){
-                case R.id.tv_order:
+                case R.id.content_layout:
                     Intent intent = new Intent(context, OrderDealActivity.class);
                     intent.putExtra("reservation_no", orderBean.getReservation_no());
                     context.startActivity(intent);
