@@ -169,7 +169,7 @@ public class MessageFragment extends Fragment  implements IMessageObserver {
                 Gson gson = new Gson();
                 MsgUserDefine msgUserDefine = gson.fromJson(message, MsgUserDefine.class);
                 if(msgUserDefine.getChildtype() == ProtocolMSG.MSG_ChildType_BindInviteCode){
-                    DialogUtil.getInstance().showCustomToast(getActivity(), "接收到绑定邀请码的信息。", Gravity.CENTER);
+                    //在消息中心中展示邀请码绑定消息
                 }
             }
         }catch (Exception e){

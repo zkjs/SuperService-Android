@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.zkjinshi.base.util.DialogUtil;
+import com.zkjinshi.base.util.SoftInputUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.bean.ClientBaseBean;
 import com.zkjinshi.superservice.bean.ClientDetailBean;
@@ -73,6 +74,13 @@ public class ClientSelectActivity extends Activity {
     }
 
     private void initData() {
+
+        String phoneNumber = getIntent().getStringExtra("phone_number");
+        if(!TextUtils.isEmpty(phoneNumber)){
+            mEtClientPhone.setText(phoneNumber);
+            SoftInputUtil.showSoftInputMode(ClientSelectActivity.this, mEtClientPhone);
+        }
+
         mUserID = CacheUtil.getInstance().getUserId();
         mToken  = CacheUtil.getInstance().getToken();
         mShopID = CacheUtil.getInstance().getShopID();
