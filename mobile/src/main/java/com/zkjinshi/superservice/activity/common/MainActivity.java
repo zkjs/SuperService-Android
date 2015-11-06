@@ -27,6 +27,7 @@ import com.zkjinshi.base.net.protocol.ProtocolMSG;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.base.view.CustomDialog;
 import com.zkjinshi.superservice.R;
+import com.zkjinshi.superservice.ServiceApplication;
 import com.zkjinshi.superservice.activity.set.ClientActivity;
 import com.zkjinshi.superservice.activity.set.EmployeeAddActivity;
 import com.zkjinshi.superservice.activity.set.TeamContactsActivity;
@@ -210,7 +211,7 @@ public class MainActivity extends AppCompatActivity {
                         if(customExtBuilder.isMessageChecked()){
                             //TODO: 加入退出本公司的操作
                         }
-
+                        WebSocketManager.getInstance().logoutIM(ServiceApplication.getContext());
                         CacheUtil.getInstance().setLogin(false);
                         startActivity(new Intent(MainActivity.this, LoginActivity.class));
                         finish();
