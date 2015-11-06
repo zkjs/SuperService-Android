@@ -88,5 +88,7 @@
     <string name="chat">对话</string>
     <string name="latest">最近</string>
     <string name="not_choose_yet">尚未选择</string>
+    <string name="user">用户</string>
+    <string name="use_your_invite_code_and_add_you_as_exclusive_server_success" >成功使用你的邀请码, 并添加你为专属客服</string>
 
 </resources>

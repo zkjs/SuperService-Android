@@ -82,19 +82,26 @@
         </RelativeLayout>
     </FrameLayout>
 
-    <android.support.v7.widget.RecyclerView
-        android:layout_weight="3"
-        android:id="@+id/rcv_invite_codes"
+    <ScrollView
         android:layout_width="match_parent"
+        android:layout_weight="3"
         android:background="@color/white"
-        android:cacheColorHint="#000000"
-        android:divider="@color/gray"
-        android:dividerHeight="1.0dp"
-        android:fadingEdge="none"
-        android:scrollbars="none"
-        android:scrollingCache="false"
-        android:visibility="visible"
         android:layout_height="0dp">
-    </android.support.v7.widget.RecyclerView>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rcv_invite_codes"
+            android:layout_width="match_parent"
+            android:cacheColorHint="#000000"
+            android:divider="@color/gray"
+            android:dividerHeight="1.0dp"
+            android:fadingEdge="none"
+            android:scrollbars="none"
+            android:scrollingCache="false"
+            android:visibility="visible"
+            android:layout_height="match_parent">
+
+        </android.support.v7.widget.RecyclerView>
+
+    </ScrollView>
 
 </LinearLayout>

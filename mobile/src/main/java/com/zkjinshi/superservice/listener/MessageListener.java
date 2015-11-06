@@ -20,12 +20,16 @@ import com.zkjinshi.base.net.core.WebSocketClient;
 import com.zkjinshi.base.net.core.WebSocketManager;
 import com.zkjinshi.base.net.protocol.ProtocolMSG;
 import com.zkjinshi.base.util.Constants;
+import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.base.view.CustomDialog;
 import com.zkjinshi.superservice.ServiceApplication;
 import com.zkjinshi.superservice.activity.common.LoginActivity;
+import com.zkjinshi.superservice.entity.MsgBuildSessionRSP;
 import com.zkjinshi.superservice.entity.MsgCustomerServiceImgChat;
 import com.zkjinshi.superservice.entity.MsgCustomerServiceMediaChat;
 import com.zkjinshi.superservice.entity.MsgCustomerServiceTextChat;
+import com.zkjinshi.superservice.entity.MsgOfflineMessage;
+import com.zkjinshi.superservice.entity.MsgOfflineMessageRSP;
 import com.zkjinshi.superservice.entity.MsgPushTriggerLocNotificationM2S;
 import com.zkjinshi.superservice.entity.MsgUserDefine;
 import com.zkjinshi.superservice.factory.MessageFactory;
@@ -150,9 +154,22 @@ public class MessageListener extends Handler implements IMessageListener {
                 if(gson == null){
                     gson = new Gson();
                 }
-                LogUtil.getInstance().info(LogLevel.INFO, "客户使用邀请码成功");
+
                 MsgUserDefine msgUserDefine = gson.fromJson(message, MsgUserDefine.class);
-                NotificationHelper.getInstance().showNotification(ServiceApplication.getContext(), msgUserDefine);
+                if(msgUserDefine.getChildtype() == ProtocolMSG.MSG_ChildType_BindInviteCode){
+                    LogUtil.getInstance().info(LogLevel.INFO, "客户使用邀请码成功:"+ msgUserDefine.getPushalert());
+                    NotificationHelper.getInstance().showNotification(ServiceApplication.getContext(), msgUserDefine);
+                }
+
+            }
+
+            /** 获取用户离线消息 */
+            if (ProtocolMSG.MSG_OfflineMssage_RSP == type) {
+                if(gson == null){
+                    gson = new Gson();
+                }
+                MsgOfflineMessageRSP msgOfflineMessageRSP = gson.fromJson(message, MsgOfflineMessageRSP.class);
+                LogUtil.getInstance().info(LogLevel.INFO, "获取用户离线消息response数" + msgOfflineMessageRSP.getOffmsgnum());
             }
 
         } catch (JSONException e) {
