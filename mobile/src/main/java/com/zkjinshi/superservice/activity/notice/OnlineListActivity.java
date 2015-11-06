@@ -138,8 +138,14 @@ public class OnlineListActivity extends AppCompatActivity implements IMessageObs
                     if(null != empStatusRecordList && !empStatusRecordList.isEmpty()){
                         empStatusList = EmpStatusFactory.getInstance().buildEmpStatusList(empStatusRecordList);
                         onlineAdapter.setEmpStatusList(empStatusList);
-                        if(null != empStatusList){
-                            onlineEmpCout = empStatusList.size();
+                        onlineEmpCout = 0;
+                        if(null != empStatusList && !empStatusList.isEmpty()){
+                            for(EmpStatusVo empStatusVo: empStatusList){
+                                int onlineStatus = empStatusVo.getOnlineStatus();
+                                if(0 == onlineStatus){
+                                    onlineEmpCout ++;
+                                }
+                            }
                         }
                         currentEmpTv.setText("" + onlineEmpCout);
                     }

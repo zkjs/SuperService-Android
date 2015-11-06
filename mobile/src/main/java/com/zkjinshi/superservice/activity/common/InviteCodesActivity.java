@@ -31,7 +31,6 @@ import com.zkjinshi.superservice.utils.ProtocolUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.util.HashMap;
 import java.util.List;
@@ -73,13 +72,13 @@ public class InviteCodesActivity extends Activity {
     }
 
     private void initView() {
-        mIvAvatar = (ImageView) findViewById(R.id.iv_avatar);
-        mRlBack = (RelativeLayout) findViewById(R.id.rl_back);
-        mTvInviteCode = (TextView) findViewById(R.id.tv_invite_code);
-        mIbtnShare = (ImageButton) findViewById(R.id.ibtn_share_invite_code);
-        mIbtnCopy = (ImageButton) findViewById(R.id.ibtn_copy_invite_code);
-        mTvEmpName = (TextView) findViewById(R.id.tv_emp_name);
-        mRcvInviteCodes = (RecyclerView) findViewById(R.id.rcv_invite_codes);
+        mIvAvatar       = (ImageView)      findViewById(R.id.iv_avatar);
+        mRlBack         = (RelativeLayout) findViewById(R.id.rl_back);
+        mTvInviteCode   = (TextView)       findViewById(R.id.tv_invite_code);
+        mIbtnShare      = (ImageButton)    findViewById(R.id.ibtn_share_invite_code);
+        mIbtnCopy       = (ImageButton)    findViewById(R.id.ibtn_copy_invite_code);
+        mTvEmpName      = (TextView)       findViewById(R.id.tv_emp_name);
+        mRcvInviteCodes = (RecyclerView)   findViewById(R.id.rcv_invite_codes);
     }
 
     private void initData() {
@@ -164,8 +163,6 @@ public class InviteCodesActivity extends Activity {
                 final List<InviteCode> codes = sempCodeReturnBean.getCode_data();
                 if (head.isSet() && ( null != codes && !codes.isEmpty())) {
                     //TODO:查询用户邀请码列表成功 并且邀请码不为空, 显示邀请码列表
-                    DialogUtil.getInstance().showCustomToast(InviteCodesActivity.this,
-                            "查询用户邀请码列表成功", Gravity.CENTER);
                     String inviteCode = codes.get(0).getSalecode();
                     mTvInviteCode.setText(inviteCode);
                 } else {
@@ -217,10 +214,13 @@ public class InviteCodesActivity extends Activity {
                     JSONObject resultObj = new JSONObject(jsonResult);
                     Boolean isSuccess = resultObj.getBoolean("set");
                     if (isSuccess) {
+
                         String inviteCode = resultObj.getString("code");
-                        DialogUtil.getInstance().showCustomToast(InviteCodesActivity.this,
-                                "创建邀请码成功" + inviteCode, Gravity.CENTER);
+                        if (!TextUtils.isEmpty(inviteCode)) {
+                            mTvInviteCode.setText(inviteCode);
+                        }
                     } else {
+
                         int errCode = resultObj.getInt("err");
                         if (errCode == 400) {
                             DialogUtil.getInstance().showCustomToast(InviteCodesActivity.this,

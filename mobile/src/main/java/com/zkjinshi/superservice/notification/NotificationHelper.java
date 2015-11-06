@@ -9,12 +9,16 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.app.RemoteInput;
 
+import com.google.gson.Gson;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.zkjinshi.base.util.ActivityManagerHelper;
 import com.zkjinshi.base.util.VibratorHelper;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.chat.ChatActivity;
+import com.zkjinshi.superservice.activity.common.InviteCodesActivity;
 import com.zkjinshi.superservice.activity.common.SplashActivity;
+import com.zkjinshi.superservice.bean.InviteCode;
+import com.zkjinshi.superservice.entity.InviteCodeEntity;
 import com.zkjinshi.superservice.entity.MsgPushTriggerLocNotificationM2S;
 import com.zkjinshi.superservice.entity.MsgUserDefine;
 import com.zkjinshi.superservice.utils.Constants;
@@ -131,13 +135,23 @@ public class NotificationHelper {
      */
     public void showNotification(Context context, MsgUserDefine msgUserDefine) {
 
+        String inviteCodeEntityJson = msgUserDefine.getContent();
+        Gson gson = new Gson();
+        InviteCodeEntity inviteCodeEntity = gson.fromJson(inviteCodeEntityJson,
+                                                      InviteCodeEntity.class);
+
+        String userName = inviteCodeEntity.getUsername();
+
         NotificationCompat.Builder notificationBuilder = null;
         // 1.设置显示信息
         notificationBuilder = new NotificationCompat.Builder(context);
         String pushAlert = msgUserDefine.getPushalert();
 
+        String content = context.getString(R.string.user) + userName + context.getString(
+                R.string.use_your_invite_code_and_add_you_as_exclusive_server_success);
+
         notificationBuilder.setContentTitle("" + pushAlert);
-        notificationBuilder.setContentText("" + pushAlert );
+        notificationBuilder.setContentText(content);
         notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
 
         String fromID    = msgUserDefine.getFromid();
@@ -146,8 +160,7 @@ public class NotificationHelper {
         notificationBuilder.setLargeIcon(bitmap);
 
         // 2.设置点击跳转事件
-        //TODO： 点击进入个人邀请绑定用户列表页面
-        Intent intent = new Intent(context, SplashActivity.class);
+        Intent intent = new Intent(context, InviteCodesActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
         notificationBuilder.setContentIntent(pendingIntent);
@@ -155,8 +168,8 @@ public class NotificationHelper {
         // 3.设置通知栏其他属性
         notificationBuilder.setAutoCancel(true);
         notificationBuilder.setDefaults(Notification.DEFAULT_ALL);
-        NotificationManagerCompat notificationManager =
-                NotificationManagerCompat.from(context);
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(
+                                                                               context);
         notificationManager.notify(++NOTIFY_ID, notificationBuilder.build());
     }
 

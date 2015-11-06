@@ -23,6 +23,7 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.zkjinshi.base.net.core.WebSocketManager;
+import com.zkjinshi.base.net.protocol.ProtocolMSG;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.base.view.CustomDialog;
 import com.zkjinshi.superservice.R;
@@ -31,6 +32,7 @@ import com.zkjinshi.superservice.activity.set.EmployeeAddActivity;
 import com.zkjinshi.superservice.activity.set.TeamContactsActivity;
 import com.zkjinshi.superservice.bean.BaseBean;
 import com.zkjinshi.superservice.bean.InviteCode;
+import com.zkjinshi.superservice.entity.MsgOfflineMessage;
 import com.zkjinshi.superservice.listener.MessageListener;
 import com.zkjinshi.superservice.net.ExtNetRequestListener;
 import com.zkjinshi.superservice.net.MethodType;
@@ -115,6 +117,20 @@ public class MainActivity extends AppCompatActivity {
             mainActivityController.setUserPhoto(CacheUtil.getInstance().getUserPhotoUrl(), avatarIv);
             setIbtn.setVisibility(View.VISIBLE);
         }
+
+        //获取用户离线消息
+        initOfflineMsg();
+
+    }
+
+    /**
+     * 初始化用户离线消息
+     */
+    private void initOfflineMsg() {
+        MsgOfflineMessage msgOfflineMessage = new MsgOfflineMessage();
+        msgOfflineMessage.setType(ProtocolMSG.MSG_OfflineMssage);
+        msgOfflineMessage.setTimestamp(System.currentTimeMillis());
+        msgOfflineMessage.setUserid(CacheUtil.getInstance().getUserId());
     }
 
     private void initListeners(){
