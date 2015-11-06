@@ -9,16 +9,20 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.gson.Gson;
 import com.zkjinshi.base.net.observer.IMessageObserver;
 import com.zkjinshi.base.net.observer.MessageSubject;
 import com.zkjinshi.base.net.protocol.ProtocolMSG;
+import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.chat.ChatActivity;
 import com.zkjinshi.superservice.adapter.MessageAdapter;
+import com.zkjinshi.superservice.entity.MsgUserDefine;
 import com.zkjinshi.superservice.listener.RecyclerItemClickListener;
 import com.zkjinshi.superservice.sqlite.MessageDBUtil;
 import com.zkjinshi.superservice.vo.MessageVo;
@@ -58,6 +62,7 @@ public class MessageFragment extends Fragment  implements IMessageObserver {
         MessageSubject.getInstance().addObserver(this, ProtocolMSG.MSG_CustomerServiceTextChat);
         MessageSubject.getInstance().addObserver(this, ProtocolMSG.MSG_CustomerServiceMediaChat);
         MessageSubject.getInstance().addObserver(this, ProtocolMSG.MSG_CustomerServiceImgChat);
+        MessageSubject.getInstance().addObserver(this, ProtocolMSG.MSG_UserDefine);
     }
 
     /**
@@ -67,6 +72,7 @@ public class MessageFragment extends Fragment  implements IMessageObserver {
         MessageSubject.getInstance().removeObserver(this, ProtocolMSG.MSG_CustomerServiceTextChat);
         MessageSubject.getInstance().removeObserver(this, ProtocolMSG.MSG_CustomerServiceMediaChat);
         MessageSubject.getInstance().removeObserver(this, ProtocolMSG.MSG_CustomerServiceImgChat);
+        MessageSubject.getInstance().removeObserver(this, ProtocolMSG.MSG_UserDefine);
     }
 
     private void initData(){
@@ -157,6 +163,14 @@ public class MessageFragment extends Fragment  implements IMessageObserver {
             if(type == ProtocolMSG.MSG_CustomerServiceTextChat || type == ProtocolMSG.MSG_CustomerServiceMediaChat || type == ProtocolMSG.MSG_CustomerServiceImgChat){
                 messageList = MessageDBUtil.getInstance().queryHistoryMessageList();
                 messageAdapter.setMessageList(messageList);
+            }
+
+            if(type == ProtocolMSG.MSG_UserDefine){
+                Gson gson = new Gson();
+                MsgUserDefine msgUserDefine = gson.fromJson(message, MsgUserDefine.class);
+                if(msgUserDefine.getChildtype() == ProtocolMSG.MSG_ChildType_BindInviteCode){
+                    DialogUtil.getInstance().showCustomToast(getActivity(), "接收到绑定邀请码的信息。", Gravity.CENTER);
+                }
             }
         }catch (Exception e){
             e.printStackTrace();

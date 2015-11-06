@@ -16,8 +16,10 @@ import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.chat.ChatActivity;
 import com.zkjinshi.superservice.activity.common.SplashActivity;
 import com.zkjinshi.superservice.entity.MsgPushTriggerLocNotificationM2S;
+import com.zkjinshi.superservice.entity.MsgUserDefine;
 import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.utils.MediaPlayerUtil;
+import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.vo.MessageVo;
 import com.zkjinshi.superservice.vo.MimeType;
 
@@ -120,6 +122,42 @@ public class NotificationHelper {
             NotificationManagerCompat notificationManager =
                     NotificationManagerCompat.from(context);
             notificationManager.notify(++NOTIFY_ID, notificationBuilder.build());
+    }
+
+    /**
+     * 通知提示:客户使用邀请码成功
+     * @param context
+     * @param msgUserDefine
+     */
+    public void showNotification(Context context, MsgUserDefine msgUserDefine) {
+
+        NotificationCompat.Builder notificationBuilder = null;
+        // 1.设置显示信息
+        notificationBuilder = new NotificationCompat.Builder(context);
+        String pushAlert = msgUserDefine.getPushalert();
+
+        notificationBuilder.setContentTitle("" + pushAlert);
+        notificationBuilder.setContentText("" + pushAlert );
+        notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
+
+        String fromID    = msgUserDefine.getFromid();
+        String avatarUrl = ProtocolUtil.getAvatarUrl(fromID);
+        Bitmap bitmap = ImageLoader.getInstance().loadImageSync(avatarUrl);
+        notificationBuilder.setLargeIcon(bitmap);
+
+        // 2.设置点击跳转事件
+        //TODO： 点击进入个人邀请绑定用户列表页面
+        Intent intent = new Intent(context, SplashActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+        notificationBuilder.setContentIntent(pendingIntent);
+
+        // 3.设置通知栏其他属性
+        notificationBuilder.setAutoCancel(true);
+        notificationBuilder.setDefaults(Notification.DEFAULT_ALL);
+        NotificationManagerCompat notificationManager =
+                NotificationManagerCompat.from(context);
+        notificationManager.notify(++NOTIFY_ID, notificationBuilder.build());
     }
 
     private NotificationCompat.WearableExtender extendWear(

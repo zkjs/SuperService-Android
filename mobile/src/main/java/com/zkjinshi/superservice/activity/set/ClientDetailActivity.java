@@ -60,6 +60,7 @@ public class ClientDetailActivity extends Activity {
     private String      mToken;
     private String      mShopID;
 
+    private ScrollView     mSvClientDetail;
     private RelativeLayout mRlBack;
     private TextView    mTvTitle;
     private ImageButton mIbtnDianhua;
@@ -89,6 +90,8 @@ public class ClientDetailActivity extends Activity {
     }
 
     private void initView() {
+
+        mSvClientDetail  = (ScrollView)      findViewById(R.id.sv_client_detail);
         mRlBack          = (RelativeLayout)  findViewById(R.id.rl_back);
         mTvTitle         = (TextView)        findViewById(R.id.tv_title);
 
@@ -110,6 +113,7 @@ public class ClientDetailActivity extends Activity {
     }
 
     private void initData() {
+        mSvClientDetail.fullScroll(ScrollView.FOCUS_UP);
         mPhoneNumber = getIntent().getStringExtra("phone_number");
         mUserID = CacheUtil.getInstance().getUserId();
         mToken  = CacheUtil.getInstance().getToken();
@@ -176,7 +180,7 @@ public class ClientDetailActivity extends Activity {
     private void showClient(ClientDetailBean client) {
         String userID = client.getUserid();
         if(!TextUtils.isEmpty(userID)) {
-            String imageUrl = Constants.GET_USER_AVATAR + userID + ".jpg";
+            String imageUrl = ProtocolUtil.getAvatarUrl(userID);
             DisplayImageOptions options = new DisplayImageOptions.Builder()
                 .showImageOnLoading(R.drawable.img_hotel_zhanwei)
                 .showImageForEmptyUri(R.drawable.img_hotel_zhanwei)

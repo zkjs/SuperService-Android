@@ -27,6 +27,7 @@ import com.zkjinshi.superservice.entity.MsgCustomerServiceImgChat;
 import com.zkjinshi.superservice.entity.MsgCustomerServiceMediaChat;
 import com.zkjinshi.superservice.entity.MsgCustomerServiceTextChat;
 import com.zkjinshi.superservice.entity.MsgPushTriggerLocNotificationM2S;
+import com.zkjinshi.superservice.entity.MsgUserDefine;
 import com.zkjinshi.superservice.factory.MessageFactory;
 import com.zkjinshi.superservice.notification.NotificationHelper;
 import com.zkjinshi.superservice.request.LoginRequestManager;
@@ -140,8 +141,18 @@ public class MessageListener extends Handler implements IMessageListener {
                 }
                 LogUtil.getInstance().info(LogLevel.INFO, "用户到店通知");
                 MsgPushTriggerLocNotificationM2S msgLocNotification = gson.fromJson(message,
-                                                    MsgPushTriggerLocNotificationM2S.class);
+                        MsgPushTriggerLocNotificationM2S.class);
                 NotificationHelper.getInstance().showNotification(ServiceApplication.getContext(), msgLocNotification);
+            }
+
+            /** 客户使用邀请码成功 */
+            if (ProtocolMSG.MSG_UserDefine == type) {
+                if(gson == null){
+                    gson = new Gson();
+                }
+                LogUtil.getInstance().info(LogLevel.INFO, "客户使用邀请码成功");
+                MsgUserDefine msgUserDefine = gson.fromJson(message, MsgUserDefine.class);
+                NotificationHelper.getInstance().showNotification(ServiceApplication.getContext(), msgUserDefine);
             }
 
         } catch (JSONException e) {
