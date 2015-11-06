@@ -21,6 +21,7 @@ import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.base.util.TimeUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.bean.AddOrderBean;
+import com.zkjinshi.superservice.bean.CommentBean;
 import com.zkjinshi.superservice.bean.GoodBean;
 import com.zkjinshi.superservice.bean.OrderDetailBean;
 import com.zkjinshi.superservice.bean.OrderInvoiceBean;
@@ -280,11 +281,70 @@ public class OrderDealActivity extends Activity {
             }
 
             if(orderStatus.equals("3")) {
-                showGrade(5, "销售超级好，考虑非常周全");
+                getGradeFromNet();
             }
         }
 
     }
+
+    /**
+     * 从网路请求评论结果
+     */
+    private void getGradeFromNet(){
+        String url = ProtocolUtil.getCommentShow();
+        Log.i(TAG,url);
+        NetRequest netRequest = new NetRequest(url);
+        HashMap<String,String> bizMap = new HashMap<String,String>();
+        bizMap.put("salesid", CacheUtil.getInstance().getUserId());
+        bizMap.put("token", CacheUtil.getInstance().getToken());
+        bizMap.put("reservation_no", reservationNo);
+        netRequest.setBizParamMap(bizMap);
+        NetRequestTask netRequestTask = new NetRequestTask(this,netRequest, NetResponse.class);
+        netRequestTask.methodType = MethodType.PUSH;
+        netRequestTask.setNetRequestListener(new ExtNetRequestListener(this) {
+            @Override
+            public void onNetworkRequestError(int errorCode, String errorMessage) {
+                Log.i(TAG, "errorCode:" + errorCode);
+                Log.i(TAG, "errorMessage:" + errorMessage);
+            }
+
+            @Override
+            public void onNetworkRequestCancelled() {
+
+            }
+
+            @Override
+            public void onNetworkResponseSucceed(NetResponse result) {
+                Log.i(TAG, "result.rawResult:" + result.rawResult);
+                try {
+                    CommentBean commentBean = new Gson().fromJson(result.rawResult, CommentBean.class);
+                    if (commentBean!= null && commentBean.getHead().isSet() ) {
+                        if(commentBean.getHead().getErr().equals("404")){
+                            showGrade(0, "");
+                        }else{
+                            showGrade(commentBean.getData().getScore(), commentBean.getData().getContent());
+                        }
+
+                    }else{
+                        Log.e(TAG, "api 错误");
+                    }
+
+                } catch (Exception e) {
+                    Log.e(TAG, e.getMessage());
+                }
+
+            }
+
+            @Override
+            public void beforeNetworkRequestStart() {
+
+            }
+        });
+        netRequestTask.isShowLoadingDialog = true;
+        netRequestTask.execute();
+    }
+
+
 
     /**
      * 显示评分模块
@@ -307,6 +367,14 @@ public class OrderDealActivity extends Activity {
             reasonTv.setText("理由：无");
         }else{
             reasonTv.setText("理由：" + reason);
+        }
+
+        if(grade == 0){
+            reasonTv.setText("暂未评论。");
+//            for(int i=grade;i<5;i++){
+//                ImageView star = (ImageView)findViewById(ids[i]);
+//                star.setVisibility(View.INVISIBLE);
+//            }
         }
 
     }
