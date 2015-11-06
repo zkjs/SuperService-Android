@@ -30,6 +30,7 @@ import com.zkjinshi.superservice.activity.set.ClientActivity;
 import com.zkjinshi.superservice.activity.set.EmployeeAddActivity;
 import com.zkjinshi.superservice.activity.set.TeamContactsActivity;
 import com.zkjinshi.superservice.bean.BaseBean;
+import com.zkjinshi.superservice.bean.InviteCode;
 import com.zkjinshi.superservice.listener.MessageListener;
 import com.zkjinshi.superservice.net.ExtNetRequestListener;
 import com.zkjinshi.superservice.net.MethodType;
@@ -163,7 +164,9 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.setting_tv).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                //TODO: 暂时进入邀请码界面
+                Intent  goInviteCodes = new Intent(MainActivity.this, InviteCodesActivity.class);
+                startActivity(goInviteCodes);
             }
         });
 

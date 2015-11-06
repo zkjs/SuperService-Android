@@ -202,7 +202,6 @@ public class ClientActivity extends AppCompatActivity implements IMessageObserve
         }
 
         List<ClientVo>  clientVos  = ClientDBUtil.getInstance().queryUnNormalClient();
-
         if(null != clientVos && !clientVos.isEmpty()){
             List<SortModel> sortModels = null;
             for(ClientVo clientVo : clientVos){

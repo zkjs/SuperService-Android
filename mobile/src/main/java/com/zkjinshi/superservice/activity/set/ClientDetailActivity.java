@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -88,7 +89,7 @@ public class ClientDetailActivity extends Activity {
     }
 
     private void initView() {
-        mRlBack        = (RelativeLayout)  findViewById(R.id.rl_back);
+        mRlBack          = (RelativeLayout)  findViewById(R.id.rl_back);
         mTvTitle         = (TextView)        findViewById(R.id.tv_title);
 
         mTvTitle.setText(getString(R.string.client_detail));
