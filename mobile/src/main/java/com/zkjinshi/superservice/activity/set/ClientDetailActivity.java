@@ -110,6 +110,10 @@ public class ClientDetailActivity extends Activity {
         mTvTagClient     = (TagView)         findViewById(R.id.tv_client_tag);
         mEtRemark        = (EditText)        findViewById(R.id.et_remark);
         mTvExclusiceServer = (TextView)      findViewById(R.id.tv_exclusive_server);
+
+        //将scrollView滚动置顶
+        mSvClientDetail.smoothScrollTo(0, 0);
+        mSvClientDetail.setSmoothScrollingEnabled(true);
     }
 
     private void initData() {
@@ -238,9 +242,9 @@ public class ClientDetailActivity extends Activity {
             for(ClientTag clientTag : tags){
                 mTvTagClient.addTag(createTag(clientTag.tagid, clientTag.tag, null));
             }
-        }else {
-            mTvTagClient.addTag(createTag("   +   "));
         }
+        mTvTagClient.addTag(createTag("   +   "));
+
     }
 
     private void initListener() {

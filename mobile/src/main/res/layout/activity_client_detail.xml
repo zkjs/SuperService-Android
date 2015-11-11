@@ -4,12 +4,13 @@
     android:layout_width="match_parent"
     xmlns:app="http://schemas.android.com/tools"
     android:orientation="vertical"
+    android:layout_gravity="top|center_horizontal"
     android:layout_height="match_parent"
     android:background="@color/graye8e8e8">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical">
 
         <include layout="@layout/activity_title"></include>
