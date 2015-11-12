@@ -3,29 +3,48 @@ package com.zkjinshi.superservice.notification;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.app.RemoteInput;
+import android.util.Log;
+import android.view.Gravity;
 
 import com.google.gson.Gson;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.zkjinshi.base.util.ActivityManagerHelper;
+import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.base.util.VibratorHelper;
+import com.zkjinshi.base.view.CustomDialog;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.chat.ChatActivity;
 import com.zkjinshi.superservice.activity.common.InviteCodesActivity;
 import com.zkjinshi.superservice.activity.common.SplashActivity;
+import com.zkjinshi.superservice.activity.set.ClientBindActivity;
+import com.zkjinshi.superservice.activity.set.ClientSelectActivity;
+import com.zkjinshi.superservice.bean.ClientBaseBean;
 import com.zkjinshi.superservice.bean.InviteCode;
 import com.zkjinshi.superservice.entity.InviteCodeEntity;
 import com.zkjinshi.superservice.entity.MsgPushTriggerLocNotificationM2S;
 import com.zkjinshi.superservice.entity.MsgUserDefine;
+import com.zkjinshi.superservice.net.ExtNetRequestListener;
+import com.zkjinshi.superservice.net.MethodType;
+import com.zkjinshi.superservice.net.NetRequest;
+import com.zkjinshi.superservice.net.NetRequestTask;
+import com.zkjinshi.superservice.net.NetResponse;
 import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.utils.MediaPlayerUtil;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.vo.MessageVo;
 import com.zkjinshi.superservice.vo.MimeType;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
 
 /**
  * 消息通知帮助类
@@ -138,8 +157,10 @@ public class NotificationHelper {
         String inviteCodeEntityJson = msgUserDefine.getContent();
         Gson gson = new Gson();
         InviteCodeEntity inviteCodeEntity = gson.fromJson(inviteCodeEntityJson,
-                                                      InviteCodeEntity.class);
+                InviteCodeEntity.class);
 
+        String userID   = inviteCodeEntity.getUserid();
+        String phoneNum = inviteCodeEntity.getPhone_number();
         String userName = inviteCodeEntity.getUsername();
 
         NotificationCompat.Builder notificationBuilder = null;
@@ -156,12 +177,12 @@ public class NotificationHelper {
 
         String fromID    = msgUserDefine.getFromid();
         String avatarUrl = ProtocolUtil.getAvatarUrl(fromID);
-        Bitmap bitmap = ImageLoader.getInstance().loadImageSync(avatarUrl);
+        Bitmap bitmap    = ImageLoader.getInstance().loadImageSync(avatarUrl);
         notificationBuilder.setLargeIcon(bitmap);
 
         // 2.设置点击跳转事件
-        Intent intent = new Intent(context, InviteCodesActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        Intent intent = new Intent(context, ClientSelectActivity.class);
+        intent.putExtra("phone_number", phoneNum);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
         notificationBuilder.setContentIntent(pendingIntent);
 
@@ -183,7 +204,7 @@ public class NotificationHelper {
         intent.setAction(Constants.ACTION_VOICE_RELAY);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra("session_id", sessionId);
-        intent.putExtra("shop_id",shopId);
+        intent.putExtra("shop_id", shopId);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0,
                 intent, 0);
         String replyLabel = context.getResources().getString(R.string.reply_label);

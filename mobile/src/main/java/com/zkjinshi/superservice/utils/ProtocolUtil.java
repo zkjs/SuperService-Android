@@ -295,4 +295,12 @@ public class ProtocolUtil {
         return ConfigUtil.getInst().getHttpDomain()+"comment/show";
     }
 
+    /**
+     * POST 根据订单号显示评论
+     * @return
+     */
+    public static String getCodeUserListUrl(){
+        return ConfigUtil.getInst().getHttpDomain()+" invitation/codeuser";
+    }
+
 }
