@@ -50,16 +50,12 @@ public class ImgAsyncTask extends AsyncTask<Void,Void,Bitmap> {
 
     @Override
     protected Bitmap doInBackground(Void... voids) {
-        Bitmap displayBitmap = BitmapFactory.decodeFile(photoFilePath);
-        if (displayBitmap != null) {
-            int screenHeight = DeviceUtils.getScreenHeight(activity);
-            int screanWidth = DeviceUtils.getScreenWidth(activity);
-//            int height = (int)(0.29*screenHeight);
-//            int width = (int)(0.71*screanWidth);
+
+        File file = new File(photoFilePath);
+        if (file.exists()) {
             int height = 190;
             int width = 270;
-            displayBitmap = ImageUtil.cropBitmap(displayBitmap, width, height);
-
+            Bitmap displayBitmap =  ImageUtil.getBitmapFromFile(file, width, height);
             savePath = FileUtil.getInstance().getImageTempPath() + System.currentTimeMillis() + ".jpg";
             saveBitmap2JPGE(displayBitmap, savePath);
             return displayBitmap;

@@ -50,7 +50,7 @@
                     android:layout_height="wrap_content"
                     android:textSize="14sp"
                     android:textColor="#ffffff"
-                    android:text="黄小洋"
+                    android:text="xxx"
                     style="@style/shadowText"
                     android:textStyle="bold"
                     android:id="@+id/username_tv" />
@@ -73,7 +73,7 @@
                 android:textColor="#ffffff"
                 android:layout_marginTop="5dp"
                 style="@style/shadowText"
-                android:text="长沙芙蓉国温德姆豪庭至尊大酒店"
+                android:text="xxxxxxxxxxxxx酒店"
                 android:id="@+id/shop_name_tv"
                 android:singleLine="true"
                 android:ellipsize="marquee"
