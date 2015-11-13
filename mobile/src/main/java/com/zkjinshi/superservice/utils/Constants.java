@@ -23,6 +23,14 @@ public class Constants {
     public final static int POST_SUCCESS = 1;
     public final static int POST_FAILED  = 0;
 
+    public static final int CHATTYPE_SINGLE = 1;
+    public static final int CHATTYPE_GROUP = 2;
+    public static final int CHATTYPE_CHATROOM = 3;
+
+    public static final String EXTRA_CHAT_TYPE = "chatType";
+    public static final String EXTRA_USER_ID = "userId";
+    public static final String MSG_TXT_EXT_TYPE= "extType";
+
     //协议包返回结果
     public final static int PROTOCAL_SUCCESS = 0;
     public final static int PROTOCAL_FAILED  = 1;

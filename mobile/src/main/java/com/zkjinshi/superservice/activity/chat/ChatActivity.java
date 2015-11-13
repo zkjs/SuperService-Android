@@ -80,10 +80,8 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
 
     private final static String TAG = ChatActivity.class.getSimpleName();
 
-    private String        mUserID;
+    private String userId;
     private String        mShopID;
-    private String        mSessionID;
-    private String        mClientID;
     private BookOrderBean bookOrder;
 
     private Toolbar       mToolbar;
@@ -111,8 +109,6 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
     private RelativeLayout animAreaLayout, cancelAreaLayout; // 录音中View，取消录音View
     private int            flag = 1; // 1：正常 2：语音录音中
     private long           startVoiceT, endVoiceT; // 语音开始时间，结束时间
-
-    private String            mRuleType;
     private String            choosePicName;//选择图片名称
     private ArrayList<String> chooseImageList = new ArrayList<>();
     private String            bookOrderStr;
@@ -156,42 +152,14 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
     }
 
     private void initData() {
-        mSessionID = getIntent().getStringExtra("session_id");
+        userId = getIntent().getStringExtra(Constants.EXTRA_USER_ID);
         mShopID    = getIntent().getStringExtra("shop_id");
         String sessionName = getIntent().getStringExtra("session_name");
-        int onlineStatus = getIntent().getIntExtra("online_status", 1);
-
-        if(!TextUtils.isEmpty(sessionName)){
-            mTvCenterTitle.setText(getString(R.string.with) + sessionName + (getString(R.string.chating)));
-        }else{
-            ChatRoomVo chatRoomVo = ChatRoomDBUtil.getInstance().queryChatRoomBySessionId(mSessionID);
-            if(null != chatRoomVo){
-                String title = chatRoomVo.getTitle();
-                if(!TextUtils.isEmpty(title)){
-                    mTvCenterTitle.setText(getString(R.string.with) + title + (getString(R.string.chating)));
-                }
-            }
-        }
-
-        if(onlineStatus == OnlineStatus.ONLINE.getValue()){
-            mTvBottomTitle.setText("对象"+ getString(R.string.online));
-        }else {
-            mTvBottomTitle.setText("对象"+ getString(R.string.offline));
-        }
-
-        mChatRoom = ChatRoomDBUtil.getInstance().queryChatRoomBySessionId(mSessionID);
-        if(null != mChatRoom){
-            if(TextUtils.isEmpty(mShopID)){
-                mShopID    = mChatRoom.getShopId();
-            }
-            mClientID  = mChatRoom.getCreaterId();
-        }
-        mUserID    = CacheUtil.getInstance().getUserId();
         bookOrder  = (BookOrderBean) getIntent().getSerializableExtra("bookOrder");
-        mRuleType  = getString(R.string.default_rule_type);
         //初始化消息ListView管理器
-        messageListViewManager = new MessageListViewManager(this, mShopID, mSessionID, mClientID);
+        messageListViewManager = new MessageListViewManager(this, userId);
         messageListViewManager.init();
+        messageListViewManager.setTitle(mTvCenterTitle);
         //初始化表情框
         facePagerManager = new FaceViewPagerManager(this, faceLinearLayout, mMsgTextInput);
         facePagerManager.init();
@@ -210,7 +178,7 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
         if (null != bookOrder) {
             bookOrderStr = new Gson().toJson(bookOrder);
             if (!TextUtils.isEmpty(bookOrderStr)) {
-                messageListViewManager.sendBookTextMessage(bookOrderStr);
+                messageListViewManager.sendCardMessage(bookOrderStr);
             }
         }
         //增加远程手表语音自动回复
@@ -249,8 +217,6 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
                         break;
 
                     case R.id.finish_this_chat:
-                        //执行解散回话操作
-                        messageListViewManager.sendDisableSession();
                         break;
                 }
                 return true;
@@ -343,7 +309,7 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
             public void onClick(View view) {
                 String msg = mMsgTextInput.getText().toString();
                 if (!TextUtils.isEmpty(msg) && msg.length() < 200) {
-                    messageListViewManager.sendTextMessage(mShopID, msg, mRuleType);
+                    messageListViewManager.sendTextMessage(msg);
                     mMsgTextInput.setText("");
                 } else {
                     DialogUtil.getInstance().showCustomToast(ChatActivity.this, "发送消息不能超过200字符!", Gravity.CENTER);
@@ -453,13 +419,13 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
                     for (String imagePath : chooseImageList) {
                         Log.i(TAG, "imagePath:" + imagePath);
                         String imageName = FileUtil.getInstance().getFileName(imagePath);
-                        messageListViewManager.sendImageMessage(mShopID, imageName,imagePath, mRuleType);
+                        messageListViewManager.sendImageMessage(imagePath);
                     }
                 }
             } else if (requestCode == Constants.FLAG_CHOOSE_PHOTO) {//拍照上传
                 choosePicName = CacheUtil.getInstance().getPicName();
                 String imageTempPath = FileUtil.getInstance().getImageTempPath();
-                messageListViewManager.sendImageMessage(mShopID, choosePicName, imageTempPath + choosePicName, mRuleType);
+                messageListViewManager.sendImageMessage(imageTempPath + choosePicName);
                 Log.i(TAG, "imagePath:" + FileUtil.getInstance().getImageTempPath() + choosePicName);
             }
         }
@@ -626,7 +592,7 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
                             //开始文件写入
                             String mediaPath = voiceRecordManager.getMediaPath();//音频文件路径
                             String mediaName = FileUtil.getInstance().getFileName(mediaPath);//音频文件名
-                            messageListViewManager.sendAudioMessage( mShopID, mediaName, mediaPath, voiceTime, mRuleType);
+                            messageListViewManager.sendVoiceMessage( mediaPath, voiceTime);
                         }
                     } else {
                         CacheUtil.getInstance().setCountDown(false);

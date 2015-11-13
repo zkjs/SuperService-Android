@@ -14,6 +14,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.easemob.EMEventListener;
+import com.easemob.EMNotifierEvent;
+import com.easemob.chat.EMChatManager;
+import com.easemob.chat.EMConversation;
 import com.google.gson.Gson;
 import com.zkjinshi.base.net.observer.IMessageObserver;
 import com.zkjinshi.base.net.observer.MessageSubject;
@@ -22,9 +26,11 @@ import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.chat.ChatActivity;
 import com.zkjinshi.superservice.adapter.MessageAdapter;
+import com.zkjinshi.superservice.emchat.EMConversationHelper;
 import com.zkjinshi.superservice.entity.MsgUserDefine;
 import com.zkjinshi.superservice.listener.RecyclerItemClickListener;
 import com.zkjinshi.superservice.sqlite.MessageDBUtil;
+import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.vo.MessageVo;
 
 import org.json.JSONObject;
@@ -38,11 +44,11 @@ import java.util.ArrayList;
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class MessageFragment extends Fragment  implements IMessageObserver {
+public class MessageFragment extends Fragment implements EMEventListener {
 
     private RecyclerView messageRCV;
     private MessageAdapter messageAdapter;
-    private ArrayList<MessageVo> messageList;
+    private ArrayList<EMConversation> conversationList;
     private LinearLayoutManager linearLayoutManager;
     private SwipeRefreshLayout swipeRefreshLayout;
 
@@ -55,55 +61,34 @@ public class MessageFragment extends Fragment  implements IMessageObserver {
         swipeRefreshLayout = (SwipeRefreshLayout)view.findViewById(R.id.srl_message);
     }
 
-    /**
-     * 添加EventBus消息通知观察者
-     */
-    private void addObservers() {
-        MessageSubject.getInstance().addObserver(this, ProtocolMSG.MSG_CustomerServiceTextChat);
-        MessageSubject.getInstance().addObserver(this, ProtocolMSG.MSG_CustomerServiceMediaChat);
-        MessageSubject.getInstance().addObserver(this, ProtocolMSG.MSG_CustomerServiceImgChat);
-        MessageSubject.getInstance().addObserver(this, ProtocolMSG.MSG_UserDefine);
-    }
-
-    /**
-     * 删除EventBus消息通知观察者
-     */
-    private void removeObservers() {
-        MessageSubject.getInstance().removeObserver(this, ProtocolMSG.MSG_CustomerServiceTextChat);
-        MessageSubject.getInstance().removeObserver(this, ProtocolMSG.MSG_CustomerServiceMediaChat);
-        MessageSubject.getInstance().removeObserver(this, ProtocolMSG.MSG_CustomerServiceImgChat);
-        MessageSubject.getInstance().removeObserver(this, ProtocolMSG.MSG_UserDefine);
-    }
-
     private void initData(){
-        messageList = MessageDBUtil.getInstance().queryHistoryMessageList();
-        messageAdapter = new MessageAdapter(getActivity(),messageList);
+        messageAdapter = new MessageAdapter(getActivity(),conversationList);
         messageRCV.setHasFixedSize(true);
         linearLayoutManager = new LinearLayoutManager(getActivity());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         messageRCV.setLayoutManager(linearLayoutManager);
         messageRCV.setAdapter(messageAdapter);
-        addObservers();
+        EMChatManager.getInstance().registerEventListener(this);
     }
 
     private void initListeners(){
 
         messageAdapter.setOnItemClickListener(new RecyclerItemClickListener() {
             @Override
-            public void onItemClick(View view, int postion) {
-                MessageVo messageVo = messageList.get(postion);
-                if (null != messageVo) {
-                    Intent intent = new Intent(getActivity(), ChatActivity.class);
-                    String sessionId = messageVo.getSessionId();
-                    String shopId = messageVo.getShopId();
-                    if (!TextUtils.isEmpty(sessionId)) {
-                        intent.putExtra("session_id", sessionId);
+            public void onItemClick(View view, int position) {
+                EMConversation conversation = conversationList.get(position);
+                String username = conversation.getUserName();
+                Intent intent = new Intent(getActivity(), ChatActivity.class);
+                if (conversation.isGroup()) {
+                    if (conversation.getType() == EMConversation.EMConversationType.ChatRoom) {
+                        intent.putExtra(Constants.EXTRA_CHAT_TYPE, Constants.CHATTYPE_CHATROOM);
+                    } else {
+                        intent.putExtra(Constants.EXTRA_CHAT_TYPE, Constants.CHATTYPE_GROUP);
                     }
-                    if (!TextUtils.isEmpty(shopId)) {
-                        intent.putExtra("shop_id", shopId);
-                    }
-                    startActivity(intent);
+
                 }
+                intent.putExtra(Constants.EXTRA_USER_ID, username);
+                startActivity(intent);
             }
         });
 
@@ -145,35 +130,54 @@ public class MessageFragment extends Fragment  implements IMessageObserver {
     @Override
     public void onResume() {
         super.onResume();
-        messageList = MessageDBUtil.getInstance().queryHistoryMessageList();
-        messageAdapter.setMessageList(messageList);
+        conversationList = (ArrayList<EMConversation>) EMConversationHelper.getInstance().loadConversationList();
+        messageAdapter.setConversationList(conversationList);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        removeObservers();
+    }
+
+    /**
+     * 刷新页面
+     */
+    public void refresh() {
+        conversationList.clear();
+        conversationList.addAll(EMConversationHelper.getInstance().loadConversationList());
+        messageAdapter.setConversationList(conversationList);
     }
 
     @Override
-    public void receive(String message) {
-        try {
-            JSONObject messageObj = new JSONObject(message);
-            int type = messageObj.getInt("type");
-            if(type == ProtocolMSG.MSG_CustomerServiceTextChat || type == ProtocolMSG.MSG_CustomerServiceMediaChat || type == ProtocolMSG.MSG_CustomerServiceImgChat){
-                messageList = MessageDBUtil.getInstance().queryHistoryMessageList();
-                messageAdapter.setMessageList(messageList);
+    public void onEvent(EMNotifierEvent event) {
+        switch (event.getEvent()) {
+            case EventNewMessage:
+            {
+                refreshUIWithMessage();
+                break;
             }
 
-            if(type == ProtocolMSG.MSG_UserDefine){
-                Gson gson = new Gson();
-                MsgUserDefine msgUserDefine = gson.fromJson(message, MsgUserDefine.class);
-                if(msgUserDefine.getChildtype() == ProtocolMSG.MSG_ChildType_BindInviteCode){
-                    //在消息中心中展示邀请码绑定消息
-                }
+            case EventOfflineMessage: {
+                refreshUIWithMessage();
+                break;
             }
-        }catch (Exception e){
-            e.printStackTrace();
+
+            case EventConversationListChanged: {
+                refreshUIWithMessage();
+                break;
+            }
+
+            default:
+                break;
         }
     }
+
+    private void refreshUIWithMessage() {
+        getActivity().runOnUiThread(new Runnable() {
+            public void run() {
+               refresh();
+            }
+        });
+    }
+
 }

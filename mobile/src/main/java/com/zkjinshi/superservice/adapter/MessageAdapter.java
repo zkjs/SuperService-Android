@@ -8,6 +8,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.easemob.chat.EMChatManager;
+import com.easemob.chat.EMChatRoom;
+import com.easemob.chat.EMConversation;
+import com.easemob.chat.EMGroup;
+import com.easemob.chat.EMGroupManager;
+import com.easemob.chat.EMMessage;
+import com.easemob.chat.TextMessageBody;
+import com.easemob.exceptions.EaseMobException;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.zkjinshi.base.util.TimeUtil;
@@ -20,6 +28,7 @@ import com.zkjinshi.superservice.view.CircleImageView;
 import com.zkjinshi.superservice.vo.ChatRoomVo;
 import com.zkjinshi.superservice.vo.MessageVo;
 import com.zkjinshi.superservice.vo.MimeType;
+import com.zkjinshi.superservice.vo.TxtExtType;
 
 import java.util.ArrayList;
 
@@ -32,25 +41,25 @@ import java.util.ArrayList;
  */
 public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
-    private ArrayList<MessageVo> messageList;
+    private ArrayList<EMConversation> conversationList;
     private Context context;
     private LayoutInflater inflater;
     private DisplayImageOptions options;
     private RecyclerItemClickListener itemClickListener;
 
-    public void setMessageList(ArrayList<MessageVo> messageList) {
-        if(null ==  messageList){
-            this.messageList = new ArrayList<MessageVo>();
-        }else{
-            this.messageList = messageList;
+    public void setConversationList(ArrayList<EMConversation> conversationList) {
+        if(null == conversationList){
+            this.conversationList = new ArrayList<EMConversation>();
+        }else {
+            this.conversationList = conversationList;
         }
         notifyDataSetChanged();
     }
 
-    public MessageAdapter(Context context,ArrayList<MessageVo> messageList){
+    public MessageAdapter(Context context,ArrayList<EMConversation> conversationList){
         this.context = context;
         this.inflater = LayoutInflater.from(context);
-        this.setMessageList(messageList);
+        this.setConversationList(conversationList);
         this.options = new DisplayImageOptions.Builder()
                 .showImageOnLoading(R.drawable.img_hotel_zhanwei)// 设置图片下载期间显示的图片
                 .cacheInMemory(true) // 设置下载的图片是否缓存在内存中
@@ -67,58 +76,58 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        MessageVo messageVo = messageList.get(position);
-        long sendTime = messageVo.getSendTime();
-        String content = messageVo.getContent();
-        MimeType mimeType = messageVo.getMimeType();
-        if(MimeType.TEXT == mimeType){
-            if(!TextUtils.isEmpty(content)){
-                ((ViewHolder)holder).contentTv.setText(content);
-            }
-        }else if(MimeType.IMAGE == mimeType){
-            ((ViewHolder)holder).contentTv.setText("[图片]");
-        }else if(MimeType.VIDEO == mimeType){
-            ((ViewHolder)holder).contentTv.setText("[视频]");
-        }else if(MimeType.AUDIO == mimeType){
-            ((ViewHolder)holder).contentTv.setText("[语音]");
-        }else if(MimeType.APPLICATION == mimeType){
-            ((ViewHolder)holder).contentTv.setText("[文件]");
-        }else if(MimeType.CARD == mimeType){
-            ((ViewHolder)holder).contentTv.setText("[订单]");
-        }
-        ((ViewHolder)holder).sendTimeTv.setText(TimeUtil.getChatTime(sendTime));
-        String sessionId = messageVo.getSessionId();
-        if(!TextUtils.isEmpty(sessionId)){
-            ChatRoomVo chatRoomVo = ChatRoomDBUtil.getInstance().queryChatRoomBySessionId(sessionId);
-            if(null != chatRoomVo){
-                String createrId = chatRoomVo.getCreaterId();
-                if(!TextUtils.isEmpty(createrId)){
-                    String imageUrl = Constants.GET_USER_AVATAR + createrId + ".jpg";
-                    if(!TextUtils.isEmpty(imageUrl)){
-                        ImageLoader.getInstance().displayImage(imageUrl, ((ViewHolder)holder).photoImageView,options);
+        EMConversation conversation = conversationList.get(position);
+        String username = conversation.getUserName();
+        if (conversation.getMsgCount() != 0) {
+            EMMessage message = conversation.getLastMessage();
+            long sendTime = message.getMsgTime();
+            EMMessage.Type msgType = message.getType();
+            if (msgType == EMMessage.Type.IMAGE) {
+                ((ViewHolder)holder).contentTv.setText("[图片]");
+            }else if (msgType ==  EMMessage.Type.VOICE) {
+                ((ViewHolder)holder).contentTv.setText("[语音]");
+            }else if(msgType == EMMessage.Type.TXT){
+                try {
+                    int extType = message.getIntAttribute(Constants.MSG_TXT_EXT_TYPE);
+                    if(TxtExtType.DEFAULT.getVlaue() == extType){
+                        TextMessageBody txtBody = (TextMessageBody) message.getBody();
+                        String content = txtBody.getMessage();
+                        ((ViewHolder)holder).contentTv.setText(content);
+                    }else{
+                        ((ViewHolder)holder).contentTv.setText("[订单]");
                     }
-                }
-                String title = chatRoomVo.getTitle();
-                if(!TextUtils.isEmpty(title)){
-                    ((ViewHolder) holder).titleTv.setText(title);
+                } catch (EaseMobException e) {
+                    e.printStackTrace();
                 }
             }
-        }
-        int notifyCount = MessageDBUtil.getInstance().queryNotifyCount(sessionId);
-        if(notifyCount <= 0){
-            ((ViewHolder)holder).noticeCountTv.setVisibility(View.GONE);
-        }else if(notifyCount > 99) {
-            ((ViewHolder)holder).noticeCountTv.setVisibility(View.VISIBLE);
-            ((ViewHolder)holder).noticeCountTv.setText("99+");
-        } else {
-            ((ViewHolder)holder).noticeCountTv.setVisibility(View.VISIBLE);
-            ((ViewHolder)holder).noticeCountTv.setText(notifyCount+"");
+            // ImageLoader.getInstance().displayImage(imageUrl, ((ViewHolder)holder).photoImageView,options);
+            ((ViewHolder)holder).sendTimeTv.setText(TimeUtil.getChatTime(sendTime));
+            if (conversation.getType() == EMConversation.EMConversationType.GroupChat) {
+                EMGroup group = EMGroupManager.getInstance().getGroup(username);
+                ((ViewHolder) holder).titleTv.setText(group != null ? group.getGroupName() : username);
+            } else if(conversation.getType() == EMConversation.EMConversationType.ChatRoom){
+                EMChatRoom room = EMChatManager.getInstance().getChatRoom(username);
+                ((ViewHolder) holder).titleTv.setText(room != null && !TextUtils.isEmpty(room.getName()) ? room.getName() : username);
+            }else {
+                ((ViewHolder) holder).titleTv.setText(username);
+            }
+            //设置消息未读条数
+            long notifyCount = conversation.getUnreadMsgCount();
+            if(notifyCount <= 0){
+                ((ViewHolder)holder).noticeCountTv.setVisibility(View.GONE);
+            }else if(notifyCount > 99) {
+                ((ViewHolder)holder).noticeCountTv.setVisibility(View.VISIBLE);
+                ((ViewHolder)holder).noticeCountTv.setText("99+");
+            } else {
+                ((ViewHolder)holder).noticeCountTv.setVisibility(View.VISIBLE);
+                ((ViewHolder)holder).noticeCountTv.setText(notifyCount+"");
+            }
         }
     }
 
     @Override
     public int getItemCount() {
-        return messageList.size();
+        return conversationList.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{

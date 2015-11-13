@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
 
+import com.easemob.chat.EMChat;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -44,6 +45,7 @@ public class ServiceApplication extends Application{
         super.onCreate();
         mContext = this.getApplicationContext();
         initContext();
+        initEmchat();
         saveConfig();
         initImCache();
         initCache();
@@ -57,6 +59,14 @@ public class ServiceApplication extends Application{
 
     public static Context getContext(){
         return mContext;
+    }
+
+    /**
+     * 设置环信ios推送昵称
+     */
+    private void initEmchat(){
+        EMChat.getInstance().init(this);
+        EMChat.getInstance().setDebugMode(true);
     }
 
     public void initContext(){

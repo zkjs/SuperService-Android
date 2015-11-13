@@ -21,6 +21,11 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.easemob.EMCallBack;
+import com.easemob.EMEventListener;
+import com.easemob.EMNotifierEvent;
+import com.easemob.chat.EMChatManager;
+import com.easemob.chat.EMGroupManager;
 import com.google.gson.Gson;
 import com.zkjinshi.base.net.core.WebSocketManager;
 import com.zkjinshi.base.net.protocol.ProtocolMSG;
@@ -33,6 +38,8 @@ import com.zkjinshi.superservice.activity.set.EmployeeAddActivity;
 import com.zkjinshi.superservice.activity.set.TeamContactsActivity;
 import com.zkjinshi.superservice.bean.BaseBean;
 import com.zkjinshi.superservice.bean.InviteCode;
+import com.zkjinshi.superservice.emchat.EMConversationHelper;
+import com.zkjinshi.superservice.emchat.EasemobIMHelper;
 import com.zkjinshi.superservice.entity.MsgOfflineMessage;
 import com.zkjinshi.superservice.listener.MessageListener;
 import com.zkjinshi.superservice.net.ExtNetRequestListener;
@@ -63,7 +70,7 @@ import me.nereo.multi_image_selector.MultiImageSelectorActivity;
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity{
 
     private MainActivityController mainActivityController;
 
@@ -89,6 +96,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initData(){
+        loginUser();
         messageListener = new MessageListener();
         initService(messageListener);
         userVo = UserDBUtil.getInstance().queryUserById(CacheUtil.getInstance().getUserId());
@@ -356,6 +364,38 @@ public class MainActivity extends AppCompatActivity {
      */
     private void initService(MessageListener messageListener) {
         WebSocketManager.getInstance().initService(this).setMessageListener(messageListener);
+    }
+
+    /**
+     * 登录环形IM
+     */
+    private void loginUser(){
+        EasemobIMHelper.getInstance().loginUser(CacheUtil.getInstance().getUserId(), "123456", new EMCallBack() {
+            @Override
+            public void onSuccess() {
+                // ** 第一次登录或者之前logout后再登录，加载所有本地群和回话
+                EMGroupManager.getInstance().loadAllGroups();
+                EMChatManager.getInstance().loadAllConversations();
+                // EasemobIMHelper.getInstance().getFriendList();
+                //  EasemobIMHelper.getInstance().addFriend("hanton","jimmy add you to friend");
+                // EasemobIMHelper.getInstance().acceptInvitation("jimmyzhang");
+                // ReceiverHelper.getInstance().init(MainActivity.this);
+                // ReceiverHelper.getInstance().regiserNewMessageReceiver();
+                //  ReceiverHelper.getInstance().regiserAckMessageReceiver();
+                // ReceiverHelper.getInstance().regiserSuccMessageReceiver();
+            }
+
+            @Override
+            public void onError(int i, String s) {
+                Log.i(TAG, "errorCode:" + i);
+                Log.i(TAG, "errorMessage:" + s);
+            }
+
+            @Override
+            public void onProgress(int i, String s) {
+
+            }
+        });
     }
 
 }
