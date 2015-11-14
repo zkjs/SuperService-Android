@@ -247,13 +247,11 @@ public class ClientActivity extends AppCompatActivity implements IMessageObserve
                 Log.i(TAG, "result.rawResult:" + result.rawResult);
                 String jsonResult = result.rawResult;
                 if (result.rawResult.contains("set") || jsonResult.contains("err")) {
-                    //TODO: 获取客户列表失败请稍后再试
                     DialogUtil.getInstance().showToast(ClientActivity.this, "用户操作权限不够，请重新登录。");
                 } else {
                     Gson gson = new Gson();
                     List<ClientDetailBean> clientDetailBeans = gson.fromJson(jsonResult,
-                            new TypeToken<ArrayList<ClientDetailBean>>() {
-                            }.getType());
+                            new TypeToken<ArrayList<ClientDetailBean>>() {}.getType());
                     if (null != clientDetailBeans && !clientDetailBeans.isEmpty()) {
                         List<ClientVo> clientVos = ClientFactory.getInstance().buildClientVosByClientBeans(clientDetailBeans);
 
@@ -325,6 +323,13 @@ public class ClientActivity extends AppCompatActivity implements IMessageObserve
 
     private void addObservers() {
         MessageSubject.getInstance().addObserver(ClientActivity.this, ProtocolMSG.MSG_UserOnlineStatus_RSP);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //show the client list again
+        showMyClientList(mUserID, mToken, mShopID);
     }
 
     @Override

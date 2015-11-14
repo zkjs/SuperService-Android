@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.SectionIndexer;
@@ -23,6 +24,7 @@ import com.zkjinshi.superservice.sqlite.ClientDBUtil;
 import com.zkjinshi.superservice.sqlite.ShopEmployeeDBUtil;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.utils.RandomDrawbleUtil;
+import com.zkjinshi.superservice.vo.ContactType;
 import com.zkjinshi.superservice.vo.OnlineStatus;
 import com.zkjinshi.superservice.vo.SortModel;
 import com.zkjinshi.superservice.view.CircleImageView;
@@ -145,7 +147,7 @@ public class ContactsSortAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         });
 
         //显示客户名称
-        String clientName = sortModel.getName();
+        String      clientName  = sortModel.getName();
         if(!TextUtils.isEmpty(clientName)){
             ((ClientViewHolder) holder).tvContactAvatar.setText(clientName.substring(0, 1));
             //去除问号
@@ -154,6 +156,15 @@ public class ContactsSortAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             } else {
                 ((ClientViewHolder)holder).tvContactName.setText(clientName);
             }
+        }
+
+        //星星表示 是否为绑定我的专属客服的客户
+        ContactType contactType = sortModel.getContactType();
+        if(contactType == ContactType.NORMAL){
+            ((ClientViewHolder)holder).ivStar.setVisibility(View.VISIBLE);
+            ((ClientViewHolder)holder).ivStar.setBackgroundResource(R.mipmap.ic_star_shouye_pre);
+        }else {
+            ((ClientViewHolder)holder).ivStar.setVisibility(View.GONE);
         }
 
         //设置显示在线状态时间
@@ -179,9 +190,8 @@ public class ContactsSortAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         public CircleImageView  civContactAvatar;
         public TextView         tvContactAvatar;
         public TextView         tvContactName;
+        public ImageView        ivStar;
         public TextView         tvContactDes;
-//        public RelativeLayout   rlContactStatus;
-//        public TextView         tvContactStatus;
         public RelativeLayout   rlContactOnStatus;
         public TextView         tvContactOnLine;
         public TextView         tvContactOnShop;
@@ -194,9 +204,8 @@ public class ContactsSortAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             civContactAvatar = (CircleImageView) view.findViewById(R.id.civ_contact_avatar);
             tvContactAvatar  = (TextView) view.findViewById(R.id.tv_contact_avatar);
             tvContactName    = (TextView) view.findViewById(R.id.tv_contact_name);
+            ivStar           = (ImageView) view.findViewById(R.id.iv_star);
             tvContactDes     = (TextView) view.findViewById(R.id.tv_contact_des);
-//            rlContactStatus  = (RelativeLayout) view.findViewById(R.id.rl_contact_status);
-//            tvContactStatus    = (TextView) view.findViewById(R.id.tv_contact_status);
             rlContactOnStatus  = (RelativeLayout) view.findViewById(R.id.rl_contact_on_status);
             tvContactOnLine    = (TextView) view.findViewById(R.id.tv_contact_on_line);
             tvContactOnShop    = (TextView) view.findViewById(R.id.tv_contact_on_shop);
