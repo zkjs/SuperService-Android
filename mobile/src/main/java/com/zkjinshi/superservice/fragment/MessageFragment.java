@@ -8,32 +8,19 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import com.easemob.EMEventListener;
 import com.easemob.EMNotifierEvent;
-import com.easemob.chat.EMChatManager;
 import com.easemob.chat.EMConversation;
-import com.google.gson.Gson;
-import com.zkjinshi.base.net.observer.IMessageObserver;
-import com.zkjinshi.base.net.observer.MessageSubject;
-import com.zkjinshi.base.net.protocol.ProtocolMSG;
-import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.chat.ChatActivity;
 import com.zkjinshi.superservice.adapter.MessageAdapter;
 import com.zkjinshi.superservice.emchat.EMConversationHelper;
-import com.zkjinshi.superservice.entity.MsgUserDefine;
+import com.zkjinshi.superservice.emchat.observer.EMessageSubject;
+import com.zkjinshi.superservice.emchat.observer.IEMessageObserver;
 import com.zkjinshi.superservice.listener.RecyclerItemClickListener;
-import com.zkjinshi.superservice.sqlite.MessageDBUtil;
 import com.zkjinshi.superservice.utils.Constants;
-import com.zkjinshi.superservice.vo.MessageVo;
-
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -44,7 +31,7 @@ import java.util.ArrayList;
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class MessageFragment extends Fragment implements EMEventListener {
+public class MessageFragment extends Fragment implements IEMessageObserver {
 
     private RecyclerView messageRCV;
     private MessageAdapter messageAdapter;
@@ -68,10 +55,9 @@ public class MessageFragment extends Fragment implements EMEventListener {
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         messageRCV.setLayoutManager(linearLayoutManager);
         messageRCV.setAdapter(messageAdapter);
-        EMChatManager.getInstance().registerEventListener(this);
     }
 
-    private void initListeners(){
+    private void initListeners() {
 
         messageAdapter.setOnItemClickListener(new RecyclerItemClickListener() {
             @Override
@@ -118,6 +104,7 @@ public class MessageFragment extends Fragment implements EMEventListener {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        addAllObserver();
     }
 
     @Override
@@ -137,47 +124,51 @@ public class MessageFragment extends Fragment implements EMEventListener {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        removeAllObserver();
     }
 
     /**
      * 刷新页面
      */
     public void refresh() {
-        conversationList.clear();
-        conversationList.addAll(EMConversationHelper.getInstance().loadConversationList());
-        messageAdapter.setConversationList(conversationList);
-    }
-
-    @Override
-    public void onEvent(EMNotifierEvent event) {
-        switch (event.getEvent()) {
-            case EventNewMessage:
-            {
-                refreshUIWithMessage();
-                break;
-            }
-
-            case EventOfflineMessage: {
-                refreshUIWithMessage();
-                break;
-            }
-
-            case EventConversationListChanged: {
-                refreshUIWithMessage();
-                break;
-            }
-
-            default:
-                break;
-        }
-    }
-
-    private void refreshUIWithMessage() {
         getActivity().runOnUiThread(new Runnable() {
+            @Override
             public void run() {
-               refresh();
+                conversationList.clear();
+                conversationList.addAll(EMConversationHelper.getInstance().loadConversationList());
+                messageAdapter.setConversationList(conversationList);
             }
         });
     }
 
+    /**
+     * 添加观察者
+     */
+    private void addAllObserver(){
+        EMessageSubject.getInstance().addObserver(this,EMNotifierEvent.Event.EventNewMessage);
+        EMessageSubject.getInstance().addObserver(this,EMNotifierEvent.Event.EventOfflineMessage);
+        EMessageSubject.getInstance().addObserver(this,EMNotifierEvent.Event.EventConversationListChanged);
+    }
+
+    /**
+     * 移除观察者
+     */
+    private void removeAllObserver(){
+        EMessageSubject.getInstance().removeObserver(this, EMNotifierEvent.Event.EventNewMessage);
+        EMessageSubject.getInstance().removeObserver(this, EMNotifierEvent.Event.EventOfflineMessage);
+        EMessageSubject.getInstance().removeObserver(this, EMNotifierEvent.Event.EventConversationListChanged);
+    }
+
+    @Override
+    public void receive(EMNotifierEvent event) {
+        switch (event.getEvent()) {
+            case EventNewMessage:
+            case EventOfflineMessage:
+            case EventConversationListChanged:
+                refresh();
+                break;
+            default:
+                break;
+        }
+    }
 }

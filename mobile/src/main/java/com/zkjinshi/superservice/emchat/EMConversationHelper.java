@@ -3,6 +3,7 @@ package com.zkjinshi.superservice.emchat;
 import android.support.v4.util.Pair;
 
 import com.easemob.EMCallBack;
+import com.easemob.chat.CmdMessageBody;
 import com.easemob.chat.EMChatManager;
 import com.easemob.chat.EMConversation;
 import com.easemob.chat.EMMessage;
@@ -36,6 +37,25 @@ public class EMConversationHelper {
             instance = new EMConversationHelper();
         }
         return instance;
+    }
+
+    /**
+     * 发送命令消息(订单确认)
+     * @param shopId
+     * @param orderNo
+     * @param userId
+     * @param emCallBack
+     */
+    public void sendCmdMessage(String shopId,String orderNo,String userId,EMCallBack emCallBack){
+        EMMessage cmdMsg = EMMessage.createSendMessage(EMMessage.Type.CMD);
+        cmdMsg.setChatType(EMMessage.ChatType.Chat);
+        cmdMsg.setAttribute("shopId", shopId);
+        cmdMsg.setAttribute("orderNo", orderNo);
+        String action="sureOrder";//action可以自定义，在广播接收时可以收到
+        CmdMessageBody cmdBody=new CmdMessageBody(action);
+        cmdMsg.addBody(cmdBody);
+        cmdMsg.setReceipt("55d67f785e6cb");
+        EMChatManager.getInstance().sendMessage(cmdMsg, emCallBack);
     }
 
     /**
@@ -102,7 +122,6 @@ public class EMConversationHelper {
     /**
      * 获取会话列表
      *
-     * @param context
      * @return
     +    */
     public List<EMConversation> loadConversationList(){
@@ -141,7 +160,6 @@ public class EMConversationHelper {
     /**
      * 根据最后一条消息的时间排序
      *
-     * @param usernames
      */
     private void sortConversationByLastChatTime(List<Pair<Long, EMConversation>> conversationList) {
         Collections.sort(conversationList, new Comparator<Pair<Long, EMConversation>>() {

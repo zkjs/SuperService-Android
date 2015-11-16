@@ -40,6 +40,7 @@ import com.zkjinshi.superservice.bean.BaseBean;
 import com.zkjinshi.superservice.bean.InviteCode;
 import com.zkjinshi.superservice.emchat.EMConversationHelper;
 import com.zkjinshi.superservice.emchat.EasemobIMHelper;
+import com.zkjinshi.superservice.emchat.observer.EMessageListener;
 import com.zkjinshi.superservice.entity.MsgOfflineMessage;
 import com.zkjinshi.superservice.listener.MessageListener;
 import com.zkjinshi.superservice.net.ExtNetRequestListener;
@@ -383,6 +384,7 @@ public class MainActivity extends AppCompatActivity{
                 // ReceiverHelper.getInstance().regiserNewMessageReceiver();
                 //  ReceiverHelper.getInstance().regiserAckMessageReceiver();
                 // ReceiverHelper.getInstance().regiserSuccMessageReceiver();
+                EMessageListener.getInstance().registerEventListener();
             }
 
             @Override
