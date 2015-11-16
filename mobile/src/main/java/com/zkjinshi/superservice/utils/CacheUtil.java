@@ -119,6 +119,30 @@ public class CacheUtil {
 	}
 
 	/**
+	 * 保存用户角色类型
+	 * @param roleID
+	 */
+	public void setRoleID(String roleID) {
+		if (null == context) {
+			return;
+		}
+		SharedPreferences sp = context.getSharedPreferences(SVIP_CACHE, Context.MODE_PRIVATE);
+		sp.edit().putString("roleID", roleID).commit();
+	}
+
+	/**
+	 * 获取用户角色类型
+	 * @return
+	 */
+	public String getRoleID() {
+		if (null == context) {
+			return null;
+		}
+		SharedPreferences sp = context.getSharedPreferences(SVIP_CACHE, Context.MODE_PRIVATE);
+		return sp.getString("roleID", null);
+	}
+
+	/**
 	 * 保存用户姓名
 	 * @param userName
 	 */

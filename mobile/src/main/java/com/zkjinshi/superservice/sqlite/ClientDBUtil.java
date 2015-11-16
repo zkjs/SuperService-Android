@@ -170,6 +170,33 @@ public class ClientDBUtil {
         return false;
     }
 
+    /**
+     * 根据UserID是否为我的绑定客户
+     * @return
+     */
+    public Boolean isClientExistByUserIDAndContactType(String userID, ContactType contactType) {
+        Cursor cursor = null;
+        SQLiteDatabase db = null;
+        try {
+            db = helper.getReadableDatabase();
+            cursor = db.rawQuery(" select * from " + DBOpenHelper.CLIENT_TBL + " where userid = ? and contact_type = ? ",
+                                                                     new String[] { userID , contactType.getValue()+""});
+            if(cursor.getCount() > 0){
+                return true;
+            }
+        } catch (Exception e) {
+            LogUtil.getInstance().info(LogLevel.ERROR, TAG + ".isClientExistByUserID->"+e.getMessage());
+            e.printStackTrace();
+        } finally{
+            if(null != db)
+                db.close();
+
+            if(null != cursor)
+                cursor.close();
+        }
+        return false;
+    }
+
     public List<ClientVo> queryUnNormalClient() {
         List<ClientVo> clientList = new ArrayList<>();
         ClientVo clientVo = null;

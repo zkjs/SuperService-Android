@@ -180,6 +180,7 @@ public class LoginActivity extends Activity implements VerifyPhoneControler.Succ
                     CacheUtil.getInstance().setShopID(sempLoginbean.getShopid());
                     CacheUtil.getInstance().setShopFullName(sempLoginbean.getFullname());
                     CacheUtil.getInstance().setLoginIdentity(IdentityType.WAITER);
+                    CacheUtil.getInstance().setRoleID(sempLoginbean.getRoleid());
 
                     String userID = CacheUtil.getInstance().getUserId();
                     String token  = CacheUtil.getInstance().getToken();
