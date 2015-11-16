@@ -36,12 +36,16 @@ import com.zkjinshi.superservice.factory.MessageFactory;
 import com.zkjinshi.superservice.notification.NotificationHelper;
 import com.zkjinshi.superservice.request.LoginRequestManager;
 import com.zkjinshi.superservice.sqlite.ChatRoomDBUtil;
+import com.zkjinshi.superservice.sqlite.ClientDBUtil;
 import com.zkjinshi.superservice.sqlite.MessageDBUtil;
+import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.FileUtil;
+import com.zkjinshi.superservice.vo.ContactType;
 import com.zkjinshi.superservice.vo.MessageVo;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -144,9 +148,28 @@ public class MessageListener extends Handler implements IMessageListener {
                     gson = new Gson();
                 }
                 LogUtil.getInstance().info(LogLevel.INFO, "用户到店通知");
-                MsgPushTriggerLocNotificationM2S msgLocNotification = gson.fromJson(message,
-                        MsgPushTriggerLocNotificationM2S.class);
-                NotificationHelper.getInstance().showNotification(ServiceApplication.getContext(), msgLocNotification);
+                String roleID    = CacheUtil.getInstance().getRoleID();
+                if(!TextUtils.isEmpty(roleID)){
+
+                    MsgPushTriggerLocNotificationM2S msgLocNotification = gson.fromJson(message,
+                                                        MsgPushTriggerLocNotificationM2S.class);
+                    int intRoleID = Integer.parseInt(roleID);
+
+                    //判断当前用户角色类型 1是管理员, 2是销售,3 其他前台什么的
+                    if(intRoleID == 2){
+                        String clientID = msgLocNotification.getUserid();
+                        boolean isMyClient = ClientDBUtil.getInstance().isClientExistByUserIDAndContactType(
+                                                                                clientID, ContactType.NORMAL);
+                        if(isMyClient){
+                            NotificationHelper.getInstance().showNotification(ServiceApplication.getContext(),
+                                    msgLocNotification);
+                        }
+                    }else{
+
+                        NotificationHelper.getInstance().showNotification(ServiceApplication.getContext(),
+                                                                                      msgLocNotification);
+                    }
+                }
             }
 
             /** 客户使用邀请码成功 */
