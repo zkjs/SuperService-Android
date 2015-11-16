@@ -54,7 +54,7 @@ public class EMConversationHelper {
         String action="sureOrder";//action可以自定义，在广播接收时可以收到
         CmdMessageBody cmdBody=new CmdMessageBody(action);
         cmdMsg.addBody(cmdBody);
-        cmdMsg.setReceipt("55d67f785e6cb");
+        cmdMsg.setReceipt(userId);
         EMChatManager.getInstance().sendMessage(cmdMsg, emCallBack);
     }
 
