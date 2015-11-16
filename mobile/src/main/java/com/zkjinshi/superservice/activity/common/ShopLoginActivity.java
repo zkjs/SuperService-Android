@@ -118,6 +118,8 @@ public class ShopLoginActivity extends Activity{
                         CacheUtil.getInstance().setLoginIdentity(IdentityType.BUSINESS);
                         CacheUtil.getInstance().setPassword(password);
                         CacheUtil.getInstance().setAreaInfo(adminLoginBean.getLocid());
+                        CacheUtil.getInstance().setRoleID(adminLoginBean.getRoleid());
+
                         String userID = CacheUtil.getInstance().getUserId();
                         String token  = CacheUtil.getInstance().getToken();
                         String shopiD = CacheUtil.getInstance().getShopID();

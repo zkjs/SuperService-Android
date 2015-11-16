@@ -12,6 +12,7 @@ import com.zkjinshi.superservice.bean.OrderRoomTagBean;
 import com.zkjinshi.superservice.bean.OrderUsersBean;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 开发者：dujiande
@@ -67,14 +68,28 @@ public class OrderFactory {
         }
 
         orderRoomBean.setPay_status(bookOrderBean.getTradeStatus());
-
         orderDetailBean.setRoom(orderRoomBean);
-        orderDetailBean.setUsers(new ArrayList<OrderUsersBean>());
+
+        //TODO:添加显示用户
+        String manInStay = bookOrderBean.getManInStay();
+
+        String menInstay[] = manInStay.split(",");
+
+        ArrayList<OrderUsersBean> orderUsers = null;
+        for(int i=0; i<menInstay.length; i++){
+            if(null == orderUsers){
+                orderUsers = new ArrayList<>();
+            }
+            OrderUsersBean user = new OrderUsersBean();
+            user.setRealname(menInstay[i]);
+            orderUsers.add(user);
+        }
+
+        orderDetailBean.setUsers(orderUsers);
         orderDetailBean.setInvoice(new OrderInvoiceBean());
         orderDetailBean.setRoom_tag(new ArrayList<OrderRoomTagBean>());
         orderDetailBean.setPrivilege(new ArrayList<OrderPrivilegeBean>());
         orderDetailBean.setContent(bookOrderBean.getContent());
-
         return orderDetailBean;
     }
 }
