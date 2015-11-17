@@ -56,10 +56,6 @@ public class ClientBindActivity extends Activity {
 
     private final static String TAG = ClientBindActivity.class.getSimpleName();
 
-    private String mUserID;
-    private String mToken;
-    private String mShopID;
-
     private RelativeLayout mRlBack;
     private TextView    mTvTitle;
     private ImageButton mIbtnDianhua;
@@ -106,11 +102,6 @@ public class ClientBindActivity extends Activity {
     }
 
     private void initData() {
-
-        mUserID = CacheUtil.getInstance().getUserId();
-        mToken  = CacheUtil.getInstance().getToken();
-        mShopID = CacheUtil.getInstance().getShopID();
-
         mClientBean = (ClientBaseBean) getIntent().getSerializableExtra("client_bean");
         showClient(mClientBean);
     }
@@ -179,7 +170,51 @@ public class ClientBindActivity extends Activity {
                     DialogUtil.getInstance().showCustomToast(ClientBindActivity.this, "此用户本地已存在,请勿重复添加.", Gravity.CENTER);
                 }else if (null != mClientBean) {
                     //绑定客户
-                    bindClient(mUserID, mToken, mShopID, mClientBean);
+                    ClientBindController.getInstance().bindClient(mClientBean,
+                        new ExtNetRequestListener(ClientBindActivity.this) {
+                            @Override
+                            public void onNetworkRequestError(int errorCode, String errorMessage) {
+                                Log.i(TAG, "errorCode:" + errorCode);
+                                Log.i(TAG, "errorMessage:" + errorMessage);
+                                //网络请求异常
+                                DialogUtil.getInstance().cancelProgressDialog();
+                                ClientBindActivity.this.finish();
+                                DialogUtil.getInstance().showToast(ClientBindActivity.this, "网络异常");
+                            }
+
+                            @Override
+                            public void onNetworkRequestCancelled() {
+                                DialogUtil.getInstance().cancelProgressDialog();
+                            }
+
+                            @Override
+                            public void onNetworkResponseSucceed(NetResponse result) {
+                                Log.i(TAG, "result.rawResult:" + result.rawResult);
+                                DialogUtil.getInstance().cancelProgressDialog();
+                                String jsonResult = result.rawResult;
+                                try {
+                                    JSONObject jsonObject = new JSONObject(jsonResult);
+                                    if(jsonObject.getBoolean("set")){
+                                        //TODO add to local db
+                                        showSuccessDialog();
+                                    } else {
+                                        //TODO add to local db without salesid
+                                        int errCode = jsonObject.getInt("err");
+                                        //验证没通过
+                                        if (300 == errCode) {
+                                            showFailedDialog();
+                                        }
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
+                            @Override
+                            public void beforeNetworkRequestStart() {
+                                //网络请求前
+                            }
+                        });
                 }
             }
         });
@@ -192,76 +227,76 @@ public class ClientBindActivity extends Activity {
         });
     }
 
-    /**
-     * * 为服务员绑定客户
-     * @param userID
-     * @param token
-     * @param shopID
-     * @param mClientBean
-     */
-    private void bindClient(String userID, String token, String shopID, ClientBaseBean mClientBean) {
-        NetRequest netRequest = new NetRequest(ProtocolUtil.getAddUserUrl());
-        HashMap<String,String> bizMap = new HashMap<>();
-        bizMap.put("salesid", userID);
-        bizMap.put("token", token);
-        bizMap.put("shopid", shopID);
-        bizMap.put("userid", mClientBean.getUserid());
-        bizMap.put("phone", mClientBean.getPhone());
-        bizMap.put("username", mClientBean.getUsername());
-        bizMap.put("position", mClientBean.getPosition());
-        bizMap.put("company", mClientBean.getCompany());
-        bizMap.put("other_desc", "");
-        bizMap.put("is_bill", mClientBean.getIs_bill() + "");
-        netRequest.setBizParamMap(bizMap);
-        NetRequestTask netRequestTask = new NetRequestTask(this, netRequest, NetResponse.class);
-        netRequestTask.methodType = MethodType.PUSH;
-        netRequestTask.setNetRequestListener(new ExtNetRequestListener(this) {
-            @Override
-            public void onNetworkRequestError(int errorCode, String errorMessage) {
-                Log.i(TAG, "errorCode:" + errorCode);
-                Log.i(TAG, "errorMessage:" + errorMessage);
-                //网络请求异常
-                DialogUtil.getInstance().cancelProgressDialog();
-                ClientBindActivity.this.finish();
-                DialogUtil.getInstance().showToast(ClientBindActivity.this, "网络异常");
-            }
-
-            @Override
-            public void onNetworkRequestCancelled() {
-                DialogUtil.getInstance().cancelProgressDialog();
-            }
-
-            @Override
-            public void onNetworkResponseSucceed(NetResponse result) {
-                Log.i(TAG, "result.rawResult:" + result.rawResult);
-                DialogUtil.getInstance().cancelProgressDialog();
-                String jsonResult = result.rawResult;
-                try {
-                    JSONObject jsonObject = new JSONObject(jsonResult);
-                    if(jsonObject.getBoolean("set")){
-                        //TODO add to local db
-                        showSuccessDialog();
-                    } else {
-                        //TODO add to local db without salesid
-                        int errCode = jsonObject.getInt("err");
-                        //验证没通过
-                        if (300 == errCode) {
-                            showFailedDialog();
-                        }
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void beforeNetworkRequestStart() {
-                //网络请求前
-            }
-        });
-        netRequestTask.isShowLoadingDialog = true;
-        netRequestTask.execute();
-    }
+//    /**
+//     * * 为服务员绑定客户
+//     * @param userID
+//     * @param token
+//     * @param shopID
+//     * @param mClientBean
+//     */
+//    private void bindClient(String userID, String token, String shopID, ClientBaseBean mClientBean) {
+//        NetRequest netRequest = new NetRequest(ProtocolUtil.getAddUserUrl());
+//        HashMap<String,String> bizMap = new HashMap<>();
+//        bizMap.put("salesid", userID);
+//        bizMap.put("token", token);
+//        bizMap.put("shopid", shopID);
+//        bizMap.put("userid", mClientBean.getUserid());
+//        bizMap.put("phone", mClientBean.getPhone());
+//        bizMap.put("username", mClientBean.getUsername());
+//        bizMap.put("position", mClientBean.getPosition());
+//        bizMap.put("company", mClientBean.getCompany());
+//        bizMap.put("other_desc", "");
+//        bizMap.put("is_bill", mClientBean.getIs_bill() + "");
+//        netRequest.setBizParamMap(bizMap);
+//        NetRequestTask netRequestTask = new NetRequestTask(this, netRequest, NetResponse.class);
+//        netRequestTask.methodType = MethodType.PUSH;
+//        netRequestTask.setNetRequestListener(new ExtNetRequestListener(this) {
+//            @Override
+//            public void onNetworkRequestError(int errorCode, String errorMessage) {
+//                Log.i(TAG, "errorCode:" + errorCode);
+//                Log.i(TAG, "errorMessage:" + errorMessage);
+//                //网络请求异常
+//                DialogUtil.getInstance().cancelProgressDialog();
+//                ClientBindActivity.this.finish();
+//                DialogUtil.getInstance().showToast(ClientBindActivity.this, "网络异常");
+//            }
+//
+//            @Override
+//            public void onNetworkRequestCancelled() {
+//                DialogUtil.getInstance().cancelProgressDialog();
+//            }
+//
+//            @Override
+//            public void onNetworkResponseSucceed(NetResponse result) {
+//                Log.i(TAG, "result.rawResult:" + result.rawResult);
+//                DialogUtil.getInstance().cancelProgressDialog();
+//                String jsonResult = result.rawResult;
+//                try {
+//                    JSONObject jsonObject = new JSONObject(jsonResult);
+//                    if(jsonObject.getBoolean("set")){
+//                        //TODO add to local db
+//                        showSuccessDialog();
+//                    } else {
+//                        //TODO add to local db without salesid
+//                        int errCode = jsonObject.getInt("err");
+//                        //验证没通过
+//                        if (300 == errCode) {
+//                            showFailedDialog();
+//                        }
+//                    }
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//
+//            @Override
+//            public void beforeNetworkRequestStart() {
+//                //网络请求前
+//            }
+//        });
+//        netRequestTask.isShowLoadingDialog = true;
+//        netRequestTask.execute();
+//    }
 
     /**
      * 邀请对话框

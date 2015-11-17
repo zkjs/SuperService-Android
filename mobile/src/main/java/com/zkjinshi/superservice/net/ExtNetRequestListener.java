@@ -28,6 +28,10 @@ public abstract class ExtNetRequestListener  implements NetRequestListener{
         this.context = context;
     }
 
+    public ExtNetRequestListener() {
+
+    }
+
     @Override
     public void onNetworkRequestError(int errorCode, String errorMessage) {
         Log.i(TAG,"errorCode:"+errorCode);
