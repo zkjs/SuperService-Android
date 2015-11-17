@@ -8,11 +8,14 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.easemob.EMNotifierEvent;
 import com.easemob.chat.EMConversation;
+import com.easemob.chat.EMMessage;
+import com.easemob.exceptions.EaseMobException;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.chat.ChatActivity;
 import com.zkjinshi.superservice.adapter.MessageAdapter;
@@ -20,6 +23,7 @@ import com.zkjinshi.superservice.emchat.EMConversationHelper;
 import com.zkjinshi.superservice.emchat.observer.EMessageSubject;
 import com.zkjinshi.superservice.emchat.observer.IEMessageObserver;
 import com.zkjinshi.superservice.listener.RecyclerItemClickListener;
+import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.Constants;
 
 import java.util.ArrayList;
@@ -63,6 +67,7 @@ public class MessageFragment extends Fragment implements IEMessageObserver {
             @Override
             public void onItemClick(View view, int position) {
                 EMConversation conversation = conversationList.get(position);
+                EMMessage message = conversation.getLastMessage();
                 String username = conversation.getUserName();
                 Intent intent = new Intent(getActivity(), ChatActivity.class);
                 if (conversation.isGroup()) {
@@ -74,6 +79,28 @@ public class MessageFragment extends Fragment implements IEMessageObserver {
 
                 }
                 intent.putExtra(Constants.EXTRA_USER_ID, username);
+                if (null != message) {
+                    try {
+                        String shopId = message.getStringAttribute("shopId");
+                        String shopName = message.getStringAttribute("shopName");
+                        String fromName = message.getStringAttribute("fromName");
+                        String toName = message.getStringAttribute("toName");
+                        if (!TextUtils.isEmpty(shopId)) {
+                            intent.putExtra(Constants.EXTRA_SHOP_ID,shopId);
+                        }
+                        if (!TextUtils.isEmpty(shopName)) {
+                            intent.putExtra(Constants.EXTRA_SHOP_NAME,shopName);
+                        }
+                        if(!toName.equals(CacheUtil.getInstance().getUserName())){
+                            intent.putExtra(Constants.EXTRA_TO_NAME, toName);
+                        }else{
+                            intent.putExtra(Constants.EXTRA_TO_NAME, fromName);
+                        }
+                        intent.putExtra(Constants.EXTRA_FROM_NAME, CacheUtil.getInstance().getUserName());
+                    } catch (EaseMobException e) {
+                        e.printStackTrace();
+                    }
+                }
                 startActivity(intent);
             }
         });

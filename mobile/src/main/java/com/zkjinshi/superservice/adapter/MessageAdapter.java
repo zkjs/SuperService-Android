@@ -23,7 +23,9 @@ import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.listener.RecyclerItemClickListener;
 import com.zkjinshi.superservice.sqlite.ChatRoomDBUtil;
 import com.zkjinshi.superservice.sqlite.MessageDBUtil;
+import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.Constants;
+import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.view.CircleImageView;
 import com.zkjinshi.superservice.vo.ChatRoomVo;
 import com.zkjinshi.superservice.vo.MessageVo;
@@ -100,7 +102,11 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     e.printStackTrace();
                 }
             }
-            // ImageLoader.getInstance().displayImage(imageUrl, ((ViewHolder)holder).photoImageView,options);
+            String userId = message.getUserName();
+            if(!TextUtils.isEmpty(userId)){
+                String userIconUrl = ProtocolUtil.getAvatarUrl(userId);
+                ImageLoader.getInstance().displayImage(userIconUrl,((ViewHolder)holder).photoImageView, options);
+            }
             ((ViewHolder)holder).sendTimeTv.setText(TimeUtil.getChatTime(sendTime));
             if (conversation.getType() == EMConversation.EMConversationType.GroupChat) {
                 EMGroup group = EMGroupManager.getInstance().getGroup(username);
@@ -110,6 +116,17 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 ((ViewHolder) holder).titleTv.setText(room != null && !TextUtils.isEmpty(room.getName()) ? room.getName() : username);
             }else {
                 ((ViewHolder) holder).titleTv.setText(username);
+            }
+            try {
+                String fromName = message.getStringAttribute("fromName");
+                String toName = message.getStringAttribute("toName");
+                if(!TextUtils.isEmpty(fromName) && !fromName.equals(CacheUtil.getInstance().getUserName())){
+                    ((ViewHolder) holder).titleTv.setText(fromName);
+                }else{
+                    ((ViewHolder) holder).titleTv.setText(toName);
+                }
+            } catch (EaseMobException e) {
+                e.printStackTrace();
             }
             //设置消息未读条数
             long notifyCount = conversation.getUnreadMsgCount();

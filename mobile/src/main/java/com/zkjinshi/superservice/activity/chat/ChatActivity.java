@@ -29,14 +29,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.zkjinshi.base.log.LogLevel;
-import com.zkjinshi.base.log.LogUtil;
-import com.zkjinshi.base.net.core.WebSocketManager;
-import com.zkjinshi.base.net.observer.IMessageObserver;
-import com.zkjinshi.base.net.observer.MessageSubject;
-import com.zkjinshi.base.net.protocol.ProtocolMSG;
 import com.zkjinshi.base.util.DialogUtil;
-import com.zkjinshi.base.util.NetWorkUtil;
 import com.zkjinshi.base.util.SoftInputUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.chat.action.FaceViewPagerManager;
@@ -45,21 +38,12 @@ import com.zkjinshi.superservice.activity.chat.action.MoreViewPagerManager;
 import com.zkjinshi.superservice.activity.chat.action.NetCheckManager;
 import com.zkjinshi.superservice.activity.chat.action.QuickMenuManager;
 import com.zkjinshi.superservice.activity.chat.action.VoiceRecordManager;
-import com.zkjinshi.superservice.activity.set.EmployeeAddActivity;
-import com.zkjinshi.superservice.activity.set.TeamEditActivity;
 import com.zkjinshi.superservice.bean.BookOrderBean;
-import com.zkjinshi.superservice.sqlite.ChatRoomDBUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.utils.FileUtil;
 import com.zkjinshi.superservice.utils.MediaPlayerUtil;
 import com.zkjinshi.superservice.vo.ChatRoomVo;
-import com.zkjinshi.superservice.vo.IdentityType;
-import com.zkjinshi.superservice.vo.OnlineStatus;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -81,7 +65,10 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
     private final static String TAG = ChatActivity.class.getSimpleName();
 
     private String userId;
-    private String        mShopID;
+    private String fromName;//发送者姓名
+    private String toName;// 接收者姓名
+    private String shopId;// 商店id
+    private String shopName;// 商店名称
     private BookOrderBean bookOrder;
 
     private Toolbar       mToolbar;
@@ -152,12 +139,25 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
     }
 
     private void initData() {
-        userId = getIntent().getStringExtra(Constants.EXTRA_USER_ID);
-        mShopID    = getIntent().getStringExtra("shop_id");
+        if(!TextUtils.isEmpty(getIntent().getStringExtra(Constants.EXTRA_USER_ID))){
+            userId = getIntent().getStringExtra(Constants.EXTRA_USER_ID);
+        }
+        if(!TextUtils.isEmpty(getIntent().getStringExtra(Constants.EXTRA_TO_NAME))){
+            toName = getIntent().getStringExtra(Constants.EXTRA_TO_NAME);
+        }
+        if(!TextUtils.isEmpty(getIntent().getStringExtra(Constants.EXTRA_FROM_NAME))){
+            fromName = getIntent().getStringExtra(Constants.EXTRA_FROM_NAME);
+        }
+        if(!TextUtils.isEmpty(getIntent().getStringExtra(Constants.EXTRA_SHOP_ID))){
+            shopId = getIntent().getStringExtra(Constants.EXTRA_SHOP_ID);
+        }
+        if(!TextUtils.isEmpty(getIntent().getStringExtra(Constants.EXTRA_SHOP_NAME))){
+            shopName = getIntent().getStringExtra(Constants.EXTRA_SHOP_NAME);
+        }
         String sessionName = getIntent().getStringExtra("session_name");
         bookOrder  = (BookOrderBean) getIntent().getSerializableExtra("bookOrder");
         //初始化消息ListView管理器
-        messageListViewManager = new MessageListViewManager(this, userId);
+        messageListViewManager = new MessageListViewManager(this, userId, fromName,toName,shopId,shopName);
         messageListViewManager.init();
         messageListViewManager.setTitle(mTvCenterTitle);
         //初始化表情框

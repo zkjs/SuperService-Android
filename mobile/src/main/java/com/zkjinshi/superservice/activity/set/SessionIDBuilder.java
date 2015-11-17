@@ -2,8 +2,11 @@ package com.zkjinshi.superservice.activity.set;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.text.TextUtils;
 
 import com.zkjinshi.superservice.activity.chat.ChatActivity;
+import com.zkjinshi.superservice.utils.CacheUtil;
+import com.zkjinshi.superservice.utils.Constants;
 
 /**
  * 开发者：vincent
@@ -47,17 +50,24 @@ public class SessionIDBuilder {
     /**
      * 进入聊天界面
      * @param mActivity
-     * @param mShopID
-     * @param sessionID
-     * @param sessionName
+     * @param userId
+     * @param toName
+     * @param shopId
+     * @param shopName
      */
-    public void goSession(Activity mActivity, String mShopID, String sessionID, String sessionName) {
+    public void goSession(Activity mActivity, String userId,String toName,String shopId,String shopName) {
         //开启单聊界面
-        Intent goSession = new Intent(mActivity, ChatActivity.class);
-        goSession.putExtra("shop_id", mShopID);
-        goSession.putExtra("session_id", sessionID);
-        goSession.putExtra("session_name", sessionName);
-        mActivity.startActivity(goSession);
+        Intent intent = new Intent(mActivity, ChatActivity.class);
+        intent.putExtra(Constants.EXTRA_USER_ID, userId);
+        intent.putExtra(Constants.EXTRA_FROM_NAME, CacheUtil.getInstance().getUserName());
+        intent.putExtra(Constants.EXTRA_TO_NAME,toName);
+        if (!TextUtils.isEmpty(shopId)) {
+            intent.putExtra(Constants.EXTRA_SHOP_ID,shopId);
+        }
+        if (!TextUtils.isEmpty(shopName)) {
+            intent.putExtra(Constants.EXTRA_SHOP_NAME,shopName);
+        }
+        mActivity.startActivity(intent);
     }
 
 }

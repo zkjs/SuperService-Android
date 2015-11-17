@@ -15,6 +15,7 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.zkjinshi.base.util.TimeUtil;
 import com.zkjinshi.superservice.R;
+import com.zkjinshi.superservice.sqlite.ShopDepartmentDBUtil;
 import com.zkjinshi.superservice.sqlite.ShopEmployeeDBUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
@@ -123,10 +124,10 @@ public class EmployeeInfoActivity extends Activity{
         mRlDuiHua.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String empID    = mEmployee.getEmpid();
-                String empName  = mEmployee.getName();
-                String sessionID = SessionIDBuilder.getInstance().buildSingleSessionID(mShopID, mUserID, empID);
-                SessionIDBuilder.getInstance().goSession(EmployeeInfoActivity.this, mShopID, sessionID, empName);
+                String userId    = mEmployee.getEmpid();
+                String toName  = mEmployee.getName();
+                String shopName = CacheUtil.getInstance().getShopFullName();
+                SessionIDBuilder.getInstance().goSession(EmployeeInfoActivity.this, userId, toName, mShopID, shopName);
             }
         });
 
@@ -144,10 +145,10 @@ public class EmployeeInfoActivity extends Activity{
         mBtnChat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String empID    = mEmployee.getEmpid();
-                String empName  = mEmployee.getName();
-                String sessionID = SessionIDBuilder.getInstance().buildSingleSessionID(mShopID, mUserID, empID);
-                SessionIDBuilder.getInstance().goSession(EmployeeInfoActivity.this, mShopID, sessionID, empName);
+                String userId    = mEmployee.getEmpid();
+                String toName  = mEmployee.getName();
+                String shopName = CacheUtil.getInstance().getShopFullName();
+                SessionIDBuilder.getInstance().goSession(EmployeeInfoActivity.this, userId, toName, mShopID, shopName);
             }
         });
     }

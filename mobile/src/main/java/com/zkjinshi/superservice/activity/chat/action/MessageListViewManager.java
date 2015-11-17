@@ -99,12 +99,20 @@ public class MessageListViewManager extends Handler implements MsgListView.IXLis
     private ArrayList<EMMessage> requestMessageList;
     private static final int PRE_LOAD_PAGE_SIZE = 20;// 每次预加载20条记录
     private String userId;
+    private String fromName;//发送者姓名
+    private String toName;// 接收者姓名
+    private String shopId;// 商店id
+    private String shopName;// 商店名称
 
     private LinkedBlockingQueue<MessageVo> messageQueue = new LinkedBlockingQueue<MessageVo>();
 
-    public MessageListViewManager(Context context, String userId) {
+    public MessageListViewManager(Context context, String userId,String fromName,String toName,String shopId,String shopName) {
         this.context    = context;
         this.userId = userId;
+        this.fromName = fromName;
+        this.toName = toName;
+        this.shopId = shopId;
+        this.shopName = shopName;
     }
 
     public void init() {
@@ -194,6 +202,21 @@ public class MessageListViewManager extends Handler implements MsgListView.IXLis
 
     protected void sendMessage(final EMMessage message){
         message.setChatType(EMMessage.ChatType.Chat);
+        message.setAttribute("toName", "");
+        if(!TextUtils.isEmpty(toName)){
+            message.setAttribute("toName",toName);
+        }
+        message.setAttribute("fromName","");
+        if(!TextUtils.isEmpty(fromName)){
+            message.setAttribute("fromName",fromName);
+        }
+        if(!TextUtils.isEmpty(shopId)){
+            message.setAttribute("shopId",shopId);
+        }
+
+        if(!TextUtils.isEmpty(shopName)){
+            message.setAttribute("shopName",shopName);
+        }
         message.status = EMMessage.Status.INPROGRESS;
         currentMessageList.add(message);
         chatAdapter.setMessageList(currentMessageList);
@@ -297,6 +320,14 @@ public class MessageListViewManager extends Handler implements MsgListView.IXLis
                     EMGroup group = EMGroupManager.getInstance().getGroup(userId);
                     if (group != null){
                         titleTv.setText(group.getGroupName());
+                    }
+                }else {
+                    if(!TextUtils.isEmpty(fromName) && !fromName.equals(CacheUtil.getInstance().getUserName())){
+                        titleTv.setText(fromName);
+                    }else{
+                        if(!TextUtils.isEmpty(toName)){
+                            titleTv.setText(toName);
+                        }
                     }
                 }
             }

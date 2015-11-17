@@ -359,7 +359,7 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
                     WebSocketManager.getInstance().sendMessage(sessionSearchJson);
                 } else {
                     //进入聊天界面
-                    SessionIDBuilder.getInstance().goSession(TeamContactsActivity.this, mShopID, sessionID, mToUser.getUsername());
+                   // SessionIDBuilder.getInstance().goSession(TeamContactsActivity.this, mShopID, sessionID, mToUser.getUsername());
                 }
             }
         });
@@ -475,8 +475,8 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
                     //开启单聊界面
                     String sessionID = msgShopSessionSearchRSP.getSessionid();
                     String shopID    = msgShopSessionSearchRSP.getShopid();
-                    SessionIDBuilder.getInstance().goSession(TeamContactsActivity.this,
-                                             mShopID, sessionID, mToUser.getUsername());
+                   /* SessionIDBuilder.getInstance().goSession(TeamContactsActivity.this,
+                                             mShopID, sessionID, mToUser.getUsername());*/
                 }else {
                     if(null == mFromUser){
                         mFromUser = new MsgIMSessionUser();
@@ -502,7 +502,7 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
                 //创建会话成功 进入聊天界面
                 if(msgBuildSessionRSP.getResult() <= 0){
                     String sessionID = msgBuildSessionRSP.getSessionid();
-                    SessionIDBuilder.getInstance().goSession(TeamContactsActivity.this, mShopID, sessionID, mToUser.getUsername());
+                  /*  SessionIDBuilder.getInstance().goSession(TeamContactsActivity.this, mShopID, sessionID, mToUser.getUsername());*/
                 }
             }
         } catch (JSONException e) {
