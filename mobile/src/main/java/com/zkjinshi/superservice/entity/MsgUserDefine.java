@@ -109,4 +109,21 @@ public class MsgUserDefine {
     public void setContent(String content) {
         this.content = content;
     }
+
+    @Override
+    public String toString() {
+        return "MsgUserDefine{" +
+                "type=" + type +
+                ", timestamp=" + timestamp +
+                ", tempid='" + tempid + '\'' +
+                ", srvmsgid=" + srvmsgid +
+                ", protover=" + protover +
+                ", fromid='" + fromid + '\'' +
+                ", toid='" + toid + '\'' +
+                ", pushofflinemsg=" + pushofflinemsg +
+                ", pushalert='" + pushalert + '\'' +
+                ", childtype=" + childtype +
+                ", content='" + content + '\'' +
+                '}';
+    }
 }

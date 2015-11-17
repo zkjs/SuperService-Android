@@ -24,6 +24,9 @@ import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.base.view.CustomDialog;
 import com.zkjinshi.superservice.ServiceApplication;
 import com.zkjinshi.superservice.activity.common.LoginActivity;
+import com.zkjinshi.superservice.activity.set.ClientBindController;
+import com.zkjinshi.superservice.bean.ClientBaseBean;
+import com.zkjinshi.superservice.entity.InviteCodeEntity;
 import com.zkjinshi.superservice.entity.MsgBuildSessionRSP;
 import com.zkjinshi.superservice.entity.MsgCustomerServiceImgChat;
 import com.zkjinshi.superservice.entity.MsgCustomerServiceMediaChat;
@@ -33,6 +36,8 @@ import com.zkjinshi.superservice.entity.MsgOfflineMessageRSP;
 import com.zkjinshi.superservice.entity.MsgPushTriggerLocNotificationM2S;
 import com.zkjinshi.superservice.entity.MsgUserDefine;
 import com.zkjinshi.superservice.factory.MessageFactory;
+import com.zkjinshi.superservice.net.ExtNetRequestListener;
+import com.zkjinshi.superservice.net.NetResponse;
 import com.zkjinshi.superservice.notification.NotificationHelper;
 import com.zkjinshi.superservice.request.LoginRequestManager;
 import com.zkjinshi.superservice.sqlite.ChatRoomDBUtil;
@@ -180,8 +185,45 @@ public class MessageListener extends Handler implements IMessageListener {
 
                 MsgUserDefine msgUserDefine = gson.fromJson(message, MsgUserDefine.class);
                 if(msgUserDefine.getChildtype() == ProtocolMSG.MSG_ChildType_BindInviteCode){
-                    LogUtil.getInstance().info(LogLevel.INFO, "客户使用邀请码成功:"+ msgUserDefine.getPushalert());
+                    LogUtil.getInstance().info(LogLevel.INFO, msgUserDefine.toString());
+                    LogUtil.getInstance().info(LogLevel.INFO, "客户使用邀请码成功:" + msgUserDefine.getPushalert());
                     NotificationHelper.getInstance().showNotification(ServiceApplication.getContext(), msgUserDefine);
+
+                    String inviteCodeEntityJson = msgUserDefine.getContent();
+                    if(gson == null){
+                        gson = new Gson();
+                    }
+
+                    InviteCodeEntity inviteCodeEntity = gson.fromJson(inviteCodeEntityJson,
+                                                                    InviteCodeEntity.class);
+
+                    ClientBaseBean clientBase = new ClientBaseBean();
+                    clientBase.setUserid(inviteCodeEntity.getUserid());
+                    clientBase.setUsername(inviteCodeEntity.getUsername());
+                    clientBase.setPhone(inviteCodeEntity.getPhone_number());
+
+                    ClientBindController.getInstance().bindClient(clientBase, new ExtNetRequestListener() {
+                        @Override
+                        public void onNetworkRequestError(int errorCode, String errorMessage) {
+                            super.onNetworkRequestError(errorCode, errorMessage);
+                        }
+
+                        @Override
+                        public void onNetworkRequestCancelled() {
+                            super.onNetworkRequestCancelled();
+                        }
+
+                        @Override
+                        public void onNetworkResponseSucceed(NetResponse result) {
+                            super.onNetworkResponseSucceed(result);
+                        }
+
+                        @Override
+                        public void beforeNetworkRequestStart() {
+                            super.beforeNetworkRequestStart();
+                        }
+                    });
+
                 }
 
             }

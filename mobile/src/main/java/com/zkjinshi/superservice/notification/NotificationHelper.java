@@ -230,20 +230,16 @@ public class NotificationHelper {
 
         String inviteCodeEntityJson = msgUserDefine.getContent();
         Gson gson = new Gson();
-        InviteCodeEntity inviteCodeEntity = gson.fromJson(inviteCodeEntityJson,
-                InviteCodeEntity.class);
+        InviteCodeEntity inviteCodeEntity = gson.fromJson(inviteCodeEntityJson, InviteCodeEntity.class);
 
-        String userID   = inviteCodeEntity.getUserid();
-        String phoneNum = inviteCodeEntity.getPhone_number();
         String userName = inviteCodeEntity.getUsername();
-
         NotificationCompat.Builder notificationBuilder = null;
         // 1.设置显示信息
         notificationBuilder = new NotificationCompat.Builder(context);
         String pushAlert = msgUserDefine.getPushalert();
 
-        String content = context.getString(R.string.user) + userName + context.getString(
-                R.string.use_your_invite_code_and_add_you_as_exclusive_server_success);
+        String content = context.getString(R.string.user) + " " + userName + " "+ context.getString(
+                                            R.string.use_your_invite_code);
 
         notificationBuilder.setContentTitle("" + pushAlert);
         notificationBuilder.setContentText(content);
@@ -255,8 +251,8 @@ public class NotificationHelper {
         notificationBuilder.setLargeIcon(bitmap);
 
         // 2.设置点击跳转事件
-        Intent intent = new Intent(context, ClientSelectActivity.class);
-        intent.putExtra("phone_number", phoneNum);
+        Intent intent = new Intent(context, SplashActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
         notificationBuilder.setContentIntent(pendingIntent);
 
