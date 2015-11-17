@@ -13,6 +13,10 @@ import android.support.v4.app.RemoteInput;
 import android.util.Log;
 import android.view.Gravity;
 
+import com.easemob.EMNotifierEvent;
+import com.easemob.chat.EMMessage;
+import com.easemob.chat.TextMessageBody;
+import com.easemob.exceptions.EaseMobException;
 import com.google.gson.Gson;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.zkjinshi.base.util.ActivityManagerHelper;
@@ -22,6 +26,7 @@ import com.zkjinshi.base.view.CustomDialog;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.chat.ChatActivity;
 import com.zkjinshi.superservice.activity.common.InviteCodesActivity;
+import com.zkjinshi.superservice.activity.common.MainActivity;
 import com.zkjinshi.superservice.activity.common.SplashActivity;
 import com.zkjinshi.superservice.activity.set.ClientBindActivity;
 import com.zkjinshi.superservice.activity.set.ClientSelectActivity;
@@ -35,11 +40,13 @@ import com.zkjinshi.superservice.net.MethodType;
 import com.zkjinshi.superservice.net.NetRequest;
 import com.zkjinshi.superservice.net.NetRequestTask;
 import com.zkjinshi.superservice.net.NetResponse;
+import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.utils.MediaPlayerUtil;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.vo.MessageVo;
 import com.zkjinshi.superservice.vo.MimeType;
+import com.zkjinshi.superservice.vo.TxtExtType;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -112,6 +119,73 @@ public class NotificationHelper {
         } else {
             MediaPlayerUtil.playNotifyVoice(context);
             VibratorHelper.vibratorShark(context);
+        }
+    }
+
+    /**
+     * 后台通知栏通知用户收到消息
+     * @param context
+     * @param event
+     */
+    public void showNotification(Context context, EMNotifierEvent event) {
+        switch (event.getEvent()) {
+            case EventNewMessage:
+                EMMessage message = (EMMessage) event.getData();
+                if(null != message){
+                    String username = message.getFrom();
+                    String titleName = null;
+                    if(!username.equals(CacheUtil.getInstance().getUserId())){
+                        EMMessage.Type msgType = message.getType();
+                        if (ActivityManagerHelper.isRunningBackground(context)) {
+                            int nofifyFlag = 0;
+                            NotificationCompat.Builder notificationBuilder = null;
+                            // 1.设置显示信息
+                            notificationBuilder = new NotificationCompat.Builder(context);
+                            if (message.getChatType() == EMMessage.ChatType.GroupChat || message.getChatType() == EMMessage.ChatType.ChatRoom) {
+                                //TODO JIMMY 后续需要修改
+                                titleName = message.getTo();
+                            } else {
+                                titleName = message.getFrom();
+                            }
+                            notificationBuilder.setContentTitle("" + titleName);
+                            if (msgType == EMMessage.Type.TXT) {
+                                try {
+                                    int extType = message.getIntAttribute(Constants.MSG_TXT_EXT_TYPE);
+                                    if(TxtExtType.DEFAULT.getVlaue() == extType){
+                                        TextMessageBody txtBody = (TextMessageBody) message.getBody();
+                                        String content = txtBody.getMessage();
+                                        notificationBuilder.setContentText("" + content);
+                                    }else{
+                                        notificationBuilder.setContentText("[订单]");
+                                    }
+                                } catch (EaseMobException e) {
+                                    e.printStackTrace();
+                                }
+
+                            } else if (msgType == EMMessage.Type.IMAGE) {
+                                notificationBuilder.setContentText("[图片]");
+                            } else if(msgType ==  EMMessage.Type.VOICE){
+                                notificationBuilder.setContentText("[语音]");
+                            }
+                            notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
+                            // 2.设置点击跳转事件
+                            Intent intent = new Intent(context, MainActivity.class);
+                            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0,
+                                    intent, 0);
+                            notificationBuilder.setContentIntent(pendingIntent);
+                            // 3.设置通知栏其他属性
+                            notificationBuilder.setAutoCancel(true);
+                            notificationBuilder.setDefaults(Notification.DEFAULT_ALL);
+                            NotificationManagerCompat notificationManager =
+                                    NotificationManagerCompat.from(context);
+                            notificationManager.notify(nofifyFlag, notificationBuilder.build());
+                        } else {
+                            MediaPlayerUtil.playNotifyVoice(context);
+                            VibratorHelper.vibratorShark(context);
+                        }
+                    }
+                }
+                break;
         }
     }
 
