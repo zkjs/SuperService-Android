@@ -1,6 +1,5 @@
 package com.zkjinshi.superservice.activity.set;
 
-import android.app.Activity;
 import android.content.Context;
 
 import com.zkjinshi.superservice.ServiceApplication;
@@ -73,7 +72,7 @@ public class ClientBindController {
         NetRequestTask netRequestTask = new NetRequestTask(mContext, netRequest, NetResponse.class);
         netRequestTask.methodType = MethodType.PUSH;
         netRequestTask.setNetRequestListener(netRequestListener);
-        netRequestTask.isShowLoadingDialog = true;
+        netRequestTask.isShowLoadingDialog = false;
         netRequestTask.execute();
     }
 
