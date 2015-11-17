@@ -223,7 +223,6 @@ public class MessageListener extends Handler implements IMessageListener {
                             super.beforeNetworkRequestStart();
                         }
                     });
-
                 }
 
             }
