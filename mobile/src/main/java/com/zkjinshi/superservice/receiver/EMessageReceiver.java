@@ -1,14 +1,9 @@
 package com.zkjinshi.superservice.receiver;
 
-import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.text.TextUtils;
-import android.view.WindowManager;
-
-import com.zkjinshi.base.view.CustomDialog;
 
 /**
  * 开发者：JimmyZhang
