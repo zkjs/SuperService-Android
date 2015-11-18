@@ -1,15 +1,19 @@
 package com.zkjinshi.superservice.activity.common;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 
 import com.google.gson.Gson;
 import com.zkjinshi.base.log.LogLevel;
 import com.zkjinshi.base.log.LogUtil;
+import com.zkjinshi.base.util.NetWorkUtil;
+import com.zkjinshi.base.view.CustomDialog;
 import com.zkjinshi.superservice.R;
 
 import com.zkjinshi.superservice.activity.set.TeamContactsController;
@@ -51,15 +55,21 @@ public class SplashActivity extends Activity{
     }
 
     private void initData(){
-        // 判断用户是否登录，如果登录则进入主页面
-        if (CacheUtil.getInstance().isLogin()) {
-            //启动应用静默处理数据
-            silentProcessData();
-            // 使用Handler的postDelayed方法，3秒后执行跳转到MainActivity
-            handler.sendEmptyMessageDelayed(GO_HOME, SPLASH_DELAY_MILLIS);
-        } else {
-            handler.sendEmptyMessageDelayed(GO_GUIDE, SPLASH_DELAY_MILLIS);
+        //判断当前网络状态
+        if(NetWorkUtil.isNetworkConnected(this)){
+            // 判断用户是否登录，如果登录则进入主页面
+            if (CacheUtil.getInstance().isLogin()) {
+                //启动应用静默处理数据
+                silentProcessData();
+                // 使用Handler的postDelayed方法，3秒后执行跳转到MainActivity
+                handler.sendEmptyMessageDelayed(GO_HOME, SPLASH_DELAY_MILLIS);
+            } else {
+                handler.sendEmptyMessageDelayed(GO_GUIDE, SPLASH_DELAY_MILLIS);
+            }
+        }else {
+            showNetDialog();
         }
+
     }
 
     private void initListeners(){
@@ -212,5 +222,23 @@ public class SplashActivity extends Activity{
         initView();
         initData();
         initListeners();
+    }
+
+    private void showNetDialog(){
+
+        CustomDialog.Builder customBuilder = new CustomDialog.Builder(this);
+        customBuilder.setTitle("提示");
+        customBuilder.setMessage("网络状态不好，稍后再试?");
+        customBuilder.setGravity(Gravity.CENTER);
+        customBuilder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                finish();
+            }
+        });
+        customBuilder.create().show();
+
     }
 }
