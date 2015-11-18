@@ -15,9 +15,11 @@ import com.zkjinshi.base.log.LogLevel;
 import com.zkjinshi.base.log.LogUtil;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
+import com.zkjinshi.superservice.activity.set.ClientController;
 import com.zkjinshi.superservice.activity.set.TeamContactsController;
 import com.zkjinshi.superservice.bean.SempLoginBean;
 import com.zkjinshi.superservice.factory.UserFactory;
+import com.zkjinshi.superservice.net.ExtNetRequestListener;
 import com.zkjinshi.superservice.net.NetRequestListener;
 import com.zkjinshi.superservice.net.NetResponse;
 import com.zkjinshi.superservice.sqlite.DBOpenHelper;
@@ -189,6 +191,7 @@ public class LoginActivity extends Activity implements VerifyPhoneControler.Succ
                     DBOpenHelper.DB_NAME = sempLoginbean.getSalesid() + ".db";
 
                     LoginController.getInstance().getDeptList(userID, token, shopiD);//获取部门列表
+                    ClientController.getInstance().getShopClients(LoginActivity.this, userID, token, shopiD);
                     TeamContactsController.getInstance().getTeamContacts(LoginActivity.this, userID, token, shopiD, null);//获取团队列表
 
                     UserVo userVo = UserFactory.getInstance().buildUserVo(sempLoginbean);

@@ -217,15 +217,9 @@ public class ClientActivity extends AppCompatActivity implements IMessageObserve
             mAllContactsList.addAll(sortModels);
         }
 
-        NetRequest netRequest = new NetRequest(ProtocolUtil.getShopUserListUrl());
-        HashMap<String,String> bizMap = new HashMap<>();
-        bizMap.put("salesid", userID);
-        bizMap.put("token", token);
-        bizMap.put("shopid", shopID);
-        netRequest.setBizParamMap(bizMap);
-        NetRequestTask netRequestTask = new NetRequestTask(this, netRequest, NetResponse.class);
-        netRequestTask.methodType     = MethodType.PUSH;
-        netRequestTask.setNetRequestListener(new ExtNetRequestListener(this) {
+        // 1. 服务器获取本地联系人
+        ClientController.getInstance().getShopClients(ClientActivity.this, userID, token, shopID,
+            new ExtNetRequestListener(this) {
             @Override
             public void onNetworkRequestError(int errorCode, String errorMessage) {
                 DialogUtil.getInstance().cancelProgressDialog();
@@ -301,8 +295,7 @@ public class ClientActivity extends AppCompatActivity implements IMessageObserve
                 //网络请求前
             }
         });
-        netRequestTask.isShowLoadingDialog = true;
-        netRequestTask.execute();
+
     }
 
     /**

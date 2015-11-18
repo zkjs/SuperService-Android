@@ -22,6 +22,7 @@ import com.google.gson.Gson;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.zkjinshi.base.util.ActivityManagerHelper;
 import com.zkjinshi.base.util.DialogUtil;
+import com.zkjinshi.base.util.TimeUtil;
 import com.zkjinshi.base.util.VibratorHelper;
 import com.zkjinshi.base.view.CustomDialog;
 import com.zkjinshi.superservice.R;
@@ -52,6 +53,7 @@ import com.zkjinshi.superservice.vo.TxtExtType;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.sql.Time;
 import java.util.HashMap;
 
 /**
@@ -238,28 +240,23 @@ public class NotificationHelper {
     /**
      * 通知提示:客户使用邀请码成功
      * @param context
-     * @param msgUserDefine
+     * @param clientBase
+     * @param dateTime
      */
-    public void showNotification(Context context, MsgUserDefine msgUserDefine) {
+    public void showNotification(Context context, ClientBaseBean clientBase, long dateTime) {
 
-        String inviteCodeEntityJson = msgUserDefine.getContent();
-        Gson gson = new Gson();
-        InviteCodeEntity inviteCodeEntity = gson.fromJson(inviteCodeEntityJson, InviteCodeEntity.class);
-
-        String userName = inviteCodeEntity.getUsername();
+        String time = TimeUtil.getChatTime(dateTime);
+        String userName = clientBase.getUsername();
         NotificationCompat.Builder notificationBuilder = null;
         // 1.设置显示信息
         notificationBuilder = new NotificationCompat.Builder(context);
-        String pushAlert = msgUserDefine.getPushalert();
-
-        String content = context.getString(R.string.user) + " " + userName + " "+ context.getString(
-                                            R.string.use_your_invite_code);
-
-        notificationBuilder.setContentTitle("" + pushAlert);
+        String content = context.getString(R.string.user) + " " + userName + " 于 "+ time +
+                         context.getString(R.string.use_your_invite_code);
+        notificationBuilder.setContentTitle("邀请码通知");
         notificationBuilder.setContentText(content);
         notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
 
-        String fromID    = msgUserDefine.getFromid();
+        String fromID    = clientBase.getUserid();
         String avatarUrl = ProtocolUtil.getAvatarUrl(fromID);
         Bitmap bitmap    = ImageLoader.getInstance().loadImageSync(avatarUrl);
         notificationBuilder.setLargeIcon(bitmap);

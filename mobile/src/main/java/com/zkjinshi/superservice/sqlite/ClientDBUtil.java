@@ -306,7 +306,7 @@ public class ClientDBUtil {
             values    = new ContentValues();
 
             values.put("bg_drawable_res", bgRes);
-            updateReslut = db.update(DBOpenHelper.CLIENT_TBL, values, " userid = ? ", new String[] { clientID });
+            updateReslut = db.update(DBOpenHelper.CLIENT_TBL, values, " userid = ? ", new String[]{clientID});
         } catch (Exception e) {
             LogUtil.getInstance().info(LogLevel.ERROR, TAG + ".updateClientBgDrawabelResByClientID->" + e.getMessage());
             e.printStackTrace();
@@ -315,5 +315,37 @@ public class ClientDBUtil {
                 db.close();
         }
         return updateReslut;
+    }
+
+    /**
+     * 根据客户ID查询客户对象
+     * @param clientID
+     */
+    public ClientVo queryClientByClientID(String clientID) {
+        ClientVo clientVo = null;
+        Cursor   cursor   = null;
+        SQLiteDatabase db = null;
+        try {
+            db = helper.getReadableDatabase();
+            cursor = db.query(DBOpenHelper.CLIENT_TBL,
+                    null,
+                    " userid = ? ",
+                    new String[] { clientID },
+                    null, null, null);
+
+            if(cursor.moveToFirst()){
+                clientVo = ClientFactory.getInstance().buildclient(cursor);
+            }
+        } catch (Exception e) {
+            LogUtil.getInstance().info(LogLevel.ERROR, TAG + ".queryBgDrawableResByClientID->"+e.getMessage());
+            e.printStackTrace();
+        } finally{
+            if(null != db)
+                db.close();
+
+            if(null != cursor)
+                cursor.close();
+        }
+        return clientVo;
     }
 }

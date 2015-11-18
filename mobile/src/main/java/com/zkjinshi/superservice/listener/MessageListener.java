@@ -20,18 +20,15 @@ import com.zkjinshi.base.net.core.WebSocketClient;
 import com.zkjinshi.base.net.core.WebSocketManager;
 import com.zkjinshi.base.net.protocol.ProtocolMSG;
 import com.zkjinshi.base.util.Constants;
-import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.base.view.CustomDialog;
 import com.zkjinshi.superservice.ServiceApplication;
 import com.zkjinshi.superservice.activity.common.LoginActivity;
 import com.zkjinshi.superservice.activity.set.ClientBindController;
 import com.zkjinshi.superservice.bean.ClientBaseBean;
 import com.zkjinshi.superservice.entity.InviteCodeEntity;
-import com.zkjinshi.superservice.entity.MsgBuildSessionRSP;
 import com.zkjinshi.superservice.entity.MsgCustomerServiceImgChat;
 import com.zkjinshi.superservice.entity.MsgCustomerServiceMediaChat;
 import com.zkjinshi.superservice.entity.MsgCustomerServiceTextChat;
-import com.zkjinshi.superservice.entity.MsgOfflineMessage;
 import com.zkjinshi.superservice.entity.MsgOfflineMessageRSP;
 import com.zkjinshi.superservice.entity.MsgPushTriggerLocNotificationM2S;
 import com.zkjinshi.superservice.entity.MsgUserDefine;
@@ -45,12 +42,12 @@ import com.zkjinshi.superservice.sqlite.ClientDBUtil;
 import com.zkjinshi.superservice.sqlite.MessageDBUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.FileUtil;
+import com.zkjinshi.superservice.vo.ClientVo;
 import com.zkjinshi.superservice.vo.ContactType;
 import com.zkjinshi.superservice.vo.MessageVo;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -162,70 +159,66 @@ public class MessageListener extends Handler implements IMessageListener {
 
                     //判断当前用户角色类型 1是管理员, 2是销售,3 其他前台什么的
                     if(intRoleID == 2){
-                        String clientID = msgLocNotification.getUserid();
-                        boolean isMyClient = ClientDBUtil.getInstance().isClientExistByUserIDAndContactType(
-                                                                                clientID, ContactType.NORMAL);
-                        if(isMyClient){
-                            NotificationHelper.getInstance().showNotification(ServiceApplication.getContext(),
-                                    msgLocNotification);
+                        String   clientID = msgLocNotification.getUserid();
+                        ClientVo clientVo = ClientDBUtil.getInstance().queryClientByClientID(clientID);
+                        if(null != clientVo && clientVo.getContactType() == ContactType.NORMAL){
+                            NotificationHelper.getInstance().showNotification(ServiceApplication.getContext(), msgLocNotification);
                         }
                     }else{
-
                         NotificationHelper.getInstance().showNotification(ServiceApplication.getContext(),
                                                                                       msgLocNotification);
                     }
                 }
             }
 
-            /** 客户使用邀请码成功 */
-            if (ProtocolMSG.MSG_UserDefine == type) {
-                if(gson == null){
-                    gson = new Gson();
-                }
-
-                MsgUserDefine msgUserDefine = gson.fromJson(message, MsgUserDefine.class);
-                if(msgUserDefine.getChildtype() == ProtocolMSG.MSG_ChildType_BindInviteCode){
-                    LogUtil.getInstance().info(LogLevel.INFO, msgUserDefine.toString());
-                    LogUtil.getInstance().info(LogLevel.INFO, "客户使用邀请码成功:" + msgUserDefine.getPushalert());
-                    NotificationHelper.getInstance().showNotification(ServiceApplication.getContext(), msgUserDefine);
-
-                    String inviteCodeEntityJson = msgUserDefine.getContent();
-                    if(gson == null){
-                        gson = new Gson();
-                    }
-
-                    InviteCodeEntity inviteCodeEntity = gson.fromJson(inviteCodeEntityJson,
-                                                                    InviteCodeEntity.class);
-
-                    ClientBaseBean clientBase = new ClientBaseBean();
-                    clientBase.setUserid(inviteCodeEntity.getUserid());
-                    clientBase.setUsername(inviteCodeEntity.getUsername());
-                    clientBase.setPhone(inviteCodeEntity.getPhone_number());
-
-                    ClientBindController.getInstance().bindClient(clientBase, new ExtNetRequestListener() {
-                        @Override
-                        public void onNetworkRequestError(int errorCode, String errorMessage) {
-                            super.onNetworkRequestError(errorCode, errorMessage);
-                        }
-
-                        @Override
-                        public void onNetworkRequestCancelled() {
-                            super.onNetworkRequestCancelled();
-                        }
-
-                        @Override
-                        public void onNetworkResponseSucceed(NetResponse result) {
-                            super.onNetworkResponseSucceed(result);
-                        }
-
-                        @Override
-                        public void beforeNetworkRequestStart() {
-                            super.beforeNetworkRequestStart();
-                        }
-                    });
-                }
-
-            }
+//            /** 客户使用邀请码成功 */
+//            if (ProtocolMSG.MSG_UserDefine == type) {
+//                if(gson == null){
+//                    gson = new Gson();
+//                }
+//                MsgUserDefine msgUserDefine = gson.fromJson(message, MsgUserDefine.class);
+//                if(msgUserDefine.getChildtype() == ProtocolMSG.MSG_ChildType_BindInviteCode){
+//                    LogUtil.getInstance().info(LogLevel.INFO, msgUserDefine.toString());
+//                    LogUtil.getInstance().info(LogLevel.INFO, "客户使用邀请码成功:" + msgUserDefine.getPushalert());
+//                    NotificationHelper.getInstance().showNotification(ServiceApplication.getContext(), msgUserDefine);
+//
+//                    String inviteCodeEntityJson = msgUserDefine.getContent();
+//                    if(gson == null){
+//                        gson = new Gson();
+//                    }
+//
+//                    InviteCodeEntity inviteCodeEntity = gson.fromJson(inviteCodeEntityJson,
+//                                                                    InviteCodeEntity.class);
+//
+//                    ClientBaseBean clientBase = new ClientBaseBean();
+//                    clientBase.setUserid(inviteCodeEntity.getUserid());
+//                    clientBase.setUsername(inviteCodeEntity.getUsername());
+//                    clientBase.setPhone(inviteCodeEntity.getPhone_number());
+//
+//                    ClientBindController.getInstance().bindClient(clientBase, new ExtNetRequestListener() {
+//                        @Override
+//                        public void onNetworkRequestError(int errorCode, String errorMessage) {
+//                            super.onNetworkRequestError(errorCode, errorMessage);
+//                        }
+//
+//                        @Override
+//                        public void onNetworkRequestCancelled() {
+//                            super.onNetworkRequestCancelled();
+//                        }
+//
+//                        @Override
+//                        public void onNetworkResponseSucceed(NetResponse result) {
+//                            super.onNetworkResponseSucceed(result);
+//                        }
+//
+//                        @Override
+//                        public void beforeNetworkRequestStart() {
+//                            super.beforeNetworkRequestStart();
+//                        }
+//                    });
+//                }
+//
+//            }
 
             /** 获取用户离线消息 */
             if (ProtocolMSG.MSG_OfflineMssage_RSP == type) {
