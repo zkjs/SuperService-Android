@@ -12,12 +12,9 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.easemob.EMCallBack;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import com.zkjinshi.base.net.core.WebSocketManager;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.base.util.TimeUtil;
 import com.zkjinshi.superservice.R;
@@ -31,11 +28,9 @@ import com.zkjinshi.superservice.bean.OrderRoomTagBean;
 import com.zkjinshi.superservice.bean.OrderUsersBean;
 import com.zkjinshi.superservice.bean.PayBean;
 import com.zkjinshi.superservice.emchat.EMConversationHelper;
-import com.zkjinshi.superservice.entity.MsgUserDefine;
 import com.zkjinshi.superservice.net.ExtNetRequestListener;
 import com.zkjinshi.superservice.net.MethodType;
 import com.zkjinshi.superservice.net.NetRequest;
-import com.zkjinshi.superservice.net.NetRequestListener;
 import com.zkjinshi.superservice.net.NetRequestTask;
 import com.zkjinshi.superservice.net.NetResponse;
 import com.zkjinshi.superservice.request.MsgUserDefineTool;
@@ -696,16 +691,16 @@ public class OrderDealActivity extends Activity {
                         Gson gson = new Gson();
                         String jsonMsg = gson.toJson(msgUserDefine);
                         WebSocketManager.getInstance().sendMessage(jsonMsg);*/
-                        EMConversationHelper.getInstance().sendCmdMessage(orderDetailBean.getRoom().getShopid(), addOrderBean.getReservation_no(), orderDetailBean.getRoom().getGuestid(), new EMCallBack() {
+                        EMConversationHelper.getInstance().sendOrderCmdMessage(orderDetailBean.getRoom().getShopid(), addOrderBean.getReservation_no(), orderDetailBean.getRoom().getGuestid(), new EMCallBack() {
                             @Override
                             public void onSuccess() {
-                                Log.i(TAG,"发送订单确认信息成功");
+                                Log.i(TAG, "发送订单确认信息成功");
                             }
 
                             @Override
                             public void onError(int i, String s) {
-                                Log.i(TAG,"errorMsg:"+s);
-                                Log.i(TAG,"errorCode"+i);
+                                Log.i(TAG, "errorMsg:" + s);
+                                Log.i(TAG, "errorCode" + i);
                             }
 
                             @Override

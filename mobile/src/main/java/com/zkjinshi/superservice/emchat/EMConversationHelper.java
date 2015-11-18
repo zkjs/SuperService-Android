@@ -53,7 +53,7 @@ public class EMConversationHelper {
      * @param userId
      * @param emCallBack
      */
-    public void sendCmdMessage(String shopId,String orderNo,String userId,EMCallBack emCallBack){
+    public void sendOrderCmdMessage(String shopId, String orderNo, String userId, EMCallBack emCallBack){
         EMMessage cmdMsg = EMMessage.createSendMessage(EMMessage.Type.CMD);
         cmdMsg.setChatType(EMMessage.ChatType.Chat);
         cmdMsg.setAttribute("shopId", shopId);

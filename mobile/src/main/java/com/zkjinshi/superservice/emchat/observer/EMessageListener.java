@@ -4,8 +4,10 @@ import com.easemob.EMEventListener;
 import com.easemob.EMNotifierEvent;
 import com.easemob.chat.EMChat;
 import com.easemob.chat.EMChatManager;
+import com.zkjinshi.base.util.BaseContext;
 import com.zkjinshi.superservice.ServiceApplication;
 import com.zkjinshi.superservice.emchat.EMConversationHelper;
+import com.zkjinshi.superservice.manager.InviteManager;
 import com.zkjinshi.superservice.notification.NotificationHelper;
 
 /**
@@ -46,8 +48,13 @@ public class EMessageListener implements EMEventListener {
 
     @Override
     public void onEvent(EMNotifierEvent event) {
+        //邀请加入透传消息
+        InviteManager.getInstance().receiveInviteCmdMessage(event, BaseContext.getInstance().getContext());
+        //客服在线自动回复
         EMConversationHelper.getInstance().sendAutoMessage(event);
+        //后台通知栏提示消息
         NotificationHelper.getInstance().showNotification(ServiceApplication.getContext(),event);
+        //消息订阅分发
         EMessageSubject.getInstance().notifyObservers(event);
     }
 
