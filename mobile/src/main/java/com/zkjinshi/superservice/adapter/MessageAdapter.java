@@ -123,7 +123,9 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 if(!TextUtils.isEmpty(fromName) && !fromName.equals(CacheUtil.getInstance().getUserName())){
                     ((ViewHolder) holder).titleTv.setText(fromName);
                 }else{
-                    ((ViewHolder) holder).titleTv.setText(toName);
+                    if(!TextUtils.isEmpty(toName)){
+                        ((ViewHolder) holder).titleTv.setText(toName);
+                    }
                 }
             } catch (EaseMobException e) {
                 e.printStackTrace();

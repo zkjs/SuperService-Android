@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.app.RemoteInput;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 
@@ -146,6 +147,19 @@ public class NotificationHelper {
                                 titleName = message.getTo();
                             } else {
                                 titleName = message.getFrom();
+                            }
+                            try {
+                                String fromName = message.getStringAttribute("fromName");
+                                String toName = message.getStringAttribute("toName");
+                                if(!TextUtils.isEmpty(fromName) && !fromName.equals(CacheUtil.getInstance().getUserName())){
+                                    titleName = fromName;
+                                }else{
+                                    if(!TextUtils.isEmpty(toName)){
+                                        titleName = toName;
+                                    }
+                                }
+                            } catch (EaseMobException e) {
+                                e.printStackTrace();
                             }
                             notificationBuilder.setContentTitle("" + titleName);
                             if (msgType == EMMessage.Type.TXT) {
