@@ -5,6 +5,7 @@ import com.easemob.EMNotifierEvent;
 import com.easemob.chat.EMChat;
 import com.easemob.chat.EMChatManager;
 import com.zkjinshi.superservice.ServiceApplication;
+import com.zkjinshi.superservice.emchat.EMConversationHelper;
 import com.zkjinshi.superservice.notification.NotificationHelper;
 
 /**
@@ -45,6 +46,7 @@ public class EMessageListener implements EMEventListener {
 
     @Override
     public void onEvent(EMNotifierEvent event) {
+        EMConversationHelper.getInstance().sendAutoMessage(event);
         NotificationHelper.getInstance().showNotification(ServiceApplication.getContext(),event);
         EMessageSubject.getInstance().notifyObservers(event);
     }

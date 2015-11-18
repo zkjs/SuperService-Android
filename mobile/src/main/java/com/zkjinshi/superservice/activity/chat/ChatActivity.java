@@ -125,7 +125,6 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mTvCenterTitle = (TextView) findViewById(R.id.tv_center_title);
         mTvBottomTitle = (TextView) findViewById(R.id.tv_online_status);
-
         mMsgTextInput = (EditText) findViewById(R.id.et_msg_text_input);
         mBtnMsgSend   = (Button)   findViewById(R.id.btn_msg_send);
         faceLinearLayout = (LinearLayout) findViewById(R.id.face_ll);
@@ -154,7 +153,6 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
         if(!TextUtils.isEmpty(getIntent().getStringExtra(Constants.EXTRA_SHOP_NAME))){
             shopName = getIntent().getStringExtra(Constants.EXTRA_SHOP_NAME);
         }
-        String sessionName = getIntent().getStringExtra("session_name");
         bookOrder  = (BookOrderBean) getIntent().getSerializableExtra("bookOrder");
         //初始化消息ListView管理器
         messageListViewManager = new MessageListViewManager(this, userId, fromName,toName,shopId,shopName);

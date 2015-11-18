@@ -1,8 +1,11 @@
 package com.zkjinshi.superservice.emchat;
 
+import android.app.Activity;
 import android.support.v4.util.Pair;
+import android.text.TextUtils;
 
 import com.easemob.EMCallBack;
+import com.easemob.EMNotifierEvent;
 import com.easemob.chat.CmdMessageBody;
 import com.easemob.chat.EMChatManager;
 import com.easemob.chat.EMConversation;
@@ -10,6 +13,10 @@ import com.easemob.chat.EMMessage;
 import com.easemob.chat.ImageMessageBody;
 import com.easemob.chat.TextMessageBody;
 import com.easemob.chat.VoiceMessageBody;
+import com.easemob.exceptions.EaseMobException;
+import com.zkjinshi.superservice.utils.CacheUtil;
+import com.zkjinshi.superservice.utils.Constants;
+import com.zkjinshi.superservice.vo.TxtExtType;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -79,6 +86,54 @@ public class EMConversationHelper {
         conversation.addMessage(message);
         //发送消息
         EMChatManager.getInstance().sendMessage(message, emCallBack);
+    }
+
+    /**
+     * 自动回复
+     * @param event
+     */
+    public void sendAutoMessage(EMNotifierEvent event){
+        switch (event.getEvent()) {
+            case EventNewMessage:
+                try {
+                    EMMessage receiveMsg = (EMMessage) event.getData();
+                    EMMessage.Type msgType = receiveMsg.getType();
+                    if(EMMessage.Type.TXT == msgType){
+                        String fromId = receiveMsg.getFrom();
+                        if(!TextUtils.isEmpty(fromId) && !fromId.equals(CacheUtil.getInstance().getUserId())){
+                            int extType = receiveMsg.getIntAttribute(Constants.MSG_TXT_EXT_TYPE);
+                            if(TxtExtType.CARD.getVlaue() == extType){
+                                String toName = receiveMsg.getStringAttribute("fromName");
+                                String fromName = receiveMsg.getStringAttribute("toName");
+                                String shopId = receiveMsg.getStringAttribute("shopId");
+                                String shopName = receiveMsg.getStringAttribute("shopName");
+                                EMMessage sendMsg = EMMessage.createTxtSendMessage("您好,客服["+ CacheUtil.getInstance().getUserName()+"]为您服务", fromId);
+                                sendMsg.status = EMMessage.Status.SUCCESS;
+                                sendMsg.setAttribute(Constants.MSG_TXT_EXT_TYPE, TxtExtType.DEFAULT.getVlaue());
+                                sendMsg.setChatType(EMMessage.ChatType.Chat);
+                                sendMsg.setAttribute("toName", "");
+                                if(!TextUtils.isEmpty(toName)){
+                                    sendMsg.setAttribute("toName",toName);
+                                }
+                                sendMsg.setAttribute("fromName","");
+                                if(!TextUtils.isEmpty(fromName)){
+                                    sendMsg.setAttribute("fromName",fromName);
+                                }
+                                if(!TextUtils.isEmpty(shopId)){
+                                    sendMsg.setAttribute("shopId",shopId);
+                                }
+                                if(!TextUtils.isEmpty(shopName)){
+                                    sendMsg.setAttribute("shopName",shopName);
+                                }
+                                EMChatManager.getInstance().sendMessage(sendMsg);
+                            }
+                        }
+                    }
+                } catch (EaseMobException e) {
+                    e.printStackTrace();
+                }
+                break;
+        }
     }
 
     /**

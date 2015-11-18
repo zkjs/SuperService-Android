@@ -22,6 +22,8 @@ import com.easemob.chat.EMConversation;
 import com.easemob.chat.EMGroup;
 import com.easemob.chat.EMGroupManager;
 import com.easemob.chat.EMMessage;
+import com.easemob.chat.TextMessageBody;
+import com.easemob.exceptions.EaseMobException;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.zkjinshi.base.config.ConfigUtil;
@@ -359,14 +361,14 @@ public class MessageListViewManager extends Handler implements MsgListView.IXLis
         switch (event.getEvent()) {
             case EventNewMessage:
                 // 获取到message
-                EMMessage message = (EMMessage) event.getData();
+                EMMessage newMessage = (EMMessage) event.getData();
                 String username = null;
                 // 群组消息
-                if (message.getChatType() == EMMessage.ChatType.GroupChat || message.getChatType() == EMMessage.ChatType.ChatRoom) {
-                    username = message.getTo();
+                if (newMessage.getChatType() == EMMessage.ChatType.GroupChat || newMessage.getChatType() == EMMessage.ChatType.ChatRoom) {
+                    username = newMessage.getFrom();
                 } else {
                     // 单聊消息
-                    username = message.getFrom();
+                    username = newMessage.getFrom();
                 }
                 // 如果是当前会话的消息，刷新聊天页面
                 if (username.equals(userId)) {
@@ -380,6 +382,19 @@ public class MessageListViewManager extends Handler implements MsgListView.IXLis
                 }
                 break;
             case EventDeliveryAck:
+                //消息送达
+                EMChatManager.getInstance().getChatOptions().setRequireDeliveryAck(true);
+                final EMMessage deliveryMessage = (EMMessage) event.getData();
+                ((Activity) context).runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (currentMessageList.contains(deliveryMessage)) {
+                            deliveryMessage.status = EMMessage.Status.SUCCESS;
+                            chatAdapter.setMessageList(currentMessageList);
+                            scrollBottom();
+                        }
+                    }
+                });
             case EventReadAck:
                 // 获取到message
                 break;
