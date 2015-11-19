@@ -1,10 +1,12 @@
 package com.zkjinshi.superservice.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +20,10 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
+import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
+import com.zkjinshi.superservice.activity.set.ClientActivity;
+import com.zkjinshi.superservice.activity.set.ClientDetailActivity;
 import com.zkjinshi.superservice.listener.RecyclerItemClickListener;
 import com.zkjinshi.superservice.sqlite.ClientDBUtil;
 import com.zkjinshi.superservice.sqlite.ShopEmployeeDBUtil;
@@ -175,7 +180,19 @@ public class ContactsSortAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             ((ClientViewHolder)holder).tvContactOnLine.setTextColor(Color.GRAY);
             ((ClientViewHolder)holder).tvContactOnLine.setText(mContext.getString(R.string.offline));
         }
-
+        ((ClientViewHolder) holder).civContactAvatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (sortModel.getContactType().getValue() == ContactType.NORMAL.getValue()) {
+                    String phoneNumber = sortModel.getNumber();
+                    Intent clientDetail = new Intent(mContext, ClientDetailActivity.class);
+                    clientDetail.putExtra("phone_number", phoneNumber);
+                    mContext.startActivity(clientDetail);
+                } else {
+                    DialogUtil.getInstance().showCustomToast(mContext, "当前客户为本地联系人，无详细信息。", Gravity.CENTER);
+                }
+            }
+        });
         //TODO 1.显示客户订单描述
         //TODO 2.显示客户在线状态
     }

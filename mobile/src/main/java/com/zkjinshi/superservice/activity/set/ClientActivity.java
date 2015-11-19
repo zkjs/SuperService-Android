@@ -19,9 +19,9 @@ import com.zkjinshi.base.net.core.WebSocketManager;
 import com.zkjinshi.base.net.observer.IMessageObserver;
 import com.zkjinshi.base.net.observer.MessageSubject;
 import com.zkjinshi.base.net.protocol.ProtocolMSG;
-import com.zkjinshi.base.util.Constants;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
+import com.zkjinshi.superservice.activity.chat.ChatActivity;
 import com.zkjinshi.superservice.adapter.ContactsSortAdapter;
 import com.zkjinshi.superservice.bean.ClientDetailBean;
 import com.zkjinshi.superservice.entity.MsgUserOnlineStatus;
@@ -37,6 +37,7 @@ import com.zkjinshi.superservice.net.NetRequestTask;
 import com.zkjinshi.superservice.net.NetResponse;
 import com.zkjinshi.superservice.sqlite.ClientDBUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
+import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.utils.PinyinComparator;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.view.SideBar;
@@ -170,14 +171,19 @@ public class ClientActivity extends AppCompatActivity implements IMessageObserve
             @Override
             public void onItemClick(View view, int postion) {
                 SortModel sortModel = mAllContactsList.get(postion);
-                if (sortModel.getContactType().getValue() == ContactType.NORMAL.getValue()) {
-                    String phoneNumber = sortModel.getNumber();
-                    Intent clientDetail = new Intent(ClientActivity.this, ClientDetailActivity.class);
-                    clientDetail.putExtra("phone_number", phoneNumber);
-                    ClientActivity.this.startActivity(clientDetail);
-                } else {
-                    DialogUtil.getInstance().showCustomToast(ClientActivity.this, "当前客户为本地联系人，无详细信息。", Gravity.CENTER);
+                String clientId = sortModel.getClientID();
+                String clientName = sortModel.getName();
+                Intent intent = new Intent(ClientActivity.this, ChatActivity.class);
+                intent.putExtra(Constants.EXTRA_USER_ID, clientId);
+                if (!TextUtils.isEmpty(mShopID)) {
+                    intent.putExtra(Constants.EXTRA_SHOP_ID,mShopID);
                 }
+                intent.putExtra(Constants.EXTRA_SHOP_NAME,CacheUtil.getInstance().getShopFullName());
+                if(!TextUtils.isEmpty(clientName)){
+                    intent.putExtra(Constants.EXTRA_TO_NAME, clientName);
+                }
+                intent.putExtra(Constants.EXTRA_FROM_NAME, CacheUtil.getInstance().getUserName());
+                startActivity(intent);
             }
         });
     }
@@ -364,6 +370,5 @@ public class ClientActivity extends AppCompatActivity implements IMessageObserve
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        Log.i(Constants.ZKJINSHI_BASE_TAG, TAG + ".onNetReceiveSucceed()->message:" + message);
     }
 }

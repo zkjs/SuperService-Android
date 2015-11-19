@@ -15,9 +15,11 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.zkjinshi.base.util.TimeUtil;
 import com.zkjinshi.superservice.R;
+import com.zkjinshi.superservice.activity.chat.ChatActivity;
 import com.zkjinshi.superservice.sqlite.ShopDepartmentDBUtil;
 import com.zkjinshi.superservice.sqlite.ShopEmployeeDBUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
+import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.vo.ShopEmployeeVo;
 
@@ -127,7 +129,17 @@ public class EmployeeInfoActivity extends Activity{
                 String userId    = mEmployee.getEmpid();
                 String toName  = mEmployee.getName();
                 String shopName = CacheUtil.getInstance().getShopFullName();
-                SessionIDBuilder.getInstance().goSession(EmployeeInfoActivity.this, userId, toName, mShopID, shopName);
+                Intent intent = new Intent(EmployeeInfoActivity.this, ChatActivity.class);
+                intent.putExtra(Constants.EXTRA_USER_ID, userId);
+                if (!TextUtils.isEmpty(mShopID)) {
+                    intent.putExtra(Constants.EXTRA_SHOP_ID,mShopID);
+                }
+                intent.putExtra(Constants.EXTRA_SHOP_NAME,shopName);
+                if(!TextUtils.isEmpty(toName)){
+                    intent.putExtra(Constants.EXTRA_TO_NAME, toName);
+                }
+                intent.putExtra(Constants.EXTRA_FROM_NAME, CacheUtil.getInstance().getUserName());
+                startActivity(intent);
             }
         });
 
@@ -148,7 +160,17 @@ public class EmployeeInfoActivity extends Activity{
                 String userId    = mEmployee.getEmpid();
                 String toName  = mEmployee.getName();
                 String shopName = CacheUtil.getInstance().getShopFullName();
-                SessionIDBuilder.getInstance().goSession(EmployeeInfoActivity.this, userId, toName, mShopID, shopName);
+                Intent intent = new Intent(EmployeeInfoActivity.this, ChatActivity.class);
+                intent.putExtra(Constants.EXTRA_USER_ID, userId);
+                if (!TextUtils.isEmpty(mShopID)) {
+                    intent.putExtra(Constants.EXTRA_SHOP_ID,mShopID);
+                }
+                intent.putExtra(Constants.EXTRA_SHOP_NAME,shopName);
+                if(!TextUtils.isEmpty(toName)){
+                    intent.putExtra(Constants.EXTRA_TO_NAME, toName);
+                }
+                intent.putExtra(Constants.EXTRA_FROM_NAME, CacheUtil.getInstance().getUserName());
+                startActivity(intent);
             }
         });
     }

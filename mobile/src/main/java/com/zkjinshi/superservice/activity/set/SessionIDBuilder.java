@@ -47,27 +47,4 @@ public class SessionIDBuilder {
         }
     }
 
-    /**
-     * 进入聊天界面
-     * @param mActivity
-     * @param userId
-     * @param toName
-     * @param shopId
-     * @param shopName
-     */
-    public void goSession(Activity mActivity, String userId,String toName,String shopId,String shopName) {
-        //开启单聊界面
-        Intent intent = new Intent(mActivity, ChatActivity.class);
-        intent.putExtra(Constants.EXTRA_USER_ID, userId);
-        intent.putExtra(Constants.EXTRA_FROM_NAME, CacheUtil.getInstance().getUserName());
-        intent.putExtra(Constants.EXTRA_TO_NAME,toName);
-        if (!TextUtils.isEmpty(shopId)) {
-            intent.putExtra(Constants.EXTRA_SHOP_ID,shopId);
-        }
-        if (!TextUtils.isEmpty(shopName)) {
-            intent.putExtra(Constants.EXTRA_SHOP_NAME,shopName);
-        }
-        mActivity.startActivity(intent);
-    }
-
 }

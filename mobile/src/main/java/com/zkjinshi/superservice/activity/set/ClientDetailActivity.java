@@ -17,11 +17,13 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.easemob.exceptions.EaseMobException;
 import com.google.gson.Gson;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
+import com.zkjinshi.superservice.activity.chat.ChatActivity;
 import com.zkjinshi.superservice.bean.ClientDetailBean;
 import com.zkjinshi.superservice.bean.ClientTag;
 import com.zkjinshi.superservice.net.ExtNetRequestListener;
@@ -35,6 +37,7 @@ import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.view.CircleImageView;
 
+import org.jivesoftware.smack.Chat;
 import org.w3c.dom.Text;
 
 import java.util.HashMap;
@@ -59,6 +62,9 @@ public class ClientDetailActivity extends Activity {
     private String      mUserID;
     private String      mToken;
     private String      mShopID;
+    private String shopName;
+    private String clientId;
+    private String clientName;
 
     private ScrollView     mSvClientDetail;
     private RelativeLayout mRlBack;
@@ -122,6 +128,7 @@ public class ClientDetailActivity extends Activity {
         mUserID = CacheUtil.getInstance().getUserId();
         mToken  = CacheUtil.getInstance().getToken();
         mShopID = CacheUtil.getInstance().getShopID();
+        shopName = CacheUtil.getInstance().getShopFullName();
 
         DialogUtil.getInstance().showProgressDialog(ClientDetailActivity.this);
         getClientDetail(mPhoneNumber);
@@ -182,9 +189,10 @@ public class ClientDetailActivity extends Activity {
      * @param client
      */
     private void showClient(ClientDetailBean client) {
-        String userID = client.getUserid();
-        if(!TextUtils.isEmpty(userID)) {
-            String imageUrl = ProtocolUtil.getAvatarUrl(userID);
+        clientId= client.getUserid();
+        clientName = client.getUsername();
+        if(!TextUtils.isEmpty(clientId)) {
+            String imageUrl = ProtocolUtil.getAvatarUrl(clientId);
             DisplayImageOptions options = new DisplayImageOptions.Builder()
                 .showImageOnLoading(R.drawable.img_hotel_zhanwei)
                 .showImageForEmptyUri(R.drawable.img_hotel_zhanwei)
@@ -269,8 +277,19 @@ public class ClientDetailActivity extends Activity {
         mIbtnDuiHua.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO: 发起聊天
-                DialogUtil.getInstance().showToast(ClientDetailActivity.this, "会话聊天");
+                Intent intent = new Intent(ClientDetailActivity.this, ChatActivity.class);
+                intent.putExtra(Constants.EXTRA_USER_ID, clientId);
+                if (!TextUtils.isEmpty(mShopID)) {
+                    intent.putExtra(Constants.EXTRA_SHOP_ID,mShopID);
+                }
+                if (!TextUtils.isEmpty(shopName)) {
+                    intent.putExtra(Constants.EXTRA_SHOP_NAME,shopName);
+                }
+                if(!TextUtils.isEmpty(clientName)){
+                    intent.putExtra(Constants.EXTRA_TO_NAME, clientName);
+                }
+                intent.putExtra(Constants.EXTRA_FROM_NAME, CacheUtil.getInstance().getUserName());
+                startActivity(intent);
             }
         });
 
@@ -278,8 +297,8 @@ public class ClientDetailActivity extends Activity {
             @Override
             public void onTagClick(Tag tag, int position) {
                 //TODO: 判断此服务员是否有权限添加标签
-                if(mClient != null){
-                    if(!TextUtils.isEmpty(tag.text) && tag.text.trim().equals("+")) {
+                if (mClient != null) {
+                    if (!TextUtils.isEmpty(tag.text) && tag.text.trim().equals("+")) {
                         //进入添加标签界面
                         Intent addNewTag = new Intent(ClientDetailActivity.this, TagAddActivity.class);
                         addNewTag.putExtra("phone_number", mPhoneNumber);

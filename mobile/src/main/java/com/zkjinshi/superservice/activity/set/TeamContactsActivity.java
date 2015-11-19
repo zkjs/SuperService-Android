@@ -328,39 +328,21 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
         mTeamContactAdapter.setOnItemClickListener(new RecyclerItemClickListener() {
             @Override
             public void onItemClick(View view, int postion) {
-
-                DialogUtil.getInstance().showProgressDialog(TeamContactsActivity.this, "进入聊天中...");
-
                 ShopEmployeeVo shopEmployeeVo = mShopEmployeeVos.get(postion);
-                String empID = shopEmployeeVo.getEmpid();
-                String empName = shopEmployeeVo.getName();
-                String sessionID = SessionIDBuilder.getInstance().buildSingleSessionID(mShopID, mUserID, empID);
-
-                if (null != mToUser) {
-                    mToUser = null;
+                String userId    = shopEmployeeVo.getEmpid();
+                String toName  = shopEmployeeVo.getName();
+                String shopName = CacheUtil.getInstance().getShopFullName();
+                Intent intent = new Intent(TeamContactsActivity.this, ChatActivity.class);
+                intent.putExtra(com.zkjinshi.superservice.utils.Constants.EXTRA_USER_ID, userId);
+                if (!TextUtils.isEmpty(mShopID)) {
+                    intent.putExtra(com.zkjinshi.superservice.utils.Constants.EXTRA_SHOP_ID,mShopID);
                 }
-                mToUser = new MsgIMSessionUser();
-                mToUser.setShopid(mShopID);
-                mToUser.setUserid(empID);
-                mToUser.setUsername(empName);
-                mToUser.setIsadmin(MsgAdmin.NOTADMIN.getValue());
-
-                //TODO: 本地判断此sessionID是否存在
-                if (!MessageDBUtil.getInstance().isMessageExistsBySessionID(sessionID)) {
-                    //TODO: 后台服务器判断此sessionID是否存在
-                    MsgShopSessionSearch sessionSearch = new MsgShopSessionSearch();
-                    sessionSearch.setType(ProtocolMSG.MSG_ShopSessionSearch);
-                    sessionSearch.setTimestamp(System.currentTimeMillis());
-                    sessionSearch.setShopid(mShopID);
-                    sessionSearch.setSessionid(sessionID);
-
-                    Gson gson = new Gson();
-                    String sessionSearchJson = gson.toJson(sessionSearch, MsgShopSessionSearch.class);
-                    WebSocketManager.getInstance().sendMessage(sessionSearchJson);
-                } else {
-                    //进入聊天界面
-                   // SessionIDBuilder.getInstance().goSession(TeamContactsActivity.this, mShopID, sessionID, mToUser.getUsername());
+                intent.putExtra(com.zkjinshi.superservice.utils.Constants.EXTRA_SHOP_NAME, shopName);
+                if(!TextUtils.isEmpty(toName)){
+                    intent.putExtra(com.zkjinshi.superservice.utils.Constants.EXTRA_TO_NAME, toName);
                 }
+                intent.putExtra(com.zkjinshi.superservice.utils.Constants.EXTRA_FROM_NAME, CacheUtil.getInstance().getUserName());
+                startActivity(intent);
             }
         });
     }
