@@ -78,7 +78,7 @@ public class ServiceApplication extends Application{
         // 设置是否需要已送达回执
         options.setRequireDeliveryAck(true);
         // 设置从db初始化加载时, 每个conversation需要加载msg的个数
-        options.setNumberOfMessagesLoaded(1);
+        options.setNumberOfMessagesLoaded(10);
     }
 
     public void initContext(){
