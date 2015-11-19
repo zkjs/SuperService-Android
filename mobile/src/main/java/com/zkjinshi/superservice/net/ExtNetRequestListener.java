@@ -45,15 +45,20 @@ public abstract class ExtNetRequestListener  implements NetRequestListener{
 
     @Override
     public void onNetworkResponseSucceed(NetResponse result) {
-        BaseBean baseBean = new Gson().fromJson(result.rawResult,BaseBean.class);
-        if(baseBean!= null && baseBean.isSet() && baseBean.getErr().equals("400")){
-            if(context instanceof Activity){
-                DialogUtil.getInstance().showToast(context, "Token失效，请重新登录!");
-                CacheUtil.getInstance().setLogin(false);
-                Intent intent = new Intent(context,LoginActivity.class);
-                context.startActivity(intent);
-                ((Activity)context).finish();
+
+        try {
+            BaseBean baseBean = new Gson().fromJson(result.rawResult, BaseBean.class);
+            if (baseBean != null && !baseBean.isSet() && baseBean.getErr().equals("400")) {
+                if (context instanceof Activity) {
+                    DialogUtil.getInstance().showToast(context, "Token失效，请重新登录!");
+                    CacheUtil.getInstance().setLogin(false);
+                    Intent intent = new Intent(context, LoginActivity.class);
+                    ((Activity) context).finish();
+                    context.startActivity(intent);
+                }
             }
+        }catch (Exception e){
+            Log.e(TAG,e.getMessage());
         }
     }
 

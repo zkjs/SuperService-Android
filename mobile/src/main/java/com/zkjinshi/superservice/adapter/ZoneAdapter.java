@@ -28,16 +28,44 @@ import java.util.Map;
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class ZoneAdapter extends BaseAdapter implements CompoundButton.OnCheckedChangeListener {
+public class ZoneAdapter extends BaseAdapter{
     private final static String TAG = ZoneAdapter.class.getSimpleName();
 
     private LayoutInflater mInflater;//得到一个LayoutInfalter对象用来导入布局
     private ArrayList<ZoneBean> zoneList = new ArrayList<ZoneBean>();
-    private HashMap<Integer,Integer> checkedHashmap = new HashMap<Integer,Integer>();
 
     public ZoneAdapter(Context context,ArrayList<ZoneBean> zoneList) {
         this.mInflater = LayoutInflater.from(context);
         this.zoneList = zoneList;
+    }
+
+    public void setCheckedZone(ArrayList<ZoneBean> checkedZone){
+        for(int i=0;i<checkedZone.size();i++){
+            for(int j=0;j<zoneList.size();j++){
+                if(checkedZone.get(i).getLocid() == zoneList.get(j).getLocid()){
+                    zoneList.get(j).setHasAdd(true);
+                }
+            }
+        }
+    }
+
+    public String getCheckedIds(){
+        String ids = "";
+        if(zoneList == null){
+            return  ids;
+        }
+        for(int i=0;i<zoneList.size();i++){
+            ZoneBean zoneBean = zoneList.get(i);
+            if(zoneBean.isHasAdd()){
+                if(i == 0){
+                    ids = ids+zoneBean.getLocid();
+                }else{
+                    ids = ids+","+zoneBean.getLocid();
+                }
+            }
+
+        }
+        return  ids;
     }
 
     public ArrayList<ZoneBean> getZoneList() {
@@ -46,39 +74,6 @@ public class ZoneAdapter extends BaseAdapter implements CompoundButton.OnChecked
 
     public void setZoneList(ArrayList<ZoneBean> zoneList) {
         this.zoneList = zoneList;
-    }
-
-    // 返回选择的ID 格式是用逗号隔开。
-   public String getCheckedIds(){
-       Iterator iterator = checkedHashmap.entrySet().iterator();
-       String ids = "";
-       int i = 0;
-       while (iterator.hasNext()){
-           Map.Entry entry = (Map.Entry)iterator.next();
-           Integer value = (Integer)entry.getValue();
-           if(value.intValue() == 1){
-               Integer key = (Integer)entry.getKey();
-               if(i == 0){
-                   ids = ids+key;
-               }else{
-                   ids = ids+","+key;
-               }
-               i++;
-           }
-       }
-       return ids;
-   }
-
-    private boolean ischecked(int id){
-        if(!checkedHashmap.containsKey(new Integer(id))){
-            return false;
-        }
-        Integer value = checkedHashmap.get(new Integer(id));
-        if(value.intValue() == 1){
-            return true;
-        }else{
-            return false;
-        }
     }
 
     @Override
@@ -104,30 +99,22 @@ public class ZoneAdapter extends BaseAdapter implements CompoundButton.OnChecked
             holder = new ViewHolder();
             holder.img = (ImageView)convertView.findViewById(R.id.zone_img_iv);
             holder.name = (TextView)convertView.findViewById(R.id.zone_name_tv);
-            holder.check      = (CheckBox)convertView.findViewById(R.id.zone_cbx);
+            holder.check      = (ImageView)convertView.findViewById(R.id.zone_cbx);
             convertView.setTag(holder);//绑定ViewHolder对象
         }else{
             holder = (ViewHolder)convertView.getTag();//取出ViewHolder对象
         }
         holder.name.setText(zoneList.get(position).getLocdesc());
 
-        int id = zoneList.get(position).getLocid();
-        boolean c = ischecked(id);
-        holder.check.setTag(new Integer(id));
-        holder.check.setOnCheckedChangeListener(this);
-        holder.check.setChecked(c);
+        if(zoneList.get(position).isHasAdd()){
+            holder.check.setImageResource(R.drawable.ic_jia_pre);
+        }else{
+            holder.check.setImageResource(R.drawable.ic_jia_nor);
+        }
         return convertView;
     }
 
-    public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-        Integer key = (Integer)compoundButton.getTag();
-        if(isChecked){
-            checkedHashmap.put(key, new Integer(1));
-        }else{
-            checkedHashmap.put(key, new Integer(0));
-        }
-        Log.d(TAG, "checkedids = " + getCheckedIds());
-    }
+
 
 
     @Override
@@ -144,7 +131,7 @@ public class ZoneAdapter extends BaseAdapter implements CompoundButton.OnChecked
     public final class ViewHolder{
         public ImageView img;
         public TextView  name;
-        public CheckBox check;
+        public ImageView check;
     }
 
 }

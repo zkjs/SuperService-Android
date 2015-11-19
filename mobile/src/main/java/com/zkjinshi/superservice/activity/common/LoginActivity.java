@@ -72,66 +72,12 @@ public class LoginActivity extends Activity implements VerifyPhoneControler.Succ
         VerifyPhoneControler.getInstance().setSuccessCallBack(this);
 
         //测试跳转用的
-//        inputEt.setText("14000800924");//18912345678
+//        inputEt.setText("15112269174");//18912345678
 //        loginBtn.setEnabled(true);
 //        loginBtn.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View view) {
-//                final String phone = inputEt.getText().toString();
-//                if (TextUtils.isEmpty(phone)) {
-//                    DialogUtil.getInstance().showToast(LoginActivity.this, "电话号码不能为空");
-//                    return;
-//                }
-//                LoginController.getInstance().requestLogin(phone,true,new NetRequestListener() {
-//                    @Override
-//                    public void onNetworkRequestError(int errorCode, String errorMessage) {
-//                        Log.i(TAG, "errorCode:" + errorCode);
-//                        Log.i(TAG, "errorMessage:" + errorMessage);
-//                    }
-//
-//                    @Override
-//                    public void onNetworkRequestCancelled() {
-//
-//                    }
-//
-//                    @Override
-//                    public void onNetworkResponseSucceed(NetResponse result) {
-//                        Log.i(TAG, "result.rawResult:" + result.rawResult);
-//                        SempLoginBean sempLoginbean = new Gson().fromJson(result.rawResult, SempLoginBean.class);
-//                        if (sempLoginbean.isSet()) {
-//                            //更新为最新的token和userid
-//                            CacheUtil.getInstance().setToken(sempLoginbean.getToken());
-//                            CacheUtil.getInstance().setUserId(sempLoginbean.getSalesid());
-//                            CacheUtil.getInstance().setUserPhone(phone);
-//                            CacheUtil.getInstance().setUserName(sempLoginbean.getName());
-//                            CacheUtil.getInstance().setShopID(sempLoginbean.getShopid());
-//                            CacheUtil.getInstance().setShopFullName(sempLoginbean.getFullname());
-//                            CacheUtil.getInstance().setLoginIdentity(IdentityType.WAITER);
-//                            String userID = CacheUtil.getInstance().getUserId();
-//                            String token  = CacheUtil.getInstance().getToken();
-//                            String shopiD = CacheUtil.getInstance().getShopID();
-//                            DBOpenHelper.DB_NAME = sempLoginbean.getSalesid() + ".db";
-//                            LoginController.getInstance().getDeptList(userID, token, shopiD);//获取部门列表
-//                            TeamContactsController.getInstance().getTeamContacts(LoginActivity.this, userID, token, shopiD, null);//获取团队列表
-//                            LocNoticeController.getInstance().init(LoginActivity.this).requestLocTask();//获取区域信息
-//                            UserVo userVo = UserFactory.getInstance().buildUserVo(sempLoginbean);
-//                            UserDBUtil.getInstance().addUser(userVo);
-//                            String avatarUrl = Constants.AVATAR_PRE_URL+userVo.getUserId()+".jpg";
-//                            CacheUtil.getInstance().saveUserPhotoUrl(avatarUrl);
-//                            Intent intent = new Intent(LoginActivity.this, MoreActivity.class);
-//                            startActivity(intent);
-//                            finish();
-//                            overridePendingTransition(R.anim.activity_new, R.anim.activity_out);
-//                        } else {
-//                            DialogUtil.getInstance().showToast(LoginActivity.this, "手机号还不是服务员 ");
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void beforeNetworkRequestStart() {
-//
-//                    }
-//                });
+//                verrifySuccess();
 //            }
 //        });
     }

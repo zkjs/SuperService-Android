@@ -7,6 +7,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.google.gson.Gson;
@@ -43,11 +44,11 @@ import java.util.HashMap;
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class ZoneActivity extends Activity implements SwipeRefreshLayout.OnRefreshListener,RefreshLayout.OnLoadListener {
+public class ZoneActivity extends Activity {
 
     private final static String TAG = ZoneActivity.class.getSimpleName();
 
-    private RefreshLayout swipeLayout;
+
     private ListView zoneLv;
     private ZoneAdapter zoneAdapter;
     private View header;
@@ -67,12 +68,7 @@ public class ZoneActivity extends Activity implements SwipeRefreshLayout.OnRefre
 
     private void initView() {
         header = getLayoutInflater().inflate(R.layout.header, null);
-        swipeLayout = (RefreshLayout) findViewById(R.id.swipe_container);
-        swipeLayout.setOnRefreshListener(this);
-
-
         zoneLv = (ListView)findViewById(R.id.zone_listview);
-
     }
 
     private void initData() {
@@ -98,10 +94,17 @@ public class ZoneActivity extends Activity implements SwipeRefreshLayout.OnRefre
 
             @Override
             public void onNetworkResponseSucceed(NetResponse result) {
+                super.onNetworkResponseSucceed(result);
                 Log.i(TAG, "result.rawResult:" + result.rawResult);
-                ArrayList<ZoneBean> zoneList = new Gson().fromJson(result.rawResult, new TypeToken< ArrayList<ZoneBean>>(){}.getType());
-                zoneAdapter = new ZoneAdapter(ZoneActivity.this, zoneList);
-                zoneLv.setAdapter(zoneAdapter);
+                try{
+                    ArrayList<ZoneBean> zoneList = new Gson().fromJson(result.rawResult, new TypeToken< ArrayList<ZoneBean>>(){}.getType());
+                    zoneAdapter = new ZoneAdapter(ZoneActivity.this, zoneList);
+                    zoneLv.setAdapter(zoneAdapter);
+                    getMyZone();
+                }catch (Exception e){
+                    Log.e(TAG,e.getMessage());
+                }
+
             }
 
             @Override
@@ -113,9 +116,56 @@ public class ZoneActivity extends Activity implements SwipeRefreshLayout.OnRefre
         netRequestTask.execute();
     }
 
+    //服务员获取自己的通知区域
+    private void getMyZone(){
+        NetRequest netRequest = new NetRequest(ProtocolUtil.getMySemplocationUrl());
+        HashMap<String,String> bizMap = new HashMap<String,String>();
+        bizMap.put("salesid",userVo.getUserId());
+        bizMap.put("token",userVo.getToken());
+        bizMap.put("shopid",userVo.getShopId());
+        netRequest.setBizParamMap(bizMap);
+        NetRequestTask netRequestTask = new NetRequestTask(this,netRequest, NetResponse.class);
+        netRequestTask.methodType = MethodType.PUSH;
+        netRequestTask.setNetRequestListener(new ExtNetRequestListener(this) {
+            @Override
+            public void onNetworkRequestError(int errorCode, String errorMessage) {
+                Log.i(TAG, "errorCode:" + errorCode);
+                Log.i(TAG, "errorMessage:" + errorMessage);
+            }
+
+            @Override
+            public void onNetworkRequestCancelled() {
+
+            }
+
+            @Override
+            public void onNetworkResponseSucceed(NetResponse result) {
+                super.onNetworkResponseSucceed(result);
+                Log.i(TAG, "result.rawResult:" + result.rawResult);
+                try{
+                    ArrayList<ZoneBean> zoneList = new Gson().fromJson(result.rawResult, new TypeToken< ArrayList<ZoneBean>>(){}.getType());
+                   if(zoneList.size() > 0){
+                       zoneAdapter.setCheckedZone(zoneList);
+                       zoneAdapter.notifyDataSetChanged();
+                   }
+                }catch (Exception e){
+                    Log.e(TAG,e.getMessage());
+                }
+
+            }
+
+            @Override
+            public void beforeNetworkRequestStart() {
+
+            }
+        });
+        netRequestTask.isShowLoadingDialog = true;
+        netRequestTask.execute();
+    }
+
+
     private void initListener() {
-        swipeLayout.setOnRefreshListener(this);
-        swipeLayout.setOnLoadListener(this);
+
 
         findViewById(R.id.back_btn).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -140,6 +190,17 @@ public class ZoneActivity extends Activity implements SwipeRefreshLayout.OnRefre
                 semplocationupdate();
             }
         });
+
+        zoneLv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                boolean b =  zoneAdapter.getZoneList().get(i).isHasAdd();
+                zoneAdapter.getZoneList().get(i).setHasAdd(!b);
+                zoneAdapter.notifyDataSetChanged();
+            }
+        });
+
+
     }
 
 /*
@@ -194,30 +255,5 @@ public class ZoneActivity extends Activity implements SwipeRefreshLayout.OnRefre
     }
 
 
-    @Override
-    public void onRefresh() {
-        swipeLayout.postDelayed(new Runnable() {
 
-            @Override
-            public void run() {
-                // 更新数据
-                // 更新完后调用该方法结束刷新
-                swipeLayout.setRefreshing(false);
-            }
-        }, 1000);
-
-    }
-
-    @Override
-    public void onLoad() {
-        swipeLayout.postDelayed(new Runnable() {
-
-            @Override
-            public void run() {
-                // 更新数据
-                // 更新完后调用该方法结束刷新
-                swipeLayout.setLoading(false);
-            }
-        }, 1000);
-    }
 }

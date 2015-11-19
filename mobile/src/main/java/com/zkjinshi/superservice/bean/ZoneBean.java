@@ -28,6 +28,16 @@ public class ZoneBean {
     private String locdesc;
     private int status;
     private String remark;
+    private boolean hasAdd = false;
+
+    public boolean isHasAdd() {
+        return hasAdd;
+    }
+
+    public void setHasAdd(boolean hasAdd) {
+        this.hasAdd = hasAdd;
+    }
+
 
     public int getLocid() {
         return locid;

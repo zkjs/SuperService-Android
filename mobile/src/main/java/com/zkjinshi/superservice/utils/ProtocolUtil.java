@@ -55,6 +55,16 @@ public class ProtocolUtil {
     }
 
     /**
+     * 服务员获取自己的通知区域
+     * @return
+     */
+    public static String getMySemplocationUrl(){
+        return ConfigUtil.getInst().getHttpDomain()+"semp/semplocation";
+    }
+
+
+
+    /**
      * 获取商品列表
      * @return
      */

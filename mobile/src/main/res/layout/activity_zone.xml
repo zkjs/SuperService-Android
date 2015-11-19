@@ -33,23 +33,17 @@
                 android:textSize="16sp"
                 android:text="选择您的通知区域，客人到达该区域时，您将会收到通知，且要做出处理"/>
         </LinearLayout>
-        <com.zkjinshi.superservice.view.RefreshLayout
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/swipe_container"
+
+        <ListView
+            android:layout_marginBottom="50dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="50dp">
-            <ListView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:fadingEdge="none"
-                android:divider="#f0edf0"
-                android:dividerHeight="1dp"
-                android:fadeScrollbars="true"
-                android:id="@+id/zone_listview">
-            </ListView>
-
-        </com.zkjinshi.superservice.view.RefreshLayout>
+            android:fadingEdge="none"
+            android:divider="#f0edf0"
+            android:dividerHeight="1dp"
+            android:fadeScrollbars="true"
+            android:id="@+id/zone_listview">
+        </ListView>
 
     </LinearLayout>
 
