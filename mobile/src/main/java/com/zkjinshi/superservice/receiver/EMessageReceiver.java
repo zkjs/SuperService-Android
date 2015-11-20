@@ -34,32 +34,8 @@ public class EMessageReceiver extends BroadcastReceiver {
                 clientBase.setUserid(userID);
                 clientBase.setUsername(userName);
                 clientBase.setPhone(mobileNo);
-
+                //提示用户邀请码被绑定
                 NotificationHelper.getInstance().showNotification(context, clientBase, datetime);
-
-                ClientBindController.getInstance().bindClient(
-                        clientBase,
-                        new ExtNetRequestListener() {
-                            @Override
-                            public void onNetworkRequestError(int errorCode, String errorMessage) {
-                                super.onNetworkRequestError(errorCode, errorMessage);
-                            }
-
-                            @Override
-                            public void onNetworkRequestCancelled() {
-                                super.onNetworkRequestCancelled();
-                            }
-
-                            @Override
-                            public void onNetworkResponseSucceed(NetResponse result) {
-                                super.onNetworkResponseSucceed(result);
-                            }
-
-                            @Override
-                            public void beforeNetworkRequestStart() {
-                                super.beforeNetworkRequestStart();
-                            }
-                        });
             }
         }
 

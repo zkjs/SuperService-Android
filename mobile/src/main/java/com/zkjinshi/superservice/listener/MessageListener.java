@@ -171,55 +171,6 @@ public class MessageListener extends Handler implements IMessageListener {
                 }
             }
 
-//            /** 客户使用邀请码成功 */
-//            if (ProtocolMSG.MSG_UserDefine == type) {
-//                if(gson == null){
-//                    gson = new Gson();
-//                }
-//                MsgUserDefine msgUserDefine = gson.fromJson(message, MsgUserDefine.class);
-//                if(msgUserDefine.getChildtype() == ProtocolMSG.MSG_ChildType_BindInviteCode){
-//                    LogUtil.getInstance().info(LogLevel.INFO, msgUserDefine.toString());
-//                    LogUtil.getInstance().info(LogLevel.INFO, "客户使用邀请码成功:" + msgUserDefine.getPushalert());
-//                    NotificationHelper.getInstance().showNotification(ServiceApplication.getContext(), msgUserDefine);
-//
-//                    String inviteCodeEntityJson = msgUserDefine.getContent();
-//                    if(gson == null){
-//                        gson = new Gson();
-//                    }
-//
-//                    InviteCodeEntity inviteCodeEntity = gson.fromJson(inviteCodeEntityJson,
-//                                                                    InviteCodeEntity.class);
-//
-//                    ClientBaseBean clientBase = new ClientBaseBean();
-//                    clientBase.setUserid(inviteCodeEntity.getUserid());
-//                    clientBase.setUsername(inviteCodeEntity.getUsername());
-//                    clientBase.setPhone(inviteCodeEntity.getPhone_number());
-//
-//                    ClientBindController.getInstance().bindClient(clientBase, new ExtNetRequestListener() {
-//                        @Override
-//                        public void onNetworkRequestError(int errorCode, String errorMessage) {
-//                            super.onNetworkRequestError(errorCode, errorMessage);
-//                        }
-//
-//                        @Override
-//                        public void onNetworkRequestCancelled() {
-//                            super.onNetworkRequestCancelled();
-//                        }
-//
-//                        @Override
-//                        public void onNetworkResponseSucceed(NetResponse result) {
-//                            super.onNetworkResponseSucceed(result);
-//                        }
-//
-//                        @Override
-//                        public void beforeNetworkRequestStart() {
-//                            super.beforeNetworkRequestStart();
-//                        }
-//                    });
-//                }
-//
-//            }
-
             /** 获取用户离线消息 */
             if (ProtocolMSG.MSG_OfflineMssage_RSP == type) {
                 if(gson == null){
