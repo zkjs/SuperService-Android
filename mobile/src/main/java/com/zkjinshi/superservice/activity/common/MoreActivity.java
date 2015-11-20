@@ -19,6 +19,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.zkjinshi.base.util.DeviceUtils;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.base.util.ImageUtil;
@@ -71,7 +73,7 @@ public class MoreActivity extends FragmentActivity implements MultiImageSelector
     public static int REQUEST_IMAGE = 1;
     private String picPath = null;
     private UserVo userVo = null;
-
+    SempLoginBean sempLoginbean = null;
 
     @Override
     public void onSingleImageSelected(String path) {
@@ -101,9 +103,9 @@ public class MoreActivity extends FragmentActivity implements MultiImageSelector
     protected void onCreate(Bundle savedInstanceState) {
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
-        userVo = UserDBUtil.getInstance().queryUserById(CacheUtil.getInstance().getUserId());
         //屏蔽输入法自动弹出
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
         setContentView(R.layout.activity_more);
         initFragment();
         initView();
@@ -129,12 +131,18 @@ public class MoreActivity extends FragmentActivity implements MultiImageSelector
     }
 
     private void initData() {
+        DBOpenHelper.DB_NAME = CacheUtil.getInstance().getUserId() + ".db";
+        userVo = UserDBUtil.getInstance().queryUserById(CacheUtil.getInstance().getUserId());
+        if(getIntent().getSerializableExtra("sempLoginbean") != null){
+            sempLoginbean = (SempLoginBean)getIntent().getSerializableExtra("sempLoginbean");
+        }
         nameTv.setText(CacheUtil.getInstance().getUserName());
         if(userVo.getSex() == SexType.FEMALE){
             sexCbx.setChecked(false);
         }else{
             sexCbx.setChecked(true);
         }
+        ImageLoader.getInstance().displayImage(CacheUtil.getInstance().getUserPhotoUrl(), avatarCiv);
     }
 
     private void initListener() {
@@ -175,8 +183,10 @@ public class MoreActivity extends FragmentActivity implements MultiImageSelector
     * */
     private void sempupdate() {
         if(picPath == null){
-            DialogUtil.getInstance().showToast(this,"请上传头像");
-            return;
+            if(sempLoginbean!= null && TextUtils.isEmpty(sempLoginbean.getUrl())){
+                DialogUtil.getInstance().showToast(this,"请上传头像");
+                return;
+            }
         }
 
         String input = inputNameEt.getText().toString();
@@ -191,11 +201,11 @@ public class MoreActivity extends FragmentActivity implements MultiImageSelector
         bizMap.put("sex", sex);
         netRequest.setBizParamMap(bizMap);
 
-        HashMap<String,File> fileMap = new HashMap<String, File>();
-        fileMap.put("file", new File(picPath));
-        netRequest.setFileMap(fileMap);
-
-
+        if(picPath != null){
+            HashMap<String,File> fileMap = new HashMap<String, File>();
+            fileMap.put("file", new File(picPath));
+            netRequest.setFileMap(fileMap);
+        }
         NetRequestTask netRequestTask = new NetRequestTask(this,netRequest, NetResponse.class);
         netRequestTask.methodType = MethodType.PUSH;
         netRequestTask.setNetRequestListener(new ExtNetRequestListener(this) {
@@ -217,9 +227,8 @@ public class MoreActivity extends FragmentActivity implements MultiImageSelector
                 if (baseBean.isSet()) {
                     userVo.setSex(sexCbx.isChecked() ? SexType.MALE : SexType.FEMALE);
                     userVo.setUserName(name);
-                    String avatarUrl = Constants.AVATAR_PRE_URL+userVo.getUserId()+".jpg";
+                    String avatarUrl = Constants.GET_USER_AVATAR+userVo.getUserId()+".jpg";
                     userVo.setPhotoUrl(avatarUrl);
-
                     CacheUtil.getInstance().saveUserPhotoUrl(avatarUrl);
                     CacheUtil.getInstance().setUserName(name);
                     UserDBUtil.getInstance().addUser(userVo);

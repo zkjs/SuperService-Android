@@ -160,7 +160,7 @@ public class SplashActivity extends Activity{
                         TeamContactsController.getInstance().getTeamContacts(SplashActivity.this, userID, token, shopiD, null);//获取团队列表
                         UserVo userVo = UserFactory.getInstance().buildUserVo(sempLoginbean);
                         UserDBUtil.getInstance().addUser(userVo);
-                        String avatarUrl = Constants.AVATAR_PRE_URL+userVo.getUserId()+".jpg";
+                        String avatarUrl = Constants.GET_USER_AVATAR+userVo.getUserId()+".jpg";
                         CacheUtil.getInstance().saveUserPhotoUrl(avatarUrl);
                     }
                 }

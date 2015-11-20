@@ -142,9 +142,10 @@ public class LoginActivity extends Activity implements VerifyPhoneControler.Succ
 
                     UserVo userVo = UserFactory.getInstance().buildUserVo(sempLoginbean);
                     UserDBUtil.getInstance().addUser(userVo);
-                    String avatarUrl = Constants.AVATAR_PRE_URL+userVo.getUserId()+".jpg";
+                    String avatarUrl = Constants.GET_USER_AVATAR+userVo.getUserId()+".jpg";
                     CacheUtil.getInstance().saveUserPhotoUrl(avatarUrl);
                     Intent intent = new Intent(LoginActivity.this, MoreActivity.class);
+                    intent.putExtra("sempLoginbean",sempLoginbean);
                     startActivity(intent);
                     finish();
                     overridePendingTransition(R.anim.activity_new, R.anim.activity_out);

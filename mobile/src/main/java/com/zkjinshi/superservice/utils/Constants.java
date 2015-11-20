@@ -42,8 +42,6 @@ public class Constants {
     public final static String HTTP_URL = ConfigUtil.getInst().getHttpDomain();
 
     //头像前缀
-    public static final String AVATAR_PRE_URL = "http://api.zkjinshi.com/uploads/users/";
-
     public final static String GET_USER_AVATAR    = HTTP_URL + "uploads/users/";
 
     public static final String EXTRA_VOICE_REPLY = "extra_voice_reply";//语音回复
