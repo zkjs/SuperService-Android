@@ -34,6 +34,8 @@ public class Constants {
     public static final String EXTRA_SHOP_ID = "shopId";
     public static final String EXTRA_SHOP_NAME = "shopName";
     public static final String MSG_TXT_EXT_TYPE= "extType";
+    public static final String MESSAGE_ATTR_IS_VOICE_CALL = "is_voice_call";
+    public static final String MESSAGE_ATTR_IS_VIDEO_CALL = "is_video_call";
 
     //协议包返回结果
     public final static int PROTOCAL_SUCCESS = 0;

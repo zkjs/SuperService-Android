@@ -163,7 +163,7 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
         facePagerManager.init();
         //初始化更多框
         moreViewPagerManager = new MoreViewPagerManager(this, moreLinearLayout);
-        moreViewPagerManager.init();
+        moreViewPagerManager.init(userId);
         //初始化录音管理器
         voiceRecordManager = new VoiceRecordManager(this, animAreaLayout, cancelAreaLayout);
         voiceRecordManager.init();

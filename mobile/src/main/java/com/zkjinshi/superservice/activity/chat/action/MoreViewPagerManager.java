@@ -16,8 +16,12 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
+import android.widget.Toast;
 
+import com.easemob.chat.EMChatManager;
 import com.zkjinshi.superservice.R;
+import com.zkjinshi.superservice.activity.chat.VideoCallActivity;
+import com.zkjinshi.superservice.activity.chat.VoiceCallActivity;
 import com.zkjinshi.superservice.adapter.MoreAdapter;
 import com.zkjinshi.superservice.adapter.MorePageAdapter;
 import com.zkjinshi.superservice.utils.CacheUtil;
@@ -47,8 +51,8 @@ public class MoreViewPagerManager extends Handler {
 
 	private static final int CHOOSE_IMAGE = 0;// 图片
 	private static final int TAKE_PHOTO = 1;// 拍照
-	private static final int LITTLE_VIDEO = 2;// 小视频
-	private static final int MY_COLLECT = 3;// 收藏
+	private static final int VOICE_CALL = 2;// 语音电话
+	private static final int VIDEO_CALL = 3;// 视频电话
 	private static final int CALL_CARD = 4;// 名片
 	private static final int MY_LOCATION = 5;// 位置
 	private static final int CHOOSE_FILE = 6;// 文件
@@ -60,12 +64,15 @@ public class MoreViewPagerManager extends Handler {
 	
 	private String picName;
 
+	private String userId;
+
 	public MoreViewPagerManager(Context context, LinearLayout moreLinearLayout) {
 		this.context = context;
 		this.moreLinearLayout = moreLinearLayout;
 	}
 
-	public void init() {
+	public void init(String userId) {
+		this.userId = userId;
 		initView((Activity) context);
 		initMorePage();
 	}
@@ -143,6 +150,24 @@ public class MoreViewPagerManager extends Handler {
 					((Activity)context).startActivityForResult(i, Constants.FLAG_CHOOSE_PHOTO);
 					}
 					break;
+				case VOICE_CALL: {// 语音通话
+						if (!EMChatManager.getInstance().isConnected()) {
+							Toast.makeText(context, R.string.not_connect_to_server, Toast.LENGTH_SHORT).show();
+						} else {
+							context.startActivity(new Intent(context, VoiceCallActivity.class).putExtra("username", userId)
+									.putExtra("isComingCall", false));
+						}
+					}
+					break;
+				case VIDEO_CALL: {// 视频通话
+						if (!EMChatManager.getInstance().isConnected())
+							Toast.makeText(context, R.string.not_connect_to_server, Toast.LENGTH_SHORT).show();
+						else {
+							context.startActivity(new Intent(context, VideoCallActivity.class).putExtra("username", userId)
+									.putExtra("isComingCall", false));
+						}
+					}
+					break;
 				default:
 					break;
 				}
@@ -156,6 +181,7 @@ public class MoreViewPagerManager extends Handler {
 
 			@Override
 			public void run() {
+				// TODO Auto-generated method stub
 				moreLinearLayout.setVisibility(View.VISIBLE);
 			}
 		}, 100);
