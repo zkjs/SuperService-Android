@@ -52,7 +52,7 @@ public class ClientFactory {
         String likeDesc      = client.getLike_desc();
         String tabooDesc     = client.getTaboo_desc();
         String otherDesc     = client.getOther_desc();
-        long  created       = client.getCreated();
+        String created       = client.getCreated();
         long  modified      = client.getModified();
         String username      = client.getUsername();
         String phone         = client.getPhone();
@@ -116,7 +116,7 @@ public class ClientFactory {
             client.setLike_desc(cursor.getString(9));
             client.setTaboo_desc(cursor.getString(10));
             client.setOther_desc(cursor.getString(11));
-            client.setCreated(cursor.getLong(12));
+            client.setCreated(cursor.getString(12));
             client.setModified(cursor.getLong(13));
             client.setUsername(cursor.getString(14));
             client.setPhone(cursor.getString(15));
@@ -213,7 +213,7 @@ public class ClientFactory {
         String likeDesc      = client.getLike_desc();
         String tabooDesc     = client.getTaboo_desc();
         String otherDesc     = client.getOther_desc();
-        long  created       = client.getCreated();
+        String created       = client.getCreated();
         long  modified      = client.getModified();
         String username      = client.getUsername();
         String phone         = client.getPhone();

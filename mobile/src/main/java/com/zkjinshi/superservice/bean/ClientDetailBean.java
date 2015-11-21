@@ -26,7 +26,7 @@ public class ClientDetailBean implements Serializable{
     private String like_desc;
     private String taboo_desc;
     private String other_desc;
-    private long   created;
+    private String created;
     private long   modified;
     private String username;
     private String phone;
@@ -135,11 +135,11 @@ public class ClientDetailBean implements Serializable{
         this.other_desc = other_desc;
     }
 
-    public long getCreated() {
+    public String getCreated() {
         return created;
     }
 
-    public void setCreated(long created) {
+    public void setCreated(String created) {
         this.created = created;
     }
 
