@@ -123,7 +123,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 if(!TextUtils.isEmpty(fromName) && !fromName.equals(CacheUtil.getInstance().getUserName())){
                     ((ViewHolder) holder).titleTv.setText(fromName);
                 }else{
-                    if(!TextUtils.isEmpty(toName)){
+                    if(!TextUtils.isEmpty(toName) && !toName.equals(CacheUtil.getInstance().getUserName())){
                         ((ViewHolder) holder).titleTv.setText(toName);
                     }
                 }

@@ -133,7 +133,9 @@ public class CallActivity extends FragmentActivity {
         if (!isInComingCall) { // 打出去的通话
             message = EMMessage.createSendMessage(EMMessage.Type.TXT);
             message.setReceipt(username);
-            message.setAttribute("toName", toName);
+            if(!TextUtils.isEmpty(toName)){
+                message.setAttribute("toName", toName);
+            }
             message.setAttribute("fromName",CacheUtil.getInstance().getUserName());
 
         } else {
@@ -191,8 +193,10 @@ public class CallActivity extends FragmentActivity {
         message.addBody(txtBody);
         message.setMsgId(msgid);
 
-        // 保存
-        EMChatManager.getInstance().saveMessage(message, false);
+        if(!isInComingCall){
+            // 保存
+            EMChatManager.getInstance().saveMessage(message, false);
+        }
     }
 
     enum CallingState {
