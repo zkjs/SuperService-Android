@@ -6,12 +6,14 @@ import android.media.Ringtone;
 import android.media.SoundPool;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.text.TextUtils;
 
 import com.easemob.chat.EMCallStateChangeListener;
 import com.easemob.chat.EMChatManager;
 import com.easemob.chat.EMMessage;
 import com.easemob.chat.TextMessageBody;
 import com.zkjinshi.superservice.R;
+import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.vo.TxtExtType;
 
@@ -32,11 +34,18 @@ public class CallActivity extends FragmentActivity {
     protected Ringtone ringtone;
     protected int outgoing;
     protected EMCallStateChangeListener callStateListener;
+    protected String toName;//针对用户是发送方
 
+    private void initData(){
+        if(null != getIntent() && null != getIntent().getStringExtra("toName")){
+            toName = getIntent().getStringExtra("toName");
+        }
+    }
 
     @Override
     protected void onCreate(Bundle arg0) {
         super.onCreate(arg0);
+        initData();
         audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
     }
 
@@ -124,10 +133,17 @@ public class CallActivity extends FragmentActivity {
         if (!isInComingCall) { // 打出去的通话
             message = EMMessage.createSendMessage(EMMessage.Type.TXT);
             message.setReceipt(username);
+            message.setAttribute("toName", toName);
+            message.setAttribute("fromName",CacheUtil.getInstance().getUserName());
+
         } else {
             message = EMMessage.createReceiveMessage(EMMessage.Type.TXT);
             message.setFrom(username);
+            message.setAttribute("toName", CacheUtil.getInstance().getUserName());
+            message.setAttribute("fromName", "");
         }
+        message.setAttribute("shopId",CacheUtil.getInstance().getShopID());
+        message.setAttribute("shopName",CacheUtil.getInstance().getShopFullName());
 
         String st1 = getResources().getString(R.string.call_duration);
         String st2 = getResources().getString(R.string.Refused);
