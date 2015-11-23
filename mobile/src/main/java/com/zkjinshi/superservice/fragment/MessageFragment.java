@@ -81,8 +81,9 @@ public class MessageFragment extends Fragment implements IEMessageObserver {
                 intent.putExtra(Constants.EXTRA_USER_ID, username);
                 if (null != message) {
                     try {
-                        String shopId = message.getStringAttribute("shopId");
-                        String shopName = message.getStringAttribute("shopName");
+                        intent.putExtra(Constants.EXTRA_FROM_NAME, CacheUtil.getInstance().getUserName());
+                        String shopId = CacheUtil.getInstance().getShopID();
+                        String shopName = CacheUtil.getInstance().getShopFullName();
                         String fromName = message.getStringAttribute("fromName");
                         String toName = message.getStringAttribute("toName");
                         if (!TextUtils.isEmpty(shopId)) {
@@ -96,7 +97,6 @@ public class MessageFragment extends Fragment implements IEMessageObserver {
                         }else{
                             intent.putExtra(Constants.EXTRA_TO_NAME, fromName);
                         }
-                        intent.putExtra(Constants.EXTRA_FROM_NAME, CacheUtil.getInstance().getUserName());
                     } catch (EaseMobException e) {
                         e.printStackTrace();
                     }
