@@ -38,6 +38,17 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:paddingBottom="20dp">
+            <!--订单号-->
+            <View style="@style/GrayLineBorder"></View>
+            <com.zkjinshi.superservice.view.ItemUserSettingView
+                android:id="@+id/order_no"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:clickable="true"
+                zkjinshi:itemSettingTitle="订单号"
+                android:background="#ffffff"/>
+            <View style="@style/GrayLineBorder"></View>
             <include layout="@layout/block_grade" />
             <TextView
                 android:layout_width="wrap_content"
@@ -122,6 +133,8 @@
                 </LinearLayout>
             </LinearLayout>
             <View style="@style/GrayLineBorder"></View>
+
+
  <!--房间数量-->
             <View style="@style/GrayLineBorder"
                 android:layout_marginTop="20dp"></View>
@@ -188,7 +201,7 @@
                 android:textSize="16sp"
                 android:layout_marginTop="10dp"
                 android:layout_marginLeft="10dp"
-                android:text="*以下信息请谨慎修改，并征求客户同意"
+                android:text="*以下信息需要客户修改"
                 android:textColor="#03a9f4"/>
 <!--入住人-->
             <View style="@style/GrayLineBorder"

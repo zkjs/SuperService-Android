@@ -73,6 +73,7 @@ public class OrderDealActivity extends Activity {
 
     private ItemUserSettingView mIusvPayType;
     private ItemUserSettingView mIusvRoomNumber;
+    private ItemUserSettingView mIusvOrderNo;
     private TextView mTvTicket;
     private TextView mTvRemark;
     private Button finishBtn;
@@ -185,6 +186,8 @@ public class OrderDealActivity extends Activity {
         mTvDateTips   = (TextView)findViewById(R.id.tv_date_tips);
         mLltDateContainer = (LinearLayout)findViewById(R.id.llt_date_container);
 
+        mIusvOrderNo =  (ItemUserSettingView)findViewById(R.id.order_no);
+
         mIusvRoomNumber = (ItemUserSettingView)findViewById(R.id.aod_room_number);
         addRightIcon(mIusvRoomNumber);
 
@@ -257,9 +260,11 @@ public class OrderDealActivity extends Activity {
         if(TextUtils.isEmpty(reservation_no)){
             editAble = true;
             finishBtn.setText("添加订单");
+            mIusvOrderNo.setTextContent2("---");
         }else{
             //订单状态 默认0可取消订单 1已取消订单 2已确认订单 3已经完成的订单 4正在入住中 5已删除订单
             //支付状态 0未支付,1已支付,3支付一部分,4已退款, 5已挂账
+            mIusvOrderNo.setTextContent2(reservation_no);
             String orderStatus = orderDetailBean.getRoom().getStatus();
             String payStatus = orderDetailBean.getRoom().getPay_status();
             if(orderStatus.equals("0") || orderStatus.equals("2")){
