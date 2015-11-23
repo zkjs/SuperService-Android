@@ -67,7 +67,8 @@ public class OrderPayActivity  extends Activity implements AdapterView.OnItemCli
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
         //屏蔽输入法自动弹出
-        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+       // this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE | WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         setContentView(R.layout.activity_order_pay);
         orderDetailBean = (OrderDetailBean)getIntent().getSerializableExtra("orderDetailBean");
 
@@ -129,15 +130,7 @@ public class OrderPayActivity  extends Activity implements AdapterView.OnItemCli
             }
         });
 
-        findViewById(R.id.back_btn).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-            }
-        });
-
-        findViewById(R.id.go_btn).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.header_confirm_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (selelectId == 0) {
@@ -158,9 +151,10 @@ public class OrderPayActivity  extends Activity implements AdapterView.OnItemCli
                 setResult(RESULT_OK, data);
                 finish();
                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-
             }
         });
+
+
     }
 
     /**
