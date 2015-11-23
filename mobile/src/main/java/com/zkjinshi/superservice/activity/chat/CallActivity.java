@@ -13,9 +13,17 @@ import com.easemob.chat.EMChatManager;
 import com.easemob.chat.EMMessage;
 import com.easemob.chat.TextMessageBody;
 import com.zkjinshi.superservice.R;
+import com.zkjinshi.superservice.net.MethodType;
+import com.zkjinshi.superservice.net.NetRequest;
+import com.zkjinshi.superservice.net.NetRequestListener;
+import com.zkjinshi.superservice.net.NetRequestTask;
+import com.zkjinshi.superservice.net.NetResponse;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.Constants;
+import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.vo.TxtExtType;
+
+import java.util.HashMap;
 
 /**
  * 开发者：JimmyZhang
@@ -35,6 +43,7 @@ public class CallActivity extends FragmentActivity {
     protected int outgoing;
     protected EMCallStateChangeListener callStateListener;
     protected String toName;//针对用户是发送方
+    protected String fromName;//针对用户不是发送方
 
     private void initData(){
         if(null != getIntent() && null != getIntent().getStringExtra("toName")){
@@ -142,7 +151,9 @@ public class CallActivity extends FragmentActivity {
             message = EMMessage.createReceiveMessage(EMMessage.Type.TXT);
             message.setFrom(username);
             message.setAttribute("toName", CacheUtil.getInstance().getUserName());
-            message.setAttribute("fromName", "");
+            if(!TextUtils.isEmpty(fromName)){
+                message.setAttribute("fromName", fromName);
+            }
         }
         message.setAttribute("shopId",CacheUtil.getInstance().getShopID());
         message.setAttribute("shopName",CacheUtil.getInstance().getShopFullName());
@@ -193,13 +204,31 @@ public class CallActivity extends FragmentActivity {
         message.addBody(txtBody);
         message.setMsgId(msgid);
 
-        if(!isInComingCall){
-            // 保存
-            EMChatManager.getInstance().saveMessage(message, false);
-        }
+        // 保存
+        EMChatManager.getInstance().saveMessage(message, false);
+
     }
 
     enum CallingState {
         CANCED, NORMAL, REFUESD, BEREFUESD, UNANSWERED, OFFLINE, NORESPONSE, BUSY
+    }
+
+    /**
+     * 获取用户信息
+     * @param context
+     * @param userId
+     * @param netRequestListener
+     */
+    protected void requestUserTask(final Context context,String userId,NetRequestListener netRequestListener){
+        HashMap<String,String> bizMap = new HashMap<>();
+        bizMap.put("salesid",CacheUtil.getInstance().getUserId());
+        bizMap.put("token",CacheUtil.getInstance().getToken());
+        bizMap.put("find_userid",userId);
+        NetRequest netRequest = new NetRequest(ProtocolUtil.getUserInfoUrl());
+        netRequest.setBizParamMap(bizMap);
+        NetRequestTask netRequestTask = new NetRequestTask(context,netRequest, NetResponse.class);
+        netRequestTask.methodType = MethodType.PUSH;
+        netRequestTask.setNetRequestListener(netRequestListener);
+        netRequestTask.execute();
     }
 }
