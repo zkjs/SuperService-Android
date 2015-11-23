@@ -27,6 +27,8 @@ import com.easemob.EMNotifierEvent;
 import com.easemob.chat.EMChatManager;
 import com.easemob.chat.EMGroupManager;
 import com.google.gson.Gson;
+import com.zkjinshi.base.log.LogLevel;
+import com.zkjinshi.base.log.LogUtil;
 import com.zkjinshi.base.net.core.WebSocketManager;
 import com.zkjinshi.base.net.protocol.ProtocolMSG;
 import com.zkjinshi.base.util.DialogUtil;
@@ -191,7 +193,7 @@ public class MainActivity extends AppCompatActivity{
             @Override
             public void onClick(View view) {
                 //TODO: 暂时进入邀请码界面
-                Intent  goInviteCodes = new Intent(MainActivity.this, InviteCodesActivity.class);
+                Intent goInviteCodes = new Intent(MainActivity.this, InviteCodesActivity.class);
                 startActivity(goInviteCodes);
             }
         });
@@ -204,8 +206,7 @@ public class MainActivity extends AppCompatActivity{
                 final CustomExtDialog.Builder customExtBuilder = new CustomExtDialog.Builder(MainActivity.this);
                 customExtBuilder.setTitle("退出");
                 customExtBuilder.setMessage("确定退出该账户？");
-                customExtBuilder.setCheckMessage("同时退出该公司");
-                customExtBuilder.setGravity(Gravity.LEFT);
+                customExtBuilder.setGravity(Gravity.CENTER);
                 customExtBuilder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -216,15 +217,19 @@ public class MainActivity extends AppCompatActivity{
                 customExtBuilder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-
-                        if(customExtBuilder.isMessageChecked()){
-                            //TODO: 加入退出本公司的操作
-                        }
+                        //环信接口退出
+                        EasemobIMHelper.getInstance().logout();
+                        //http接口退出
+                        String userID = CacheUtil.getInstance().getUserId();
+                        logoutHttp(userID);
+                        //熊推接口退出
                         WebSocketManager.getInstance().logoutIM(ServiceApplication.getContext());
+                        //修改登录状态
                         CacheUtil.getInstance().setLogin(false);
                         startActivity(new Intent(MainActivity.this, LoginActivity.class));
                         finish();
                         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+
                     }
                 });
                 customExtBuilder.create().show();
@@ -325,7 +330,7 @@ public class MainActivity extends AppCompatActivity{
 
     protected void onDestroy(){
         super.onDestroy();
-        Log.i(TAG,"protected void onDestroy");
+        Log.i(TAG, "protected void onDestroy");
         mainActivityController.clearImageChache();
     }
 
@@ -398,6 +403,43 @@ public class MainActivity extends AppCompatActivity{
 
             }
         });
+    }
+
+    /**
+     * 断开用户登录连接
+     */
+    private void logoutHttp(String userID) {
+        String logoutUrl = ProtocolUtil.getLogoutUrl(userID);
+        Log.i(TAG, logoutUrl);
+        NetRequest netRequest = new NetRequest(logoutUrl);
+        NetRequestTask netRequestTask = new NetRequestTask(MainActivity.this, netRequest, NetResponse.class);
+        netRequestTask.methodType = MethodType.GET;
+        netRequestTask.setNetRequestListener(new ExtNetRequestListener(MainActivity.this) {
+            @Override
+            public void onNetworkRequestError(int errorCode, String errorMessage) {
+                Log.i(TAG, "errorCode:" + errorCode);
+                Log.i(TAG, "errorMessage:" + errorMessage);
+                LogUtil.getInstance().info(LogLevel.ERROR, "http退出失败");
+            }
+
+            @Override
+            public void onNetworkRequestCancelled() {
+            }
+
+            @Override
+            public void onNetworkResponseSucceed(NetResponse result) {
+                super.onNetworkResponseSucceed(result);
+                Log.i(TAG, "result.rawResult:" + result.rawResult);
+                LogUtil.getInstance().info(LogLevel.ERROR, "http退出成功");
+            }
+
+            @Override
+            public void beforeNetworkRequestStart() {
+
+            }
+        });
+        netRequestTask.isShowLoadingDialog = false;
+        netRequestTask.execute();
     }
 
 }
