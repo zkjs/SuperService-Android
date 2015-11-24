@@ -4,15 +4,12 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.text.TextUtils;
 
 import com.zkjinshi.base.log.LogLevel;
 import com.zkjinshi.base.log.LogUtil;
 import com.zkjinshi.superservice.ServiceApplication;
 import com.zkjinshi.superservice.factory.ShopEmployeeFactory;
 import com.zkjinshi.superservice.vo.ShopEmployeeVo;
-
-import org.dom4j.Text;
 
 import java.util.ArrayList;
 import java.util.List;
