@@ -22,6 +22,7 @@ import com.zkjinshi.base.net.util.ImCacheUtil;
 import com.zkjinshi.base.util.BaseContext;
 import com.zkjinshi.base.util.DeviceUtils;
 import com.zkjinshi.superservice.activity.chat.action.MessageSendFailChecker;
+import com.zkjinshi.superservice.emchat.EasemobIMHelper;
 import com.zkjinshi.superservice.receiver.ECallReceiver;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.EmotionUtil;
@@ -88,6 +89,7 @@ public class ServiceApplication extends Application{
         }
         //注册通话广播接收者
         registerReceiver(callReceiver, callFilter);
+        EasemobIMHelper.getInstance().initConnectionListener();
     }
 
     public void initContext(){
