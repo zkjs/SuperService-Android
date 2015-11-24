@@ -64,7 +64,7 @@ public class NoticeFragment extends Fragment implements IMessageObserver{
 
     public static final int NOTICE_PAGE_SIZE = 5;
     public static final int REQUEST_PAGE_SIZE = 10;
-
+;
     private Activity activity;
     private RecyclerView notityRecyclerView,moreRecyclerView;
     private LinearLayoutManager notifyLayoutManager;

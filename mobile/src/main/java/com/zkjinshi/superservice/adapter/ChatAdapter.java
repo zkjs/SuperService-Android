@@ -44,6 +44,7 @@ import com.zkjinshi.base.util.ClipboardUtil;
 import com.zkjinshi.base.util.ImageUtil;
 import com.zkjinshi.base.util.TimeUtil;
 import com.zkjinshi.superservice.R;
+import com.zkjinshi.superservice.activity.chat.TranspondActivity;
 import com.zkjinshi.superservice.activity.order.OrderDealActivity;
 import com.zkjinshi.superservice.bean.BookOrderBean;
 import com.zkjinshi.superservice.factory.OrderFactory;
@@ -409,6 +410,17 @@ public class ChatAdapter extends BaseAdapter {
                             context.startActivity(orderAdd);
                         }
                     });
+                    if (!isDelEnabled) {
+                        vh.contentLayout
+                                .setOnLongClickListener(new View.OnLongClickListener() {
+
+                                    @Override
+                                    public boolean onLongClick(View v) {
+                                        showChildQuickActionBar(v, isComMsg, position);
+                                        return true;
+                                    }
+                                });
+                    }
                 }
             } catch (EaseMobException e) {
                 e.printStackTrace();
@@ -711,33 +723,57 @@ public class ChatAdapter extends BaseAdapter {
                                          final boolean isComMsg, final int position) {
         QuickAction quickAction = new QuickAction(context,
                 QuickAction.HORIZONTAL);
-        EMMessage message = messageList.get(position);
+        EMMessage message = (EMMessage) view
+                .getTag();
+        int extType = 0;
         if(null != message){
             EMMessage.Type msgType = message.getType();
-            if (msgType.equals(EMMessage.Type.TXT)) {
-                quickAction.addActionItem(new ActionItem(0, "复制"));
-                // quickAction.addActionItem(new ActionItem(1, "删除"));
-                quickAction
-                        .setOnActionItemClickListener(new QuickAction.OnActionItemClickListener() {
-
-                            @Override
-                            public void onItemClick(QuickAction source, int pos,
-                                                    int actionId) {
-                                MessageVo messageChatVo = (MessageVo) view
-                                        .getTag();
-                                switch (actionId) {
-                                    case 0:// 复制
-                                        ClipboardUtil.copy(
-                                                messageChatVo.getContent(), context);
-                                        break;
-                                    case 1:// 删除
-
-                                        break;
-                                }
-                            }
-                        });
-                quickAction.show(view);
+            try {
+                extType = message.getIntAttribute(Constants.MSG_TXT_EXT_TYPE);
+            } catch (EaseMobException e) {
+                e.printStackTrace();
             }
+            TextMessageBody txtBody = (TextMessageBody) message.getBody();
+            final String content = txtBody.getMessage();
+            if (msgType.equals(EMMessage.Type.TXT)) {
+                if(TxtExtType.DEFAULT.getVlaue() == extType) {//普通文本消息
+                    quickAction.addActionItem(new ActionItem(0, "复制"));
+                    quickAction
+                            .setOnActionItemClickListener(new QuickAction.OnActionItemClickListener() {
+
+                                @Override
+                                public void onItemClick(QuickAction source, int pos,
+                                                        int actionId) {
+                                    switch (actionId) {
+                                        case 0:// 复制
+                                            ClipboardUtil.copy(content, context);
+                                            break;
+                                    }
+                                }
+                            });
+                    quickAction.show(view);
+                }else{//卡片消息
+                    quickAction.addActionItem(new ActionItem(0, "转发"));
+                    quickAction
+                            .setOnActionItemClickListener(new QuickAction.OnActionItemClickListener() {
+
+                                @Override
+                                public void onItemClick(QuickAction source, int pos,
+                                                        int actionId) {
+                                    switch (actionId) {
+                                        case 0:// 转发
+                                            final BookOrderBean bookOrder = new Gson().fromJson(content, BookOrderBean.class);
+                                            Intent intent = new Intent(context, TranspondActivity.class);
+                                            intent.putExtra("bookOrder",bookOrder);
+                                            context.startActivity(intent);
+                                            break;
+                                    }
+                                }
+                            });
+                    quickAction.show(view);
+                }
+            }
+
         }
     }
 

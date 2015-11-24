@@ -149,7 +149,6 @@
             android:name=".activity.chat.ChatActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:launchMode="singleTask"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <intent-filter>
                 <action android:name="com.zkjinshi.superservice.intent.action.RELAY"/>
@@ -322,6 +321,13 @@
             android:screenOrientation="portrait"
             android:launchMode="singleTask"
             android:theme="@style/horizontal_slide" >
+        </activity>
+
+        <activity
+            android:name=".activity.chat.TranspondActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" >
         </activity>
 
     </application>
