@@ -22,6 +22,7 @@ import com.zkjinshi.base.util.TimeUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.order.OrderDealActivity;
 import com.zkjinshi.superservice.bean.OrderBean;
+import com.zkjinshi.superservice.utils.OrderUtil;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.view.CircleImageView;
 import com.zkjinshi.superservice.view.CircleStatusView;
@@ -126,12 +127,18 @@ public class OrderAdapter extends RecyclerView.Adapter {
         if(orderStatus.equals("0")){
             orderStatusStr = "已提交订单";
             holder.leftIcon.setStatus(CircleStatusView.CircleStatus.STATUS_LOADING);
+            if(OrderUtil.isOrderTimeOut(orderBean.getArrival_date())){
+                orderStatusStr = "订单已失效";
+            }
         }else if(orderStatus.equals("1")){
             holder.leftIcon.setStatus(CircleStatusView.CircleStatus.STATUS_FINISH);
             orderStatusStr = "已取消订单";
         }else if(orderStatus.equals("2")){
             holder.leftIcon.setStatus(CircleStatusView.CircleStatus.STATUS_FINISH);
             orderStatusStr = "已确认订单";
+            if(OrderUtil.isOrderTimeOut(orderBean.getArrival_date())){
+                orderStatusStr = "订单已失效";
+            }
         }else if(orderStatus.equals("3")){
             holder.leftIcon.setStatus(CircleStatusView.CircleStatus.STATUS_FINISH);
             orderStatusStr = "已完成订单";
@@ -195,6 +202,8 @@ public class OrderAdapter extends RecyclerView.Adapter {
         }
         holder.contentLayout.setLayoutParams(contentLayoutParams);
     }
+
+
 
     @Override
     public int getItemCount() {
