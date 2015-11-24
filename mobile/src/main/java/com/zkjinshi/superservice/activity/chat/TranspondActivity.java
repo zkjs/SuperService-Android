@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;;
+import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.base.util.DisplayUtil;
 import com.zkjinshi.base.view.CustomDialog;
 import com.zkjinshi.superservice.R;
@@ -147,14 +148,8 @@ public class TranspondActivity extends AppCompatActivity {
                                 mShopEmployeeVos.removeAll(mShopEmployeeVos);
                             }
                             for (ShopEmployeeVo shopEmployeeVo : shopEmployeeVos) {
-                                if (shopEmployeeVo.getEmpid().equals(mUserID)) {
-                                    continue;
-                                }
-
-                                ShopEmployeeDBUtil.getInstance().addShopEmployee(shopEmployeeVo);
                                 shopEmployeeVo.setShop_id(mShopID);
                                 mShopEmployeeVos.add(shopEmployeeVo);
-
                                 empids.add(shopEmployeeVo.getEmpid());
                                 String deptID = shopEmployeeVo.getDept_id() + "";
                                 String deptName = shopEmployeeVo.getDept_name();
@@ -164,15 +159,11 @@ public class TranspondActivity extends AppCompatActivity {
                                 } else {
                                     sortLetter = deptID.substring(0, 1);
                                 }
-
                                 //部门分类并消除相同部门
                                 if (!TextUtils.isEmpty(sortLetter) && !strLetters.contains(sortLetter)) {
                                     strLetters.add(sortLetter);
-                                } else {
-                                    continue;
                                 }
                             }
-
                             String[] sortArray = strLetters.toArray(new String[strLetters.size()]);
                             if (sortArray.length > 0) {
                                 mAutoSideBar.setSortArray(sortArray);
@@ -181,6 +172,7 @@ public class TranspondActivity extends AppCompatActivity {
                                 mRlSideBar.addView(mAutoSideBar);
                             }
                             mTeamContactAdapter.updateListView(mShopEmployeeVos);
+                            DialogUtil.getInstance().cancelProgressDialog();
                         }
                     }
                 }

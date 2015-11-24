@@ -65,7 +65,7 @@ public class TranspondController extends AppCompatActivity {
         netRequest.setBizParamMap(bizMap);
         NetRequestTask netRequestTask = new NetRequestTask(context, netRequest, NetResponse.class);
         netRequestTask.methodType = MethodType.PUSH;
-        netRequestTask.isShowLoadingDialog = true;
+        netRequestTask.isShowLoadingDialog = false;
         netRequestTask.setNetRequestListener(new ExtNetRequestListener(context) {
             @Override
             public void onNetworkRequestError(int errorCode, String errorMessage) {
@@ -102,7 +102,7 @@ public class TranspondController extends AppCompatActivity {
 
             @Override
             public void beforeNetworkRequestStart() {
-
+                DialogUtil.getInstance().showProgressDialog(context);
             }
         });
         netRequestTask.execute();
