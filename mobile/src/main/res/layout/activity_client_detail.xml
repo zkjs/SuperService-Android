@@ -31,7 +31,7 @@
                     android:layout_width="72dp"
                     android:layout_height="72dp"
                     android:layout_centerVertical="true"
-                    android:background="@drawable/img_hotel_zhanwei" />
+                    android:background="@mipmap/img_hotel_zhanwei" />
 
             </RelativeLayout>
 

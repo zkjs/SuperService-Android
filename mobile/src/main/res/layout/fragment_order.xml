@@ -91,7 +91,7 @@
                     android:id="@+id/iv_clock"
                     android:layout_width="19dp"
                     android:layout_height="19dp"
-                    android:background="@drawable/ic_clock"
+                    android:background="@mipmap/ic_clock"
                     />
 
                 <TextView

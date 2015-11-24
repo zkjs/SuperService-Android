@@ -126,7 +126,7 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
     private void initView() {
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         mToolbar.setTitle("");
-        mToolbar.setNavigationIcon(R.drawable.ic_fanhui);
+        mToolbar.setNavigationIcon(R.mipmap.ic_fanhui);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mTvCenterTitle = (TextView) findViewById(R.id.tv_center_title);

@@ -194,9 +194,9 @@ public class ClientDetailActivity extends Activity {
         if(!TextUtils.isEmpty(clientId)) {
             String imageUrl = ProtocolUtil.getAvatarUrl(clientId);
             DisplayImageOptions options = new DisplayImageOptions.Builder()
-                .showImageOnLoading(R.drawable.img_hotel_zhanwei)
-                .showImageForEmptyUri(R.drawable.img_hotel_zhanwei)
-                .showImageOnFail(R.drawable.img_hotel_zhanwei)
+                .showImageOnLoading(R.mipmap.img_hotel_zhanwei)
+                .showImageForEmptyUri(R.mipmap.img_hotel_zhanwei)
+                .showImageOnFail(R.mipmap.img_hotel_zhanwei)
                 .cacheInMemory(true)
                 .cacheOnDisk(true)
                 .build();

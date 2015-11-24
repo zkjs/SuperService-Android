@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent"
-    android:background="@drawable/bg_4">
+    android:background="@mipmap/bg_4">
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/phone"
+        android:src="@mipmap/phone"
         android:layout_alignParentLeft="true"
         android:layout_marginLeft="95dp"
         android:layout_marginTop="71dp"
@@ -18,7 +18,7 @@
         android:layout_alignParentLeft="true"
         android:layout_marginLeft="110dp"
         android:layout_marginTop="199dp"
-        android:src="@drawable/layer_5"
+        android:src="@mipmap/layer_5"
         android:id="@+id/line1"/>
 
     <ImageView
@@ -27,7 +27,7 @@
         android:layout_alignParentLeft="true"
         android:layout_marginLeft="110dp"
         android:layout_marginTop="232dp"
-        android:src="@drawable/layer_6"
+        android:src="@mipmap/layer_6"
         android:id="@+id/line2"/>
 
     <Button

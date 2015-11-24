@@ -52,7 +52,7 @@
                 android:id="@+id/online_civ_photo"
                 android:layout_centerVertical="true"
                 android:clickable="true"
-                android:src="@drawable/img_hotel_zhanwei"
+                android:src="@mipmap/img_hotel_zhanwei"
                 android:layout_margin="15dp"
                 android:layout_width="45dp"
                 android:layout_height="45dp" />
@@ -88,7 +88,7 @@
             android:layout_marginLeft="25dp"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
-            android:drawableLeft="@drawable/ic_clock"
+            android:drawableLeft="@mipmap/ic_clock"
             android:drawablePadding="15dp"
             android:textColor="#AAAAAA"
             android:text="@null"/>

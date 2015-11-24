@@ -15,7 +15,7 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/p_0"
+        android:src="@mipmap/p_0"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="202dp"
         android:id="@+id/people_main"/>
@@ -23,7 +23,7 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/rounded_rectangle_0"
+        android:src="@mipmap/rounded_rectangle_0"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="125dp"
         android:id="@+id/page0_name"/>
@@ -31,7 +31,7 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/l_1"
+        android:src="@mipmap/l_1"
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="80dp"
@@ -40,7 +40,7 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/l_2"
+        android:src="@mipmap/l_2"
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="80dp"
@@ -49,7 +49,7 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/l_3"
+        android:src="@mipmap/l_3"
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="100dp"
@@ -58,7 +58,7 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/l_4"
+        android:src="@mipmap/l_4"
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="140dp"
@@ -74,7 +74,6 @@
         android:layout_marginBottom="20dp"
         android:id="@+id/dotsview_main"
         />
-
 
 </RelativeLayout>
 

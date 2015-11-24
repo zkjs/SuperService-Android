@@ -100,12 +100,12 @@ public class CircleStatusView extends View{
         // 创建画笔
         Bitmap bitmap = null;
         if(status ==  CircleStatus.STATUS_LOADING){
-            bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_hourglass);
+            bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_hourglass);
         }else if(status ==  CircleStatus.STATUS_FINISH){
-            bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_right);
+            bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_right);
         }
         else if(status ==  CircleStatus.STATUS_MORE){
-           bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_more);
+           bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_more);
         }
         int h = bitmap.getHeight();
         int w = bitmap.getWidth();

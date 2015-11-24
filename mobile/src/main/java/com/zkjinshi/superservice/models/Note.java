@@ -181,12 +181,12 @@ public class Note {
 		Calendar cal = Calendar.getInstance();
 		cal.add(Calendar.DATE, (int) (Math.random() * DATE_RANGE));
 		String date = DateFormat.getMediumDateFormat(context).format(cal.getTime());
-		return new NoteInfo(date, R.drawable.ic_event_white_24dp);
+		return new NoteInfo(date, R.mipmap.ic_event_white_24dp);
 	}
 
 	private static NoteInfo getRandomLocation() {
 		String location = getRandomString(false, CITIES);
-		return new NoteInfo(location, R.drawable.ic_place_white_24dp);
+		return new NoteInfo(location, R.mipmap.ic_place_white_24dp);
 	}
 
 	private static int getRandomColor(Context context) {

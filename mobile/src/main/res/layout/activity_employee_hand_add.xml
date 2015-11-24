@@ -51,7 +51,7 @@
             android:id="@+id/tv_dept"
             style="@style/inputStyle"
             android:gravity="center_vertical"
-            android:drawableRight="@drawable/ic_down"
+            android:drawableRight="@mipmap/ic_down"
             android:paddingRight="20dp"
             android:text="选择部门"/>
 

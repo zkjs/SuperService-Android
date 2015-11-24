@@ -20,7 +20,7 @@
             <com.zkjinshi.superservice.view.CircleImageView
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:src="@drawable/img_hotel_zhanwei"
+                android:src="@mipmap/img_hotel_zhanwei"
                 android:id="@+id/avatar_civ"/>
 
             <TextView
@@ -51,7 +51,7 @@
                     android:id="@+id/iv_check"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    android:src="@drawable/ic_jia_nor"
+                    android:src="@mipmap/ic_jia_nor"
                     android:scaleType="fitCenter" />
 
             </RelativeLayout>

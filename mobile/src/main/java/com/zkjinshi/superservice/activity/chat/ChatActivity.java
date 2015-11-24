@@ -120,7 +120,7 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
         DialogUtil.getInstance().cancelProgressDialog();
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         mToolbar.setTitle("");
-        mToolbar.setNavigationIcon(R.drawable.ic_fanhui);
+        mToolbar.setNavigationIcon(R.mipmap.ic_fanhui);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mTvCenterTitle = (TextView) findViewById(R.id.tv_center_title);
@@ -553,7 +553,7 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
                     /** 播放开始录音提示音 */
                     MediaPlayerUtil.playStartRecordVoice(ChatActivity.this);
                     startAudioBtn.setText(R.string.chatfooter_releasetofinish);
-                    startAudioBtn.setBackgroundResource(R.drawable.cm_btn_bg_pressed);
+                    startAudioBtn.setBackgroundResource(R.mipmap.cm_btn_bg_pressed);
                     startAudioBtn.setTextColor(Color.WHITE);
                     startVoiceT = System.currentTimeMillis();
                     voiceRecordManager.start();// 开始录音
@@ -563,7 +563,7 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
                 /** 松开手势时执行录制完成 */
                 if (event.getAction() == MotionEvent.ACTION_UP && flag == 2) {
                     startAudioBtn.setText(R.string.chatfooter_presstorcd);
-                    startAudioBtn.setBackgroundResource(R.drawable.cm_btn_bg_normal);
+                    startAudioBtn.setBackgroundResource(R.mipmap.cm_btn_bg_normal);
                     startAudioBtn.setTextColor(Color.BLACK);
                     voiceRecordManager.stopRecordCountDown();
                     flag = 1;
@@ -597,7 +597,7 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
                     }
                 } else if (event.getAction() == MotionEvent.ACTION_MOVE && flag == 2) {// 取消录音
                     Log.i("rcd", "ACTION_MOVE and rcding");
-                    startAudioBtn.setBackgroundResource(R.drawable.cm_btn_bg_pressed);
+                    startAudioBtn.setBackgroundResource(R.mipmap.cm_btn_bg_pressed);
                     startAudioBtn.setTextColor(Color.WHITE);
                     if (event.getY() < btn_rc_Y - 100) {// 手势按下的位置不在语音录制按钮的范围内
                         startAudioBtn.setText(R.string.chatfooter_cancel_tips);

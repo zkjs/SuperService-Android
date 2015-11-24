@@ -82,9 +82,9 @@ public class PayAdapter  extends BaseAdapter{
         int id = payList.get(position).getPay_id();
         boolean c = ischecked(id);
         if(c){
-            holder.img.setImageResource(R.drawable.ic_xuankuang_pre);
+            holder.img.setImageResource(R.mipmap.ic_xuankuang_pre);
         }else{
-            holder.img.setImageResource(R.drawable.ic_xuankuang_nor);
+            holder.img.setImageResource(R.mipmap.ic_xuankuang_nor);
         }
         return convertView;
     }

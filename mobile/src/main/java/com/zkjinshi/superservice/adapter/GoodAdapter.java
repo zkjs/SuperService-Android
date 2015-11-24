@@ -88,9 +88,9 @@ public class GoodAdapter extends BaseAdapter{
         int id = goodList.get(position).getId();
         boolean c = ischecked(id);
         if(c){
-            holder.icon.setImageResource(R.drawable.ic_jia_pre);
+            holder.icon.setImageResource(R.mipmap.ic_jia_pre);
         }else{
-            holder.icon.setImageResource(R.drawable.ic_jia_nor);
+            holder.icon.setImageResource(R.mipmap.ic_jia_nor);
         }
         return convertView;
     }

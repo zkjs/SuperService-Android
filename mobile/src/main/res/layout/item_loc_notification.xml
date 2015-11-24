@@ -60,7 +60,7 @@
                 <com.zkjinshi.superservice.view.CircleImageView
                     android:id="@+id/civ_client_avatar"
                     android:layout_width="40dp"
-                    android:src="@drawable/img_hotel_zhanwei"
+                    android:src="@mipmap/img_hotel_zhanwei"
                     android:layout_height="40dp" />
 
             </RelativeLayout>
@@ -145,7 +145,7 @@
                 android:layout_width="15dp"
                 android:layout_height="15dp"
                 android:layout_centerVertical="true"
-                android:background="@drawable/ic_clock"
+                android:background="@mipmap/ic_clock"
                 />
 
             <TextView
@@ -165,7 +165,7 @@
                 android:layout_width="15dp"
                 android:layout_height="13.50dp"
                 android:layout_centerVertical="true"
-                android:background="@drawable/ic_fenxiang"
+                android:background="@mipmap/ic_fenxiang"
                 />
 
             <ImageView
@@ -175,7 +175,7 @@
                 android:layout_height="15dp"
                 android:layout_marginRight="15dp"
                 android:layout_centerVertical="true"
-                android:background="@drawable/ic_duihua" />
+                android:background="@mipmap/ic_duihua" />
 
             <ImageView
                 android:id="@+id/iv_dianhua"
@@ -184,7 +184,7 @@
                 android:layout_height="15dp"
                 android:layout_marginRight="15dp"
                 android:layout_centerVertical="true"
-                android:background="@drawable/ic_dianhua" />
+                android:background="@mipmap/ic_dianhua" />
 
         </RelativeLayout>
 
