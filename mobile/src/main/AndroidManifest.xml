@@ -303,7 +303,8 @@
 
         <receiver android:name=".receiver.EMessageReceiver">
             <intent-filter>
-                <action android:name="com.zkjinshi.svip.ACTION_INVITE"/>
+                <action android:name="com.zkjinshi.superservice.ACTION_INVITE"/>
+                <action android:name="com.zkjinshi.superservice.CONNECTION_CONFLICT"/>
             </intent-filter>
         </receiver>
 

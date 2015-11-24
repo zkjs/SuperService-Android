@@ -390,6 +390,7 @@ public class MainActivity extends AppCompatActivity{
                 //  ReceiverHelper.getInstance().regiserAckMessageReceiver();
                 // ReceiverHelper.getInstance().regiserSuccMessageReceiver();
                 EMessageListener.getInstance().registerEventListener();
+                EasemobIMHelper.getInstance().initConnectionListener();
             }
 
             @Override

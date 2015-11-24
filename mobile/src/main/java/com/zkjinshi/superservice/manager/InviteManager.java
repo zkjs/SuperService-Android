@@ -44,7 +44,7 @@ public class InviteManager {
                         String mobileNo = message.getStringAttribute("mobileNo");
                         String date = message.getStringAttribute("date");
                         Intent intent = new Intent();
-                        intent.setAction("com.zkjinshi.svip.ACTION_INVITE");
+                        intent.setAction("com.zkjinshi.superservice.ACTION_INVITE");
                         intent.putExtra("userId", userId);
                         intent.putExtra("userName", userName);
                         intent.putExtra("mobileNo", mobileNo);
