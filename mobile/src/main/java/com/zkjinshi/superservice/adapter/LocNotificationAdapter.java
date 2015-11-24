@@ -19,6 +19,7 @@ import com.zkjinshi.base.util.TimeUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.listener.RecyclerItemClickListener;
 import com.zkjinshi.superservice.utils.Constants;
+import com.zkjinshi.superservice.utils.OrderUtil;
 import com.zkjinshi.superservice.view.CircleStatusView;
 import com.zkjinshi.superservice.vo.ComingVo;
 import com.zkjinshi.superservice.view.CircleImageView;
@@ -95,6 +96,11 @@ public class LocNotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         if(!TextUtils.isEmpty(roomType)){
             ((NoticeViewHolder) holder).tvClientNotice.setText("需要办理入住手续");
             ((NoticeViewHolder) holder).tvOrderInfo.setText(roomType+"|"+stayDays+"晚|"+checkInDate+"入住");
+            if(comingVo.getOrderStatus() == 0 || comingVo.getOrderStatus() == 2){
+                if(OrderUtil.isOrderTimeOut(checkInDate)){
+                    ((NoticeViewHolder) holder).tvClientNotice.setText("订单已过期");
+                }
+            }
         }else{
             ((NoticeViewHolder) holder).tvOrderInfo.setText("无订单信息");
         }
