@@ -35,14 +35,9 @@ import java.util.List;
  */
 public class TeamContactsController {
 
-    private final static String TAG = TeamContactsController.class.getSimpleName();
-
     private TeamContactsController(){}
 
     private static TeamContactsController instance;
-
-    private Context  mContext;
-    private Activity mActivity;
 
     public static synchronized TeamContactsController getInstance(){
         if(null ==  instance){
@@ -51,12 +46,7 @@ public class TeamContactsController {
         return instance;
     }
 
-    public void init(Context context){
-        this.mContext  = context;
-        this.mActivity = (Activity)context;
-    }
-
-    public void getTeamContacts(final Context context, String userID,
+    public void getTeamContacts(final Activity activity, String userID,
                                   String token, final String shopID,
                                   final GetTeamContactsListener listener){
         NetRequest netRequest = new NetRequest(ProtocolUtil.getTeamListUrl());
@@ -65,12 +55,12 @@ public class TeamContactsController {
         bizMap.put("token", token);
         bizMap.put("shopid", shopID);
         netRequest.setBizParamMap(bizMap);
-        NetRequestTask netRequestTask = new NetRequestTask(context, netRequest, NetResponse.class);
+        NetRequestTask netRequestTask = new NetRequestTask(activity, netRequest, NetResponse.class);
         netRequestTask.methodType = MethodType.PUSH;
-        netRequestTask.setNetRequestListener(new ExtNetRequestListener(context) {
+        netRequestTask.setNetRequestListener(new ExtNetRequestListener(activity) {
             @Override
             public void onNetworkRequestError(int errorCode, String errorMessage) {
-                DialogUtil.getInstance().cancelProgressDialog();
+                listener.getContactsFailed();
                 Log.i(TAG, "errorCode:" + errorCode);
                 Log.i(TAG, "errorMessage:" + errorMessage);
             }
@@ -82,7 +72,6 @@ public class TeamContactsController {
 
             @Override
             public void onNetworkResponseSucceed(NetResponse result) {
-                DialogUtil.getInstance().cancelProgressDialog();
                 Log.i(TAG, "result.rawResult:" + result.rawResult);
                 String jsonResult = result.rawResult;
                 if (result.rawResult.contains("set") || jsonResult.contains("err")) {
@@ -113,7 +102,7 @@ public class TeamContactsController {
                 //网络请求前
             }
         });
-        netRequestTask.isShowLoadingDialog = false;
+        netRequestTask.isShowLoadingDialog = true;
         netRequestTask.execute();
     }
 }

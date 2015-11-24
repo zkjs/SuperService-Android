@@ -15,4 +15,6 @@ public interface GetTeamContactsListener {
 
    public void getContactsDone(List<TeamContactBean> teamContacts);
 
+   public void getContactsFailed();
+
 }

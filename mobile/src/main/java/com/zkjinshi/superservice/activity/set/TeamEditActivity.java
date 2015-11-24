@@ -333,9 +333,16 @@ public class TeamEditActivity extends Activity {
                                         List<ShopEmployeeVo> shopEmployeeVos =  ShopEmployeeFactory.getInstance().buildShopEmployees(teamContacts);
                                         mShopEmployeeVos.removeAll(mShopEmployeeVos);
                                         mShopEmployeeVos.addAll(shopEmployeeVos);
+
                                         mContactsAdapter.updateListView(mShopEmployeeVos);
+                                        DialogUtil.getInstance().cancelProgressDialog();
                                         DialogUtil.getInstance().showCustomToast(TeamEditActivity.this,
                                                        "change the department success", Gravity.CENTER);
+                                    }
+
+                                    @Override
+                                    public void getContactsFailed() {
+                                        DialogUtil.getInstance().cancelProgressDialog();
                                     }
                                 });
                     } else {

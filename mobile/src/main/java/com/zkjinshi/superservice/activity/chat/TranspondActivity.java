@@ -175,6 +175,11 @@ public class TranspondActivity extends AppCompatActivity {
                             DialogUtil.getInstance().cancelProgressDialog();
                         }
                     }
+
+                    @Override
+                    public void getContactsFailed() {
+                        DialogUtil.getInstance().cancelProgressDialog();
+                    }
                 }
         );
     }

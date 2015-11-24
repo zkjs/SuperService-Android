@@ -85,7 +85,6 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
 
     private LinearLayoutManager     mLayoutManager;
     private TeamContactsAdapter     mTeamContactAdapter;
-
     private List<ShopEmployeeVo>    mShopEmployeeVos;
     private ShopEmployeeVo          mFirstShopEmployee;
 
@@ -163,8 +162,9 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
         mFirstShopEmployee.setDept_name(shopName);
         mFirstShopEmployee.setEmpid(System.currentTimeMillis() + "");
 
-        mShopEmployeeVos    = new ArrayList<>();
-        mTeamContactAdapter = new TeamContactsAdapter(TeamContactsActivity.this, mShopEmployeeVos);
+        mShopEmployeeVos = new ArrayList<>();
+        mTeamContactAdapter = new TeamContactsAdapter(TeamContactsActivity.this,
+                                                               mShopEmployeeVos);
         mRvTeamContacts.setAdapter(mTeamContactAdapter);
     }
 
@@ -179,26 +179,6 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
      * 初始化待显示数据并展示
      */
     private void showDataList() {
-        if(null != mShopEmployeeVos && !mShopEmployeeVos.isEmpty()){
-            mShopEmployeeVos.removeAll(mShopEmployeeVos);
-        }
-
-        if(!mShopEmployeeVos.contains(mFirstShopEmployee)){
-            mShopEmployeeVos.add(0, mFirstShopEmployee);
-        }
-
-        String shopEmployeesJson = CacheUtil.getInstance().getListStrCache("shop_employees");
-        if(!TextUtils.isEmpty(shopEmployeesJson)){
-            Gson gson = new Gson();
-            List<ShopEmployeeVo> shopEmployeeVos = gson.fromJson(shopEmployeesJson,
-                            new TypeToken<ArrayList<ShopEmployeeVo>>() {}.getType());
-
-            if(shopEmployeeVos != null && !shopEmployeeVos.isEmpty()){
-                mShopEmployeeVos.addAll(shopEmployeeVos);
-            }
-            mTeamContactAdapter.updateListView(mShopEmployeeVos);
-        }
-
         //获取团队列表
         DialogUtil.getInstance().showProgressDialog(TeamContactsActivity.this);
         TeamContactsController.getInstance().getTeamContacts(
@@ -206,37 +186,31 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
                 mUserID, mToken, mShopID, new GetTeamContactsListener() {
                     @Override
                     public void getContactsDone(List<TeamContactBean> teamContacts) {
-                        ArrayList<ShopEmployeeVo> shopEmployeeVos = (ArrayList) ShopEmployeeFactory.getInstance().buildShopEmployees(teamContacts);
-
+                        List<ShopEmployeeVo> shopEmployeeVos = ShopEmployeeDBUtil.getInstance().queryTeamByShopID(mShopID);
                         List<String> strLetters = new ArrayList<>();//首字母显示数组
                         List<String> empids = new ArrayList<>();//员工ID数组
 
                         if (null != shopEmployeeVos && !shopEmployeeVos.isEmpty()) {
                             Iterator<ShopEmployeeVo> shopEmployeeVoIterator = shopEmployeeVos.iterator();
                             while (shopEmployeeVoIterator.hasNext()) {
-                                String empID = shopEmployeeVoIterator.next().getEmpid();
+                                ShopEmployeeVo shopEmployeeVo = shopEmployeeVoIterator.next();
+                                String empID = shopEmployeeVo.getEmpid();
                                 if (empID.equals(mUserID)) {
                                     shopEmployeeVoIterator.remove();
-                                }
-                            }
-
-                            if (null != mShopEmployeeVos && !mShopEmployeeVos.isEmpty()) {
-                                mShopEmployeeVos.removeAll(mShopEmployeeVos);
-                            }
-
-                            //加入本地缓存
-                            CacheUtil.getInstance().saveListCache("shop_employees", shopEmployeeVos);
-                            for (ShopEmployeeVo shopEmployeeVo : shopEmployeeVos) {
-                                if (shopEmployeeVo.getEmpid().equals(mUserID)) {
+                                } else {
+                                    shopEmployeeVo.setOnline_status(OnlineStatus.OFFLINE);
                                     continue;
                                 }
+                            }
 
-                                ShopEmployeeDBUtil.getInstance().addShopEmployee(shopEmployeeVo);
-                                shopEmployeeVo.setShop_id(mShopID);
-                                mShopEmployeeVos.add(shopEmployeeVo);
+                            if(!mShopEmployeeVos.contains(mFirstShopEmployee)){
+                                mShopEmployeeVos.add(0, mFirstShopEmployee);
+                            }
+                            mShopEmployeeVos.addAll(shopEmployeeVos);
 
+                            for (ShopEmployeeVo shopEmployeeVo : shopEmployeeVos) {
                                 empids.add(shopEmployeeVo.getEmpid());
-                                String deptID = shopEmployeeVo.getDept_id() + "";
+                                String deptID   = shopEmployeeVo.getDept_id() + "";
                                 String deptName = shopEmployeeVo.getDept_name();
                                 String sortLetter = null;
                                 if (!TextUtils.isEmpty(deptName)) {
@@ -261,7 +235,7 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
                                 mRlSideBar.addView(mAutoSideBar);
                             }
 
-                            mShopEmployeeVos.add(0, mFirstShopEmployee);
+                            DialogUtil.getInstance().cancelProgressDialog();
                             mTeamContactAdapter.updateListView(mShopEmployeeVos);
                         }
 
@@ -278,6 +252,22 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
                         getOnlineMsg.what = GET_CONTACTS_ONLINE_STATUS;
                         getOnlineMsg.obj  = jsonMsgEmpStatus;
                         handler.sendMessageDelayed(getOnlineMsg, 2000);
+                        //更新数据库数据
+                        ShopEmployeeDBUtil.getInstance().batchAddShopEmployees(shopEmployeeVos);
+                    }
+
+                    @Override
+                    public void getContactsFailed() {
+                        //获取在线数据失败更新
+                        List<ShopEmployeeVo> shopEmployeeVos = ShopEmployeeDBUtil.getInstance().queryTeamByShopID(mShopID);
+                        if(shopEmployeeVos != null && !shopEmployeeVos.isEmpty()){
+                            mShopEmployeeVos.addAll(shopEmployeeVos);
+                        }
+                        if(!mShopEmployeeVos.contains(mFirstShopEmployee)){
+                            mShopEmployeeVos.add(0, mFirstShopEmployee);
+                        }
+                        mTeamContactAdapter.updateListView(mShopEmployeeVos);
+                        DialogUtil.getInstance().cancelProgressDialog();
                     }
                 }
         );

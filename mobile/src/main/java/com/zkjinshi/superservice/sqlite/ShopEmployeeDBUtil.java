@@ -360,4 +360,39 @@ public class ShopEmployeeDBUtil {
         }
         return lateOnlineTime;
     }
+
+    /**
+     * 根据shopID获取团队列表
+     * @param shopID
+     * @return
+     */
+    public List<ShopEmployeeVo> queryTeamByShopID(String shopID) {
+        List<ShopEmployeeVo> shopEmployeeVos = new ArrayList<>();
+        ShopEmployeeVo shopEmployeeVo = null;
+        SQLiteDatabase db = null;
+        Cursor cursor = null;
+        if (null != helper) {
+            try {
+                db = helper.getReadableDatabase();
+                cursor = db.query(DBOpenHelper.SHOP_EMPLOYEE_TBL, null, " shop_id = ? ", new String[]{ shopID }, null, null, " dept_id ASC");
+                if (cursor != null && cursor.getCount() > 0) {
+                    while (cursor.moveToNext()) {
+                        shopEmployeeVo = ShopEmployeeFactory.getInstance().buildShopEmployee(cursor);
+                        shopEmployeeVos.add(shopEmployeeVo);
+                    }
+                }
+            } catch (Exception e) {
+                LogUtil.getInstance().info(LogLevel.ERROR, TAG+".queryAll->"+e.getMessage());
+                e.printStackTrace();
+            } finally {
+                if (null != cursor) {
+                    cursor.close();
+                }
+                if (null != db) {
+                    db.close();
+                }
+            }
+        }
+        return  shopEmployeeVos;
+    }
 }
