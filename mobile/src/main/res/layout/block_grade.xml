@@ -35,31 +35,31 @@
                 android:id="@+id/star1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_star_nor"
+                android:src="@mipmap/ic_star_nor"
                 android:layout_weight="1"/>
             <ImageView
                 android:id="@+id/star2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_star_nor"
+                android:src="@mipmap/ic_star_nor"
                 android:layout_weight="1"/>
             <ImageView
                 android:id="@+id/star3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_star_nor"
+                android:src="@mipmap/ic_star_nor"
                 android:layout_weight="1"/>
             <ImageView
                 android:id="@+id/star4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_star_nor"
+                android:src="@mipmap/ic_star_nor"
                 android:layout_weight="1"/>
             <ImageView
                 android:id="@+id/star5"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_star_nor"
+                android:src="@mipmap/ic_star_nor"
                 android:layout_weight="1"/>
 
         </LinearLayout>

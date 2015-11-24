@@ -6,14 +6,14 @@
 
     <item
         android:id="@+id/menu_team_search"
-        android:icon="@drawable/ic_search"
+        android:icon="@mipmap/ic_search"
         android:title="@string/search"
         app:showAsAction="always" />
 
     <item
         android:id="@+id/menu_team_edit"
         android:title="@string/action_edit"
-        android:icon="@drawable/ic_pen"
+        android:icon="@mipmap/ic_pen"
         app:showAsAction="always" />
 
 </menu>

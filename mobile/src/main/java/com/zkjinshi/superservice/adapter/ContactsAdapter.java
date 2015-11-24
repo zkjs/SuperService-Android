@@ -114,9 +114,9 @@ public class ContactsAdapter extends BaseAdapter{
         holder.name.setText(contactLocalVo.getContactName());
         holder.phone.setText(contactLocalVo.getPhoneNumber());
         if(contactLocalVo.isHasAdd()){
-            holder.check.setImageResource(R.drawable.ic_jia_pre);
+            holder.check.setImageResource(R.mipmap.ic_jia_pre);
         }else{
-            holder.check.setImageResource(R.drawable.ic_jia_nor);
+            holder.check.setImageResource(R.mipmap.ic_jia_nor);
         }
         return convertView;
     }

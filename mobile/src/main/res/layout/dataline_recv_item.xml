@@ -25,7 +25,7 @@
             android:layout_height="40.0dip"
             android:layout_marginTop="5.0dip"
             android:scaleType="fitXY"
-            android:src="@drawable/img_hotel_zhanwei" />
+            android:src="@mipmap/img_hotel_zhanwei" />
 
         <LinearLayout
             android:layout_width="0dp"
@@ -93,7 +93,7 @@
                         android:clickable="false"
                         android:gravity="center"
                         android:scaleType="centerInside"
-                        android:src="@drawable/skin_aio_ptt_record_friend_nor"
+                        android:src="@mipmap/skin_aio_ptt_record_friend_nor"
                         android:visibility="gone" />
 
                     <include

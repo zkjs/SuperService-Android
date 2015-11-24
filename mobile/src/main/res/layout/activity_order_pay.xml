@@ -27,7 +27,7 @@
             android:layout_height="45dp"
             android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
-            android:src="@drawable/ic_wancheng"
+            android:src="@mipmap/ic_wancheng"
             android:scaleType="centerInside"
             android:background="@drawable/click_btn_bg"/>
     </RelativeLayout>
@@ -57,7 +57,7 @@
                     android:layout_gravity="center"
                     android:scaleType="center"
                     android:clickable="true"
-                    android:background="@drawable/img_hotel_zhanwei"
+                    android:background="@mipmap/img_hotel_zhanwei"
                     android:layout_margin="20dp"
                     android:id="@+id/avatar">
                 </com.zkjinshi.superservice.view.CircleImageView>

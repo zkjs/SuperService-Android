@@ -71,16 +71,18 @@ public class OrderFactory {
         orderDetailBean.setRoom(orderRoomBean);
 
         String manInStay   = bookOrderBean.getManInStay();
-        String menInstay[] = manInStay.split(",");
 
-        ArrayList<OrderUsersBean> orderUsers = new ArrayList<>();
-        for(int i=0; i<menInstay.length; i++){
-            OrderUsersBean user = new OrderUsersBean();
-            user.setRealname(menInstay[i]);
-            orderUsers.add(user);
+        //加入非空判断
+        if(!TextUtils.isEmpty(manInStay)){
+            String menInstay[] = manInStay.split(",");
+            ArrayList<OrderUsersBean> orderUsers = new ArrayList<>();
+            for(int i=0; i<menInstay.length; i++){
+                OrderUsersBean user = new OrderUsersBean();
+                user.setRealname(menInstay[i]);
+                orderUsers.add(user);
+            }
+            orderDetailBean.setUsers(orderUsers);
         }
-
-        orderDetailBean.setUsers(orderUsers);
         orderDetailBean.setInvoice(new OrderInvoiceBean());
         orderDetailBean.setRoom_tag(new ArrayList<OrderRoomTagBean>());
         orderDetailBean.setPrivilege(new ArrayList<OrderPrivilegeBean>());

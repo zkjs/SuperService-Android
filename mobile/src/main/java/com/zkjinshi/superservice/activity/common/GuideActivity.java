@@ -41,7 +41,7 @@ public class GuideActivity  extends FragmentActivity {
 
         mViewPager = (SCViewPager) findViewById(R.id.viewpager_main_activity);
         mDotsView = (DotsView) findViewById(R.id.dotsview_main);
-        mDotsView.setDotRessource(R.drawable.ellipse_pre, R.drawable.ellipse_nor);
+        mDotsView.setDotRessource(R.mipmap.ellipse_pre, R.mipmap.ellipse_nor);
         mDotsView.setNumberOfPage(NUM_PAGES);
 
         mPageAdapter = new SCViewPagerAdapter(getSupportFragmentManager());

@@ -358,11 +358,11 @@ public class OrderDealActivity extends Activity {
         int[] ids = {R.id.star1,R.id.star2,R.id.star3,R.id.star4,R.id.star5};
         for(int i=0;i<grade;i++){
             ImageView star = (ImageView)findViewById(ids[i]);
-            star.setImageResource(R.drawable.ic_star_pre);
+            star.setImageResource(R.mipmap.ic_star_pre);
         }
         for(int i=grade;i<5;i++){
             ImageView star = (ImageView)findViewById(ids[i]);
-            star.setImageResource(R.drawable.ic_star_nor);
+            star.setImageResource(R.mipmap.ic_star_nor);
         }
         TextView reasonTv = (TextView)findViewById(R.id.grade_reason_tv);
         if(TextUtils.isEmpty(reason)){

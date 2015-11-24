@@ -6,7 +6,7 @@
     <ImageView
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:background="@drawable/img_hotel_zhanwei"
+        android:background="@mipmap/img_hotel_zhanwei"
         android:scaleType="centerCrop"
         android:id="@+id/zone_img_iv" />
     <TextView
@@ -26,6 +26,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginRight="20dp"
-        android:background="@drawable/ic_jia_nor"/>
+        android:background="@mipmap/ic_jia_nor"/>
 
 </LinearLayout>

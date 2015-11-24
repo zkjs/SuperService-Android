@@ -101,7 +101,7 @@
                             android:layout_height="56dp">
 
                             <ImageView
-                                android:src="@drawable/ic_tuandui_w"
+                                android:src="@mipmap/ic_tuandui_w"
                                 android:layout_width="19dp"
                                 android:layout_height="11dp" />
 
@@ -135,7 +135,7 @@
                             android:layout_height="56dp">
 
                             <ImageView
-                                android:src="@drawable/ic_kehu"
+                                android:src="@mipmap/ic_kehu"
                                 android:layout_width="17dp"
                                 android:layout_height="18dp" />
 

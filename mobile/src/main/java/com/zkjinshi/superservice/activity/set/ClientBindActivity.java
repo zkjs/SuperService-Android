@@ -115,9 +115,9 @@ public class ClientBindActivity extends Activity {
         if(!TextUtils.isEmpty(userID)) {
             String imageUrl = Constants.GET_USER_AVATAR + userID + ".jpg";
             DisplayImageOptions options = new DisplayImageOptions.Builder()
-                .showImageOnLoading(R.drawable.img_hotel_zhanwei)
-                .showImageForEmptyUri(R.drawable.img_hotel_zhanwei)
-                .showImageOnFail(R.drawable.img_hotel_zhanwei)
+                .showImageOnLoading(R.mipmap.img_hotel_zhanwei)
+                .showImageForEmptyUri(R.mipmap.img_hotel_zhanwei)
+                .showImageOnFail(R.mipmap.img_hotel_zhanwei)
                 .cacheInMemory(true)
                 .cacheOnDisk(true)
                 .build();

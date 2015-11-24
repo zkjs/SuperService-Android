@@ -107,9 +107,9 @@ public class ZoneAdapter extends BaseAdapter{
         holder.name.setText(zoneList.get(position).getLocdesc());
 
         if(zoneList.get(position).isHasAdd()){
-            holder.check.setImageResource(R.drawable.ic_jia_pre);
+            holder.check.setImageResource(R.mipmap.ic_jia_pre);
         }else{
-            holder.check.setImageResource(R.drawable.ic_jia_nor);
+            holder.check.setImageResource(R.mipmap.ic_jia_nor);
         }
         return convertView;
     }
