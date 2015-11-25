@@ -50,6 +50,11 @@ public class VoiceRecordManager extends Handler {
     private ImageView 		volumeIv;
     private RelativeLayout  animAreaLayout;
     private RelativeLayout  cancelAreaLayout;
+    private MessageListViewManager messageListViewManager;
+
+    public void setMessageListViewManager(MessageListViewManager messageListViewManager) {
+        this.messageListViewManager = messageListViewManager;
+    }
 
     public VoiceRecordManager(Context context, RelativeLayout animAreaLayout,
                               RelativeLayout cancelAreaLayout) {
@@ -96,13 +101,10 @@ public class VoiceRecordManager extends Handler {
                 stop();
                 // 播放录制完成提示音
                 MediaPlayerUtil.playSendOverRecordVoice(context);
-                if (NetWorkUtil.isNetworkConnected(context)) {
-                    // TODO:发送语音消息
-                } else {
-                    DialogUtil.getInstance().showCustomToast(context,
-                            "网络尝试重连，请稍后再试!", Gravity.CENTER);
-                }
                 voiceView.setVisibility(View.GONE);
+                if(null != messageListViewManager){
+                    messageListViewManager.sendVoiceMessage(getMediaPath(),60);
+                }
                 break;
             default:
                 break;

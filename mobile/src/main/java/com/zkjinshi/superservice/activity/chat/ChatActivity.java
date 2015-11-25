@@ -167,6 +167,7 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
         //初始化录音管理器
         voiceRecordManager = new VoiceRecordManager(this, animAreaLayout, cancelAreaLayout);
         voiceRecordManager.init();
+        voiceRecordManager.setMessageListViewManager(messageListViewManager);
         //网络设置
         netCheckManager = new NetCheckManager();
         netCheckManager.init(this);
