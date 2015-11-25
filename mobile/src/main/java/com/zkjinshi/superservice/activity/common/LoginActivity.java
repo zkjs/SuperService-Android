@@ -68,18 +68,18 @@ public class LoginActivity extends Activity implements VerifyPhoneControler.Succ
     private void initData() {
         LoginController.getInstance().init(this);
         VerifyPhoneControler.getInstance().init(this);
-        VerifyPhoneControler.getInstance().registerSmsReceiver();
-        VerifyPhoneControler.getInstance().setSuccessCallBack(this);
+//        VerifyPhoneControler.getInstance().registerSmsReceiver();
+//        VerifyPhoneControler.getInstance().setSuccessCallBack(this);
 
         //测试跳转用的
-//        inputEt.setText("15112269174");//18912345678
-//        loginBtn.setEnabled(true);
-//        loginBtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                verrifySuccess();
-//            }
-//        });
+        inputEt.setText("15112269174");//18912345678
+        loginBtn.setEnabled(true);
+        loginBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                verrifySuccess();
+            }
+        });
     }
 
     private void initListener() {
@@ -144,7 +144,13 @@ public class LoginActivity extends Activity implements VerifyPhoneControler.Succ
                     UserDBUtil.getInstance().addUser(userVo);
                     String avatarUrl = Constants.GET_USER_AVATAR+userVo.getUserId()+".jpg";
                     CacheUtil.getInstance().saveUserPhotoUrl(avatarUrl);
-                    Intent intent = new Intent(LoginActivity.this, MoreActivity.class);
+                    Intent intent;
+                    if(TextUtils.isEmpty(sempLoginbean.getUrl())){
+                        intent = new Intent(LoginActivity.this, MoreActivity.class);
+                    }else{
+                        CacheUtil.getInstance().setLogin(true);
+                        intent = new Intent(LoginActivity.this, MainActivity.class);
+                    }
                     intent.putExtra("sempLoginbean",sempLoginbean);
                     startActivity(intent);
                     finish();

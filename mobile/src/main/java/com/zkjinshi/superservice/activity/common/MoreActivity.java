@@ -149,7 +149,9 @@ public class MoreActivity extends FragmentActivity implements MultiImageSelector
         findViewById(R.id.back_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(MoreActivity.this, LoginActivity.class));
+                if(!getIntent().getBooleanExtra("from_setting",false)){
+                    startActivity(new Intent(MoreActivity.this, LoginActivity.class));
+                }
                 finish();
                 overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
             }
@@ -205,6 +207,8 @@ public class MoreActivity extends FragmentActivity implements MultiImageSelector
             HashMap<String,File> fileMap = new HashMap<String, File>();
             fileMap.put("file", new File(picPath));
             netRequest.setFileMap(fileMap);
+            ImageLoader.getInstance().clearDiskCache();
+            ImageLoader.getInstance().clearMemoryCache();
         }
         NetRequestTask netRequestTask = new NetRequestTask(this,netRequest, NetResponse.class);
         netRequestTask.methodType = MethodType.PUSH;
@@ -232,8 +236,9 @@ public class MoreActivity extends FragmentActivity implements MultiImageSelector
                     CacheUtil.getInstance().saveUserPhotoUrl(avatarUrl);
                     CacheUtil.getInstance().setUserName(name);
                     UserDBUtil.getInstance().addUser(userVo);
-
-                    startActivity(new Intent(MoreActivity.this, ZoneActivity.class));
+                    if(!getIntent().getBooleanExtra("from_setting",false)){
+                        startActivity(new Intent(MoreActivity.this, ZoneActivity.class));
+                    }
                     finish();
                     overridePendingTransition(R.anim.activity_new, R.anim.activity_out);
                 } else {

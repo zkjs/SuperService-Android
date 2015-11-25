@@ -37,6 +37,7 @@ import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.ServiceApplication;
 import com.zkjinshi.superservice.activity.set.ClientActivity;
 import com.zkjinshi.superservice.activity.set.EmployeeAddActivity;
+import com.zkjinshi.superservice.activity.set.SettingActivity;
 import com.zkjinshi.superservice.activity.set.TeamContactsActivity;
 import com.zkjinshi.superservice.bean.BaseBean;
 import com.zkjinshi.superservice.bean.InviteCode;
@@ -176,6 +177,7 @@ public class MainActivity extends AppCompatActivity{
                 Intent myTeamContacts = new Intent(MainActivity.this, TeamContactsActivity.class);
                // Intent myTeamContacts = new Intent(MainActivity.this, EmployeeAddActivity.class);
                 MainActivity.this.startActivity(myTeamContacts);
+                overridePendingTransition(R.anim.activity_new, R.anim.activity_out);
             }
         });
 
@@ -185,6 +187,7 @@ public class MainActivity extends AppCompatActivity{
             public void onClick(View view) {
                 Intent myClient = new Intent(MainActivity.this, ClientActivity.class);
                 MainActivity.this.startActivity(myClient);
+                overridePendingTransition(R.anim.activity_new, R.anim.activity_out);
             }
         });
 
@@ -192,9 +195,9 @@ public class MainActivity extends AppCompatActivity{
         findViewById(R.id.setting_tv).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO: 暂时进入邀请码界面
-                Intent goInviteCodes = new Intent(MainActivity.this, InviteCodesActivity.class);
-                startActivity(goInviteCodes);
+                Intent intent = new Intent(MainActivity.this, SettingActivity.class);
+                startActivity(intent);
+                overridePendingTransition(R.anim.activity_new, R.anim.activity_out);
             }
         });
 

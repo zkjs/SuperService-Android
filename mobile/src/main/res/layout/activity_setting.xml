@@ -109,7 +109,7 @@
                 android:layout_weight="1"
                 android:clickable="true"
                 zkjinshi:itemSettingTitle="电话号码"
-                zkjinshi:itemSettingContent2="12345678901"
+                zkjinshi:itemSettingContent2=""
                 android:background="#ffffff"/>
             <View style="@style/GrayLineBorder"></View>
             <com.zkjinshi.superservice.view.ItemUserSettingView

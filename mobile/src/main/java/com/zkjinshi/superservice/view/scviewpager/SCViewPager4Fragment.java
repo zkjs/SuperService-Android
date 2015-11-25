@@ -14,6 +14,7 @@ import android.view.animation.ScaleAnimation;
 
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.common.LoginActivity;
+import com.zkjinshi.superservice.utils.CacheUtil;
 
 /**
  * 开发者：dujiande
@@ -37,6 +38,7 @@ public class SCViewPager4Fragment extends MyPageAnimation {
         view.findViewById(R.id.btn_login).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                CacheUtil.getInstance().setGuide(true);
                 Intent loginIntent = new Intent(getActivity(), LoginActivity.class);
                 getActivity().startActivity(loginIntent);
                 getActivity().finish();

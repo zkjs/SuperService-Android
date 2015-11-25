@@ -172,11 +172,15 @@ public class ZoneActivity extends Activity {
             public void onClick(View view) {
                 //CacheUtil.getInstance().setLoginIdentity(IdentityType.BUSINESS);
                 if(CacheUtil.getInstance().getLoginIdentity() == IdentityType.BUSINESS){
-                    startActivity(new Intent(ZoneActivity.this,ShopLoginActivity.class));
+                    if(!getIntent().getBooleanExtra("from_setting",false)){
+                        startActivity(new Intent(ZoneActivity.this,ShopLoginActivity.class));
+                    }
                     finish();
                     overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
                 }else{
-                    startActivity(new Intent(ZoneActivity.this,MoreActivity.class));
+                    if(!getIntent().getBooleanExtra("from_setting",false)){
+                        startActivity(new Intent(ZoneActivity.this,MoreActivity.class));
+                    }
                     finish();
                     overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
                 }
@@ -236,11 +240,13 @@ public class ZoneActivity extends Activity {
                 if (baseBean.isSet()) {
                     CacheUtil.getInstance().setLogin(true);
                     CacheUtil.getInstance().setAreaInfo(zoneAdapter.getCheckedIds());
-                    startActivity(new Intent(ZoneActivity.this, MainActivity.class));
+                    if (!getIntent().getBooleanExtra("from_setting", false)) {
+                        startActivity(new Intent(ZoneActivity.this, MainActivity.class));
+                    }
                     finish();
                     overridePendingTransition(R.anim.activity_new, R.anim.activity_out);
                 } else {
-                    DialogUtil.getInstance().showToast(ZoneActivity.this,baseBean.getErr());
+                    DialogUtil.getInstance().showToast(ZoneActivity.this, baseBean.getErr());
                 }
 
             }
