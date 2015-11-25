@@ -58,7 +58,7 @@ public abstract class ExtNetRequestListener  implements NetRequestListener{
                 }
             }
         }catch (Exception e){
-            Log.e(TAG,e.getMessage());
+           // Log.e(TAG,e.getMessage());
         }
     }
 

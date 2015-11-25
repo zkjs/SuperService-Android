@@ -154,6 +154,7 @@ public class InviteCodesActivity extends Activity {
 
             @Override
             public void onNetworkResponseSucceed(NetResponse result) {
+                super.onNetworkResponseSucceed(result);
                 Log.i(TAG, "result.rawResult:" + result.rawResult);
                 String jsonResult = result.rawResult;
                 Gson gson = new Gson();
@@ -188,6 +189,12 @@ public class InviteCodesActivity extends Activity {
 
         NetRequest netRequest = new NetRequest(ProtocolUtil.getNewRandomInviteCodeUrl());
         HashMap<String, String> bizMap = new HashMap<>();
+
+        if(TextUtils.isEmpty(shopID)){
+            DialogUtil.getInstance().showCustomToast(InviteCodesActivity.this,
+                                         "当前shopID不能为空", Gravity.CENTER);
+            return ;
+        }
         bizMap.put("shopid", shopID);
         bizMap.put("salesid", salesID);
         bizMap.put("token", token);

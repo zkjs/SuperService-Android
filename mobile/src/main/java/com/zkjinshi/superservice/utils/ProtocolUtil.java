@@ -210,8 +210,6 @@ public class ProtocolUtil {
         return ConfigUtil.getInst().getHttpDomain()+"shop/deletesemp";
     }
 
-
-
     /**
      * 获得商品图片
      * @param imageUrl
