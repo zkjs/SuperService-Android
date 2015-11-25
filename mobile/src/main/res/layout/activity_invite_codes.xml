@@ -13,13 +13,14 @@
 
         <ImageView
             android:id="@+id/iv_avatar"
+            android:src="@mipmap/bg_main_center_notify_msg"
             android:layout_centerInParent="true"
             android:scaleType="centerCrop"
-            android:src="@color/TransparentGray"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 
         <RelativeLayout
+            android:background="@color/TransparentGray"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
