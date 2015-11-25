@@ -203,9 +203,10 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
                                 }
                             }
 
-                            if(!mShopEmployeeVos.contains(mFirstShopEmployee)){
-                                mShopEmployeeVos.add(0, mFirstShopEmployee);
+                            if(null != mShopEmployeeVos && !mShopEmployeeVos.isEmpty()){
+                                mShopEmployeeVos.removeAll(mShopEmployeeVos);
                             }
+                            mShopEmployeeVos.add(0, mFirstShopEmployee);
                             mShopEmployeeVos.addAll(shopEmployeeVos);
 
                             for (ShopEmployeeVo shopEmployeeVo : shopEmployeeVos) {
@@ -261,10 +262,11 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
                         //获取在线数据失败更新
                         List<ShopEmployeeVo> shopEmployeeVos = ShopEmployeeDBUtil.getInstance().queryTeamByShopID(mShopID);
                         if(shopEmployeeVos != null && !shopEmployeeVos.isEmpty()){
-                            mShopEmployeeVos.addAll(shopEmployeeVos);
-                        }
-                        if(!mShopEmployeeVos.contains(mFirstShopEmployee)){
+                            if(null != mShopEmployeeVos && !mShopEmployeeVos.isEmpty()){
+                                mShopEmployeeVos.removeAll(mShopEmployeeVos);
+                            }
                             mShopEmployeeVos.add(0, mFirstShopEmployee);
+                            mShopEmployeeVos.addAll(shopEmployeeVos);
                         }
                         mTeamContactAdapter.updateListView(mShopEmployeeVos);
                         DialogUtil.getInstance().cancelProgressDialog();
