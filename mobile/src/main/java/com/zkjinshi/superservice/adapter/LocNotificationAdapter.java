@@ -96,10 +96,13 @@ public class LocNotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         if(!TextUtils.isEmpty(roomType)){
             ((NoticeViewHolder) holder).tvClientNotice.setText("需要办理入住手续");
             String orderStr = roomType+"|"+stayDays+"晚|"+checkInDate+"入住";
-            if(comingVo.getOrderStatus() == 0 || comingVo.getOrderStatus() == 2){
-                if(OrderUtil.isOrderTimeOut(checkInDate)){
-                    orderStr = orderStr + " (订单已过期)";
-                }
+//            if(comingVo.getOrderStatus() == 0 || comingVo.getOrderStatus() == 2){
+//                if(OrderUtil.isOrderTimeOut(checkInDate)){
+//                    orderStr = orderStr + " (订单已过期)";
+//                }
+//            }
+            if(OrderUtil.isOrderTimeOut(checkInDate)){
+                orderStr = orderStr + " (订单已过期)";
             }
             ((NoticeViewHolder) holder).tvOrderInfo.setText(orderStr);
         }else{
