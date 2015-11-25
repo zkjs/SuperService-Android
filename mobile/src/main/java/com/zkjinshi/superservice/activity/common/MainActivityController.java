@@ -1,5 +1,6 @@
 package com.zkjinshi.superservice.activity.common;
 
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -21,6 +22,8 @@ import com.gordonwong.materialsheetfab.MaterialSheetFabEventListener;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.zkjinshi.superservice.R;
+import com.zkjinshi.superservice.activity.set.ClientActivity;
+import com.zkjinshi.superservice.activity.set.TeamContactsActivity;
 import com.zkjinshi.superservice.adapter.ViewPagerAdapter;
 import com.zkjinshi.superservice.view.Fab;
 
@@ -227,7 +230,22 @@ public class MainActivityController implements View.OnClickListener{
 
     @Override
     public void onClick(View v) {
-        Toast.makeText(activity, R.string.sheet_item_pressed, Toast.LENGTH_SHORT).show();
+        switch (v.getId()){
+            case R.id.fab_sheet_item_recording://与团队对话
+                {
+                    Intent intent = new Intent(activity, TeamContactsActivity.class);
+                    activity.startActivity(intent);
+                }
+                break;
+            case R.id.fab_sheet_item_reminder://与客人对话
+                {
+                    Intent intent = new Intent(activity, ClientActivity.class);
+                    activity.startActivity(intent);
+                }
+                break;
+            default:
+                break;
+        }
         materialSheetFab.hideSheet();
     }
 }
