@@ -191,6 +191,7 @@ public class VideoCallActivity extends CallActivity implements View.OnClickListe
 
                 @Override
                 public void onNetworkResponseSucceed(NetResponse result) {
+
                     Log.i(TAG, "rawResult:" + result.rawResult);
                     try {
                         UserCallVo userCallVo = new Gson().fromJson(result.rawResult, UserCallVo.class);
