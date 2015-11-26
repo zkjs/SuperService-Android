@@ -203,19 +203,12 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
             @Override
             public boolean onMenuItemClick(android.view.MenuItem item) {
                 switch (item.getItemId()) {
-                    case R.id.add_chat_object:
-                        break;
-
-                    case R.id.start_group_chat:
-                        break;
-
-                    case R.id.transfer_chat_to_others:
-                        break;
-
-                    case R.id.offline_to_this_chat:
-                        break;
-
-                    case R.id.finish_this_chat:
+                    case R.id.menu_single_chat_info:
+                        {
+                            Intent intent = new Intent(ChatActivity.this,ChatDetailActivity.class);
+                            intent.putExtra("userId",userId);
+                            startActivity(intent);
+                        }
                         break;
                 }
                 return true;
@@ -339,7 +332,7 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_activity_chat, menu);
+        getMenuInflater().inflate(R.menu.menu_single_chat, menu);
         return true;
     }
 

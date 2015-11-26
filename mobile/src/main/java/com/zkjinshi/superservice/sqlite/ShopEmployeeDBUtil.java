@@ -326,6 +326,40 @@ public class ShopEmployeeDBUtil {
         return delResult;
     }
 
+    public ShopEmployeeVo queryEmployeeById(String empId) {
+        ShopEmployeeVo shopEmployeeVo = null;
+        SQLiteDatabase db = null;
+        Cursor cursor = null;
+        if (null != helper) {
+            try {
+                db = helper.getReadableDatabase();
+                cursor = db.query(DBOpenHelper.SHOP_EMPLOYEE_TBL, null,
+                        " empid = ? ", new String[] { empId}, null, null, null);
+                if (cursor != null && cursor.getCount() > 0) {
+                    while (cursor.moveToNext()) {
+                        shopEmployeeVo = new ShopEmployeeVo();
+                        shopEmployeeVo =  ShopEmployeeFactory.getInstance().buildShopEmployee(cursor);
+                    }
+                }
+
+            } catch (Exception e) {
+                // TODO: handle exception
+                e.printStackTrace();
+            } finally {
+
+                if (null != cursor) {
+                    cursor.close();
+                }
+
+                if (null != db) {
+                    db.close();
+                }
+            }
+
+        }
+        return shopEmployeeVo;
+    }
+
     /**
      * 查询员工最后一次服务器在线时间
      * @param empID
