@@ -103,33 +103,6 @@ public class MainActivity extends AppCompatActivity{
         loginUser();
         messageListener = new MessageListener();
         initService(messageListener);
-        userVo = UserDBUtil.getInstance().queryUserById(CacheUtil.getInstance().getUserId());
-
-        if(null != userVo){
-            String userName = userVo.getUserName();
-            if(!TextUtils.isEmpty(userName)){
-                usernameTv.setText(userName);
-            }
-            String shopName = userVo.getShopName();
-            if(!TextUtils.isEmpty(shopName)){
-                shopnameTv.setText(shopName);
-            }
-        }
-        onlineCbx.setChecked(CacheUtil.getInstance().getOnline());
-
-        TextView teamTv = (TextView)findViewById(R.id.team_tv);
-        if(IdentityType.BUSINESS ==  CacheUtil.getInstance().getLoginIdentity()){
-            onlineCbx.setVisibility(View.GONE);
-            teamTv.setText("团队管理");
-            setIbtn.setVisibility(View.GONE);
-           // String avatarUrl = ProtocolUtil.getShopBackUrl(userVo.getShopId());
-           // mainActivityController.setUserPhoto(CacheUtil.getInstance().getUserPhotoUrl(), avatarIv);
-        }else{
-            onlineCbx.setVisibility(View.VISIBLE);
-            teamTv.setText("团队联系人");
-            mainActivityController.setUserPhoto(CacheUtil.getInstance().getUserPhotoUrl(), avatarIv);
-            setIbtn.setVisibility(View.VISIBLE);
-        }
 
         //获取用户离线消息
         initOfflineMsg();
@@ -329,9 +302,39 @@ public class MainActivity extends AppCompatActivity{
         DBOpenHelper.DB_NAME = CacheUtil.getInstance().getUserId() + ".db";
         mainActivityController = new MainActivityController(this);
         mainActivityController.onCreate();
+        userVo = UserDBUtil.getInstance().queryUserById(CacheUtil.getInstance().getUserId());
         initView();
         initData();
         initListeners();
+    }
+
+    protected void onResume(){
+        super.onResume();
+
+        if(null != userVo){
+            String userName = userVo.getUserName();
+            if(!TextUtils.isEmpty(userName)){
+                usernameTv.setText(userName);
+            }
+            String shopName = userVo.getShopName();
+            if(!TextUtils.isEmpty(shopName)){
+                shopnameTv.setText(shopName);
+            }
+        }
+        onlineCbx.setChecked(CacheUtil.getInstance().getOnline());
+        TextView teamTv = (TextView)findViewById(R.id.team_tv);
+        if(IdentityType.BUSINESS ==  CacheUtil.getInstance().getLoginIdentity()){
+            onlineCbx.setVisibility(View.GONE);
+            teamTv.setText("团队管理");
+            setIbtn.setVisibility(View.GONE);
+            // String avatarUrl = ProtocolUtil.getShopBackUrl(userVo.getShopId());
+            // mainActivityController.setUserPhoto(CacheUtil.getInstance().getUserPhotoUrl(), avatarIv);
+        }else{
+            onlineCbx.setVisibility(View.VISIBLE);
+            teamTv.setText("团队联系人");
+            mainActivityController.setUserPhoto(CacheUtil.getInstance().getUserPhotoUrl(), avatarIv);
+            setIbtn.setVisibility(View.VISIBLE);
+        }
     }
 
     protected void onDestroy(){

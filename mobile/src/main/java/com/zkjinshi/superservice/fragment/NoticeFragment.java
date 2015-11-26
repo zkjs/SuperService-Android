@@ -322,7 +322,13 @@ public class NoticeFragment extends Fragment implements IMessageObserver{
                                         if (null != comingVo) {
                                             ComingDBUtil.getInstance().addComing(comingVo);
                                             notifyComingList.add(comingVo);
-                                            mNotificationAdapter.setComingList(notifyComingList);
+                                            getActivity().runOnUiThread(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    mNotificationAdapter.setComingList(notifyComingList);
+                                                }
+                                            });
+
                                         }
                                     }
                                 } catch (Exception e) {
