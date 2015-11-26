@@ -513,5 +513,6 @@
     </array>
 
     <color name="voip_interface_text_color">#bababa</color>
+    <color name="light_gray">#fafafa</color>
 
 </resources>
