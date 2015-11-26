@@ -3,6 +3,7 @@ package com.zkjinshi.superservice.net;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.text.TextUtils;
+import android.widget.Toast;
 
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
@@ -136,6 +137,12 @@ public class NetRequestTask extends AsyncTask<NetRequest, Void, NetResponse> {
                 }
             } else {
                 this.requestListener.onNetworkRequestError(errorCode, errorLog.toString());
+                if(errorCode == RESPONSE_ERROR){
+                    Toast.makeText(context.getApplicationContext(),"返回数据异常或者无网络",Toast.LENGTH_SHORT).show();
+                }else if(errorCode == REQ_TIME_OUT){
+                    Toast.makeText(context.getApplicationContext(),"网络异常，请检查网络", Toast.LENGTH_SHORT).show();
+                }
+                cancelTask();
             }
         }
     }
@@ -143,6 +150,13 @@ public class NetRequestTask extends AsyncTask<NetRequest, Void, NetResponse> {
     private void onExceptionThrown(Exception e, String message) {
         e.printStackTrace();
         errorLog.append(message + "\r\n");
+    }
+
+    public void cancelTask(){
+        if(getStatus() != AsyncTask.Status.FINISHED){
+            cancel(true);
+        }
+        onCancelled();
     }
 
     @Override
