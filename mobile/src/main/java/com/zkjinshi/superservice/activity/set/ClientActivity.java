@@ -1,5 +1,6 @@
 package com.zkjinshi.superservice.activity.set;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -21,9 +22,13 @@ import com.zkjinshi.base.net.observer.MessageSubject;
 import com.zkjinshi.base.net.protocol.ProtocolMSG;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
+import com.zkjinshi.superservice.ServiceApplication;
 import com.zkjinshi.superservice.activity.chat.ChatActivity;
+import com.zkjinshi.superservice.activity.common.LoginActivity;
+import com.zkjinshi.superservice.activity.order.OrderNewActivity;
 import com.zkjinshi.superservice.adapter.ContactsSortAdapter;
 import com.zkjinshi.superservice.bean.ClientDetailBean;
+import com.zkjinshi.superservice.emchat.EasemobIMHelper;
 import com.zkjinshi.superservice.entity.MsgUserOnlineStatus;
 import com.zkjinshi.superservice.entity.MsgUserOnlineStatusRSP;
 import com.zkjinshi.superservice.entity.UserOnlineStatusRecord;
@@ -40,6 +45,7 @@ import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.utils.PinyinComparator;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
+import com.zkjinshi.superservice.view.CustomExtDialog;
 import com.zkjinshi.superservice.view.SideBar;
 import com.zkjinshi.superservice.vo.ClientVo;
 import com.zkjinshi.superservice.vo.ContactType;
@@ -66,6 +72,7 @@ public class ClientActivity extends AppCompatActivity implements IMessageObserve
 
     private final static String TAG = ClientActivity.class.getSimpleName();
 
+    private boolean    mChooseOrderPerson;
     private String      mUserID;
     private String      mToken;
     private String      mShopID;
@@ -109,6 +116,8 @@ public class ClientActivity extends AppCompatActivity implements IMessageObserve
 
     private void initData() {
 
+        mChooseOrderPerson = getIntent().getBooleanExtra("choose_order_person", false);
+
         mUserID = CacheUtil.getInstance().getUserId();
         mToken  = CacheUtil.getInstance().getToken();
         mShopID = CacheUtil.getInstance().getShopID();
@@ -130,6 +139,7 @@ public class ClientActivity extends AppCompatActivity implements IMessageObserve
     }
 
     private void initListener() {
+
         /** 后退界面 */
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -166,24 +176,56 @@ public class ClientActivity extends AppCompatActivity implements IMessageObserve
             }
         });
 
+
         /** 我的客人条目点击事件 */
         mContactsAdapter.setOnItemClickListener(new RecyclerItemClickListener() {
             @Override
             public void onItemClick(View view, int postion) {
+
                 SortModel sortModel = mAllContactsList.get(postion);
-                String clientId = sortModel.getClientID();
-                String clientName = sortModel.getName();
-                Intent intent = new Intent(ClientActivity.this, ChatActivity.class);
-                intent.putExtra(Constants.EXTRA_USER_ID, clientId);
-                if (!TextUtils.isEmpty(mShopID)) {
-                    intent.putExtra(Constants.EXTRA_SHOP_ID,mShopID);
+                final String clientId   = sortModel.getClientID();
+                final String clientName = sortModel.getName();
+
+                if(mChooseOrderPerson){
+                    final CustomExtDialog.Builder customExtBuilder = new CustomExtDialog.Builder(ClientActivity.this);
+                    customExtBuilder.setTitle(getString(R.string.add_order_person));
+                    customExtBuilder.setMessage(getString(R.string.add_client) + clientName + getString(R.string.order_person) + "?");
+                    customExtBuilder.setGravity(Gravity.CENTER);
+                    customExtBuilder.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+
+                    customExtBuilder.setPositiveButton(getString(R.string.confirm), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Intent data = new Intent();
+                            data.putExtra("client_id", clientId);
+                            data.putExtra("client_name", clientName);
+
+                            dialog.dismiss();
+                            ClientActivity.this.setResult(RESULT_OK, data);
+
+                            ClientActivity.this.finish();
+                            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                        }
+                    });
+                    customExtBuilder.create().show();
+                } else {
+                    Intent intent = new Intent(ClientActivity.this, ChatActivity.class);
+                    intent.putExtra(Constants.EXTRA_USER_ID, clientId);
+                    if (!TextUtils.isEmpty(mShopID)) {
+                        intent.putExtra(Constants.EXTRA_SHOP_ID,mShopID);
+                    }
+                    intent.putExtra(Constants.EXTRA_SHOP_NAME,CacheUtil.getInstance().getShopFullName());
+                    if(!TextUtils.isEmpty(clientName)){
+                        intent.putExtra(Constants.EXTRA_TO_NAME, clientName);
+                    }
+                    intent.putExtra(Constants.EXTRA_FROM_NAME, CacheUtil.getInstance().getUserName());
+                    startActivity(intent);
                 }
-                intent.putExtra(Constants.EXTRA_SHOP_NAME,CacheUtil.getInstance().getShopFullName());
-                if(!TextUtils.isEmpty(clientName)){
-                    intent.putExtra(Constants.EXTRA_TO_NAME, clientName);
-                }
-                intent.putExtra(Constants.EXTRA_FROM_NAME, CacheUtil.getInstance().getUserName());
-                startActivity(intent);
             }
         });
     }

@@ -327,4 +327,12 @@ public class ProtocolUtil {
         return  ConfigUtil.getInst().getHttpDomain()+"v10/user";
     }
 
+    /**
+     * 获取商品列表 URL
+     * @param shopId
+     * @return
+     */
+    public static String getGoodListUrl(String shopId){
+        return ConfigUtil.getInst().getHttpDomain()+"order/goods?shopid="+shopId+"&page=1";
+    }
 }

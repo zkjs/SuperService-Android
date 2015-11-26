@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/action_sheet_button_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="bottom"
+    android:background="@null"
+    android:orientation="vertical"
+    android:padding="10.0dip">
+
+    <Button
+        android:id="@+id/btn_my_orders"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/actionsheet_top"
+        android:textColor="@color/black"
+        android:text="@string/my_orders"
+        android:textSize="18sp" />
+
+    <Button
+        android:id="@+id/btn_order_new"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/actionsheet_bottom"
+        android:textColor="@color/black"
+        android:text="@string/order_new"
+        android:textSize="18sp" />
+
+    <Button
+        android:id="@+id/btn_cancel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/actionsheet_single"
+        android:text="取消"
+        android:textColor="@color/black"
+        android:textSize="18sp" />
+
+</LinearLayout>

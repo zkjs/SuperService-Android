@@ -119,5 +119,14 @@
     <string name="The_other_party_did_not_answer_new">对方未接听</string>
     <string name="hanging_up">正在挂断..</string>
     <string name="not_connect_to_server">尚未连接至服务器，请稍后重试</string>
+    <string name="order_new">新建订单</string>
+    <string name="my_orders">我的订单</string>
+    <string name="order_person">预订人</string>
+    <string name="please_add_the_order_person">请添加预订人</string>
+    <string name="exit">退出</string>
+    <string name="confirm_exit_the_current_account">确定退出该账户？</string>
+    <string name="add_order_person">添加预订人</string>
+    <string name="add_client">添加客户</string>
+    <string name="choose_room_type">选择房型</string>
 
 </resources>

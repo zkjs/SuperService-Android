@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity{
     private TextView usernameTv;
     private TextView shopnameTv;
     private CheckBox onlineCbx;
-    private RelativeLayout avatarLayout;
+    private RelativeLayout  avatarLayout;
     private MessageListener messageListener;
     private UserVo userVo;
     private ImageButton setIbtn;
@@ -183,17 +183,17 @@ public class MainActivity extends AppCompatActivity{
             public void onClick(View view) {
 
                 final CustomExtDialog.Builder customExtBuilder = new CustomExtDialog.Builder(MainActivity.this);
-                customExtBuilder.setTitle("退出");
-                customExtBuilder.setMessage("确定退出该账户？");
+                customExtBuilder.setTitle(getString(R.string.exit));
+                customExtBuilder.setMessage(getString(R.string.confirm_exit_the_current_account));
                 customExtBuilder.setGravity(Gravity.CENTER);
-                customExtBuilder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                customExtBuilder.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
                     }
                 });
 
-                customExtBuilder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                customExtBuilder.setPositiveButton(getString(R.string.confirm), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         //环信接口退出

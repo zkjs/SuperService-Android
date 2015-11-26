@@ -22,6 +22,7 @@ import com.easemob.chat.EMChatManager;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.chat.VideoCallActivity;
 import com.zkjinshi.superservice.activity.chat.VoiceCallActivity;
+import com.zkjinshi.superservice.activity.order.OrderOperationController;
 import com.zkjinshi.superservice.adapter.MoreAdapter;
 import com.zkjinshi.superservice.adapter.MorePageAdapter;
 import com.zkjinshi.superservice.utils.CacheUtil;
@@ -50,12 +51,13 @@ public class MoreViewPagerManager extends Handler {
 	private int CURRENT_MORE_PAGE = 0; // 当前更多页
 
 	private static final int CHOOSE_IMAGE = 0;// 图片
-	private static final int TAKE_PHOTO = 1;// 拍照
-	private static final int VOICE_CALL = 2;// 语音电话
-	private static final int VIDEO_CALL = 3;// 视频电话
-	private static final int CALL_CARD = 4;// 名片
-	private static final int MY_LOCATION = 5;// 位置
-	private static final int CHOOSE_FILE = 6;// 文件
+	private static final int TAKE_PHOTO  = 1;// 拍照
+	private static final int VOICE_CALL  = 2;// 语音电话
+	private static final int VIDEO_CALL  = 3;// 视频电话
+	private static final int ORDER_DEAL  = 4;// 订单
+	private static final int CALL_CARD   = 5;// 名片
+	private static final int MY_LOCATION = 6;// 位置
+	private static final int CHOOSE_FILE = 7;// 文件
 
 	private Context context;
 	private JazzyViewPager moreViewPager;
@@ -78,6 +80,7 @@ public class MoreViewPagerManager extends Handler {
 		this.toName = toName;
 		initView((Activity) context);
 		initMorePage();
+        OrderOperationController.getInstance().init(context);
 	}
 
 	private void initView(Activity activity) {
@@ -171,6 +174,12 @@ public class MoreViewPagerManager extends Handler {
 						}
 					}
 					break;
+
+				case ORDER_DEAL:
+
+                    OrderOperationController.getInstance().showOrderOperationDialog();
+					break;
+
 				default:
 					break;
 				}

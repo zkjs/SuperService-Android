@@ -11,7 +11,7 @@ public enum MethodType {
 
     GET(0),
     POST(1),
-    PUSH(2);
+    PUSH(2), ;
 
     private MethodType(int value){
         this.value = value;
