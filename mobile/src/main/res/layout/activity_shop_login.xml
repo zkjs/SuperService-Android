@@ -28,7 +28,7 @@
         <EditText
             android:id="@+id/et_input_phone"
             style="@style/inputStyle"
-            android:hint="手机号"
+            android:hint="账号"
             android:inputType="number"
             android:maxLength="11"
             android:singleLine="true"
@@ -60,6 +60,7 @@
             android:layout_height="wrap_content"
             android:textColor="#505152"
             android:text="注册"
-            android:textSize="16sp"/>
+            android:textSize="16sp"
+            android:visibility="gone"/>
     </LinearLayout>
 </LinearLayout>
