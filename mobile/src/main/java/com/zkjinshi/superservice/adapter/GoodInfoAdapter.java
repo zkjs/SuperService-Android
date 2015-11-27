@@ -19,7 +19,11 @@ import com.zkjinshi.superservice.listener.RecyclerItemClickListener;
 import com.zkjinshi.superservice.vo.GoodInfoVo;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * 联系人适配器
@@ -33,6 +37,7 @@ public class GoodInfoAdapter extends RecyclerView.Adapter<GoodInfoAdapter.GoodIn
     private Activity             mActivity;
     private List<GoodInfoVo>     mDatas;
     private DisplayImageOptions  mOptions;
+    private static Map<Integer, GoodInfoViewHolder> mCheckHolderMap;  //初始值未选中值 -1
 
     private RecyclerItemClickListener mRecyclerItemClickListener;
 
@@ -44,6 +49,8 @@ public class GoodInfoAdapter extends RecyclerView.Adapter<GoodInfoAdapter.GoodIn
             this.mDatas = datas;
         }
         this.mActivity = activity;
+
+        mCheckHolderMap = new HashMap<>();
         this.mOptions = new DisplayImageOptions.Builder()
                 .showImageOnLoading(R.mipmap.ic_room_pic_default)
                 .showImageForEmptyUri(R.mipmap.ic_room_pic_default)
@@ -86,11 +93,11 @@ public class GoodInfoAdapter extends RecyclerView.Adapter<GoodInfoAdapter.GoodIn
     }
 
     @Override
-    public void onBindViewHolder(final GoodInfoAdapter.GoodInfoViewHolder holder, int position) {
-        GoodInfoVo goodInfoVo = mDatas.get(position);
+    public void onBindViewHolder(final GoodInfoAdapter.GoodInfoViewHolder holder, final int position) {
 
+        GoodInfoVo goodInfoVo = mDatas.get(position);
         //显示房型图片
-        String imgUrl   = goodInfoVo.getImgurl();
+        String imgUrl = goodInfoVo.getImgurl();
         ImageLoader.getInstance().displayImage(imgUrl, holder.ivRoomType, mOptions);
 
         //房间类型描述
@@ -99,15 +106,25 @@ public class GoodInfoAdapter extends RecyclerView.Adapter<GoodInfoAdapter.GoodIn
             holder.tvRoomType.setText(roomType);
         }
 
-        //设置条目是否选中
+        //设置checkbox选中切换事件
         holder.cbChecked.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                buttonView.setChecked(!isChecked);
+
+                if(isChecked){
+                    mCheckHolderMap.put(position, holder);
+                } else {
+                    if(mCheckHolderMap.containsKey(position)){
+                        mCheckHolderMap.remove(position);
+                    }
+                }
             }
         });
     }
 
+    /**
+     * data数据清空
+     */
     public void clear() {
         this.mDatas.clear();
         notifyDataSetChanged();
@@ -122,6 +139,7 @@ public class GoodInfoAdapter extends RecyclerView.Adapter<GoodInfoAdapter.GoodIn
         private RecyclerItemClickListener mItemClickListener;
 
         public GoodInfoViewHolder(View view, RecyclerItemClickListener itemClickListener) {
+
             super(view);
             ivRoomType = (ImageView) view.findViewById(R.id.iv_room_type);
             tvRoomType = (TextView)  view.findViewById(R.id.tv_room_type);
@@ -133,6 +151,18 @@ public class GoodInfoAdapter extends RecyclerView.Adapter<GoodInfoAdapter.GoodIn
                 @Override
                 public void onClick(View v) {
                     if(mItemClickListener != null){
+                        //取消checkbox选中
+                        Iterator<Map.Entry<Integer, GoodInfoViewHolder>> it = mCheckHolderMap.entrySet().iterator();
+                        GoodInfoViewHolder viewHolder = null;
+                        while (it.hasNext()) {
+                            Map.Entry<Integer, GoodInfoViewHolder> entry = it.next();
+                            viewHolder = entry.getValue();
+                            if(viewHolder.cbChecked.isChecked()){
+                                viewHolder.cbChecked.setChecked(false);
+                            }
+                        }
+                        cbChecked.setChecked(!cbChecked.isChecked());
+                        //触发条目点击事件
                         mItemClickListener.onItemClick(v, getPosition());
                     }
                 }
@@ -140,4 +170,17 @@ public class GoodInfoAdapter extends RecyclerView.Adapter<GoodInfoAdapter.GoodIn
         }
     }
 
+    /**
+     * 获取选中房型
+     * @return
+     */
+    public int getCheckedPosition(){
+        int checkedPostion = -1;
+        Iterator<Map.Entry<Integer, GoodInfoViewHolder>> it = mCheckHolderMap.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry<Integer, GoodInfoViewHolder> entry = it.next();
+            checkedPostion = entry.getKey();
+        }
+        return checkedPostion;
+    }
 }

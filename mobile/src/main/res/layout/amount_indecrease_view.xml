@@ -1,0 +1,62 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:focusable="true"
+    android:padding="5dp"
+    android:gravity="center_vertical"
+    android:focusableInTouchMode="true" >
+
+    <RelativeLayout
+        android:id="@+id/decrease"
+        android:background="@drawable/bg_transparent_2_gray"
+        android:gravity="center"
+        android:clickable="true"
+        android:layout_width="24dp"
+        android:layout_height="24dp">
+
+        <ImageView
+            android:layout_width="16dp"
+            android:layout_height="2dp"
+            android:gravity="center"
+            android:background="@mipmap/ic_minus"
+            android:contentDescription="@null" />
+
+    </RelativeLayout>
+
+    <EditText
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:id="@+id/number"
+        android:layout_width="30dp"
+        android:layout_height="24dp"
+        android:gravity="center"
+        android:imeOptions="actionDone"
+        android:inputType="numberDecimal"
+        android:singleLine="true"
+        android:textSize="14sp"
+        android:textColor="@color/black"
+        android:textColorHint="@color/gray"
+        android:background="@drawable/amount_indecrease_edit"
+        android:hint="@string/zero"
+        />
+
+    <RelativeLayout
+        android:id="@+id/increase"
+        android:background="@drawable/bg_transparent_2_gray"
+        android:gravity="center"
+        android:clickable="true"
+        android:layout_width="24dp"
+        android:layout_height="24dp">
+
+        <ImageView
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:gravity="center"
+            android:background="@mipmap/ic_plus"
+            android:contentDescription="@null" />
+
+    </RelativeLayout>
+
+</LinearLayout>

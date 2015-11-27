@@ -57,7 +57,7 @@ public class MoreAdapter extends BaseAdapter {
 		moreList.add(moreInfo);
 
 		moreInfo = new MoreInfo();
-		moreInfo.resId = R.drawable.chat_more_video_call;
+		moreInfo.resId = R.drawable.chat_more_ding_dan;
 		moreInfo.name = "订单";
 		moreList.add(moreInfo);
 	}

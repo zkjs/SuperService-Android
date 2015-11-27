@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/tools"
-    xmlns:zkjinshi="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#eeeeee"
@@ -111,7 +110,7 @@
                             android:layout_centerHorizontal="true"
                             android:gravity="center"
                             android:padding="2dp"
-                            android:text="豪华大床"
+                            android:text="@string/choose_room_type"
                             android:textColor="@color/black"
                             android:textSize="16sp" />
 
@@ -142,139 +141,205 @@
                 </LinearLayout>
             </RelativeLayout>
 
-            <com.zkjinshi.superservice.view.ItemUserSettingView
-                android:id="@+id/iusv_order_person"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:background="#ffffff"
-                android:clickable="true" />
-
-            <!--入住离店日期-->
             <LinearLayout
-                android:id="@+id/llt_date_container"
+                android:id="@+id/ll_order_person"
+                android:background="@drawable/bg_btn_default"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:background="@color/white"
-                android:orientation="vertical"
-                android:paddingBottom="10dp"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
-                android:paddingTop="10dp"
-                android:visibility="visible">
+                android:layout_height="48dp"
+                android:clickable="true"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
 
                 <TextView
-                    android:id="@+id/tv_text_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:padding="5dp"
-                    android:text="入住/离店日期"
+                    android:paddingLeft="15dp"
+                    android:layout_centerVertical="true"
                     android:textColor="@color/black"
+                    android:text="@string/order_person"
                     android:textSize="16sp" />
 
+                <TextView
+                    android:id="@+id/tv_order_person"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:gravity="right"
+                    android:paddingRight="15dp"
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/gray"
+                    android:hint="@string/please_add_the_order_person"
+                    android:textSize="16sp" />
+
+                <ImageView
+                    android:layout_marginRight="15dp"
+                    android:layout_centerVertical="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_img_get_into"/>
+
+            </LinearLayout>
+
+            <!--入住离店日期-->
+            <RelativeLayout
+                android:id="@+id/rl_order_date"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/bg_btn_default"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:clickable="true"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="15dp"
+                    android:layout_centerVertical="true"
+                    android:textColor="@color/black"
+                    android:text="@string/arrive_and_leave_date"
+                    android:textSize="16sp" />
+
+                <ImageView
+                    android:layout_marginRight="15dp"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_img_get_into"/>
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:background="@color/white"
+                android:id="@+id/ll_order_date"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:paddingLeft="15dp"
+                android:orientation="horizontal"
+                android:visibility="gone"
+                >
+
                 <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:paddingTop="10dp"
-                    android:visibility="gone">
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
-                    <LinearLayout
+                    <TextView
+                        android:id="@+id/tv_arrive_date"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical">
+                        android:layout_margin="5dp"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
 
-                        <TextView
-                            android:id="@+id/tv_arrive_date"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="5dp"
-                            android:text="xx月xx日"
-                            android:textColor="#000000"
-                            android:textSize="16sp" />
-
-                        <TextView
-                            android:id="@+id/tv_leave_date"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="5dp"
-                            android:text="xx月xx日"
-                            android:textColor="#000000"
-                            android:textSize="16sp" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="center">
-
-                        <TextView
-                            android:id="@+id/tv_date_tips"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="共2晚，在xx月xx日13点前退房"
-                            android:textColor="#7C7C7C"
-                            android:textSize="16sp" />
-
-                    </LinearLayout>
-
-                    <ImageView
+                    <TextView
+                        android:id="@+id/tv_leave_date"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@mipmap/ic_get_into_w" />
+                        android:layout_margin="5dp"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
 
                 </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center">
+
+                    <TextView
+                        android:id="@+id/tv_date_tips"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="#7C7C7C"
+                        android:textSize="16sp" />
+                </LinearLayout>
+
             </LinearLayout>
 
             <!--房间数量-->
-            <com.zkjinshi.superservice.view.ItemUserSettingView
-                android:id="@+id/aod_room_number"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
+            <RelativeLayout
                 android:layout_marginTop="20dp"
-                android:layout_weight="1"
-                android:background="#ffffff"
+                android:background="@color/white"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/aod_room_number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="15dp"
+                    android:layout_centerVertical="true"
+                    android:textColor="@color/black"
+                    android:text="@string/room_number"
+                    android:textSize="16sp" />
+
+                <com.zkjinshi.superservice.view.AmountInDecreaseView
+                    android:id="@+id/aiv_room_count"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="10dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true" >
+
+                </com.zkjinshi.superservice.view.AmountInDecreaseView>
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_live_person"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/bg_btn_default"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
                 android:clickable="true"
-                zkjinshi:itemSettingTitle="房间数量" />
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="15dp"
+                    android:layout_centerVertical="true"
+                    android:textColor="@color/black"
+                    android:text="@string/live_person"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/tv_live_person"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:gravity="right"
+                    android:layout_marginRight="15dp"
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/gray"
+                    android:hint="@string/please_add_the_live_person"
+                    android:textSize="16sp" />
+
+                <ImageView
+                    android:layout_marginRight="15dp"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_img_get_into"/>
+
+            </LinearLayout>
 
             <!--入住人-->
             <LinearLayout
+                android:id="@+id/ll_persons"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
                 android:orientation="vertical"
                 android:visibility="visible">
 
-                <com.zkjinshi.superservice.view.ItemUserSettingView
-                    android:id="@+id/aod_customer1"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:background="#ffffff"
-                    android:clickable="true"
-                    zkjinshi:itemSettingTitle="入住人1" />
-
-                <com.zkjinshi.superservice.view.ItemUserSettingView
-                    android:id="@+id/aod_customer2"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:background="#ffffff"
-                    android:clickable="true"
-                    zkjinshi:itemSettingTitle="入住人2" />
-
-                <com.zkjinshi.superservice.view.ItemUserSettingView
-                    android:id="@+id/aod_customer3"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:background="#ffffff"
-                    android:clickable="true"
-                    zkjinshi:itemSettingTitle="入住人3" />
             </LinearLayout>
 
             <!--支付方式-->
@@ -303,7 +368,7 @@
                     android:layout_height="wrap_content"
                     android:padding="5dp"
                     android:text="你应该支付XX元，还需要支付XX元"
-                    android:textColor="#000000"
+                    android:textColor="@color/black"
                     android:textSize="16sp" />
 
                 <TextView
@@ -354,7 +419,7 @@
                         android:layout_weight="1"
                         android:padding="5dp"
                         android:text="中科金石科技有限公司"
-                        android:textColor="#000000"
+                        android:textColor="@color/black"
                         android:textSize="16sp" />
 
                     <ImageView
@@ -486,7 +551,7 @@
                     android:layout_marginBottom="10dp"
                     android:padding="5dp"
                     android:text=""
-                    android:textColor="#000000"
+                    android:textColor="@color/black"
                     android:textSize="16sp" />
             </LinearLayout>
 

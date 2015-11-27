@@ -128,5 +128,14 @@
     <string name="add_order_person">添加预订人</string>
     <string name="add_client">添加客户</string>
     <string name="choose_room_type">选择房型</string>
+    <string name="room_number">房间数量</string>
+    <string name="zero">0</string>
+    <string name="arrive_and_leave_date">入住/离店日期</string>
+    <string name="live_person">入住人</string>
+    <string name="please_add_the_live_person">请添加入住人</string>
+    <string name="edit_line_person">编辑入住人</string>
+    <string name="complete">完成</string>
+    <string name="please_input_the_name">请输入姓名</string>
+    <string name="please_input_the_live_person">请填写入住人</string>
 
 </resources>
