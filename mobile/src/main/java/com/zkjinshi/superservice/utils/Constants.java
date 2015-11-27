@@ -23,9 +23,9 @@ public class Constants {
     public final static int POST_SUCCESS = 1;
     public final static int POST_FAILED  = 0;
 
-    public static final int CHATTYPE_SINGLE = 1;
-    public static final int CHATTYPE_GROUP = 2;
-    public static final int CHATTYPE_CHATROOM = 3;
+    public static final int CHATTYPE_SINGLE = 1;//单聊
+    public static final int CHATTYPE_GROUP = 2;//群聊
+    public static final int CHATTYPE_CHATROOM = 3;//聊天室
 
     public static final String EXTRA_CHAT_TYPE = "chatType";
     public static final String EXTRA_USER_ID = "userId";
