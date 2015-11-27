@@ -2,7 +2,7 @@ package com.zkjinshi.superservice.menu.action;
 
 import android.text.TextUtils;
 
-import com.zkjinshi.superservice.activity.chat.action.QuickMenuManager;
+import com.zkjinshi.superservice.activity.chat.single.action.QuickMenuManager;
 
 
 /**

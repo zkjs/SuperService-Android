@@ -1,4 +1,4 @@
-package com.zkjinshi.superservice.activity.chat;
+package com.zkjinshi.superservice.activity.chat.single;
 
 import android.content.Context;
 import android.media.AudioManager;

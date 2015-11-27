@@ -1,4 +1,4 @@
-package com.zkjinshi.superservice.activity.chat.action;
+package com.zkjinshi.superservice.activity.chat.single.action;
 
 import android.app.Activity;
 import android.content.Context;
@@ -9,7 +9,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 import com.zkjinshi.superservice.R;
-import com.zkjinshi.superservice.activity.chat.ChatActivity;
+import com.zkjinshi.superservice.activity.chat.single.ChatActivity;
 import com.zkjinshi.superservice.menu.view.MenuLayoutView;
 import com.zkjinshi.superservice.menu.vo.MenuGroup;
 import com.zkjinshi.superservice.menu.vo.MenuItem;

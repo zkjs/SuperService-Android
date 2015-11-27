@@ -1,4 +1,4 @@
-package com.zkjinshi.superservice.activity.chat;
+package com.zkjinshi.superservice.activity.chat.group;
 
 import android.app.Activity;
 import android.content.DialogInterface;

@@ -1,10 +1,9 @@
-package com.zkjinshi.superservice.activity.chat.action;
+package com.zkjinshi.superservice.activity.chat.single.action;
 
 import com.zkjinshi.superservice.menu.vo.ActionType;
 import com.zkjinshi.superservice.menu.vo.MenuGroup;
 import com.zkjinshi.superservice.menu.vo.MenuItem;
 import com.zkjinshi.superservice.menu.vo.MenuType;
-import com.zkjinshi.superservice.utils.CacheUtil;
 
 import java.util.ArrayList;
 

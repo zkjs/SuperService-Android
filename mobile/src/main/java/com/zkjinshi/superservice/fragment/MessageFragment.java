@@ -17,7 +17,7 @@ import com.easemob.chat.EMConversation;
 import com.easemob.chat.EMMessage;
 import com.easemob.exceptions.EaseMobException;
 import com.zkjinshi.superservice.R;
-import com.zkjinshi.superservice.activity.chat.ChatActivity;
+import com.zkjinshi.superservice.activity.chat.single.ChatActivity;
 import com.zkjinshi.superservice.adapter.MessageAdapter;
 import com.zkjinshi.superservice.emchat.EMConversationHelper;
 import com.zkjinshi.superservice.emchat.observer.EMessageSubject;

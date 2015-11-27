@@ -1,4 +1,4 @@
-package com.zkjinshi.superservice.activity.chat.action;
+package com.zkjinshi.superservice.activity.chat.single.action;
 
 import android.app.Activity;
 import android.content.Context;

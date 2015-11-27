@@ -1,9 +1,8 @@
-package com.zkjinshi.superservice.activity.chat;
+package com.zkjinshi.superservice.activity.chat.single;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -14,6 +13,7 @@ import android.widget.TextView;
 
 import com.zkjinshi.base.util.DisplayUtil;
 import com.zkjinshi.superservice.R;
+import com.zkjinshi.superservice.activity.chat.group.InviteTeamActivity;
 import com.zkjinshi.superservice.activity.set.EmployeeInfoActivity;
 import com.zkjinshi.superservice.adapter.ChatDetailAdapter;
 import com.zkjinshi.superservice.sqlite.ShopEmployeeDBUtil;

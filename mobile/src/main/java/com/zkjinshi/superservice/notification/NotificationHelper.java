@@ -3,45 +3,27 @@ package com.zkjinshi.superservice.notification;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.app.RemoteInput;
 import android.text.TextUtils;
-import android.util.Log;
-import android.view.Gravity;
 
 import com.easemob.EMNotifierEvent;
 import com.easemob.chat.EMMessage;
 import com.easemob.chat.TextMessageBody;
 import com.easemob.exceptions.EaseMobException;
-import com.google.gson.Gson;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.zkjinshi.base.util.ActivityManagerHelper;
-import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.base.util.TimeUtil;
 import com.zkjinshi.base.util.VibratorHelper;
-import com.zkjinshi.base.view.CustomDialog;
 import com.zkjinshi.superservice.R;
-import com.zkjinshi.superservice.activity.chat.ChatActivity;
-import com.zkjinshi.superservice.activity.common.InviteCodesActivity;
+import com.zkjinshi.superservice.activity.chat.single.ChatActivity;
 import com.zkjinshi.superservice.activity.common.MainActivity;
 import com.zkjinshi.superservice.activity.common.SplashActivity;
-import com.zkjinshi.superservice.activity.set.ClientBindActivity;
-import com.zkjinshi.superservice.activity.set.ClientSelectActivity;
 import com.zkjinshi.superservice.bean.ClientBaseBean;
-import com.zkjinshi.superservice.bean.InviteCode;
-import com.zkjinshi.superservice.entity.InviteCodeEntity;
 import com.zkjinshi.superservice.entity.MsgPushTriggerLocNotificationM2S;
-import com.zkjinshi.superservice.entity.MsgUserDefine;
-import com.zkjinshi.superservice.net.ExtNetRequestListener;
-import com.zkjinshi.superservice.net.MethodType;
-import com.zkjinshi.superservice.net.NetRequest;
-import com.zkjinshi.superservice.net.NetRequestTask;
-import com.zkjinshi.superservice.net.NetResponse;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.utils.MediaPlayerUtil;
@@ -49,12 +31,6 @@ import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.vo.MessageVo;
 import com.zkjinshi.superservice.vo.MimeType;
 import com.zkjinshi.superservice.vo.TxtExtType;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.sql.Time;
-import java.util.HashMap;
 
 /**
  * 消息通知帮助类

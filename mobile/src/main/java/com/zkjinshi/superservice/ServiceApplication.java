@@ -21,7 +21,7 @@ import com.zkjinshi.base.log.LogUtil;
 import com.zkjinshi.base.net.util.ImCacheUtil;
 import com.zkjinshi.base.util.BaseContext;
 import com.zkjinshi.base.util.DeviceUtils;
-import com.zkjinshi.superservice.activity.chat.action.MessageSendFailChecker;
+import com.zkjinshi.superservice.activity.chat.single.action.MessageSendFailChecker;
 import com.zkjinshi.superservice.emchat.EasemobIMHelper;
 import com.zkjinshi.superservice.receiver.ECallReceiver;
 import com.zkjinshi.superservice.utils.CacheUtil;

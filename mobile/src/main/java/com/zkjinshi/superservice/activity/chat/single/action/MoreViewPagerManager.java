@@ -1,4 +1,4 @@
-package com.zkjinshi.superservice.activity.chat.action;
+package com.zkjinshi.superservice.activity.chat.single.action;
 
 import android.app.Activity;
 import android.content.Context;
@@ -20,8 +20,8 @@ import android.widget.Toast;
 
 import com.easemob.chat.EMChatManager;
 import com.zkjinshi.superservice.R;
-import com.zkjinshi.superservice.activity.chat.VideoCallActivity;
-import com.zkjinshi.superservice.activity.chat.VoiceCallActivity;
+import com.zkjinshi.superservice.activity.chat.single.VideoCallActivity;
+import com.zkjinshi.superservice.activity.chat.single.VoiceCallActivity;
 import com.zkjinshi.superservice.activity.order.OrderOperationController;
 import com.zkjinshi.superservice.adapter.MoreAdapter;
 import com.zkjinshi.superservice.adapter.MorePageAdapter;

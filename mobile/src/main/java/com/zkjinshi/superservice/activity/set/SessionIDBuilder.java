@@ -1,13 +1,5 @@
 package com.zkjinshi.superservice.activity.set;
 
-import android.app.Activity;
-import android.content.Intent;
-import android.text.TextUtils;
-
-import com.zkjinshi.superservice.activity.chat.ChatActivity;
-import com.zkjinshi.superservice.utils.CacheUtil;
-import com.zkjinshi.superservice.utils.Constants;
-
 /**
  * 开发者：vincent
  * 日期：2015/10/26

@@ -5,8 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.easemob.chat.EMChat;
-import com.zkjinshi.superservice.activity.chat.VideoCallActivity;
-import com.zkjinshi.superservice.activity.chat.VoiceCallActivity;
+import com.zkjinshi.superservice.activity.chat.single.VideoCallActivity;
+import com.zkjinshi.superservice.activity.chat.single.VoiceCallActivity;
 
 /**
  * 开发者：JimmyZhang

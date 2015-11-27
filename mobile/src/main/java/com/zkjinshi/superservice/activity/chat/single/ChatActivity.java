@@ -1,4 +1,4 @@
-package com.zkjinshi.superservice.activity.chat;
+package com.zkjinshi.superservice.activity.chat.single;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -32,12 +32,12 @@ import com.google.gson.Gson;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.base.util.SoftInputUtil;
 import com.zkjinshi.superservice.R;
-import com.zkjinshi.superservice.activity.chat.action.FaceViewPagerManager;
-import com.zkjinshi.superservice.activity.chat.action.MessageListViewManager;
-import com.zkjinshi.superservice.activity.chat.action.MoreViewPagerManager;
-import com.zkjinshi.superservice.activity.chat.action.NetCheckManager;
-import com.zkjinshi.superservice.activity.chat.action.QuickMenuManager;
-import com.zkjinshi.superservice.activity.chat.action.VoiceRecordManager;
+import com.zkjinshi.superservice.activity.chat.single.action.FaceViewPagerManager;
+import com.zkjinshi.superservice.activity.chat.single.action.MessageListViewManager;
+import com.zkjinshi.superservice.activity.chat.single.action.MoreViewPagerManager;
+import com.zkjinshi.superservice.activity.chat.single.action.NetCheckManager;
+import com.zkjinshi.superservice.activity.chat.single.action.QuickMenuManager;
+import com.zkjinshi.superservice.activity.chat.single.action.VoiceRecordManager;
 import com.zkjinshi.superservice.bean.BookOrderBean;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.Constants;

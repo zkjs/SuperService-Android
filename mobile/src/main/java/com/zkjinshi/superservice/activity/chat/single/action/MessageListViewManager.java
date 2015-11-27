@@ -1,4 +1,4 @@
-package com.zkjinshi.superservice.activity.chat.action;
+package com.zkjinshi.superservice.activity.chat.single.action;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -26,14 +26,11 @@ import com.zkjinshi.superservice.emchat.observer.IEMessageObserver;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.view.MsgListView;
-import com.zkjinshi.superservice.vo.MessageVo;
 import com.zkjinshi.superservice.vo.TxtExtType;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
-import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * 消息ListView管理器

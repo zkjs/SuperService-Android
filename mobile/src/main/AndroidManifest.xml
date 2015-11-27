@@ -148,7 +148,7 @@
         </activity>
 
         <activity
-            android:name=".activity.chat.ChatActivity"
+            android:name=".activity.chat.single.ChatActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
@@ -333,14 +333,14 @@
 
         <!-- 语音通话 -->
         <activity
-            android:name="com.zkjinshi.superservice.activity.chat.VoiceCallActivity"
+            android:name=".activity.chat.single.VoiceCallActivity"
             android:screenOrientation="portrait"
             android:launchMode="singleTask"
             android:theme="@android:style/android:Theme.NoTitleBar" >
         </activity>
         <!-- 视频通话 -->
         <activity
-            android:name="com.zkjinshi.superservice.activity.chat.VideoCallActivity"
+            android:name=".activity.chat.single.VideoCallActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait"
             android:launchMode="singleTask"
@@ -348,14 +348,14 @@
         </activity>
 
         <activity
-            android:name=".activity.chat.TranspondActivity"
+            android:name=".activity.chat.single.TranspondActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" >
         </activity>
 
         <activity
-            android:name=".activity.chat.InviteTeamActivity"
+            android:name=".activity.chat.group.InviteTeamActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" >
@@ -363,7 +363,7 @@
 
         <!--单聊详情页-->
         <activity
-            android:name=".activity.chat.ChatDetailActivity"
+            android:name=".activity.chat.single.ChatDetailActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" >
@@ -372,7 +372,7 @@
 
         <!--群聊详情页-->
         <activity
-            android:name=".activity.chat.GroupDetailActivity"
+            android:name=".activity.chat.group.GroupDetailActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" >
