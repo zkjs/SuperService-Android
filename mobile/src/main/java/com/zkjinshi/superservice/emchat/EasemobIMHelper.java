@@ -12,6 +12,7 @@ import com.easemob.EMError;
 import com.easemob.chat.EMChat;
 import com.easemob.chat.EMChatManager;
 import com.easemob.chat.EMContactManager;
+import com.easemob.chat.EMGroupManager;
 import com.easemob.exceptions.EaseMobException;
 import com.easemob.util.NetUtils;
 import com.zkjinshi.base.util.BaseContext;
@@ -148,6 +149,33 @@ public class EasemobIMHelper {
             protected Void doInBackground(Void... params) {
                 try {
                     EMContactManager.getInstance().addContact(toAddUsername, reason);
+                } catch (EaseMobException e) {
+                    e.printStackTrace();
+                    Log.i(TAG,"errorCode:"+e.getErrorCode());
+                    Log.i(TAG,"errorMessage:"+e.getMessage());
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+            }
+        }.execute();
+
+    }
+
+    public void requestGroupListTask(){
+        new AsyncTask<Void,Void,Void>(){
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+            }
+
+            @Override
+            protected Void doInBackground(Void... params) {
+                try {
+                    EMGroupManager.getInstance().getGroupsFromServer();
                 } catch (EaseMobException e) {
                     e.printStackTrace();
                     Log.i(TAG,"errorCode:"+e.getErrorCode());

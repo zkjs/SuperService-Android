@@ -125,19 +125,19 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 ((ViewHolder) holder).titleTv.setText(room != null && !TextUtils.isEmpty(room.getName()) ? room.getName() : username);
             }else {
                 ((ViewHolder) holder).titleTv.setText(username);
-            }
-            try {
-                String fromName = message.getStringAttribute("fromName");
-                String toName = message.getStringAttribute("toName");
-                if(!TextUtils.isEmpty(fromName) && !fromName.equals(CacheUtil.getInstance().getUserName())){
-                    ((ViewHolder) holder).titleTv.setText(fromName);
-                }else{
-                    if(!TextUtils.isEmpty(toName) && !toName.equals(CacheUtil.getInstance().getUserName())){
-                        ((ViewHolder) holder).titleTv.setText(toName);
+                try {
+                    String fromName = message.getStringAttribute("fromName");
+                    String toName = message.getStringAttribute("toName");
+                    if(!TextUtils.isEmpty(fromName) && !fromName.equals(CacheUtil.getInstance().getUserName())){
+                        ((ViewHolder) holder).titleTv.setText(fromName);
+                    }else{
+                        if(!TextUtils.isEmpty(toName) && !toName.equals(CacheUtil.getInstance().getUserName())){
+                            ((ViewHolder) holder).titleTv.setText(toName);
+                        }
                     }
+                } catch (EaseMobException e) {
+                    e.printStackTrace();
                 }
-            } catch (EaseMobException e) {
-                e.printStackTrace();
             }
             //设置消息未读条数
             long notifyCount = conversation.getUnreadMsgCount();
