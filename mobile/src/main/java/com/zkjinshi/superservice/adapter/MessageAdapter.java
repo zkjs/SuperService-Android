@@ -79,6 +79,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         EMConversation conversation = conversationList.get(position);
+        EMConversation.EMConversationType chatType = conversation.getType();
         String username = conversation.getUserName();
         if (conversation.getMsgCount() != 0) {
             EMMessage message = conversation.getLastMessage();
@@ -103,10 +104,18 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 }
             }
             String userId = message.getUserName();
-            if(!TextUtils.isEmpty(userId)){
-                String userIconUrl = ProtocolUtil.getAvatarUrl(userId);
-                ImageLoader.getInstance().displayImage(userIconUrl,((ViewHolder)holder).photoImageView, options);
+            if(chatType == EMConversation.EMConversationType.Chat){
+                if(!TextUtils.isEmpty(userId)){
+                    String userIconUrl = ProtocolUtil.getAvatarUrl(userId);
+                    ImageLoader.getInstance().displayImage(userIconUrl,((ViewHolder)holder).photoImageView, options);
+                }else {
+                    ((ViewHolder)holder).photoImageView.setImageResource(R.mipmap.img_hotel_zhanwei);
+                }
+
+            }else {
+                ((ViewHolder)holder).photoImageView.setImageResource(R.mipmap.img_hotel_zhanwei);
             }
+
             ((ViewHolder)holder).sendTimeTv.setText(TimeUtil.getChatTime(sendTime));
             if (conversation.getType() == EMConversation.EMConversationType.GroupChat) {
                 EMGroup group = EMGroupManager.getInstance().getGroup(username);

@@ -1,4 +1,4 @@
-package com.zkjinshi.superservice.activity.chat.single;
+package com.zkjinshi.superservice.activity.chat.group;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -32,12 +32,12 @@ import com.google.gson.Gson;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.base.util.SoftInputUtil;
 import com.zkjinshi.superservice.R;
-import com.zkjinshi.superservice.activity.chat.single.actions.FaceViewPagerManager;
-import com.zkjinshi.superservice.activity.chat.single.actions.MessageListViewManager;
-import com.zkjinshi.superservice.activity.chat.single.actions.MoreViewPagerManager;
-import com.zkjinshi.superservice.activity.chat.single.actions.NetCheckManager;
-import com.zkjinshi.superservice.activity.chat.single.actions.QuickMenuManager;
-import com.zkjinshi.superservice.activity.chat.single.actions.VoiceRecordManager;
+import com.zkjinshi.superservice.activity.chat.group.actions.FaceViewPagerManager;
+import com.zkjinshi.superservice.activity.chat.group.actions.MessageListViewManager;
+import com.zkjinshi.superservice.activity.chat.group.actions.MoreViewPagerManager;
+import com.zkjinshi.superservice.activity.chat.group.actions.NetCheckManager;
+import com.zkjinshi.superservice.activity.chat.group.actions.QuickMenuManager;
+import com.zkjinshi.superservice.activity.chat.group.actions.VoiceRecordManager;
 import com.zkjinshi.superservice.bean.BookOrderBean;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.Constants;
@@ -54,25 +54,21 @@ import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
 /**
- * 单聊Activity
+ * 群聊Activity
  * 开发者：JimmyZhang
- * 日期：2015/9/23
+ * 日期：2015/11/27
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class ChatActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener {
+public class ChatGroupActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener{
 
-    private final static String TAG = ChatActivity.class.getSimpleName();
+    private final static String TAG = ChatGroupActivity.class.getSimpleName();
 
-    private String userId;
-    private String fromName;//发送者姓名
-    private String toName;// 接收者姓名
-    private String shopId;// 商店id
-    private String shopName;// 商店名称
+    private String groupId;
     private BookOrderBean bookOrder;
 
-    private Toolbar       mToolbar;
-    private TextView      mTvCenterTitle;
+    private Toolbar mToolbar;
+    private TextView mTvCenterTitle;
     private TextView      mTvBottomTitle;
 
     private EditText mMsgTextInput;
@@ -108,7 +104,7 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_chat);
+        setContentView(R.layout.activity_group_chat);
 
         initView();
         initData();
@@ -138,24 +134,12 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
     }
 
     private void initData() {
-        if(!TextUtils.isEmpty(getIntent().getStringExtra(Constants.EXTRA_USER_ID))){
-            userId = getIntent().getStringExtra(Constants.EXTRA_USER_ID);
-        }
-        if(!TextUtils.isEmpty(getIntent().getStringExtra(Constants.EXTRA_TO_NAME))){
-            toName = getIntent().getStringExtra(Constants.EXTRA_TO_NAME);
-        }
-        if(!TextUtils.isEmpty(getIntent().getStringExtra(Constants.EXTRA_FROM_NAME))){
-            fromName = getIntent().getStringExtra(Constants.EXTRA_FROM_NAME);
-        }
-        if(!TextUtils.isEmpty(getIntent().getStringExtra(Constants.EXTRA_SHOP_ID))){
-            shopId = getIntent().getStringExtra(Constants.EXTRA_SHOP_ID);
-        }
-        if(!TextUtils.isEmpty(getIntent().getStringExtra(Constants.EXTRA_SHOP_NAME))){
-            shopName = getIntent().getStringExtra(Constants.EXTRA_SHOP_NAME);
+        if(!TextUtils.isEmpty(getIntent().getStringExtra("groupId"))){
+            groupId = getIntent().getStringExtra("groupId");
         }
         bookOrder  = (BookOrderBean) getIntent().getSerializableExtra("bookOrder");
         //初始化消息ListView管理器
-        messageListViewManager = new MessageListViewManager(this, userId, fromName,toName,shopId,shopName);
+        messageListViewManager = new MessageListViewManager(this, groupId);
         messageListViewManager.init();
         messageListViewManager.setTitle(mTvCenterTitle);
         //初始化表情框
@@ -163,12 +147,12 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
         facePagerManager.init();
         //初始化更多框
         moreViewPagerManager = new MoreViewPagerManager(this, moreLinearLayout);
-        moreViewPagerManager.init(userId,toName);
+        moreViewPagerManager.init();
         //初始化录音管理器
         voiceRecordManager = new VoiceRecordManager(this, animAreaLayout, cancelAreaLayout);
         voiceRecordManager.init();
         voiceRecordManager.setMessageListViewManager(messageListViewManager);
-        //网络设置
+        //初始化网络状态管理器
         netCheckManager = new NetCheckManager();
         netCheckManager.init(this);
         netCheckManager.registernetCheckReceiver();
@@ -195,7 +179,7 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ChatActivity.this.finish();
+                ChatGroupActivity.this.finish();
             }
         });
 
@@ -204,12 +188,10 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
             public boolean onMenuItemClick(android.view.MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.menu_single_chat_info:
-                        {
-                            Intent intent = new Intent(ChatActivity.this,ChatDetailActivity.class);
-                            intent.putExtra("userId",userId);
-                            startActivity(intent);
-                        }
-                        break;
+                    {
+                       //TODO Jimmy 暂未实现，后续优化
+                    }
+                    break;
                 }
                 return true;
             }
@@ -304,7 +286,7 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
                     messageListViewManager.sendTextMessage(msg);
                     mMsgTextInput.setText("");
                 } else {
-                    DialogUtil.getInstance().showCustomToast(ChatActivity.this, "发送消息不能超过200字符!", Gravity.CENTER);
+                    DialogUtil.getInstance().showCustomToast(ChatGroupActivity.this, "发送消息不能超过200字符!", Gravity.CENTER);
                 }
             }
         });
@@ -331,7 +313,6 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_single_chat, menu);
         return true;
     }
@@ -371,7 +352,7 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
         faceLinearLayout.setVisibility(GONE);
         faceCb.setOnCheckedChangeListener(null);
         faceCb.setChecked(false);
-        faceCb.setOnCheckedChangeListener(ChatActivity.this);
+        faceCb.setOnCheckedChangeListener(ChatGroupActivity.this);
     }
 
     /**
@@ -381,7 +362,7 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
         moreLinearLayout.setVisibility(GONE);
         moreCb.setOnCheckedChangeListener(null);
         moreCb.setChecked(false);
-        moreCb.setOnCheckedChangeListener(ChatActivity.this);
+        moreCb.setOnCheckedChangeListener(ChatGroupActivity.this);
     }
 
     /**
@@ -545,7 +526,7 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
                 /** 判断手势按下位置是否是语音录制按钮的范围内 开始录音 */
                 if (event.getY() > btn_rc_Y &&  event.getY() < (btn_rc_Y + btnHeight) && event.getX() > btn_rc_X) {
                     /** 播放开始录音提示音 */
-                    MediaPlayerUtil.playStartRecordVoice(ChatActivity.this);
+                    MediaPlayerUtil.playStartRecordVoice(ChatGroupActivity.this);
                     startAudioBtn.setText(R.string.chatfooter_releasetofinish);
                     startAudioBtn.setBackgroundResource(R.mipmap.cm_btn_bg_pressed);
                     startAudioBtn.setTextColor(Color.WHITE);
@@ -580,7 +561,7 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
                                 }
                                 return false;
                             }
-                            MediaPlayerUtil.playSendOverRecordVoice(ChatActivity.this);// 录音结束提示音
+                            MediaPlayerUtil.playSendOverRecordVoice(ChatGroupActivity.this);// 录音结束提示音
                             //开始文件写入
                             String mediaPath = voiceRecordManager.getMediaPath();//音频文件路径
                             String mediaName = FileUtil.getInstance().getFileName(mediaPath);//音频文件名

@@ -9,6 +9,7 @@ import android.util.Log;
 import com.easemob.chat.EMChat;
 import com.easemob.chat.EMChatManager;
 import com.easemob.chat.EMChatOptions;
+import com.easemob.chat.EMGroupManager;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -21,8 +22,9 @@ import com.zkjinshi.base.log.LogUtil;
 import com.zkjinshi.base.net.util.ImCacheUtil;
 import com.zkjinshi.base.util.BaseContext;
 import com.zkjinshi.base.util.DeviceUtils;
-import com.zkjinshi.superservice.activity.chat.single.action.MessageSendFailChecker;
+import com.zkjinshi.superservice.activity.chat.single.actions.MessageSendFailChecker;
 import com.zkjinshi.superservice.emchat.EasemobIMHelper;
+import com.zkjinshi.superservice.emchat.observer.EGroupReomveListener;
 import com.zkjinshi.superservice.receiver.ECallReceiver;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.EmotionUtil;
@@ -90,6 +92,7 @@ public class ServiceApplication extends Application{
         //注册通话广播接收者
         registerReceiver(callReceiver, callFilter);
         EasemobIMHelper.getInstance().initConnectionListener();
+        EMGroupManager.getInstance().addGroupChangeListener(new EGroupReomveListener());
     }
 
     public void initContext(){

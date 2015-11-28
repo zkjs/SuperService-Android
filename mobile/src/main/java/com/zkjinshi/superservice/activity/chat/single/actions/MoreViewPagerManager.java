@@ -1,4 +1,4 @@
-package com.zkjinshi.superservice.activity.chat.single.action;
+package com.zkjinshi.superservice.activity.chat.single.actions;
 
 import android.app.Activity;
 import android.content.Context;
@@ -62,7 +62,6 @@ public class MoreViewPagerManager extends Handler {
 	private Context context;
 	private JazzyViewPager moreViewPager;
 	private LinearLayout moreLinearLayout;
-	private Intent intent;
 	
 	private String picName;
 
@@ -136,7 +135,6 @@ public class MoreViewPagerManager extends Handler {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-				intent = new Intent();
 				switch (position) {
 				case CHOOSE_IMAGE: {// 发送图片
 					Intent intent = new Intent(context, MultiImageSelectorActivity.class);

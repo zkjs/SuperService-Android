@@ -1,4 +1,4 @@
-package com.zkjinshi.superservice.activity.chat.single.action;
+package com.zkjinshi.superservice.activity.chat.group.actions;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -20,10 +20,9 @@ import com.easemob.chat.EMGroupManager;
 import com.easemob.chat.EMMessage;
 import com.zkjinshi.base.util.DeviceUtils;
 import com.zkjinshi.superservice.R;
-import com.zkjinshi.superservice.adapter.ChatAdapter;
+import com.zkjinshi.superservice.adapter.GroupChatAdapter;
 import com.zkjinshi.superservice.emchat.observer.EMessageSubject;
 import com.zkjinshi.superservice.emchat.observer.IEMessageObserver;
-import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.view.MsgListView;
 import com.zkjinshi.superservice.vo.TxtExtType;
@@ -40,30 +39,22 @@ import java.util.List;
  * 版权所有
  */
 public class MessageListViewManager extends Handler implements MsgListView.IXListViewListener,
-        ChatAdapter.ResendListener,IEMessageObserver {
+        GroupChatAdapter.ResendListener,IEMessageObserver {
 
     private static final int MESSAGE_LIST_VIEW_UPDATE_UI = 0X00;
 
     private Context context;
     private MsgListView messageListView;
-    private ChatAdapter chatAdapter;
+    private GroupChatAdapter chatAdapter;
     private EMConversation conversation;
     private List<EMMessage> currentMessageList = new ArrayList<EMMessage>();
     private List<EMMessage> requestMessageList = new ArrayList<EMMessage>();
     private static final int PAGE_SIZE = 10;
-    private String userId;
-    private String fromName;//发送者姓名
-    private String toName;// 接收者姓名
-    private String shopId;// 商店id
-    private String shopName;// 商店名称
+    private String groupId;
 
-    public MessageListViewManager(Context context, String userId,String fromName,String toName,String shopId,String shopName) {
-        this.context    = context;
-        this.userId = userId;
-        this.fromName = fromName;
-        this.toName = toName;
-        this.shopId = shopId;
-        this.shopName = shopName;
+    public MessageListViewManager(Context context, String groupId) {
+        this.context = context;
+        this.groupId = groupId;
     }
 
     public void init() {
@@ -78,12 +69,12 @@ public class MessageListViewManager extends Handler implements MsgListView.IXLis
     }
 
     private void initData() {
-        if(!TextUtils.isEmpty(userId)){
-            conversation = EMChatManager.getInstance().getConversation(userId);
+        if(!TextUtils.isEmpty(groupId)){
+            conversation = EMChatManager.getInstance().getConversation(groupId);
         }
         clearChatRoomBadgeNum();
         setOverScrollMode(messageListView);
-        chatAdapter = new ChatAdapter(context, null);
+        chatAdapter = new GroupChatAdapter(context, null);
         chatAdapter.setResendListener(this);
         messageListView.setPullLoadEnable(false);
         messageListView.setAdapter(chatAdapter);
@@ -109,7 +100,9 @@ public class MessageListViewManager extends Handler implements MsgListView.IXLis
      * 将消息设置为已读
      */
     private void clearChatRoomBadgeNum(){
-        conversation.markAllMessagesAsRead();
+        if(null != conversation){
+            conversation.markAllMessagesAsRead();
+        }
     }
 
     /**
@@ -117,7 +110,7 @@ public class MessageListViewManager extends Handler implements MsgListView.IXLis
      * @param content
      */
     public void sendTextMessage(String content) {
-        EMMessage message = EMMessage.createTxtSendMessage(content, userId);
+        EMMessage message = EMMessage.createTxtSendMessage(content, groupId);
         message.setAttribute(Constants.MSG_TXT_EXT_TYPE, TxtExtType.DEFAULT.getVlaue());
         sendMessage(message);
     }
@@ -127,7 +120,7 @@ public class MessageListViewManager extends Handler implements MsgListView.IXLis
      * @param content
      */
     public void sendCardMessage(String content){
-        EMMessage message = EMMessage.createTxtSendMessage(content, userId);
+        EMMessage message = EMMessage.createTxtSendMessage(content, groupId);
         message.setAttribute(Constants.MSG_TXT_EXT_TYPE, TxtExtType.CARD.getVlaue());
         sendMessage(message);
     }
@@ -138,7 +131,7 @@ public class MessageListViewManager extends Handler implements MsgListView.IXLis
      * @param voiceTime
      */
     public void sendVoiceMessage(String filePath, int voiceTime) {
-        EMMessage message = EMMessage.createVoiceSendMessage(filePath, voiceTime, userId);
+        EMMessage message = EMMessage.createVoiceSendMessage(filePath, voiceTime, groupId);
         sendMessage(message);
     }
 
@@ -147,27 +140,12 @@ public class MessageListViewManager extends Handler implements MsgListView.IXLis
      * @param filePath
      */
     public void sendImageMessage(String filePath) {
-        EMMessage message = EMMessage.createImageSendMessage(filePath, false, userId);
+        EMMessage message = EMMessage.createImageSendMessage(filePath, false, groupId);
         sendMessage(message);
     }
 
     protected void sendMessage(final EMMessage message){
-        message.setChatType(EMMessage.ChatType.Chat);
-        message.setAttribute("toName", "");
-        if(!TextUtils.isEmpty(toName)){
-            message.setAttribute("toName",toName);
-        }
-        message.setAttribute("fromName","");
-        if(!TextUtils.isEmpty(fromName)){
-            message.setAttribute("fromName",fromName);
-        }
-        if(!TextUtils.isEmpty(shopId)){
-            message.setAttribute("shopId",shopId);
-        }
-
-        if(!TextUtils.isEmpty(shopName)){
-            message.setAttribute("shopName",shopName);
-        }
+        message.setChatType(EMMessage.ChatType.GroupChat);
         message.status = EMMessage.Status.INPROGRESS;
         currentMessageList.add(message);
         chatAdapter.setMessageList(currentMessageList);
@@ -271,22 +249,14 @@ public class MessageListViewManager extends Handler implements MsgListView.IXLis
 
     public void setTitle(TextView titleTv){
         if(null != titleTv){
-            if(!TextUtils.isEmpty(userId)){
-                titleTv.setText(userId);
+            if(!TextUtils.isEmpty(groupId)){
+                titleTv.setText(groupId);
             }
             if(null != conversation){
                 if(conversation.getIsGroup()){
-                    EMGroup group = EMGroupManager.getInstance().getGroup(userId);
+                    EMGroup group = EMGroupManager.getInstance().getGroup(groupId);
                     if (group != null){
                         titleTv.setText(group.getGroupName());
-                    }
-                }else {
-                    if(!TextUtils.isEmpty(fromName) && !fromName.equals(CacheUtil.getInstance().getUserName())){
-                        titleTv.setText(fromName);
-                    }else{
-                        if(!TextUtils.isEmpty(toName)){
-                            titleTv.setText(toName);
-                        }
                     }
                 }
             }
@@ -328,7 +298,7 @@ public class MessageListViewManager extends Handler implements MsgListView.IXLis
                     username = newMessage.getFrom();
                 }
                 // 如果是当前会话的消息，刷新聊天页面
-                if (username.equals(userId)) {
+                if (username.equals(groupId)) {
                     clearChatRoomBadgeNum();
                     Message msg = Message.obtain();
                     msg.what = MESSAGE_LIST_VIEW_UPDATE_UI;
@@ -352,6 +322,7 @@ public class MessageListViewManager extends Handler implements MsgListView.IXLis
                         }
                     }
                 });
+				break;
             case EventReadAck:
                 // 获取到message
                 break;

@@ -8,7 +8,6 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
@@ -26,7 +25,6 @@ import com.zkjinshi.superservice.utils.RandomDrawbleUtil;
 import com.zkjinshi.superservice.view.CircleImageView;
 import com.zkjinshi.superservice.vo.ShopEmployeeVo;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -43,13 +41,12 @@ public class InviteTeamAdapter extends  RecyclerView.Adapter<RecyclerView.ViewHo
     private List<ShopEmployeeVo> mList;
     private Context mContext;
     private DisplayImageOptions options;
-    private Map<Integer, Boolean> mCheckedMap;
+    private Map<Integer, Boolean> checkedMap = new HashMap<Integer, Boolean>();
     private RecyclerItemClickListener mRecyclerItemClickListener;
 
     public InviteTeamAdapter(Context mContext, List<ShopEmployeeVo> list) {
         this.mContext = mContext;
         this.mList    = list;
-        this.mCheckedMap = new HashMap<>();
         this.options  = new DisplayImageOptions.Builder()
                 .showImageOnLoading(null)
                 .showImageForEmptyUri(null)
@@ -59,19 +56,8 @@ public class InviteTeamAdapter extends  RecyclerView.Adapter<RecyclerView.ViewHo
                 .build();
     }
 
-    /**
-     * 当ListView数据发生变化时,调用此方法来更新ListView
-     * @param list
-     */
-    public void updateListView(List<ShopEmployeeVo> list) {
-        if (list == null) {
-            this.mList = new ArrayList<>();
-        } else {
-            this.mList = list;
-        }
-        if(mCheckedMap != null){
-            mCheckedMap.clear();
-        }
+    public void setCheckedMap(Map<Integer, Boolean> checkedMap) {
+        this.checkedMap = checkedMap;
         this.notifyDataSetChanged();
     }
 
@@ -135,17 +121,15 @@ public class InviteTeamAdapter extends  RecyclerView.Adapter<RecyclerView.ViewHo
             }
         });
 
-//        ((ContactViewHolder)holder).tvContactOnLine.setVisibility(View.INVISIBLE);
-
         //set the checkbox
         ((ContactViewHolder) holder).cbCheck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                mCheckedMap.put(position, isChecked);
+                checkedMap.put(position, isChecked);
             }
         });
 
-        if(mCheckedMap.containsKey(position) && mCheckedMap.get(position)){
+        if(checkedMap.containsKey(position) && checkedMap.get(position)){
             ((ContactViewHolder) holder).cbCheck.setChecked(true);
         } else {
             ((ContactViewHolder) holder).cbCheck.setChecked(false);

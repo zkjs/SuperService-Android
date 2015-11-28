@@ -1,4 +1,4 @@
-package com.zkjinshi.superservice.activity.chat.single.action;
+package com.zkjinshi.superservice.activity.chat.group.actions;
 
 import android.media.MediaRecorder;
 import android.os.Environment;

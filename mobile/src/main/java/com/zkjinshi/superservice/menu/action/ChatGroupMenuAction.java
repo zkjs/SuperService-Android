@@ -2,7 +2,7 @@ package com.zkjinshi.superservice.menu.action;
 
 import android.text.TextUtils;
 
-import com.zkjinshi.superservice.activity.chat.single.actions.QuickMenuManager;
+import com.zkjinshi.superservice.activity.chat.group.actions.QuickMenuManager;
 
 
 /**
@@ -12,11 +12,11 @@ import com.zkjinshi.superservice.activity.chat.single.actions.QuickMenuManager;
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class ChatMenuAction implements MenuAction{
+public class ChatGroupMenuAction implements MenuAction{
 
     private String content;
 
-    public ChatMenuAction(String content){
+    public ChatGroupMenuAction(String content){
         this.content = content;
     }
 

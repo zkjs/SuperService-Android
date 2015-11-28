@@ -1,4 +1,4 @@
-package com.zkjinshi.superservice.activity.chat.single.action;
+package com.zkjinshi.superservice.activity.chat.single.actions;
 
 import com.zkjinshi.superservice.menu.vo.ActionType;
 import com.zkjinshi.superservice.menu.vo.MenuGroup;

@@ -147,8 +147,20 @@
 
         </activity>
 
+        <!--单聊-->
         <activity
             android:name=".activity.chat.single.ChatActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+            <intent-filter>
+                <action android:name="com.zkjinshi.superservice.intent.action.RELAY"/>
+            </intent-filter>
+        </activity>
+
+        <!--群聊-->
+        <activity
+            android:name=".activity.chat.group.ChatGroupActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
@@ -383,11 +395,7 @@
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" >
-        </activity><!-- ATTENTION: This was auto-generated to add Google Play services to your project for
-     App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->
-        <meta-data
-            android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version" />
+        </activity>
 
     </application>
 

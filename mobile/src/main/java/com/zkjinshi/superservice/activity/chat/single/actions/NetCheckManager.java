@@ -1,4 +1,4 @@
-package com.zkjinshi.superservice.activity.chat.single.action;
+package com.zkjinshi.superservice.activity.chat.single.actions;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;

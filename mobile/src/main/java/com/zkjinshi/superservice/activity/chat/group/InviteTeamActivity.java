@@ -2,9 +2,12 @@ package com.zkjinshi.superservice.activity.chat.group;
 
 import android.app.Activity;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -23,7 +26,9 @@ import com.zkjinshi.superservice.sqlite.ShopEmployeeDBUtil;
 import com.zkjinshi.superservice.vo.ShopEmployeeVo;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 邀请群成员
@@ -37,6 +42,7 @@ public class InviteTeamActivity extends Activity {
     public static final String TAG = InviteTeamActivity.class.getSimpleName();
 
     private List<String> mCheckedList;
+    private List<ShopEmployeeVo> mCheckedEmployeeList;
     private RelativeLayout mRlBack;
     private TextView mTvTitle;
     private RecyclerView mRcvTeamContacts;
@@ -45,6 +51,10 @@ public class InviteTeamActivity extends Activity {
     private InviteTeamAdapter mContactsAdapter;
     private List<ShopEmployeeVo>    mShopEmployeeVos;
     private RelativeLayout createGroupLayout;
+    private ShopEmployeeVo shopEmployeeVo;
+    private String empId;
+    private String shopEmployeeId;
+    private Map<Integer, Boolean> checkedMap = new HashMap<Integer, Boolean>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,15 +74,37 @@ public class InviteTeamActivity extends Activity {
 
     private void initData() {
         mCheckedList = new ArrayList<String>();
+        mCheckedEmployeeList = new ArrayList<ShopEmployeeVo>();
+        if(null != getIntent() && null != getIntent().getSerializableExtra("shopEmployeeVo")){
+            shopEmployeeVo = (ShopEmployeeVo) getIntent().getSerializableExtra("shopEmployeeVo");
+            if(null != shopEmployeeVo){
+                empId = shopEmployeeVo.getEmpid();
+                if(!TextUtils.isEmpty(empId)){
+                    mCheckedList.add(empId);
+                    mCheckedEmployeeList.add(shopEmployeeVo);
+                }
+            }
+        }
         mTvTitle.setText("团队");
         mRcvTeamContacts.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(this);
         mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRcvTeamContacts.setLayoutManager(mLayoutManager);
         mShopEmployeeVos = ShopEmployeeDBUtil.getInstance().queryAllByDeptIDAsc();
+        if(null != mShopEmployeeVos && !mShopEmployeeVos.isEmpty()){
+            for(int i= 0 ; i< mShopEmployeeVos.size(); i++){
+                shopEmployeeVo = mShopEmployeeVos.get(i);
+                if(null != shopEmployeeVo){
+                    shopEmployeeId = shopEmployeeVo.getEmpid();
+                    if(!TextUtils.isEmpty(shopEmployeeId) && shopEmployeeId.equals(empId)){
+                        checkedMap.put(i,true);
+                    }
+                }
+            }
+        }
         mContactsAdapter = new InviteTeamAdapter(InviteTeamActivity.this, mShopEmployeeVos);
         mRcvTeamContacts.setAdapter(mContactsAdapter);
-        createGroupLayout.setTag(mCheckedList);
+        mContactsAdapter.setCheckedMap(checkedMap);
     }
 
     private void initListener() {
@@ -93,10 +125,11 @@ public class InviteTeamActivity extends Activity {
                 String empID = shopEmployeeVo.getEmpid();
                 if (mCheckedList.contains(empID)) {
                     mCheckedList.remove(empID);
+                    mCheckedEmployeeList.remove(shopEmployeeVo);
                 } else {
                     mCheckedList.add(empID);
+                    mCheckedEmployeeList.add(shopEmployeeVo);
                 }
-                createGroupLayout.setTag(mCheckedList);
             }
         });
 
@@ -104,33 +137,56 @@ public class InviteTeamActivity extends Activity {
         createGroupLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            mCheckedList = (ArrayList<String>) v.getTag();
-                            if(null != mCheckedList && mCheckedList.size() >= 1){
-                                String[] members = convertList2Array(mCheckedList);
-                                EMGroup emGroup = EMGroupManager.getInstance().createPrivateGroup("中科金石", "内部私聊群", members, true);
-                                Log.i(TAG,"群名id:"+emGroup.getGroupId());
-                                Log.i(TAG,"群名称:"+emGroup.getGroupName());
-                                if (null != emGroup) {
-                                    showCreateGroupSuccDialog();
-                                }
-                            }else {
-                                DialogUtil.getInstance().showCustomToast(InviteTeamActivity.this,"至少要选择一个联系人",Gravity.CENTER);
-                            }
-
-                        } catch (EaseMobException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
-
+                requestCreateGroupTask();
             }
         });
     }
 
+    /**
+     * 创建团队
+     */
+    private void requestCreateGroupTask(){
+        new AsyncTask<Void,Void,EMGroup>(){
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                DialogUtil.getInstance().showProgressDialog(InviteTeamActivity.this);
+            }
+
+            @Override
+            protected EMGroup doInBackground(Void... params) {
+                EMGroup emGroup = null;
+                try {
+                    if(null != mCheckedList && mCheckedList.size() >= 1){
+                        String[] members = convertList2Array(mCheckedList);
+                        String title = convertList2String(mCheckedEmployeeList);
+                        emGroup = EMGroupManager.getInstance().createPrivateGroup(title, "内部私聊群", members, true);
+                    }else {
+                        DialogUtil.getInstance().showCustomToast(InviteTeamActivity.this,"至少要选择一个联系人",Gravity.CENTER);
+                    }
+                } catch (EaseMobException e) {
+                    e.printStackTrace();
+                }
+                return emGroup;
+            }
+
+            @Override
+            protected void onPostExecute(EMGroup group) {
+                super.onPostExecute(group);
+                DialogUtil.getInstance().cancelProgressDialog();
+                if (null != group) {
+                    showCreateGroupSuccDialog(group.getGroupId());
+                }
+            }
+        }.execute();
+    }
+
+    /**
+     * 获得群成员
+     * @param shopEmployeeVos
+     * @return
+     */
     private String[] convertList2Array(List<String> shopEmployeeVos) {
         String[] members = new String[shopEmployeeVos.size()];
         for(int i=0; i<shopEmployeeVos.size(); i++){
@@ -139,7 +195,24 @@ public class InviteTeamActivity extends Activity {
         return members;
     }
 
-    private void showCreateGroupSuccDialog(){
+    /**
+     * 获取群标题
+     * @param shopEmployeeList
+     * @return
+     */
+    private String convertList2String(List<ShopEmployeeVo> shopEmployeeList){
+        StringBuilder teamTitle = new StringBuilder();
+        for(ShopEmployeeVo shopEmployee : shopEmployeeList){
+            String employeeName = shopEmployee.getName();
+            teamTitle.append(employeeName).append("、");
+        }
+        if(!TextUtils.isEmpty(teamTitle)){
+            teamTitle.deleteCharAt(teamTitle.length()-1);
+        }
+        return teamTitle.toString();
+    }
+
+    private void showCreateGroupSuccDialog(final String groupId){
         CustomDialog.Builder customBuilder = new CustomDialog.Builder(this);
         customBuilder.setTitle("提示");
         customBuilder.setMessage("创建群成功，是否打开?");
@@ -157,6 +230,9 @@ public class InviteTeamActivity extends Activity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
+                Intent intent = new Intent(InviteTeamActivity.this,ChatGroupActivity.class);
+                intent.putExtra("groupId",groupId);
+                startActivity(intent);
 
             }
         });

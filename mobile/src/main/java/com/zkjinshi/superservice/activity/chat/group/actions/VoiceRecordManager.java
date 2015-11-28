@@ -1,4 +1,4 @@
-package com.zkjinshi.superservice.activity.chat.single.action;
+package com.zkjinshi.superservice.activity.chat.group.actions;
 
 import android.app.Activity;
 import android.content.Context;
@@ -29,7 +29,7 @@ import java.util.TimerTask;
  */
 public class VoiceRecordManager extends Handler {
 
-    private SoundMeter	  mSensor;
+    private SoundMeter mSensor;
 
     private Timer   recordTimer;
     private long 	startRecord;
