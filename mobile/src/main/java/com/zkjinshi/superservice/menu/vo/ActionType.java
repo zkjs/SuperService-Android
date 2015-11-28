@@ -12,7 +12,7 @@ public enum ActionType {
     CHAT(0), //聊天咨询
     PUSH(1), //推送预定订单
     WEB(2), //打开网页链接
-    BOOK(3); //预定酒店
+    BOOK(3), ; //预定酒店
 
     private final int value;
 

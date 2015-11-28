@@ -1,40 +1,51 @@
 package com.zkjinshi.superservice.activity.order;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.easemob.EMCallBack;
+import com.google.android.gms.appindexing.Action;
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.gson.Gson;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.zkjinshi.base.util.DeviceUtils;
 import com.zkjinshi.base.util.DialogUtil;
-import com.zkjinshi.base.util.DisplayUtil;
 import com.zkjinshi.base.util.TimeUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.set.ClientActivity;
+import com.zkjinshi.superservice.bean.AddOrderBean;
+import com.zkjinshi.superservice.bean.PayBean;
+import com.zkjinshi.superservice.emchat.EMConversationHelper;
+import com.zkjinshi.superservice.net.ExtNetRequestListener;
+import com.zkjinshi.superservice.net.MethodType;
+import com.zkjinshi.superservice.net.NetRequest;
+import com.zkjinshi.superservice.net.NetRequestTask;
+import com.zkjinshi.superservice.net.NetResponse;
+import com.zkjinshi.superservice.request.MsgUserDefineTool;
+import com.zkjinshi.superservice.utils.CacheUtil;
+import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.view.AmountInDecreaseView;
-import com.zkjinshi.superservice.view.ItemUserSettingView;
 import com.zkjinshi.superservice.vo.GoodInfoVo;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import me.kaede.tagview.Tag;
@@ -51,65 +62,65 @@ public class OrderNewActivity extends Activity {
 
     private final static String TAG = OrderNewActivity.class.getSimpleName();
 
+    private String mUserID;
+    private String mToken;
+    private String mShopID;
+    private String mShopName;
+
+    private String mClientID;
+    private String mClientName;
+    private String mClientPhone;
+
+    private int    mRoomCount;//房间数量
+
     private DisplayImageOptions mOptions;
 
-    private TextView     mTvRoomType;
-    private TextView     mTvRoomRate;
-    private TextView     mTvOrderStatus;
-    private TextView     mTvArriveDate;
-    private TextView     mTvLeaveDate;
-    private TextView     mTvDateTips;
-    private LinearLayout mLltDateContainer;
+    private TextView mTvRoomType;
+    private TextView mTvRoomRate;
+    private TextView mTvArriveDate;
+    private TextView mTvLeaveDate;
+    private TextView mTvDateTips;
 
-    private ImageButton         mBtnBack;
-    private ImageView           mIvRoomImg;
-    private LinearLayout        mLlOrderPerson;
-    private RelativeLayout      mRlOrderDate;
-    private LinearLayout        mLlOrderDate;
-    private LinearLayout        mLlLivePerson;
-    private LinearLayout        nLlPersons;
-    private TextView            mTvOrderPerson;
-    private RelativeLayout      mRlRoomType;
-    private Button          mBtnSendOrder;
-    private Button          mBtnCancelOrder;
-    private LinearLayout    mLltYuan;
-    private LinearLayout    mLltTicketContainer;
+    private ImageButton mBtnBack;
+    private ImageView mIvRoomImg;
+    private LinearLayout mLlOrderPerson;
+    private RelativeLayout mRlOrderDate;
+    private LinearLayout mLlOrderDate;
+    private LinearLayout mLltYuan;
+    private LinearLayout mLlLivePerson;
+    private LinearLayout nLlPersons;
+    private TextView mTvOrderPerson;
+    private TextView mTvOrderStatus;
+    private LinearLayout mLlPayMethod;
+    private TextView mTvPayMethod;
 
-    private TagView mRoomTagView;
-    private TagView mServiceTagView;
+    private RelativeLayout mRlRoomType;
+    private Button mBtnSendOrder;
+    private Button mBtnCancelOrder;
 
     private AmountInDecreaseView mAivRoomCount;
-    private TextView            mTvTicket;
-//    private ArrayList<ItemUserSettingView> customerList;
-
-    private TextView     mTvRemark;
-    private LinearLayout mlltRemark;
-    private TextView     mTvPayTips; //支付提示语句
-    private TextView     mTvPay;  //支付跳转
+    private TextView mTvPayTips; //支付提示语句
 
     private SimpleDateFormat mSimpleFormat;
     private SimpleDateFormat mChineseFormat;
     private ArrayList<Calendar> calendarList = null;
 
-    private int dayNum;
-    private int roomNum;
+    private int     dayNum;
+    private Double  mRoomAmount;//房间价格
+    private PayBean mPayBean;//支付方式对象
 
     private GoodInfoVo mGoodInfoVo;//选中房型对象
 
-    private GoodInfoVo lastGoodInfoVo;
-//    private OrderInvoiceResponse              orderInvoiceResponse;
-//    private ArrayList<OrderPrivilegeResponse> totalPrivileges;
-//    private ArrayList<OrderRoomTagResponse>   totalRoomTags;
-//    private DisplayImageOptions               options;
-//    private OrderDetailResponse orderDetailResponse = null;
-
-    public static final int GOOD_REQUEST_CODE = 6;
-    public static final int PEOPLE_REQUEST_CODE = 7;
-    public static final int TICKET_REQUEST_CODE = 8;
-    public static final int REMARK_REQUEST_CODE = 9;
+    private ArrayList<String> mLiveNames;
     public static final int REQUEST_ORDER_PERSON = 10;
-    public static final int REQUEST_ROOM_TYPE    = 11;
-    public static final int REQUEST_LIVE_PERSON  = 12;
+    public static final int REQUEST_ROOM_TYPE = 11;
+    public static final int REQUEST_LIVE_PERSON = 12;
+    public static final int REQUEST_PAY_METHOD = 13;
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    private GoogleApiClient client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,51 +130,46 @@ public class OrderNewActivity extends Activity {
         initView();
         initData();
         initListener();
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
     private void initView() {
-        mBtnBack         = (ImageButton)  findViewById(R.id.back_btn);
-        mIvRoomImg       = (ImageView)    findViewById(R.id.iv_room_img);
-        mLlOrderPerson   = (LinearLayout) findViewById(R.id.ll_order_person);
-        mRlOrderDate     = (RelativeLayout) findViewById(R.id.rl_order_date);
-        mLlOrderDate     = (LinearLayout)   findViewById(R.id.ll_order_date);
-        mLlLivePerson    = (LinearLayout)   findViewById(R.id.ll_live_person);
-        nLlPersons       = (LinearLayout)   findViewById(R.id.ll_persons);
-        mTvOrderPerson   = (TextView) findViewById(R.id.tv_order_person);
+        mBtnBack = (ImageButton) findViewById(R.id.back_btn);
+        mIvRoomImg = (ImageView) findViewById(R.id.iv_room_img);
+        mLlOrderPerson = (LinearLayout) findViewById(R.id.ll_order_person);
+        mRlOrderDate = (RelativeLayout) findViewById(R.id.rl_order_date);
+        mLlOrderDate = (LinearLayout) findViewById(R.id.ll_order_date);
+        mLlLivePerson = (LinearLayout) findViewById(R.id.ll_live_person);
+        nLlPersons = (LinearLayout) findViewById(R.id.ll_persons);
+        mTvOrderPerson = (TextView) findViewById(R.id.tv_order_person);
 
-        mBtnSendOrder   = (Button) findViewById(R.id.btn_send_booking_order);
+        mLlPayMethod = (LinearLayout) findViewById(R.id.ll_pay_method);
+        mTvPayMethod = (TextView) findViewById(R.id.tv_pay_method);
+
+        mBtnSendOrder = (Button) findViewById(R.id.btn_send_booking_order);
         mBtnCancelOrder = (Button) findViewById(R.id.btn_cancel_order);
-        mRlRoomType     = (RelativeLayout) findViewById(R.id.rl_room_type);
-        mTvRoomType     = (TextView) findViewById(R.id.tv_room_type);
-        mTvRoomRate     = (TextView) findViewById(R.id.tv_payment);
-        mLltYuan        = (LinearLayout)findViewById(R.id.rl_yuan);
-        mTvOrderStatus  = (TextView)findViewById(R.id.tv_order_status);
+        mRlRoomType = (RelativeLayout) findViewById(R.id.rl_room_type);
+        mTvRoomType = (TextView) findViewById(R.id.tv_room_type);
+        mTvRoomRate = (TextView) findViewById(R.id.tv_payment);
+        mLltYuan = (LinearLayout) findViewById(R.id.rl_yuan);
+        mTvOrderStatus = (TextView) findViewById(R.id.tv_order_status);
 
-        mRoomTagView    = (TagView)findViewById(R.id.tagview_room_tags);
-        mServiceTagView = (TagView)findViewById(R.id.tagview_service_tags);
+        mTvArriveDate = (TextView) findViewById(R.id.tv_arrive_date);
+        mTvLeaveDate = (TextView) findViewById(R.id.tv_leave_date);
+        mTvDateTips = (TextView) findViewById(R.id.tv_date_tips);
 
-        mTvArriveDate   = (TextView)findViewById(R.id.tv_arrive_date);
-        mTvLeaveDate    = (TextView)findViewById(R.id.tv_leave_date);
-        mTvDateTips     = (TextView)findViewById(R.id.tv_date_tips);
-        mLltDateContainer = (LinearLayout)findViewById(R.id.llt_date_container);
-
-        mAivRoomCount   = (AmountInDecreaseView)findViewById(R.id.aiv_room_count);
-        mTvPayTips = (TextView)findViewById(R.id.tv_pay_tips);
-        mTvPay     = (TextView)findViewById(R.id.tv_pay);
-
-//        customerList = new ArrayList<>();
-//        int[] customerIds = {R.id.aod_customer1,R.id.aod_customer2,R.id.aod_customer3};
-//        for(int i=0;i<customerIds.length;i++){
-//            customerList.add((ItemUserSettingView) findViewById(customerIds[i]));
-//        }
-
-        mTvTicket  = (TextView)findViewById(R.id.tv_ticket);
-        mLltTicketContainer = (LinearLayout)findViewById(R.id.llt_ticket_container);
-        mTvRemark  = (TextView)findViewById(R.id.tv_remark);
-        mlltRemark = (LinearLayout)findViewById(R.id.llt_order_remark);
+        mAivRoomCount = (AmountInDecreaseView) findViewById(R.id.aiv_room_count);
+        mTvPayTips    = (TextView) findViewById(R.id.tv_pay_tips);
     }
 
-    private void initData(){
+    private void initData() {
+
+        mUserID = CacheUtil.getInstance().getUserId();
+        mToken = CacheUtil.getInstance().getToken();
+        mShopID = CacheUtil.getInstance().getShopID();
+        mShopName = CacheUtil.getInstance().getShopFullName();
 
         this.mOptions = new DisplayImageOptions.Builder()
                 .showImageOnLoading(R.mipmap.ic_room_pic_default)
@@ -172,24 +178,9 @@ public class OrderNewActivity extends Activity {
                 .cacheInMemory(true)
                 .cacheOnDisk(true)
                 .build();
-        //初始化订单状态的显示
-        initOrderStatus();
+
         //初始化入住时间
         initArrivalDate();
-        //初始化入住人信息
-        initPeople();
-        //初始化房间信息信息
-        initRoom();
-        //初始化房间选项标签
-        initRoomTags();
-        //初始化其他服务标签
-        initServiceTags();
-        //初始化发票
-        initTicket();
-        //初始化订单备注
-        initRemark();
-        //初始化标签点击事件
-//        initTagClickEvent();
     }
 
     private void initListener() {
@@ -226,6 +217,9 @@ public class OrderNewActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(OrderNewActivity.this, AddLivePersonActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putStringArrayList("live_persons", mLiveNames);
+                intent.putExtras(bundle);
                 startActivityForResult(intent, REQUEST_LIVE_PERSON);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
@@ -244,11 +238,20 @@ public class OrderNewActivity extends Activity {
             }
         });
 
-        //确认订单
+
+        mLlPayMethod.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent getPayMethod = new Intent(OrderNewActivity.this, PayMethodActivity.class);
+                startActivityForResult(getPayMethod, REQUEST_PAY_METHOD);
+            }
+        });
+
+        //创建订单
         mBtnSendOrder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                confirmOrder();
+                addOrderByServer();
             }
         });
 
@@ -256,738 +259,248 @@ public class OrderNewActivity extends Activity {
         mBtnCancelOrder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                cancelOrder();
+                OrderNewActivity.this.finish();
             }
         });
-
-//        //修改发票
-//        mLltTicketContainer.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Intent intent = new Intent(OrderNewActivity.this, ChooseInvoiceActivity.class);
-//                startActivityForResult(intent, TICKET_REQUEST_CODE);
-//                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-//            }
-//        });
-
-        //修改入住人
-//        for(int i=0;i<customerList.size();i++){
-//            final int index = i;
-//            customerList.get(i).setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    ItemUserSettingView setView = (ItemUserSettingView) view;
-//                    Intent intent = new Intent(OrderNewActivity.this, ChoosePeopleActivity.class);
-//                    intent.putExtra("index",index);
-//                    startActivityForResult(intent, PEOPLE_REQUEST_CODE);
-//                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-//                }
-//            });
-//        }
-
-//        //修改备注
-//        mlltRemark.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                if(modifyEnable){
-//                    Intent intent = new Intent(OrderNewActivity.this, AddRemarkActivity.class);
-//                    intent.putExtra("remark", mTvRemark.getText());
-//                    intent.putExtra("tips", "如果有其他要求，请在此说明。");
-//                    intent.putExtra("title", "添加订单备注");
-//                    intent.putExtra("hint", "请输入订单备注");
-//                    startActivityForResult(intent, REMARK_REQUEST_CODE);
-//                    overridePendingTransition(R.anim.slide_in_right,
-//                            R.anim.slide_out_left);
-//                }
-//
-//            }
-//        });
-
-//    //初始化标签点击事件
-//    private void initTagClickEvent(){
-//        mRoomTagView.setOnTagClickListener(new OnTagClickListener() {
-//            @Override
-//            public void onTagClick(Tag tag, int position) {
-//                if(tag.deleteIcon.equals("")){
-//                    tag.deleteIcon = "√";
-//                }
-//                else{
-//                    tag.deleteIcon = "";
-//                }
-//                mRoomTagView.drawTags();
-//                ArrayList<OrderRoomTagResponse> roomTags = orderDetailResponse.getRoom_tag();
-//                if(roomTags == null){
-//                    roomTags = new ArrayList<OrderRoomTagResponse>();
-//                }else{
-//                    roomTags.clear();
-//                }
-//                for(Tag item : mRoomTagView.getTags()){
-//                    if(item.deleteIcon.equals("√")){
-//                        roomTags.add(getRoomTagById(item.id));
-//                    }
-//                }
-//                orderDetailResponse.setRoom_tag(roomTags);
-//
-//            }
-//        });
-
-//        mServiceTagView.setOnTagClickListener(new OnTagClickListener() {
-//            @Override
-//            public void onTagClick(Tag tag, int position) {
-//                if(tag.deleteIcon.equals("")){
-//                    tag.deleteIcon = "√";
-//                }
-//                else{
-//                    tag.deleteIcon = "";
-//                }
-//                mServiceTagView.drawTags();
-//                ArrayList<OrderPrivilegeResponse> privileges = orderDetailResponse.getPrivilege();
-//                if(privileges == null){
-//                    privileges = new ArrayList<OrderPrivilegeResponse>();
-//                }else{
-//                    privileges.clear();
-//                }
-//                for(Tag item : mServiceTagView.getTags()){
-//                    if(item.deleteIcon.equals("√")){
-//                        privileges.add(getPrivilegeById(item.id));
-//                    }
-//                }
-//
-//            }
-//        });
     }
 
     //初始化入住时间
-    private void initArrivalDate(){
-        calendarList   = new ArrayList<>();
-        mSimpleFormat  = new SimpleDateFormat("yyyy-MM-dd");
+    private void initArrivalDate() {
+        calendarList = new ArrayList<>();
+        mSimpleFormat = new SimpleDateFormat("yyyy-MM-dd");
         mChineseFormat = new SimpleDateFormat("MM月dd日");
 
         Calendar today = Calendar.getInstance();
         today.setTime(new Date()); //当天
-        calendarList.add(today);
+        calendarList.add(0, today);
 
         Calendar tomorrow = Calendar.getInstance();
         tomorrow.setTime(new Date());
         tomorrow.add(Calendar.DAY_OF_YEAR, 1); //下一天
-        calendarList.add(tomorrow);
+        calendarList.add(1, tomorrow);
         setOrderDate(calendarList);
     }
 
-    //初始化入住人信息
-    private void initPeople(){
-//        roomNum = orderDetailResponse.getRoom().getRooms();
-//        notifyRoomNumberChange();
-//        Drawable drawable= getResources().getDrawable(R.mipmap.ic_get_into_w);
-//        drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
-//        mIusvRoomNumber.getmTextContent2().setCompoundDrawables(null, null, drawable, null);
-//
-//        for(int i=0;i<customerList.size();i++){
-//            Drawable d= getResources().getDrawable(R.mipmap.ic_get_into_w);
-//            d.setBounds(0, 0, d.getMinimumWidth(), d.getMinimumHeight());
-//            customerList.get(i).getmTextContent2().setCompoundDrawables(null, null, d, null);
-//        }
-//
-//        ArrayList<OrderUsersResponse> users = orderDetailResponse.getUsers();
-//        for(int i=0;i< roomNum;i++){
-//            if(i<customerList.size() && users != null && users.size() > 0 && i<users.size()){
-//                OrderUsersResponse user = users.get(i);
-//                customerList.get(i).getmTextContent2().setText(user.getRealname());
-//            }
-//        }
-    }
-
-    //初始化房间信息信息
-    private void initRoom(){
-//        this.options = new DisplayImageOptions.Builder()
-//                .showImageOnLoading(R.mipmap.ic_room_pic_default)// 设置图片下载期间显示的图片
-//                .showImageForEmptyUri(R.mipmap.ic_room_pic_default)// 设置图片Uri为空或是错误的时候显示的图片
-//                .showImageOnFail(R.mipmap.ic_room_pic_default)// 设置图片加载或解码过程中发生错误显示的图片
-//                .cacheInMemory(true) // 设置下载的图片是否缓存在内存中
-//                .cacheOnDisk(true) // 设置下载的图片是否缓存在SD卡中
-//                .build();
-//        if(!TextUtils.isEmpty(orderDetailResponse.getRoom().getImgurl())){
-//            String logoUrl = ProtocolUtil.getGoodImgUrl(orderDetailResponse.getRoom().getImgurl());
-//            ImageLoader.getInstance().displayImage(logoUrl,mIvRoomImg,options);
-//        }
-//        mRoomType.setText(orderDetailResponse.getRoom().getRoom_type());
-//        mRoomRate.setText(orderDetailResponse.getRoom().getRoom_rate());
-    }
-
-    //初始化订单状态的显示
-    private void initOrderStatus() {
-//        //订单状态 默认0可取消订单 1已取消订单 2已确认订单 3已经完成的订单 4正在入住中 5已删除订单
-//        //支付状态 0未支付,1已支付,3支付一部分,4已退款, 5已挂账
-//
-//        final String orderStatus = orderDetailResponse.getRoom().getStatus();
-//        String payStatus = orderDetailResponse.getRoom().getPay_status();
-//
-//        mBtnSendOrder.setVisibility(View.GONE);
-//        mBtnCancelOrder.setVisibility(View.GONE);
-//        modifyEnable = false;
-//
-//        if (orderStatus.equals("0")){
-//            modifyEnable = true;
-//            mTvOrderStatus.setText("已提交");
-//            mBtnSendOrder.setVisibility(View.VISIBLE);
-//            mBtnCancelOrder.setVisibility(View.VISIBLE);
-//
-//        }
-//        else if(orderStatus.equals("1")){
-//            mTvOrderStatus.setText("已取消");
-//        }
-//        else if(orderStatus.equals("2")){
-//            mTvOrderStatus.setText("已确认");
-//            mBtnCancelOrder.setVisibility(View.VISIBLE);
-//        }
-//        else if(orderStatus.equals("3")){
-//            mTvOrderStatus.setText("已完成");
-//        }
-//        else if(orderStatus.equals("4")){
-//            mTvOrderStatus.setText("已入住");
-//        }
-//        else if(orderStatus.equals("5")){
-//            mTvOrderStatus.setText("已删除");
-//        }
-//
-//        if (payStatus.equals("0")){
-//            mTvOrderStatus.setText(mTvOrderStatus.getText().toString()+"/未支付");
-//            mTvPayTips.setText("你应该支付"+orderDetailResponse.getRoom().getRoom_rate()+"元，还需要支付"+orderDetailResponse.getRoom().getRoom_rate()+"元");
-//            mTvPay.setText("立即支付");
-//            mTvPay.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    Intent intent = new Intent(OrderNewActivity.this,OrderPayActivity.class);
-//                    //Intent intent = new Intent(OrderNewActivity.this,PayOrderActivity.class);
-//                    intent.putExtra("orderDetailResponse", orderDetailResponse);
-//                    startActivity(intent);
-//                    finish();
-//                    overridePendingTransition(R.anim.slide_in_right,
-//                            R.anim.slide_out_left);
-//
-//                }
-//            });
-//
-//        }
-//        else if(payStatus.equals("1")){
-//            mTvOrderStatus.setText(mTvOrderStatus.getText().toString()+"/已支付");
-//            mTvPayTips.setText("你应该支付"+orderDetailResponse.getRoom().getRoom_rate()+"元，还需要支付0元");
-//            mTvPay.setText("已支付");
-//        }
-//        else if(payStatus.equals("2")){
-//            mTvOrderStatus.setText(mTvOrderStatus.getText().toString()+"");
-//        }
-//        else if(payStatus.equals("3")){
-//            mTvOrderStatus.setText(mTvOrderStatus.getText().toString()+"/支付一部分");
-//            mTvPayTips.setText("");
-//            mTvPay.setText("支付一部分");
-//        }
-//        else if(payStatus.equals("4")){
-//            mTvOrderStatus.setText(mTvOrderStatus.getText().toString()+"/已退款");
-//            mTvPayTips.setText("");
-//            mTvPay.setText("已退款");
-//        }
-//        else if(payStatus.equals("5")){
-//            mTvOrderStatus.setText(mTvOrderStatus.getText().toString()+"/已挂账");
-//            mTvPayTips.setText("你应该支付"+orderDetailResponse.getRoom().getRoom_rate()+"元，还需要支付0元");
-//            mTvPay.setText("已挂账");
-//        }
-    }
-
-    //初始化订单备注
-    private void initRemark() {
-//        if(!StringUtil.isEmpty(orderDetailResponse.getRoom().getRemark())){
-//            mTvRemark.setText(orderDetailResponse.getRoom().getRemark());
-//        }
-    }
-
-    //初始化发票
-    private void initTicket() {
-//        orderInvoiceResponse = orderDetailResponse.getInvoice();
-//        if(orderInvoiceResponse != null && orderInvoiceResponse.getInvoice_title() != null){
-//            mTvTicket.setText(orderInvoiceResponse.getInvoice_title());
-//        }
-//        else{
-//            mTvTicket.setText("");
-//        }
-    }
-
-    //初始化房间选项标签
-    private void initRoomTags() {
-//        ArrayList<OrderRoomTagResponse> roomTags = orderDetailResponse.getRoom_tag();
-//        totalRoomTags = new ArrayList<OrderRoomTagResponse>();
-//        totalRoomTags.addAll(roomTags);
-//        if(roomTags != null){
-//            for(OrderRoomTagResponse item : roomTags){
-//                if(orderDetailResponse.getRoom().getStatus().equals("0")){
-//                    mRoomTagView.addTag(createTag(item.getId(),item.getContent(),false));
-//                }else{
-//                    mRoomTagView.addTag(createTag(item.getId(),item.getContent(),true));
-//                }
-//
-//            }
-//            if(orderDetailResponse.getRoom().getStatus().equals("0")){
-//                orderDetailResponse.getRoom_tag().clear();
-//            }
-//
-//        }
-    }
-
-    //初始化其他服务标签
-    private void initServiceTags() {
-//        ArrayList<OrderPrivilegeResponse> privileges = orderDetailResponse.getPrivilege();
-//        totalPrivileges = new ArrayList<OrderPrivilegeResponse>();
-//        totalPrivileges.addAll(privileges);
-//        if(privileges != null){
-//            for(OrderPrivilegeResponse item : privileges){
-//                if(orderDetailResponse.getRoom().getStatus().equals("0")){
-//                    mServiceTagView.addTag(createTag(item.getId(),item.getPrivilege_name(),false));
-//                }else{
-//                    mServiceTagView.addTag(createTag(item.getId(),item.getPrivilege_name(),true));
-//                }
-//
-//            }
-//            if(orderDetailResponse.getRoom().getStatus().equals("0")){
-//                orderDetailResponse.getPrivilege().clear();
-//            }
-//        }
-    }
-
-//    //根据id 获取房间服务
-//    private OrderPrivilegeResponse getPrivilegeById(int id){
-//        if(totalPrivileges != null){
-//            for(OrderPrivilegeResponse privilege : totalPrivileges){
-//                if(id == privilege.getId()){
-//                    return privilege;
-//                }
-//            }
-//        }
-//        return null;
-//    }
-//
-//    //根据id 获取 房间选项
-//    private OrderRoomTagResponse getRoomTagById(int id){
-//        if(totalRoomTags != null){
-//            for(OrderRoomTagResponse roomTag : totalRoomTags){
-//                if(id == roomTag.getId()){
-//                    return roomTag;
-//                }
-//            }
-//        }
-//        return null;
-//    }
-
-    private Tag createTag(int id, String tagstr, boolean isChecked){
-        Tag tag = new Tag(id,tagstr);
-        tag.tagTextColor = Color.parseColor("#000000");
-        tag.layoutColor =  Color.parseColor("#ffffff");
-        tag.layoutColorPress = Color.parseColor("#DDDDDD");
-        //or tag.background = this.getResources().getDrawable(R.drawable.custom_bg);
-        tag.radius = 40f;
-        tag.tagTextSize = 18f;
-        tag.layoutBorderSize = 1f;
-        tag.layoutBorderColor = Color.parseColor("#000000");
-        tag.deleteIndicatorColor =  Color.parseColor("#ff0000");
-        tag.deleteIndicatorSize =  18f;
-        tag.isDeletable = true;
-        if(isChecked){
-            tag.deleteIcon = "√";
-        }else{
-            tag.deleteIcon = "";
-        }
-        return tag;
-    }
-
     //设置离开和到达的日期
-    private void setOrderDate(ArrayList<Calendar> calendarList){
+    private void setOrderDate(ArrayList<Calendar> calendarList) {
         mChineseFormat = new SimpleDateFormat("MM月dd日");
         Date arrivalDate = calendarList.get(0).getTime();
-        Date leaveDate   = calendarList.get(1).getTime();
+        Date leaveDate = calendarList.get(1).getTime();
 
         mTvArriveDate.setText(mChineseFormat.format(arrivalDate));
         mTvLeaveDate.setText(mChineseFormat.format(leaveDate));
-        try{
-            dayNum = TimeUtil.daysBetween(arrivalDate,leaveDate);
-            mTvDateTips.setText("共"+dayNum+"晚，在"+mTvLeaveDate.getText()+"13点前退房");
-        }catch (Exception e){
+        try {
+            dayNum = TimeUtil.daysBetween(arrivalDate, leaveDate);
+            mTvDateTips.setText("共" + dayNum + "晚，在" + mTvLeaveDate.getText() + "13点前退房");
+        } catch (Exception e) {
 
         }
     }
-
-//    //显示房间数量选择对话框
-//    private void showRoomNumChooseDialog(){
-//        final Dialog dialog = new Dialog(this);
-//        dialog.setCanceledOnTouchOutside(true);
-//        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-//        dialog.setContentView(R.layout.dialog_room_number);
-//
-//        Window dialogWindow = dialog.getWindow();
-//        dialogWindow.setGravity(Gravity.CENTER);
-//        int width = DeviceUtils.getScreenWidth(this);
-//
-//        WindowManager.LayoutParams lp = dialogWindow.getAttributes();
-//        lp.width = (int) (width*0.8); // 宽度
-//        // lp.height = 300; // 高度
-//        //lp.alpha = 0.7f; // 透明度
-//        dialogWindow.setAttributes(lp);
-//        dialog.show();
-//        RadioGroup group = (RadioGroup)dialog.findViewById(R.id.gendergroup);
-//        RadioButton mRadio1 = (RadioButton) dialog.findViewById(R.id.rbtn_one_room);
-//        RadioButton mRadio2 = (RadioButton) dialog.findViewById(R.id.rbtn_two_room);
-//        RadioButton mRadio3 = (RadioButton) dialog.findViewById(R.id.rbtn_three_room);
-//        if(roomNum == 1){
-//            mRadio1.setChecked(true);
-//        }
-//        else  if(roomNum == 2){
-//            mRadio2.setChecked(true);
-//        }
-//        else  if(roomNum == 3){
-//            mRadio3.setChecked(true);
-//        }
-//        group.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-//            @Override
-//            public void onCheckedChanged(RadioGroup radioGroup, int checkedId) {
-//                if (checkedId ==R.id.rbtn_one_room) {
-//                    roomNum = 1;
-//                }
-//                else if (checkedId ==R.id.rbtn_two_room) {
-//                    roomNum = 2;
-//                }else{
-//                    roomNum = 3;
-//                }
-//                notifyRoomNumberChange();
-//                dialog.cancel();
-//            }
-//        });
-//    }
-
-//    //房间数量已经变 通知UI做调整
-//    private void notifyRoomNumberChange(){
-//        mAivRoomCount.setTextContent2(roomNum + "间");
-//        for(int i=0;i<customerList.size();i++){
-//            if(i < roomNum){
-//                customerList.get(i).setVisibility(View.VISIBLE);
-//            }else{
-//                customerList.get(i).setVisibility(View.GONE);
-//            }
-//        }
-//    }
-
-    //取消订单
-    private void cancelOrder(){
-    }
-
-    //确认订单
-    private void confirmOrder() {
-//        String url =  ProtocolUtil.updateOrderUrl();
-//        Log.i(TAG, url);
-//        NetRequest netRequest = new NetRequest(url);
-//        HashMap<String,String> bizMap = generatedPostParm();
-//        bizMap.put("status","2");
-//        netRequest.setBizParamMap(bizMap);
-//        NetRequestTask netRequestTask = new NetRequestTask(this,netRequest, NetResponse.class);
-//        netRequestTask.methodType = MethodType.PUSH;
-//        netRequestTask.setNetRequestListener(new ExtNetRequestListener(this) {
-//            @Override
-//            public void onNetworkRequestError(int errorCode, String errorMessage) {
-//                Log.i(TAG, "errorCode:" + errorCode);
-//                Log.i(TAG, "errorMessage:" + errorMessage);
-//            }
-//
-//            @Override
-//            public void onNetworkRequestCancelled() {
-//
-//            }
-//
-//            @Override
-//            public void onNetworkResponseSucceed(NetResponse result) {
-//                super.onNetworkResponseSucceed(result);
-//                Log.i(TAG, "result.rawResult:" + result.rawResult);
-//                try {
-//                    BaseResponse baseResponse = new Gson().fromJson(result.rawResult,BaseResponse.class);
-//                    if(baseResponse.isSet()){
-//                        CustomerServicesManager.getInstance().requestServiceListTask(OrderNewActivity.this, shopId, new NetRequestListener() {
-//                            @Override
-//                            public void onNetworkRequestError(int errorCode, String errorMessage) {
-//                                Log.i(TAG, "errorCode:" + errorCode);
-//                                Log.i(TAG, "errorMessage:" + errorMessage);
-//                            }
-//
-//                            @Override
-//                            public void onNetworkRequestCancelled() {
-//
-//                            }
-//
-//                            @Override
-//                            public void onNetworkResponseSucceed(NetResponse result) {
-//                                Log.i(TAG, "result:" + result.rawResult);
-//                                CustomerServiceListResponse customerServiceListResponse = new Gson().fromJson(result.rawResult, CustomerServiceListResponse.class);
-//                                if (null != customerServiceListResponse) {
-//                                    HeadBean head = customerServiceListResponse.getHead();
-//                                    if (null != head) {
-//                                        boolean isSet = head.isSet();
-//                                        if (isSet) {
-//                                            ArrayList<CustomerServiceBean> customerServiceList = customerServiceListResponse.getData();
-//                                            String salesId = head.getExclusive_salesid();
-//                                            CustomerServiceBean customerService = null;
-//                                            if (null != customerServiceList && !customerServiceList.isEmpty()) {
-//                                                if (!TextUtils.isEmpty(salesId)) {//有专属客服
-//                                                    customerService = CustomerServicesManager.getInstance().getExclusiveCustomerServic(customerServiceList, salesId);
-//                                                } else {//无专属客服
-//                                                    customerService = CustomerServicesManager.getInstance().getRandomCustomerServic(customerServiceList);
-//                                                    if(null != salesId){
-//                                                        salesId = customerService.getSalesid();
-//                                                    }
-//                                                }
-//                                            }
-//                                            Intent intent = new Intent(OrderNewActivity.this, ChatActivity.class);
-//                                            intent.putExtra(Constants.EXTRA_USER_ID, salesId);
-//                                            intent.putExtra(Constants.EXTRA_FROM_NAME, CacheUtil.getInstance().getUserName());
-//                                            if(null != customerService){
-//                                                String userName = customerService.getName();
-//                                                if (!TextUtils.isEmpty(userName)) {
-//                                                    intent.putExtra(Constants.EXTRA_TO_NAME,userName);
-//                                                }
-//                                            }
-//                                            if (!TextUtils.isEmpty(shopId)) {
-//                                                intent.putExtra(Constants.EXTRA_SHOP_ID,shopId);
-//                                            }
-//                                            String shopName = orderDetailResponse.getRoom().getFullname();
-//                                            if (!TextUtils.isEmpty(shopName)) {
-//                                                intent.putExtra(Constants.EXTRA_SHOP_NAME,shopName);
-//                                            }
-//                                            intent.putExtra("text_context", "您好，我已确认该订单，请跟进。");
-//                                            startActivity(intent);
-//                                            overridePendingTransition(R.anim.slide_in_right,
-//                                                    R.anim.slide_out_left);
-//                                            finish();
-//                                        }
-//                                    }
-//                                }
-//                            }
-//
-//                            @Override
-//                            public void beforeNetworkRequestStart() {
-//
-//                            }
-//                        });
-//                    }
-//
-//                } catch (Exception e) {
-//                    Log.e(TAG, e.getMessage());
-//                }
-//
-//            }
-//
-//            @Override
-//            public void beforeNetworkRequestStart() {
-//
-//            }
-//        });
-//        netRequestTask.isShowLoadingDialog = true;
-//        netRequestTask.execute();
-    }
-
-//    //产生post 表单参数
-//    private HashMap<String, String> generatedPostParm(){
-//        HashMap<String, String> map = new HashMap<String, String>();
-//        map.put("userid", CacheUtil.getInstance().getUserId());
-//        map.put("token", CacheUtil.getInstance().getToken());
-//        map.put("reservation_no", reservationNo);
-//        String userids = "";
-//        if(orderDetailResponse.getUsers() != null && orderDetailResponse.getUsers().size() > 0){
-//            boolean isFirst = true;
-//            for(int i=0;i<orderDetailResponse.getUsers().size();i++){
-//
-//                if(orderDetailResponse.getUsers().get(i) != null){
-//                    if(isFirst){
-//                        userids = userids + orderDetailResponse.getUsers().get(i).getId();
-//                        isFirst = false;
-//                    }else{
-//                        userids = userids + ","+orderDetailResponse.getUsers().get(i).getId();
-//                    }
-//                }
-//            }
-//        }
-//        if(!TextUtils.isEmpty(userids)){
-//            map.put("users",userids);
-//        }
-//
-//        if(orderDetailResponse.getInvoice() != null && !TextUtils.isEmpty(orderDetailResponse.getInvoice().getInvoice_title())){
-//            map.put("invoice[invoice_title]",orderDetailResponse.getInvoice().getInvoice_title());
-//            map.put("invoice[invoice_get_id]","1");
-//        }
-//
-//
-//        String roomtags = "";
-//        if(orderDetailResponse.getRoom_tag() != null){
-//            for(int i=0;i<orderDetailResponse.getRoom_tag().size();i++){
-//                if(i == 0){
-//                    roomtags = "" + orderDetailResponse.getRoom_tag().get(i).getContent();
-//                }else{
-//                    roomtags = roomtags + ","+orderDetailResponse.getRoom_tag().get(i).getContent();
-//                }
-//            }
-//        }
-//        if(!TextUtils.isEmpty(roomtags)){
-//            map.put("room_tags",roomtags);
-//        }
-//
-//
-//        String privileges = "";
-//        if(orderDetailResponse.getPrivilege() != null){
-//            for(int i=0;i<orderDetailResponse.getPrivilege().size();i++){
-//                if(i == 0){
-//                    privileges = "" + orderDetailResponse.getPrivilege().get(i).getId();
-//                }else{
-//                    privileges = privileges + ","+orderDetailResponse.getPrivilege().get(i).getId();
-//                }
-//            }
-//        }
-//        if(!TextUtils.isEmpty(privileges)){
-//            map.put("privilege",privileges);
-//        }
-//
-//
-//        map.put("remark",TextUtils.isEmpty(orderDetailResponse.getRoom().getRemark())? "" : orderDetailResponse.getRoom().getRemark());
-//        // map.put("pay_status",orderDetailResponse.getRoom().getPay_status());
-//
-//        return map;
-//    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(RESULT_OK == resultCode){
-            if(CalendarActivity.CALENDAR_REQUEST_CODE == requestCode){
-                if(null != data){
-                    calendarList = (ArrayList<Calendar>)data.getSerializableExtra("calendarList");
-                    if(null != calendarList && !calendarList.isEmpty()){
-                        mLlOrderDate.setVisibility(View.VISIBLE);
+        if (RESULT_OK == resultCode) {
+            if (CalendarActivity.CALENDAR_REQUEST_CODE == requestCode) {
+                if (null != data) {
+                    calendarList = (ArrayList<Calendar>) data.getSerializableExtra("calendarList");
+                    if (null != calendarList && !calendarList.isEmpty()) {
                         setOrderDate(calendarList);
-                    } else {
-                        mLlOrderDate.setVisibility(View.GONE);
                     }
-
                 }
             }
-//            else if(GOOD_REQUEST_CODE == requestCode){
-//                if(null != data){
-//                    //lastGoodInfoVo = (GoodInfoVo)data.getSerializableExtra("GoodInfoVo");
-//                    //setOrderRoomType(lastGoodInfoVo);
-//                }
-//            }
-//            else if(PEOPLE_REQUEST_CODE == requestCode){
-//                if(null != data){
-//                    OrderUsersResponse orderUsersResponse = (OrderUsersResponse)data.getSerializableExtra("selectPeople");
-//                    int index = data.getIntExtra("index", 0);
-//                    for(int i=0;i<3;i++){
-//                        if(TextUtils.isEmpty(customerList.get(i).getTextContent2())){
-//                            if(i<index){
-//                                index = i;
-//                            }
-//                            break;
-//                        }
-//                    }
-//                    customerList.get(index).setTextContent2(orderUsersResponse.getRealname());
-//
-//                    ArrayList<OrderUsersResponse> users = orderDetailResponse.getUsers();
-//                    if(users == null){
-//                        users = new ArrayList<OrderUsersResponse>();
-//                    }
-//                    if(index >= users.size()){
-//                        users.add(orderUsersResponse);
-//                    }else{
-//                        users.set(index, orderUsersResponse);
-//                    }
-//                    orderDetailResponse.setUsers(users);
-//                }
-//            }
-//            else if(TICKET_REQUEST_CODE == requestCode){
-//                if(null != data){
-//                    OrderInvoiceResponse orderInvoiceResponse = (OrderInvoiceResponse)data.getSerializableExtra("selectInvoice");
-//                    mTvTicket.setText(orderInvoiceResponse.getInvoice_title());
-//                    orderDetailResponse.setInvoice(orderInvoiceResponse);
-//                }
-//            }
-//            else if(REMARK_REQUEST_CODE == requestCode){
-//                if(null != data){
-//                    String remark = data.getStringExtra("remark");
-//                    mTvRemark.setText(remark);
-//                    orderDetailResponse.getRoom().setRemark(remark);
-//                }
-//            }
-
             //请求选择预订人
-            else if(REQUEST_ORDER_PERSON == requestCode){
-                if(null != data){
-                    String clientID   = data.getStringExtra("client_id");
-                    String clientName = data.getStringExtra("client_name");
-                    if(!TextUtils.isEmpty(clientName)){
-                        mTvOrderPerson.setText(clientName);
+            else if (REQUEST_ORDER_PERSON == requestCode) {
+                if (null != data) {
+                    mClientID    = data.getStringExtra("client_id");
+                    mClientName  = data.getStringExtra("client_name");
+                    mClientPhone = data.getStringExtra("client_phone");
+                    if (!TextUtils.isEmpty(mClientName)) {
+                        mTvOrderPerson.setText(mClientName);
                     }
                 }
             }
-
             //请求选择房型
-            else if(REQUEST_ROOM_TYPE == requestCode){
-                if(null != data){
+            else if (REQUEST_ROOM_TYPE == requestCode) {
+                if (null != data) {
                     mGoodInfoVo = (GoodInfoVo) data.getSerializableExtra("room_type");
-                    if(null != mGoodInfoVo){
+                    if (null != mGoodInfoVo) {
 
-                        String room   = mGoodInfoVo.getRoom();
-                        String price  = mGoodInfoVo.getPrice();
+                        String room = mGoodInfoVo.getRoom();
+                        String price = mGoodInfoVo.getPrice();
                         String imgUrl = mGoodInfoVo.getImgurl();
 
-                        if(!TextUtils.isEmpty(room)){
+                        if (!TextUtils.isEmpty(room)) {
                             mTvRoomType.setText(room);
                         }
 
-                        if(!TextUtils.isEmpty(price)){
+                        if (!TextUtils.isEmpty(price)) {
                             mTvRoomRate.setText(price);
                         }
 
-                        if(!TextUtils.isEmpty(imgUrl)){
-                            ImageLoader.getInstance().displayImage(imgUrl, mIvRoomImg, mOptions);
+                        if (!TextUtils.isEmpty(imgUrl)) {
+                            ImageLoader.getInstance().displayImage(ProtocolUtil.getGoodImgUrl(imgUrl), mIvRoomImg, mOptions);
                         }
                     }
                 }
             }
-            //请求选择房型
-            else if(REQUEST_LIVE_PERSON == requestCode){
-                if(null != data){
+            //请求选择入住人
+            else if (REQUEST_LIVE_PERSON == requestCode) {
+                if (null != data) {
                     Bundle bundle = data.getExtras();
-                    List<String> liveNames = (List<String>) bundle.get("live_persons");
-                    for(String liveName : liveNames){
-                        nLlPersons.addView(getItemLivePersonView(getString(R.string.live_person), liveName));
+                    mLiveNames = (ArrayList<String>) bundle.get("live_persons");
+                    for (String liveName : mLiveNames) {
+                        nLlPersons.addView(getItemLivePersonView(getString(R.string.live_person) +
+                                mLiveNames.indexOf(liveName) + 1, liveName));
                     }
+                }
+            }
+            //请求选择支付方式和金额
+            else if (REQUEST_PAY_METHOD == requestCode) {
+                if (null != data) {
+                    mRoomAmount = data.getDoubleExtra("room_amount", 0.00);
+                    mPayBean = (PayBean) data.getSerializableExtra("pay_bean");
+                    if(null != mPayBean){
+                        String payName = mPayBean.getPay_name();
+                        mTvPayMethod.setText(payName);
+                    }
+                    mTvPayTips.setText("待支付金额：" + mRoomAmount + getString(R.string.yuan));
                 }
             }
         }
     }
 
     /**
-     *  获得居住人View
+     * 获得居住人View
+     *
      * @param title
      * @param content
      * @return
      */
-    public View getItemLivePersonView(String title, String content){
+    public View getItemLivePersonView(String title, String content) {
 
         View view = View.inflate(OrderNewActivity.this, R.layout.item_live_person, null);
-        TextView titleView   = (TextView) view.findViewById(R.id.tv_text_title);
+        TextView titleView = (TextView) view.findViewById(R.id.tv_text_title);
         TextView contentView = (TextView) view.findViewById(R.id.tv_text_content);
-        int paddingSize = DisplayUtil.dip2px(OrderNewActivity.this, 10f);
-        view.setPadding(paddingSize*(3/2), paddingSize, paddingSize*(3/2), paddingSize);
-
-        if(!TextUtils.isEmpty(title)){
+        if (!TextUtils.isEmpty(title)) {
             titleView.setText(title);
         }
 
-        if(!TextUtils.isEmpty(title)){
+        if (!TextUtils.isEmpty(title)) {
             contentView.setText(content);
         }
-        view.findViewById(R.id.tv_text_content);
         return view;
+    }
+
+    //添加订单
+    private void addOrderByServer() {
+
+        //判断预订人是为空
+        if(TextUtils.isEmpty(mClientName)){
+            DialogUtil.getInstance().showCustomToast(OrderNewActivity.this, getString(R.string.please_add_the_order_person), Gravity.CENTER);
+            return ;
+        }
+
+        //判断房型是否为空
+        if(null == mGoodInfoVo || TextUtils.isEmpty(mGoodInfoVo.getRoom())){
+            DialogUtil.getInstance().showCustomToast(OrderNewActivity.this, getString(R.string.choose_room_type), Gravity.CENTER);
+            return ;
+        }
+
+        //判断支付方式是否选中
+        if(null == mPayBean || TextUtils.isEmpty(mPayBean.getPay_name())){
+            DialogUtil.getInstance().showCustomToast(OrderNewActivity.this, getString(R.string.choose_pay_method), Gravity.CENTER);
+            return ;
+        }
+
+        String url = ProtocolUtil.getAddOrderUrl();
+        Log.i(TAG, url);
+        NetRequest netRequest = new NetRequest(url);
+        HashMap<String, String> bizMap = new HashMap<>();
+        bizMap.put("salesid", mUserID);//销售员ID
+        bizMap.put("token", mToken);
+        bizMap.put("shopid", mShopID);
+        bizMap.put("fullname", mShopName);//酒店全称
+
+        bizMap.put("userid", mClientID);//预订人ID
+        bizMap.put("guesttel", mClientPhone);//预订人电话
+        bizMap.put("guest", mClientName);//预订人姓名
+
+        bizMap.put("roomid", mGoodInfoVo.getId());//房型ID
+        bizMap.put("room_type", mGoodInfoVo.getRoom());//房型
+        bizMap.put("imgurl", mGoodInfoVo.getImgurl());//图片路径
+
+        mRoomCount = mAivRoomCount.getNumber();
+        bizMap.put("rooms", mRoomCount+"");//房间数量
+        bizMap.put("arrival_date",  mSimpleFormat.format(calendarList.get(0).getTime()));//到达日期
+        bizMap.put("departure_date", mSimpleFormat.format(calendarList.get(1).getTime()));//离开日期
+        bizMap.put("room_rate", mRoomAmount + "");//房价
+        bizMap.put("payment", mPayBean.getPay_id() + "");//支付方式
+        bizMap.put("status", "0");
+
+        netRequest.setBizParamMap(bizMap);
+        NetRequestTask netRequestTask = new NetRequestTask(this, netRequest, NetResponse.class);
+        netRequestTask.methodType = MethodType.PUSH;
+        netRequestTask.setNetRequestListener(new ExtNetRequestListener(this) {
+            @Override
+            public void onNetworkRequestError(int errorCode, String errorMessage) {
+                Log.i(TAG, "errorCode:" + errorCode);
+                Log.i(TAG, "errorMessage:" + errorMessage);
+            }
+
+            @Override
+            public void onNetworkRequestCancelled() {
+
+            }
+
+            @Override
+            public void onNetworkResponseSucceed(NetResponse result) {
+                super.onNetworkResponseSucceed(result);
+                Log.i(TAG, "result.rawResult:" + result.rawResult);
+                try {
+                    AddOrderBean addOrderBean = new Gson().fromJson(result.rawResult, AddOrderBean.class);
+                    if (addOrderBean.isSet()) {
+                        DialogUtil.getInstance().showToast(OrderNewActivity.this,
+                                                "订单添加成功。\n订单号是：" +
+                                                addOrderBean.getReservation_no());
+
+                        EMConversationHelper.getInstance().sendOrderCmdMessage(
+                            mShopID,
+                            addOrderBean.getReservation_no(),
+                            mClientID,
+                            new EMCallBack() {
+                                @Override
+                                public void onSuccess() {
+                                    Log.i(TAG, "发送订单确认信息成功");
+                                }
+
+                                @Override
+                                public void onError(int i, String s) {
+                                    Log.i(TAG, "errorMsg:" + s);
+                                    Log.i(TAG, "errorCode" + i);
+                                }
+
+                                @Override
+                                public void onProgress(int i, String s) {
+
+                                }
+                            });
+                        finish();
+                    } else {
+                        DialogUtil.getInstance().showToast(OrderNewActivity.this, "订单添加失败");
+                        Log.e(TAG, addOrderBean.getErr());
+                    }
+                } catch (Exception e) {
+                    Log.e(TAG, e.getMessage());
+                }
+            }
+
+            @Override
+            public void beforeNetworkRequestStart() {
+
+            }
+        });
+        netRequestTask.isShowLoadingDialog = true;
+        netRequestTask.execute();
     }
 }

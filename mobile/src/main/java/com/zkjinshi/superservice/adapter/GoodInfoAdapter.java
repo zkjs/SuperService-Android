@@ -16,6 +16,7 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.listener.RecyclerItemClickListener;
+import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.vo.GoodInfoVo;
 
 import java.util.ArrayList;
@@ -98,7 +99,7 @@ public class GoodInfoAdapter extends RecyclerView.Adapter<GoodInfoAdapter.GoodIn
         GoodInfoVo goodInfoVo = mDatas.get(position);
         //显示房型图片
         String imgUrl = goodInfoVo.getImgurl();
-        ImageLoader.getInstance().displayImage(imgUrl, holder.ivRoomType, mOptions);
+        ImageLoader.getInstance().displayImage(ProtocolUtil.getGoodImgUrl(imgUrl), holder.ivRoomType, mOptions);
 
         //房间类型描述
         String roomType = goodInfoVo.getRoom();

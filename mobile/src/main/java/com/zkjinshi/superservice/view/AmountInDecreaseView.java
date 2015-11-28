@@ -96,11 +96,11 @@ public class AmountInDecreaseView extends LinearLayout implements OnClickListene
         return TextUtils.isEmpty(mNumberEditText.getText().toString().trim());
     }
     
-    private int getNumber() {
+    public int getNumber() {
         return Integer.valueOf(mNumberEditText.getText().toString());
     }
-    
-    private void setNumber(int number) {
+
+    public void setNumber(int number) {
         assert (number >= 0);
         mNumberEditText.setText(String.valueOf(number));
     }

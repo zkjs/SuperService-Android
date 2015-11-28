@@ -39,6 +39,7 @@ public class AddLivePersonActivity extends AppCompatActivity {
     private Button         mBtnConfirm;
     private EditText       mEtLivePerson;
     private List<EditText> mEtLivePersonsList;
+    private List<String>   mLivePersons;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -64,10 +65,24 @@ public class AddLivePersonActivity extends AppCompatActivity {
     }
 
     private void initData() {
+
+        Bundle bundle = getIntent().getExtras();
+        mLivePersons = bundle.getStringArrayList("live_persons");
         mEtLivePersonsList = new ArrayList<>();
-        mEtLivePerson = getEtLivePerson(AddLivePersonActivity.this);
-        mLlContainer.addView(mEtLivePerson);
-        mEtLivePersonsList.add(mEtLivePerson);
+
+        if(null != mLivePersons && !mLivePersons.isEmpty()){
+            EditText editText = null;
+            for(String personName : mLivePersons){
+                editText = getEtLivePerson(AddLivePersonActivity.this);
+                editText.setText(personName);
+                mLlContainer.addView(editText);
+            }
+        } else {
+            mEtLivePerson = getEtLivePerson(AddLivePersonActivity.this);
+            mLlContainer.addView(mEtLivePerson);
+            mEtLivePersonsList.add(mEtLivePerson);
+        }
+
     }
 
     private void initListener() {

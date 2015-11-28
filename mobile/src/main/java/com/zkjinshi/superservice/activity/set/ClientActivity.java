@@ -175,8 +175,9 @@ public class ClientActivity extends AppCompatActivity implements IMessageObserve
             public void onItemClick(View view, int postion) {
 
                 SortModel sortModel = mAllContactsList.get(postion);
-                final String clientId   = sortModel.getClientID();
-                final String clientName = sortModel.getName();
+                final String clientId    = sortModel.getClientID();
+                final String clientName  = sortModel.getName();
+                final String clientPhone = sortModel.getNumber();
 
                 if(mChooseOrderPerson){
                     final CustomExtDialog.Builder customExtBuilder = new CustomExtDialog.Builder(ClientActivity.this);
@@ -196,6 +197,7 @@ public class ClientActivity extends AppCompatActivity implements IMessageObserve
                             Intent data = new Intent();
                             data.putExtra("client_id", clientId);
                             data.putExtra("client_name", clientName);
+                            data.putExtra("client_phone", clientPhone);
 
                             dialog.dismiss();
                             ClientActivity.this.setResult(RESULT_OK, data);

@@ -1,5 +1,7 @@
 package com.zkjinshi.superservice.vo;
 
+import java.io.Serializable;
+
 /**
  * 联系人实体类
  * 开发者：vincent
@@ -7,7 +9,7 @@ package com.zkjinshi.superservice.vo;
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class ContactVo {
+public class ContactVo implements Serializable{
 
 	private long   contactID;
 	private String name;

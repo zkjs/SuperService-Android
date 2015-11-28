@@ -11,7 +11,6 @@ import java.io.Serializable;
  */
 public class PayBean implements Serializable {
 
-
     private int pay_id;
     private String pay_code;
     private String pay_name;

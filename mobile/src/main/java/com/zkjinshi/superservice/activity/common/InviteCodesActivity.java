@@ -130,7 +130,7 @@ public class InviteCodesActivity extends Activity {
 
         NetRequest netRequest = new NetRequest(ProtocolUtil.getEmpInviteCodeUrl());
         HashMap<String, String> bizMap = new HashMap<>();
-        bizMap.put("salesid", saiesID);
+            bizMap.put("salesid", saiesID);
         bizMap.put("token", token);
 
 //        bizMap.put("page", saiesID);

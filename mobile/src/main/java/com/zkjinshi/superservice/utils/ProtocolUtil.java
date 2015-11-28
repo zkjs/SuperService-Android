@@ -335,4 +335,20 @@ public class ProtocolUtil {
     public static String getGoodListUrl(String shopId){
         return ConfigUtil.getInst().getHttpDomain()+"order/goods?shopid="+shopId+"&page=1";
     }
+
+    /**
+     * 添加用户发票列表
+     * @return
+     */
+    public static String addTicketUrl(){
+        return ConfigUtil.getInst().getHttpDomain()+"user/fpadd";
+    }
+
+    /**
+     * 获取用户发票列表
+     * @return
+     */
+    public static String geTicketListUrl(){
+        return ConfigUtil.getInst().getHttpDomain()+"user/fplist";
+    }
 }
