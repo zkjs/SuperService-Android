@@ -21,8 +21,13 @@ import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.base.view.CustomDialog;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.adapter.InviteTeamAdapter;
+import com.zkjinshi.superservice.factory.EContactFactory;
 import com.zkjinshi.superservice.listener.RecyclerItemClickListener;
+import com.zkjinshi.superservice.sqlite.ClientDBUtil;
 import com.zkjinshi.superservice.sqlite.ShopEmployeeDBUtil;
+import com.zkjinshi.superservice.utils.CacheUtil;
+import com.zkjinshi.superservice.vo.ClientVo;
+import com.zkjinshi.superservice.vo.EContactVo;
 import com.zkjinshi.superservice.vo.ShopEmployeeVo;
 
 import java.util.ArrayList;
@@ -41,8 +46,8 @@ public class InviteTeamActivity extends Activity {
 
     public static final String TAG = InviteTeamActivity.class.getSimpleName();
 
-    private List<String> mCheckedList;
-    private List<ShopEmployeeVo> mCheckedEmployeeList;
+    private List<String> selectList;
+    private List<EContactVo> selectContactList;
     private RelativeLayout mRlBack;
     private TextView mTvTitle;
     private RecyclerView mRcvTeamContacts;
@@ -52,7 +57,9 @@ public class InviteTeamActivity extends Activity {
     private List<ShopEmployeeVo>    mShopEmployeeVos;
     private RelativeLayout createGroupLayout;
     private ShopEmployeeVo shopEmployeeVo;
-    private String empId;
+    private ClientVo clientVo;
+    private EContactVo contactVo;
+    private String contactId;
     private String shopEmployeeId;
     private Map<Integer, Boolean> checkedMap = new HashMap<Integer, Boolean>();
 
@@ -73,16 +80,19 @@ public class InviteTeamActivity extends Activity {
     }
 
     private void initData() {
-        mCheckedList = new ArrayList<String>();
-        mCheckedEmployeeList = new ArrayList<ShopEmployeeVo>();
-        if(null != getIntent() && null != getIntent().getSerializableExtra("shopEmployeeVo")){
-            shopEmployeeVo = (ShopEmployeeVo) getIntent().getSerializableExtra("shopEmployeeVo");
+        selectList = new ArrayList<String>();
+        selectContactList = new ArrayList<EContactVo>();
+        if(null != getIntent() && null != getIntent().getStringExtra("userId")){
+            contactId = getIntent().getStringExtra("userId");
+            shopEmployeeVo = ShopEmployeeDBUtil.getInstance().queryEmployeeById(contactId);
             if(null != shopEmployeeVo){
-                empId = shopEmployeeVo.getEmpid();
-                if(!TextUtils.isEmpty(empId)){
-                    mCheckedList.add(empId);
-                    mCheckedEmployeeList.add(shopEmployeeVo);
-                }
+                contactVo = EContactFactory.getInstance().buildEContactVo(shopEmployeeVo);
+                selectContactList.add(contactVo);
+            }
+            clientVo = ClientDBUtil.getInstance().queryClientByClientID(contactId);
+            if(null != clientVo){
+                contactVo = EContactFactory.getInstance().buildEContactVo(clientVo);
+                selectContactList.add(contactVo);
             }
         }
         mTvTitle.setText("团队");
@@ -96,7 +106,7 @@ public class InviteTeamActivity extends Activity {
                 shopEmployeeVo = mShopEmployeeVos.get(i);
                 if(null != shopEmployeeVo){
                     shopEmployeeId = shopEmployeeVo.getEmpid();
-                    if(!TextUtils.isEmpty(shopEmployeeId) && shopEmployeeId.equals(empId)){
+                    if(!TextUtils.isEmpty(shopEmployeeId) && shopEmployeeId.equals(contactId)){
                         checkedMap.put(i,true);
                     }
                 }
@@ -123,12 +133,13 @@ public class InviteTeamActivity extends Activity {
             public void onItemClick(View view, int postion) {
                 ShopEmployeeVo shopEmployeeVo = mShopEmployeeVos.get(postion);
                 String empID = shopEmployeeVo.getEmpid();
-                if (mCheckedList.contains(empID)) {
-                    mCheckedList.remove(empID);
-                    mCheckedEmployeeList.remove(shopEmployeeVo);
+                contactVo = EContactFactory.getInstance().buildEContactVo(shopEmployeeVo);
+                if (selectList.contains(empID)) {
+                    selectList.remove(empID);
+                    selectContactList.remove(contactVo);
                 } else {
-                    mCheckedList.add(empID);
-                    mCheckedEmployeeList.add(shopEmployeeVo);
+                    selectList.add(empID);
+                    selectContactList.add(contactVo);
                 }
             }
         });
@@ -158,9 +169,9 @@ public class InviteTeamActivity extends Activity {
             protected EMGroup doInBackground(Void... params) {
                 EMGroup emGroup = null;
                 try {
-                    if(null != mCheckedList && mCheckedList.size() >= 1){
-                        String[] members = convertList2Array(mCheckedList);
-                        String title = convertList2String(mCheckedEmployeeList);
+                    if(null != selectList && selectList.size() >= 1){
+                        String[] members = convertList2Array(selectList);
+                        String title = convertList2String(selectContactList);
                         emGroup = EMGroupManager.getInstance().createPrivateGroup(title, "内部私聊群", members, true);
                     }else {
                         DialogUtil.getInstance().showCustomToast(InviteTeamActivity.this,"至少要选择一个联系人",Gravity.CENTER);
@@ -197,15 +208,16 @@ public class InviteTeamActivity extends Activity {
 
     /**
      * 获取群标题
-     * @param shopEmployeeList
+     * @param contactList
      * @return
      */
-    private String convertList2String(List<ShopEmployeeVo> shopEmployeeList){
+    private String convertList2String(List<EContactVo> contactList){
         StringBuilder teamTitle = new StringBuilder();
-        for(ShopEmployeeVo shopEmployee : shopEmployeeList){
-            String employeeName = shopEmployee.getName();
+        for(EContactVo contactVo : contactList){
+            String employeeName = contactVo.getContactName();
             teamTitle.append(employeeName).append("、");
         }
+        teamTitle.append(CacheUtil.getInstance().getUserName()).append("、");
         if(!TextUtils.isEmpty(teamTitle)){
             teamTitle.deleteCharAt(teamTitle.length()-1);
         }

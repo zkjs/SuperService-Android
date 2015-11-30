@@ -15,7 +15,11 @@ import com.zkjinshi.base.util.DisplayUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.set.EmployeeInfoActivity;
 import com.zkjinshi.superservice.adapter.ChatDetailAdapter;
+import com.zkjinshi.superservice.factory.EContactFactory;
+import com.zkjinshi.superservice.sqlite.ClientDBUtil;
 import com.zkjinshi.superservice.sqlite.ShopEmployeeDBUtil;
+import com.zkjinshi.superservice.vo.ClientVo;
+import com.zkjinshi.superservice.vo.EContactVo;
 import com.zkjinshi.superservice.vo.ShopEmployeeVo;
 
 import java.util.ArrayList;
@@ -32,9 +36,11 @@ public class GroupDetailActivity extends Activity{
     private TextView titleTv;
     private ImageButton backIBtn;
     private ChatDetailAdapter chatDetailAdapter;
-    private ArrayList<ShopEmployeeVo> shopEmployeeList = new ArrayList<ShopEmployeeVo>();
+    private ArrayList<EContactVo> contactList = new ArrayList<EContactVo>();
     private String userId;
     private ShopEmployeeVo shopEmployeeVo;
+    private EContactVo contactVo;
+    private ClientVo clientVo;
     private GridView shopEmpGv;
 
     private void initView(){
@@ -50,10 +56,16 @@ public class GroupDetailActivity extends Activity{
             userId = getIntent().getStringExtra("userId");
             shopEmployeeVo = ShopEmployeeDBUtil.getInstance().queryEmployeeById(userId);
             if(null != shopEmployeeVo){
-                shopEmployeeList.add(shopEmployeeVo);
+                contactVo = EContactFactory.getInstance().buildEContactVo(shopEmployeeVo);
+                contactList.add(contactVo);
+            }
+            clientVo = ClientDBUtil.getInstance().queryClientByClientID(userId);
+            if(null != clientVo){
+                contactVo = EContactFactory.getInstance().buildEContactVo(clientVo);
+                contactList.add(contactVo);
             }
         }
-        chatDetailAdapter = new ChatDetailAdapter(this,shopEmployeeList);
+        chatDetailAdapter = new ChatDetailAdapter(this, contactList);
         shopEmpGv.setAdapter(chatDetailAdapter);
         setGridViewHeightBasedOnChildren(shopEmpGv);
     }
@@ -72,10 +84,10 @@ public class GroupDetailActivity extends Activity{
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (shopEmployeeList.size() < 12 && shopEmployeeList.size() == position || position == 11) {
+                if (contactList.size() < 12 && contactList.size() == position || position == 11) { //点击加号
                     Intent intent = new Intent(GroupDetailActivity.this, InviteTeamActivity.class);
-                    if (shopEmployeeList != null && shopEmployeeList.size() > 0)
-                        intent.putExtra("shopEmployeeVo", shopEmployeeList.get(0));
+                    if (contactList != null && contactList.size() > 0)
+                        intent.putExtra("shopEmployeeVo", contactList.get(0));
                     startActivity(intent);
                     overridePendingTransition(R.anim.slide_in_bottom,
                             R.anim.slide_out_top);

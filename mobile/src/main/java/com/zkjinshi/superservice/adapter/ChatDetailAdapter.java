@@ -12,7 +12,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.view.CircleImageView;
-import com.zkjinshi.superservice.vo.ShopEmployeeVo;
+import com.zkjinshi.superservice.vo.EContactVo;
 
 import java.util.ArrayList;
 
@@ -28,9 +28,9 @@ public class ChatDetailAdapter extends BaseAdapter {
     private DisplayImageOptions options;
     private Context context;
     private LayoutInflater inflater;
-    private ArrayList<ShopEmployeeVo> employeeList;
+    private ArrayList<EContactVo> contactList;
 
-    public ChatDetailAdapter(Context context,ArrayList<ShopEmployeeVo> employeeList) {
+    public ChatDetailAdapter(Context context,ArrayList<EContactVo> contactList) {
         this.context = context;
         this.options = new DisplayImageOptions.Builder()
                 .showImageOnLoading(R.drawable.ic_launcher)
@@ -38,26 +38,26 @@ public class ChatDetailAdapter extends BaseAdapter {
                 .cacheOnDisk(true)
                 .build();
         this.inflater = LayoutInflater.from(context);
-        this.setEmployeeList(employeeList);
+        this.setContactList(contactList);
     }
 
-    public void setEmployeeList(ArrayList<ShopEmployeeVo> employeeList){
-        if(null == employeeList){
-            this.employeeList = new ArrayList<ShopEmployeeVo>();
+    public void setContactList(ArrayList<EContactVo> contactList){
+        if(null == contactList){
+            this.contactList = new ArrayList<EContactVo>();
         }else{
-            this.employeeList = employeeList;
+            this.contactList = contactList;
         }
         notifyDataSetChanged();
     }
 
     @Override
     public int getCount() {
-        if (employeeList == null)
+        if (contactList == null)
             return 0;
-        else if (employeeList.size() + 1 > 12)
+        else if (contactList.size() + 1 > 12)
             return 12;
         else
-            return employeeList.size() + 1;
+            return contactList.size() + 1;
     }
 
     @Override
@@ -87,9 +87,9 @@ public class ChatDetailAdapter extends BaseAdapter {
             vh.iconIv.setImageResource(R.mipmap.ic_jiatouxiang);
             vh.nameTv.setText("添加");
         } else {
-            ShopEmployeeVo shopEmployeeVo = employeeList.get(position);
-            String userName = shopEmployeeVo.getName();
-            String userId = shopEmployeeVo.getEmpid();
+            EContactVo shopEmployeeVo = contactList.get(position);
+            String userName = shopEmployeeVo.getContactName();
+            String userId = shopEmployeeVo.getContactId();
             String url = ProtocolUtil.getAvatarUrl(userId);
             ImageLoader.getInstance().displayImage(url, vh.iconIv, options);
             vh.nameTv.setText(userName);
