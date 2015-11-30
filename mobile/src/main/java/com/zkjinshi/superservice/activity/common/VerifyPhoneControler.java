@@ -63,7 +63,7 @@ public class VerifyPhoneControler {
     private ImageView mImgPhoneStatus;
     private ImageView mImgVerifyStatus;
 
-    private Boolean   mSmsVerifySuccess = false;            //短信验证是否正确
+    private Boolean   mSmsVerifySuccess;            //短信验证是否正确
     private Map<String, String> mPhoneVerifyMap;//指定手机对应验证码
     private Map<String, Object>       mResultMap;
 
@@ -88,6 +88,7 @@ public class VerifyPhoneControler {
         this.context = context;
         this.activity = (Activity)context;
         mSmsCountSeconds = 60;
+        mSmsVerifySuccess = false;
 
         mInputPhone     = (EditText)    activity.findViewById(R.id.et_input_phone);
         mVerifyCode     = (EditText)    activity.findViewById(R.id.et_verify_code);
