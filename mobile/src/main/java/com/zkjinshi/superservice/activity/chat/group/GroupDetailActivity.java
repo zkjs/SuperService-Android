@@ -91,12 +91,6 @@ public class GroupDetailActivity extends Activity{
                     startActivity(intent);
                     overridePendingTransition(R.anim.slide_in_bottom,
                             R.anim.slide_out_top);
-                } else { //点击联系人头像
-                    Intent intent = new Intent(GroupDetailActivity.this, EmployeeInfoActivity.class);
-                    intent.putExtra("shop_employee", shopEmployeeVo);
-                    startActivity(intent);
-                    overridePendingTransition(R.anim.slide_in_right,
-                            R.anim.slide_out_left);
                 }
             }
         });

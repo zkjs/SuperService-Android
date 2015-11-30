@@ -43,6 +43,7 @@ public class ChatDetailActivity extends Activity{
     private EContactVo contactVo;
     private ClientVo clientVo;
     private GridView shopEmpGv;
+    private boolean addSucc;
 
     private void initView(){
         titleTv = (TextView)findViewById(R.id.header_bar_tv_title);
@@ -58,12 +59,16 @@ public class ChatDetailActivity extends Activity{
             shopEmployeeVo = ShopEmployeeDBUtil.getInstance().queryEmployeeById(userId);
             if(null != shopEmployeeVo){
                 contactVo = EContactFactory.getInstance().buildEContactVo(shopEmployeeVo);
-                contactList.add(contactVo);
+                if(!contactList.contains(contactVo)){
+                    addSucc = contactList.add(contactVo);
+                }
             }
             clientVo = ClientDBUtil.getInstance().queryClientByClientID(userId);
-            if(null != clientVo){
+            if(null != clientVo && !addSucc){
                 contactVo = EContactFactory.getInstance().buildEContactVo(clientVo);
-                contactList.add(contactVo);
+                if(!contactList.contains(contactVo)){
+                    contactList.add(contactVo);
+                }
             }
         }
         chatDetailAdapter = new ChatDetailAdapter(this, contactList);
