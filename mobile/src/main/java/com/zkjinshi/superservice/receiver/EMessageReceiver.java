@@ -49,6 +49,8 @@ public class EMessageReceiver extends BroadcastReceiver {
                     NotificationHelper.getInstance().showNotification(context, clientBase, datetime);
                 }else if(action.equals("com.zkjinshi.superservice.CONNECTION_CONFLICT")){
                     showOfflineDialog(context);
+                    //提示用户邀请码被绑定
+                    NotificationHelper.getInstance().showExitAccountNotification(context);
                 }
             }
         }

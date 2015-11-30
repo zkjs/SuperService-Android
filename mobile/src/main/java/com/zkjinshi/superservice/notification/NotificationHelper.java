@@ -20,6 +20,7 @@ import com.zkjinshi.base.util.TimeUtil;
 import com.zkjinshi.base.util.VibratorHelper;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.chat.single.ChatActivity;
+import com.zkjinshi.superservice.activity.common.LoginActivity;
 import com.zkjinshi.superservice.activity.common.MainActivity;
 import com.zkjinshi.superservice.activity.common.SplashActivity;
 import com.zkjinshi.superservice.bean.ClientBaseBean;
@@ -31,6 +32,9 @@ import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.vo.MessageVo;
 import com.zkjinshi.superservice.vo.MimeType;
 import com.zkjinshi.superservice.vo.TxtExtType;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * 消息通知帮助类
@@ -248,6 +252,39 @@ public class NotificationHelper {
         notificationBuilder.setDefaults(Notification.DEFAULT_ALL);
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(
                                                                                context);
+        notificationManager.notify(++NOTIFY_ID, notificationBuilder.build());
+    }
+
+    /**
+     * 通知提示:客户退出当前账户
+     * @param context
+     */
+    public void showExitAccountNotification(Context context) {
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+        NotificationCompat.Builder notificationBuilder = null;
+        // 1.设置显示信息
+        notificationBuilder = new NotificationCompat.Builder(context);
+        String content = "您的账号于" + sdf.format(new Date()) + "在另一台设备登录";
+        notificationBuilder.setContentTitle("下线通知");
+        notificationBuilder.setContentText(content);
+        notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
+
+        String userID    = CacheUtil.getInstance().getUserId();
+        String avatarUrl = ProtocolUtil.getAvatarUrl(userID);
+        Bitmap bitmap    = ImageLoader.getInstance().loadImageSync(avatarUrl);
+        notificationBuilder.setLargeIcon(bitmap);
+
+        // 2.设置点击跳转事件
+        Intent intent = new Intent(context, LoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+        notificationBuilder.setContentIntent(pendingIntent);
+
+        // 3.设置通知栏其他属性
+        notificationBuilder.setAutoCancel(true);
+        notificationBuilder.setDefaults(Notification.DEFAULT_ALL);
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(
+                context);
         notificationManager.notify(++NOTIFY_ID, notificationBuilder.build());
     }
 

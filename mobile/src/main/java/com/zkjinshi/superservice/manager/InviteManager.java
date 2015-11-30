@@ -3,10 +3,24 @@ package com.zkjinshi.superservice.manager;
 import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
+import android.util.Log;
+
 import com.easemob.EMNotifierEvent;
 import com.easemob.chat.CmdMessageBody;
 import com.easemob.chat.EMMessage;
 import com.easemob.exceptions.EaseMobException;
+import com.google.gson.Gson;
+import com.zkjinshi.base.util.DialogUtil;
+import com.zkjinshi.superservice.activity.set.ClientController;
+import com.zkjinshi.superservice.bean.ClientDetailBean;
+import com.zkjinshi.superservice.factory.ClientFactory;
+import com.zkjinshi.superservice.net.ExtNetRequestListener;
+import com.zkjinshi.superservice.net.NetResponse;
+import com.zkjinshi.superservice.sqlite.ClientDBUtil;
+import com.zkjinshi.superservice.utils.CacheUtil;
+import com.zkjinshi.superservice.vo.ClientVo;
+
+import ytx.org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 
 /**
  * 邀请加入管理器
@@ -52,6 +66,49 @@ public class InviteManager {
                             intent.putExtra("date",Long.parseLong(date));
                         }
                         context.sendBroadcast(intent);
+                        //添加客户到本地数据库
+                        ClientVo clientVo = new ClientVo();
+                        clientVo.setUserid(userId);
+                        clientVo.setUsername(userName);
+                        clientVo.setPhone(mobileNo);
+                        ClientDBUtil.getInstance().addClient(clientVo);
+
+//                        ClientController.getInstance().getClientDetail(
+//                                context,
+//                                CacheUtil.getInstance().getUserId(),
+//                                CacheUtil.getInstance().getToken(),
+//                                CacheUtil.getInstance().getShopID(),
+//                                mobileNo,
+//                                new ExtNetRequestListener(context) {
+//                                    @Override
+//                                    public void onNetworkRequestError(int errorCode, String errorMessage) {
+//                                        Log.i(TAG, "errorCode:" + errorCode);
+//                                        Log.i(TAG, "errorMessage:" + errorMessage);
+//                                    }
+//
+//                                    @Override
+//                                    public void onNetworkRequestCancelled() {
+//                                    }
+//
+//                                    @Override
+//                                    public void onNetworkResponseSucceed(NetResponse result) {
+//                                        Log.i(TAG, "result.rawResult:" + result.rawResult);
+//                                        DialogUtil.getInstance().cancelProgressDialog();
+//                                        String jsonResult = result.rawResult;
+//                                        if (jsonResult.contains("false") || jsonResult.trim().contains("err")) {
+//                                        } else {
+//                                            Gson gson = new Gson();
+//                                            ClientDetailBean clientDetail = gson.fromJson(jsonResult, ClientDetailBean.class);
+//                                            ClientVo clientVo = ClientFactory.getInstance().convertClientDetailBean2ClientVO(clientDetail);
+//                                            ClientDBUtil.getInstance().addClient(clientVo);
+//                                        }
+//                                    }
+//
+//                                    @Override
+//                                    public void beforeNetworkRequestStart() {
+//                                        //网络请求前
+//                                    }
+//                                });
                     }
                 } catch (EaseMobException e) {
                     e.printStackTrace();

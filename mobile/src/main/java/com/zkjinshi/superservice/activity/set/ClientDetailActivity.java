@@ -24,16 +24,12 @@ import com.zkjinshi.superservice.activity.chat.single.ChatActivity;
 import com.zkjinshi.superservice.bean.ClientDetailBean;
 import com.zkjinshi.superservice.bean.ClientTag;
 import com.zkjinshi.superservice.net.ExtNetRequestListener;
-import com.zkjinshi.superservice.net.MethodType;
-import com.zkjinshi.superservice.net.NetRequest;
-import com.zkjinshi.superservice.net.NetRequestTask;
 import com.zkjinshi.superservice.net.NetResponse;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.view.CircleImageView;
 
-import java.util.HashMap;
 import java.util.List;
 
 import me.kaede.tagview.OnTagClickListener;
@@ -55,9 +51,9 @@ public class ClientDetailActivity extends Activity {
     private String      mUserID;
     private String      mToken;
     private String      mShopID;
-    private String shopName;
-    private String clientId;
-    private String clientName;
+    private String      shopName;
+    private String      clientId;
+    private String      clientName;
 
     private ScrollView     mSvClientDetail;
     private RelativeLayout mRlBack;
@@ -123,58 +119,57 @@ public class ClientDetailActivity extends Activity {
         mShopID = CacheUtil.getInstance().getShopID();
         shopName = CacheUtil.getInstance().getShopFullName();
 
-        DialogUtil.getInstance().showProgressDialog(ClientDetailActivity.this);
-        getClientDetail(mPhoneNumber);
+        //非空判断
+        if(!TextUtils.isEmpty(mPhoneNumber) && !TextUtils.isEmpty(mUserID) &&
+           !TextUtils.isEmpty(mToken) && !TextUtils.isEmpty(mShopID)){
+            getClientDetail();
+        }
+
     }
 
-    private void getClientDetail(String mPhoneNumber) {
-        NetRequest netRequest = new NetRequest(ProtocolUtil.getClientDetailUrl());
-        HashMap<String,String> bizMap = new HashMap<>();
-        bizMap.put("empid", mUserID);
-        bizMap.put("token", mToken);
-        bizMap.put("shopid", mShopID);
-        bizMap.put("phone", mPhoneNumber);
-        netRequest.setBizParamMap(bizMap);
-        NetRequestTask netRequestTask = new NetRequestTask(this, netRequest, NetResponse.class);
-        netRequestTask.methodType = MethodType.PUSH;
-        netRequestTask.setNetRequestListener(new ExtNetRequestListener(this) {
-            @Override
-            public void onNetworkRequestError(int errorCode, String errorMessage) {
-                Log.i(TAG, "errorCode:" + errorCode);
-                Log.i(TAG, "errorMessage:" + errorMessage);
+    private void getClientDetail() {
+        ClientController.getInstance().getClientDetail(
+            ClientDetailActivity.this,
+            mUserID,
+            mToken,
+            mShopID,
+            mPhoneNumber,
+            new ExtNetRequestListener(this) {
+                @Override
+                public void onNetworkRequestError(int errorCode, String errorMessage) {
+                    Log.i(TAG, "errorCode:" + errorCode);
+                    Log.i(TAG, "errorMessage:" + errorMessage);
 
-                //网络请求异常
-                DialogUtil.getInstance().cancelProgressDialog();
-                ClientDetailActivity.this.finish();
-                DialogUtil.getInstance().showToast(ClientDetailActivity.this, "网络异常");
-            }
-
-            @Override
-            public void onNetworkRequestCancelled() {
-                DialogUtil.getInstance().cancelProgressDialog();
-            }
-
-            @Override
-            public void onNetworkResponseSucceed(NetResponse result) {
-                Log.i(TAG, "result.rawResult:" + result.rawResult);
-                DialogUtil.getInstance().cancelProgressDialog();
-                String jsonResult = result.rawResult;
-                if (jsonResult.contains("false") || jsonResult.trim().contains("err")) {
-                    DialogUtil.getInstance().showToast(ClientDetailActivity.this, "验证不通过，请退出后重新登录。");
-                } else {
-                    Gson gson = new Gson();
-                    mClient = gson.fromJson(jsonResult, ClientDetailBean.class);
-                    showClient(mClient);
+                    //网络请求异常
+                    DialogUtil.getInstance().cancelProgressDialog();
+                    ClientDetailActivity.this.finish();
+                    DialogUtil.getInstance().showToast(ClientDetailActivity.this, "网络异常");
                 }
-            }
 
-            @Override
-            public void beforeNetworkRequestStart() {
-                //网络请求前
-            }
-        });
-        netRequestTask.isShowLoadingDialog = true;
-        netRequestTask.execute();
+                @Override
+                public void onNetworkRequestCancelled() {
+                    DialogUtil.getInstance().cancelProgressDialog();
+                }
+
+                @Override
+                public void onNetworkResponseSucceed(NetResponse result) {
+                    Log.i(TAG, "result.rawResult:" + result.rawResult);
+                    DialogUtil.getInstance().cancelProgressDialog();
+                    String jsonResult = result.rawResult;
+                    if (jsonResult.contains("false") || jsonResult.trim().contains("err")) {
+                        DialogUtil.getInstance().showToast(ClientDetailActivity.this, "验证不通过，请退出后重新登录。");
+                    } else {
+                        Gson gson = new Gson();
+                        mClient = gson.fromJson(jsonResult, ClientDetailBean.class);
+                        showClient(mClient);
+                    }
+                }
+
+                @Override
+                public void beforeNetworkRequestStart() {
+                    //网络请求前
+                }
+            });
     }
 
     /**
