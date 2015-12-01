@@ -427,7 +427,7 @@ public class GroupDetailActivity extends Activity{
     }
 
     /**
-     * 清空聊天记录
+     * 解散该团队
      * @param groupId
      */
     private void showExitAndDeleteDialog(final String groupId){
