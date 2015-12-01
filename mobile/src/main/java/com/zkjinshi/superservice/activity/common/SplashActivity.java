@@ -10,22 +10,18 @@ import android.util.Log;
 import android.view.Gravity;
 
 import com.google.gson.Gson;
-import com.zkjinshi.base.log.LogLevel;
-import com.zkjinshi.base.log.LogUtil;
 import com.zkjinshi.base.util.NetWorkUtil;
 import com.zkjinshi.base.view.CustomDialog;
 import com.zkjinshi.superservice.R;
-
 import com.zkjinshi.superservice.activity.set.TeamContactsController;
 import com.zkjinshi.superservice.bean.AdminLoginBean;
 import com.zkjinshi.superservice.bean.SempLoginBean;
 import com.zkjinshi.superservice.factory.UserFactory;
-import com.zkjinshi.superservice.net.NetRequestListener;
+import com.zkjinshi.superservice.net.ExtNetRequestListener;
 import com.zkjinshi.superservice.net.NetResponse;
 import com.zkjinshi.superservice.sqlite.DBOpenHelper;
 import com.zkjinshi.superservice.sqlite.UserDBUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
-
 import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.utils.MD5Util;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
@@ -81,7 +77,11 @@ public class SplashActivity extends Activity{
     private void silentProcessData(){
         LoginController.getInstance().init(this);
         if(IdentityType.BUSINESS ==  CacheUtil.getInstance().getLoginIdentity()){
-            LoginController.getInstance().requestAdminLogin(CacheUtil.getInstance().getUserPhone(), MD5Util.MD5(CacheUtil.getInstance().getPassword()),false,new NetRequestListener() {
+            LoginController.getInstance().requestAdminLogin(
+                CacheUtil.getInstance().getUserPhone(),
+                MD5Util.MD5(CacheUtil.getInstance().getPassword()),
+                false,
+                new ExtNetRequestListener() {
                 @Override
                 public void onNetworkRequestError(int errorCode, String errorMessage) {
                     Log.i(TAG, "errorCode:" + errorCode);
@@ -129,7 +129,10 @@ public class SplashActivity extends Activity{
                 }
             });
         }else{
-            LoginController.getInstance().requestLogin(CacheUtil.getInstance().getUserPhone(),false,new NetRequestListener() {
+            LoginController.getInstance().requestLogin(
+                CacheUtil.getInstance().getUserPhone(),
+                false,
+                new ExtNetRequestListener() {
                 @Override
                 public void onNetworkRequestError(int errorCode, String errorMessage) {
                     Log.i(TAG, "errorCode:" + errorCode);

@@ -29,7 +29,7 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.bean.UserCallVo;
-import com.zkjinshi.superservice.net.NetRequestListener;
+import com.zkjinshi.superservice.net.ExtNetRequestListener;
 import com.zkjinshi.superservice.net.NetResponse;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.view.CircleImageView;
@@ -157,7 +157,7 @@ public class VoiceCallActivity extends CallActivity implements View.OnClickListe
             ringtone.play();
         }
         if(isInComingCall){
-            requestUserTask(this, username, new NetRequestListener() {
+            requestUserTask(this, username, new ExtNetRequestListener() {
                 @Override
                 public void onNetworkRequestError(int errorCode, String errorMessage) {
                     Log.i(TAG,"errorCode:"+errorCode);

@@ -31,11 +31,13 @@ import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.bean.UserCallVo;
-import com.zkjinshi.superservice.net.NetRequestListener;
+import com.zkjinshi.superservice.net.ExtNetRequestListener;
 import com.zkjinshi.superservice.net.NetResponse;
-import com.zkjinshi.superservice.utils.CameraHelper;;
+import com.zkjinshi.superservice.utils.CameraHelper;
 
 import java.util.UUID;
+
+;
 
 /**
  * 开发者：JimmyZhang
@@ -177,7 +179,7 @@ public class VideoCallActivity extends CallActivity implements View.OnClickListe
         }
 
         if(isInComingCall){
-            requestUserTask(this, username, new NetRequestListener() {
+            requestUserTask(this, username, new ExtNetRequestListener() {
                 @Override
                 public void onNetworkRequestError(int errorCode, String errorMessage) {
                     Log.i(TAG, "errorCode:" + errorCode);
