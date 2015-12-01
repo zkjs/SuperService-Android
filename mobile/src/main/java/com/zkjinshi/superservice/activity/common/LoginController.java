@@ -6,11 +6,9 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.zkjinshi.base.log.LogLevel;
-import com.zkjinshi.base.log.LogUtil;
+import com.zkjinshi.superservice.net.ExtNetRequestListener;
 import com.zkjinshi.superservice.net.MethodType;
 import com.zkjinshi.superservice.net.NetRequest;
-import com.zkjinshi.superservice.net.NetRequestListener;
 import com.zkjinshi.superservice.net.NetRequestTask;
 import com.zkjinshi.superservice.net.NetResponse;
 import com.zkjinshi.superservice.sqlite.ShopDepartmentDBUtil;
@@ -53,7 +51,7 @@ public class LoginController {
      * 服务员请求登录
      * @param phone
      */
-    public void requestLogin(final String phone,boolean isLoading,NetRequestListener netRequestListener){
+    public void requestLogin(final String phone, boolean isLoading, ExtNetRequestListener netRequestListener){
         NetRequest netRequest = new NetRequest(ProtocolUtil.getSempLoginUrl());
         HashMap<String,String> bizMap = new HashMap<String,String>();
         bizMap.put("phone", phone);
@@ -71,7 +69,7 @@ public class LoginController {
      * 管理员请求登录
      * @param phone
      */
-    public void requestAdminLogin(final String phone,final String password,boolean isLoading,NetRequestListener netRequestListener){
+    public void requestAdminLogin(final String phone, final String password, boolean isLoading, ExtNetRequestListener netRequestListener){
         String url = ProtocolUtil.getAdminLoginUrl();
         Log.i(TAG, url);
         NetRequest netRequest = new NetRequest(url);
@@ -103,7 +101,7 @@ public class LoginController {
         netRequest.setBizParamMap(bizMap);
         NetRequestTask netRequestTask = new NetRequestTask(context, netRequest, NetResponse.class);
         netRequestTask.methodType = MethodType.PUSH;
-        netRequestTask.setNetRequestListener(new NetRequestListener() {
+        netRequestTask.setNetRequestListener(new ExtNetRequestListener() {
             @Override
             public void onNetworkRequestError(int errorCode, String errorMessage) {
                 Log.i(TAG, "errorCode:" + errorCode);

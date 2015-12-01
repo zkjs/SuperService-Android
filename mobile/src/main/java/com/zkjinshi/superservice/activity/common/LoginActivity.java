@@ -11,8 +11,6 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.google.gson.Gson;
-import com.zkjinshi.base.log.LogLevel;
-import com.zkjinshi.base.log.LogUtil;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.set.ClientController;
@@ -20,7 +18,6 @@ import com.zkjinshi.superservice.activity.set.TeamContactsController;
 import com.zkjinshi.superservice.bean.SempLoginBean;
 import com.zkjinshi.superservice.factory.UserFactory;
 import com.zkjinshi.superservice.net.ExtNetRequestListener;
-import com.zkjinshi.superservice.net.NetRequestListener;
 import com.zkjinshi.superservice.net.NetResponse;
 import com.zkjinshi.superservice.sqlite.DBOpenHelper;
 import com.zkjinshi.superservice.sqlite.UserDBUtil;
@@ -103,7 +100,7 @@ public class LoginActivity extends Activity implements VerifyPhoneControler.Succ
             return;
         }
         //LogUtil.getInstance().info(LogLevel.INFO,"服务员开始登陆。。。");
-        LoginController.getInstance().requestLogin(phone,true,new NetRequestListener() {
+        LoginController.getInstance().requestLogin(phone, true, new ExtNetRequestListener() {
             @Override
             public void onNetworkRequestError(int errorCode, String errorMessage) {
                 Log.i(TAG, "errorCode:" + errorCode);

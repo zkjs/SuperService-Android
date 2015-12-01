@@ -1,17 +1,14 @@
 package com.zkjinshi.superservice.activity.order;
 
 import android.app.Activity;
-
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
-
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
-
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -23,13 +20,11 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.zkjinshi.base.util.DeviceUtils;
 import com.zkjinshi.superservice.R;
-
 import com.zkjinshi.superservice.adapter.GoodAdapter;
-
 import com.zkjinshi.superservice.bean.GoodBean;
+import com.zkjinshi.superservice.net.ExtNetRequestListener;
 import com.zkjinshi.superservice.net.MethodType;
 import com.zkjinshi.superservice.net.NetRequest;
-import com.zkjinshi.superservice.net.NetRequestListener;
 import com.zkjinshi.superservice.net.NetRequestTask;
 import com.zkjinshi.superservice.net.NetResponse;
 import com.zkjinshi.superservice.sqlite.DBOpenHelper;
@@ -40,7 +35,6 @@ import com.zkjinshi.superservice.view.RefreshLayout;
 import com.zkjinshi.superservice.vo.UserVo;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * 确定房型页面
@@ -144,7 +138,7 @@ public class OrderGoodsActivity extends Activity implements AdapterView.OnItemCl
         NetRequest netRequest = new NetRequest(ProtocolUtil.getGoodslistUrl(userVo.getShopId()));
         NetRequestTask netRequestTask = new NetRequestTask(this,netRequest, NetResponse.class);
         netRequestTask.methodType = MethodType.GET;
-        netRequestTask.setNetRequestListener(new NetRequestListener() {
+        netRequestTask.setNetRequestListener(new ExtNetRequestListener() {
             @Override
             public void onNetworkRequestError(int errorCode, String errorMessage) {
                 Log.i(TAG, "errorCode:" + errorCode);

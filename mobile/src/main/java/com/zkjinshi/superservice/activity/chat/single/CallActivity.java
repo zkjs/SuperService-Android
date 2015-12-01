@@ -13,9 +13,9 @@ import com.easemob.chat.EMChatManager;
 import com.easemob.chat.EMMessage;
 import com.easemob.chat.TextMessageBody;
 import com.zkjinshi.superservice.R;
+import com.zkjinshi.superservice.net.ExtNetRequestListener;
 import com.zkjinshi.superservice.net.MethodType;
 import com.zkjinshi.superservice.net.NetRequest;
-import com.zkjinshi.superservice.net.NetRequestListener;
 import com.zkjinshi.superservice.net.NetRequestTask;
 import com.zkjinshi.superservice.net.NetResponse;
 import com.zkjinshi.superservice.utils.CacheUtil;
@@ -219,7 +219,7 @@ public class CallActivity extends FragmentActivity {
      * @param userId
      * @param netRequestListener
      */
-    protected void requestUserTask(final Context context,String userId,NetRequestListener netRequestListener){
+    protected void requestUserTask(final Context context, String userId, ExtNetRequestListener netRequestListener){
         HashMap<String,String> bizMap = new HashMap<>();
         bizMap.put("salesid",CacheUtil.getInstance().getUserId());
         bizMap.put("token",CacheUtil.getInstance().getToken());
