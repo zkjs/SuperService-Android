@@ -33,6 +33,7 @@ import com.zkjinshi.superservice.sqlite.UserDBUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.view.CircleStatusView;
+import com.zkjinshi.superservice.vo.IdentityType;
 import com.zkjinshi.superservice.vo.UserVo;
 
 import java.util.ArrayList;
@@ -56,7 +57,8 @@ public class OrderFragment extends Fragment{
     private SwipeRefreshLayout swipeRefreshLayout;
     private OrderAdapter orderAdapter;
     private OrderMoreAdapter orderMoreAdapter;
-    private TextView timeTips;
+    private TextView timeTips,emptyTips;
+    private View emptyLayout,moreLayout;
 
 
     public static OrderFragment newInstance() {
@@ -64,6 +66,10 @@ public class OrderFragment extends Fragment{
     }
 
     private void initView(View view){
+        emptyLayout = view.findViewById(R.id.empty_layout);
+        moreLayout = view.findViewById(R.id.more_layout);
+        emptyTips = (TextView) view.findViewById(R.id.empty_tips);
+        emptyTips.setText("暂无订单");
         rcyOrder = (RecyclerView) view.findViewById(R.id.rcv_order);
         rcyOrderMore = (RecyclerView)view.findViewById(R.id.rcv_order_done);
 
@@ -138,6 +144,7 @@ public class OrderFragment extends Fragment{
 
     private void loadOrderList(final long lastTimeStamp) {
         String url = ProtocolUtil.getSempOrderUrl();
+
         Log.i(TAG,url);
         NetRequest netRequest = new NetRequest(url);
         HashMap<String,String> bizMap = new HashMap<String,String>();
@@ -145,6 +152,11 @@ public class OrderFragment extends Fragment{
         bizMap.put("token",CacheUtil.getInstance().getToken());
         bizMap.put("shopid",CacheUtil.getInstance().getShopID());
         bizMap.put("status","0,1,2,3,4,5");
+        if(CacheUtil.getInstance().getLoginIdentity()== IdentityType.WAITER){
+            //bizMap.put("status","0,1,2,3,4,5");
+        }else{
+           // bizMap.put("status","0,1,2,3,4,5");
+        }
         if(lastTimeStamp == 0){
             bizMap.put("page","1");
         }else{
@@ -169,6 +181,7 @@ public class OrderFragment extends Fragment{
 
             @Override
             public void onNetworkResponseSucceed(NetResponse result) {
+                super.onNetworkResponseSucceed(result);
                 Log.i(TAG, "result.rawResult:" + result.rawResult);
                 try{
                     ArrayList<OrderBean> orderList = new Gson().fromJson(result.rawResult, new TypeToken< ArrayList<OrderBean>>(){}.getType());
@@ -176,6 +189,13 @@ public class OrderFragment extends Fragment{
                     if(lastTimeStamp == 0){
                         ArrayList<OrderBean> upList = getUpList(orderList);
                         orderAdapter.refreshingAction(upList);
+                        if(orderAdapter.dataList.size() > 0){
+                            emptyLayout.setVisibility(View.GONE);
+                            moreLayout.setVisibility(View.VISIBLE);
+                        }else{
+                            emptyLayout.setVisibility(View.VISIBLE);
+                            moreLayout.setVisibility(View.GONE);
+                        }
 
                         ArrayList<OrderBean> downList = getDownList(orderList);
                         orderMoreAdapter.refreshingAction(downList);
@@ -195,15 +215,8 @@ public class OrderFragment extends Fragment{
                     }
                 }catch (Exception e){
                     Log.e(TAG,e.getMessage());
-                    BaseBean baseBean = new Gson().fromJson(result.rawResult,BaseBean.class);
-                    if(baseBean!= null && baseBean.isSet() && baseBean.getErr().equals("400")){
-                        DialogUtil.getInstance().showToast(getActivity(),"Token 失效，请重新登录");
-                        CacheUtil.getInstance().setLogin(false);
-                        Intent intent = new Intent(getActivity(),LoginActivity.class);
-                        getActivity().startActivity(intent);
-                        getActivity().finish();
-
-                    }
+                    emptyLayout.setVisibility(View.VISIBLE);
+                    moreLayout.setVisibility(View.GONE);
                 }
 
             }

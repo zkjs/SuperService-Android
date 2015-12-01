@@ -2,6 +2,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#efefef">
+    <include
+        android:id="@+id/empty_layout"
+        layout="@layout/empty_layout"
+        android:visibility="visible" />
 
     <include
         android:id="@+id/online_layout"
@@ -12,6 +16,8 @@
         android:layout_marginBottom="12dp"
         android:layout_marginTop="16dp"
         android:layout_height="125dp"/>
+
+
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/srl_notice"
@@ -39,7 +45,8 @@
         android:layout_width="match_parent"
         android:gravity="center_vertical"
         android:layout_height="137dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:id="@+id/more_layout">
 
         <FrameLayout
             android:layout_width="35dp"

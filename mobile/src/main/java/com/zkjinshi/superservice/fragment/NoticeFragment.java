@@ -81,6 +81,9 @@ public class NoticeFragment extends Fragment implements IMessageObserver{
     private LinearLayout onlineLayout;
     private int totalEmpCount,onlineEmpCout;
 
+    private TextView emptyTips;
+    private View emptyLayout,moreLayout;
+
     public static NoticeFragment newInstance() {
         return new NoticeFragment();
     }
@@ -94,6 +97,12 @@ public class NoticeFragment extends Fragment implements IMessageObserver{
     }
 
     private void initView(View view){
+        emptyLayout = view.findViewById(R.id.empty_layout);
+        moreLayout = view.findViewById(R.id.more_layout);
+        emptyTips = (TextView) view.findViewById(R.id.empty_tips);
+        emptyTips.setText("暂无到店通知");
+        moreLayout.setVisibility(View.GONE);
+
         totoalEmployeeTv = (TextView)view.findViewById(R.id.notice_tv_total_employee);
         currentOnlineEmployeeTv = (TextView)view.findViewById(R.id.notice_tv_current_online_employee);
         onlineLayout = (LinearLayout)view.findViewById(R.id.online_layout);
@@ -325,6 +334,8 @@ public class NoticeFragment extends Fragment implements IMessageObserver{
                                             getActivity().runOnUiThread(new Runnable() {
                                                 @Override
                                                 public void run() {
+                                                    emptyLayout.setVisibility(View.GONE);
+                                                    moreLayout.setVisibility(View.VISIBLE);
                                                     mNotificationAdapter.setComingList(notifyComingList);
                                                 }
                                             });
@@ -377,6 +388,13 @@ public class NoticeFragment extends Fragment implements IMessageObserver{
                 removeRange(requestComingList, NOTICE_PAGE_SIZE, requestComingList.size());
             }else{
                 moreComingList = new ArrayList<ComingVo>();
+            }
+            if(requestComingList.size() > 0){
+                emptyLayout.setVisibility(View.GONE);
+                moreLayout.setVisibility(View.VISIBLE);
+            }else{
+                emptyLayout.setVisibility(View.VISIBLE);
+                moreLayout.setVisibility(View.GONE);
             }
             notifyComingList.addAll(requestComingList);
             mNotificationAdapter.setComingList(notifyComingList);

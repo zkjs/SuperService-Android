@@ -4,6 +4,11 @@
     tools:context=".MainActivity"
     android:background="@android:color/white">
 
+    <include
+        android:id="@+id/empty_layout"
+        layout="@layout/empty_layout"
+        android:visibility="visible" />
+
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/srl_message"
         android:layout_width="match_parent"

@@ -46,7 +46,7 @@ public class OrderAdapter extends RecyclerView.Adapter {
     private long lastTimeStamp = 0; //最后一条的时间戳
     private int pagedata = 5;     //每页多少条 默认10条
 
-    private ArrayList<OrderBean> dataList;
+    public ArrayList<OrderBean> dataList;
     private Context context;
 
     public int getPagedata() {

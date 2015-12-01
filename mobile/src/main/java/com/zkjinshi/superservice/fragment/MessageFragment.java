@@ -12,6 +12,8 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+
 import com.easemob.EMNotifierEvent;
 import com.easemob.chat.EMConversation;
 import com.easemob.chat.EMMessage;
@@ -43,12 +45,17 @@ public class MessageFragment extends Fragment implements IEMessageObserver {
     private ArrayList<EMConversation> conversationList;
     private LinearLayoutManager linearLayoutManager;
     private SwipeRefreshLayout swipeRefreshLayout;
+    private View emptyLayout;
+    private TextView emptyTips;
 
     public static MessageFragment newInstance() {
         return new MessageFragment();
     }
 
     private void initView(View view){
+        emptyLayout = view.findViewById(R.id.empty_layout);
+        emptyTips = (TextView) view.findViewById(R.id.empty_tips);
+        emptyTips.setText("暂无消息通知");
         messageRCV = (RecyclerView)view.findViewById(R.id.rcv_message);
         swipeRefreshLayout = (SwipeRefreshLayout)view.findViewById(R.id.srl_message);
     }
@@ -145,6 +152,11 @@ public class MessageFragment extends Fragment implements IEMessageObserver {
         super.onResume();
         conversationList = (ArrayList<EMConversation>) EMConversationHelper.getInstance().loadConversationList();
         messageAdapter.setConversationList(conversationList);
+        if(conversationList.size() > 0){
+            emptyLayout.setVisibility(View.GONE);
+        }else{
+            emptyLayout.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -162,6 +174,11 @@ public class MessageFragment extends Fragment implements IEMessageObserver {
             public void run() {
                 conversationList.clear();
                 conversationList.addAll(EMConversationHelper.getInstance().loadConversationList());
+                if(conversationList.size() > 0){
+                    emptyLayout.setVisibility(View.GONE);
+                }else{
+                    emptyLayout.setVisibility(View.VISIBLE);
+                }
                 messageAdapter.setConversationList(conversationList);
             }
         });
