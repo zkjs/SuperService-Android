@@ -13,8 +13,7 @@ import android.widget.TextView;
 
 import com.zkjinshi.base.util.DisplayUtil;
 import com.zkjinshi.superservice.R;
-import com.zkjinshi.superservice.activity.chat.group.InviteTeamActivity;
-import com.zkjinshi.superservice.activity.set.EmployeeInfoActivity;
+import com.zkjinshi.superservice.activity.chat.group.CreateGroupActivity;
 import com.zkjinshi.superservice.adapter.ChatDetailAdapter;
 import com.zkjinshi.superservice.factory.EContactFactory;
 import com.zkjinshi.superservice.sqlite.ClientDBUtil;
@@ -91,7 +90,7 @@ public class ChatDetailActivity extends Activity{
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (contactList.size() < 12 && contactList.size() == position || position == 11) { //点击加号
-                    Intent intent = new Intent(ChatDetailActivity.this, InviteTeamActivity.class);
+                    Intent intent = new Intent(ChatDetailActivity.this, CreateGroupActivity.class);
                     if (contactList != null && contactList.size() > 0){}
                         intent.putExtra("userId", contactList.get(0).getContactId());
                     startActivity(intent);

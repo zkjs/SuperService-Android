@@ -17,6 +17,7 @@
             android:orientation="vertical">
 
             <GridView
+                android:id="@+id/chat_group_detail_gv_contacts"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
@@ -44,9 +45,10 @@
                     android:gravity="center"/>
 
                 <TextView
+                    android:id="@+id/chat_group_detail_tv_group_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="中科金石"
+                    android:text="@null"
                     android:textSize="12sp"
                     android:layout_centerVertical="true"
                     android:layout_alignParentRight="true"
@@ -59,8 +61,10 @@
             </RelativeLayout>
 
             <RelativeLayout
+                android:id="@+id/chat_group_detail_layout_block_group_message"
                 android:layout_width="match_parent"
                 android:background="@drawable/bg_layout_item_selector"
+                android:clickable="true"
                 android:layout_marginTop="10dp"
                 android:layout_height="45dp">
 
@@ -75,6 +79,7 @@
                     android:gravity="center"/>
 
                 <CheckBox
+                    android:id="@+id/chat_group_detail_cb_block_group_message"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
@@ -119,6 +124,7 @@
             </RelativeLayout>
 
             <RelativeLayout
+                android:id="@+id/chat_group_detail_layout_clear_history"
                 android:layout_width="match_parent"
                 android:background="@drawable/bg_layout_item_selector"
                 android:layout_marginTop="10dp"
@@ -137,12 +143,27 @@
             </RelativeLayout>
 
             <Button
+                android:id="@+id/chat_group_detail_btn_dissolve_group"
                 android:layout_width="match_parent"
                 android:layout_marginTop="45dp"
                 android:layout_marginLeft="15dp"
                 android:layout_marginRight="15dp"
                 android:layout_height="42dp"
-                android:text="聊天"
+                android:text="解散团退"
+                android:visibility="gone"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:background="@drawable/btn_bule_selector_shape"
+                android:textColor="@android:color/white"/>
+
+            <Button
+                android:id="@+id/chat_group_detail_btn_quit_group"
+                android:layout_width="match_parent"
+                android:layout_marginTop="45dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:layout_height="42dp"
+                android:text="退出团退"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 android:background="@drawable/btn_bule_selector_shape"
