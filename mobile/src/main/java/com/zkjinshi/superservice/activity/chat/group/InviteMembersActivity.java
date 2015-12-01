@@ -62,6 +62,7 @@ public class InviteMembersActivity extends Activity {
     private String shopEmployeeId;
     private Map<Integer, Boolean> checkedMap = new HashMap<Integer, Boolean>();
     private boolean addSucc;
+    private String groupId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,26 +83,7 @@ public class InviteMembersActivity extends Activity {
     private void initData() {
         selectList = new ArrayList<String>();
         selectContactList = new ArrayList<EContactVo>();
-        if(null != getIntent() && null != getIntent().getStringExtra("userId")){
-            contactId = getIntent().getStringExtra("userId");
-            shopEmployeeVo = ShopEmployeeDBUtil.getInstance().queryEmployeeById(contactId);
-            if(null != shopEmployeeVo){
-                contactVo = EContactFactory.getInstance().buildEContactVo(shopEmployeeVo);
-                if(!selectContactList.contains(contactVo)){
-                    addSucc = selectContactList.add(contactVo);
-                    selectList.add(contactId);
-                }
-            }
-            clientVo = ClientDBUtil.getInstance().queryClientByClientID(contactId);
-            if(null != clientVo && !addSucc){
-                contactVo = EContactFactory.getInstance().buildEContactVo(clientVo);
-                if(!selectContactList.contains(contactVo)){
-                    selectContactList.add(contactVo);
-                    selectList.add(contactId);
-                }
-            }
-        }
-        mTvTitle.setText("团队");
+        mTvTitle.setText("邀请好友");
         mRcvTeamContacts.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(this);
         mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);

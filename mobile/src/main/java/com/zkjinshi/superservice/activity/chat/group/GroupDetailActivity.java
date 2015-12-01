@@ -28,6 +28,7 @@ import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.base.util.DisplayUtil;
 import com.zkjinshi.base.view.CustomDialog;
 import com.zkjinshi.superservice.R;
+import com.zkjinshi.superservice.activity.common.MainActivity;
 import com.zkjinshi.superservice.adapter.ChatDetailAdapter;
 import com.zkjinshi.superservice.factory.EContactFactory;
 import com.zkjinshi.superservice.sqlite.ClientDBUtil;
@@ -363,6 +364,11 @@ public class GroupDetailActivity extends Activity{
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
                 DialogUtil.getInstance().cancelProgressDialog();
+                Intent intent = new Intent(GroupDetailActivity.this, MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.putExtra("currentItem",1);
+                startActivity(intent);
+                finish();
             }
         }.execute();
     }
@@ -395,6 +401,11 @@ public class GroupDetailActivity extends Activity{
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
                 DialogUtil.getInstance().cancelProgressDialog();
+                Intent intent = new Intent(GroupDetailActivity.this, MainActivity.class);
+                intent.putExtra("currentItem",1);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                finish();
             }
         }.execute();
     }
@@ -475,6 +486,11 @@ public class GroupDetailActivity extends Activity{
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
                 EMChatManager.getInstance().clearConversation(groupId);
+                Intent intent = new Intent(GroupDetailActivity.this, MainActivity.class);
+                intent.putExtra("currentItem",1);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                finish();
             }
         });
         customBuilder.create().show();

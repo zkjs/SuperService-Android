@@ -41,9 +41,11 @@ public class MainActivityController implements View.OnClickListener{
     private MaterialSheetFab materialSheetFab;
     private int statusBarColor;
     private DisplayImageOptions options;
+    private Intent intent;
 
     public MainActivityController(MainActivity activity){
         this.activity = activity;
+        this.intent = activity.getIntent();
         this.options = new DisplayImageOptions.Builder()
                 .showImageOnLoading(R.mipmap.ic_main_user_default_photo_nor)// 设置图片下载期间显示的图片
                 .showImageForEmptyUri(R.mipmap.ic_main_user_default_photo_nor)// 设置图片Uri为空或是错误的时候显示的图片
@@ -116,7 +118,6 @@ public class MainActivityController implements View.OnClickListener{
         viewpager.setAdapter(new ViewPagerAdapter(activity, activity.getSupportFragmentManager()));
         viewpager.setOffscreenPageLimit(ViewPagerAdapter.NUM_ITEMS);
         updatePage(viewpager.getCurrentItem());
-
         // 设置导航菜单
         TabLayout tabLayout = (TabLayout) activity.findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewpager);
@@ -134,6 +135,8 @@ public class MainActivityController implements View.OnClickListener{
             public void onPageScrollStateChanged(int i) {
             }
         });
+        int currentItem = intent.getIntExtra("currentItem",0);
+        viewpager.setCurrentItem(currentItem);
     }
 
     /**

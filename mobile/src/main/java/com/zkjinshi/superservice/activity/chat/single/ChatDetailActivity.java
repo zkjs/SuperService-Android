@@ -24,6 +24,7 @@ import com.zkjinshi.base.util.DisplayUtil;
 import com.zkjinshi.base.view.CustomDialog;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.chat.group.CreateGroupActivity;
+import com.zkjinshi.superservice.activity.common.MainActivity;
 import com.zkjinshi.superservice.adapter.ChatDetailAdapter;
 import com.zkjinshi.superservice.factory.EContactFactory;
 import com.zkjinshi.superservice.sqlite.ClientDBUtil;
@@ -177,6 +178,11 @@ public class ChatDetailActivity extends Activity{
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
                 EMChatManager.getInstance().clearConversation(userId);
+                Intent intent = new Intent(ChatDetailActivity.this, MainActivity.class);
+                intent.putExtra("currentItem",1);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                finish();
             }
         });
         customBuilder.create().show();
