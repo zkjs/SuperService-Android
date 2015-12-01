@@ -1,15 +1,9 @@
 package com.zkjinshi.superservice.listener;
 
-import android.app.Dialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.WindowManager;
 
 import com.google.gson.Gson;
 import com.zkjinshi.base.log.LogLevel;
@@ -20,21 +14,13 @@ import com.zkjinshi.base.net.core.WebSocketClient;
 import com.zkjinshi.base.net.core.WebSocketManager;
 import com.zkjinshi.base.net.protocol.ProtocolMSG;
 import com.zkjinshi.base.util.Constants;
-import com.zkjinshi.base.view.CustomDialog;
 import com.zkjinshi.superservice.ServiceApplication;
-import com.zkjinshi.superservice.activity.common.LoginActivity;
-import com.zkjinshi.superservice.activity.set.ClientBindController;
-import com.zkjinshi.superservice.bean.ClientBaseBean;
-import com.zkjinshi.superservice.entity.InviteCodeEntity;
 import com.zkjinshi.superservice.entity.MsgCustomerServiceImgChat;
 import com.zkjinshi.superservice.entity.MsgCustomerServiceMediaChat;
 import com.zkjinshi.superservice.entity.MsgCustomerServiceTextChat;
 import com.zkjinshi.superservice.entity.MsgOfflineMessageRSP;
 import com.zkjinshi.superservice.entity.MsgPushTriggerLocNotificationM2S;
-import com.zkjinshi.superservice.entity.MsgUserDefine;
 import com.zkjinshi.superservice.factory.MessageFactory;
-import com.zkjinshi.superservice.net.ExtNetRequestListener;
-import com.zkjinshi.superservice.net.NetResponse;
 import com.zkjinshi.superservice.notification.NotificationHelper;
 import com.zkjinshi.superservice.request.LoginRequestManager;
 import com.zkjinshi.superservice.sqlite.ChatRoomDBUtil;
@@ -50,7 +36,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
 /**
  * 客户聊天事件监听

@@ -282,8 +282,8 @@ public class ClientActivity extends AppCompatActivity implements IMessageObserve
                 DialogUtil.getInstance().cancelProgressDialog();
                 Log.i(TAG, "result.rawResult:" + result.rawResult);
                 String jsonResult = result.rawResult;
-                if (result.rawResult.contains("set") || jsonResult.contains("err")) {
-                    DialogUtil.getInstance().showToast(ClientActivity.this, "用户操作权限不够，请重新登录。");
+                if (jsonResult.contains("err")) {
+//                    DialogUtil.getInstance().showToast(ClientActivity.this, "用户操作权限不够，请重新登录。");
                 } else {
                     Gson gson = new Gson();
                     List<ClientDetailBean> clientDetailBeans = gson.fromJson(jsonResult,
