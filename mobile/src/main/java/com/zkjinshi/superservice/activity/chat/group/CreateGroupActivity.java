@@ -19,7 +19,7 @@ import com.easemob.exceptions.EaseMobException;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.base.view.CustomDialog;
 import com.zkjinshi.superservice.R;
-import com.zkjinshi.superservice.adapter.InviteTeamAdapter;
+import com.zkjinshi.superservice.adapter.CreateGroupAdapter;
 import com.zkjinshi.superservice.factory.EContactFactory;
 import com.zkjinshi.superservice.listener.RecyclerItemClickListener;
 import com.zkjinshi.superservice.sqlite.ClientDBUtil;
@@ -52,7 +52,7 @@ public class CreateGroupActivity extends Activity {
     private RecyclerView mRcvTeamContacts;
 
     private LinearLayoutManager mLayoutManager;
-    private InviteTeamAdapter mContactsAdapter;
+    private CreateGroupAdapter mContactsAdapter;
     private List<ShopEmployeeVo>    mShopEmployeeVos;
     private RelativeLayout createGroupLayout;
     private ShopEmployeeVo shopEmployeeVo;
@@ -118,7 +118,7 @@ public class CreateGroupActivity extends Activity {
                 }
             }
         }
-        mContactsAdapter = new InviteTeamAdapter(CreateGroupActivity.this, mShopEmployeeVos);
+        mContactsAdapter = new CreateGroupAdapter(CreateGroupActivity.this, mShopEmployeeVos);
         mRcvTeamContacts.setAdapter(mContactsAdapter);
         mContactsAdapter.setCheckedMap(checkedMap);
     }
@@ -136,8 +136,8 @@ public class CreateGroupActivity extends Activity {
 
         mContactsAdapter.setOnItemClickListener(new RecyclerItemClickListener() {
             @Override
-            public void onItemClick(View view, int postion) {
-                ShopEmployeeVo shopEmployeeVo = mShopEmployeeVos.get(postion);
+            public void onItemClick(View view, int position) {
+                ShopEmployeeVo shopEmployeeVo = mShopEmployeeVos.get(position);
                 String empID = shopEmployeeVo.getEmpid();
                 contactVo = EContactFactory.getInstance().buildEContactVo(shopEmployeeVo);
                 if (selectList.contains(empID)) {
@@ -193,7 +193,10 @@ public class CreateGroupActivity extends Activity {
                 super.onPostExecute(group);
                 DialogUtil.getInstance().cancelProgressDialog();
                 if (null != group) {
-                    showCreateGroupSuccDialog(group.getGroupId());
+                    Intent intent = new Intent(CreateGroupActivity.this,ChatGroupActivity.class);
+                    intent.putExtra("groupId",group.getGroupId());
+                    startActivity(intent);
+                    finish();
                 }
             }
         }.execute();
@@ -228,33 +231,5 @@ public class CreateGroupActivity extends Activity {
             teamTitle.deleteCharAt(teamTitle.length()-1);
         }
         return teamTitle.toString();
-    }
-
-    private void showCreateGroupSuccDialog(final String groupId){
-        CustomDialog.Builder customBuilder = new CustomDialog.Builder(this);
-        customBuilder.setTitle("提示");
-        customBuilder.setMessage("创建群成功，是否打开?");
-        customBuilder.setGravity(Gravity.CENTER);
-        customBuilder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-                finish();
-            }
-        });
-        customBuilder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-                Intent intent = new Intent(CreateGroupActivity.this,ChatGroupActivity.class);
-                intent.putExtra("groupId",groupId);
-                startActivity(intent);
-                finish();
-
-            }
-        });
-        customBuilder.create().show();
     }
 }

@@ -104,10 +104,9 @@ public class GroupDetailActivity extends Activity{
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (contactList.size() < 12 && contactList.size() == position || position == 11) { //点击加号
-                    Intent intent = new Intent(GroupDetailActivity.this, CreateGroupActivity.class);
-                    if (contactList != null && contactList.size() > 0)
-                        intent.putExtra("shopEmployeeVo", contactList.get(0));
-                   // startActivity(intent);
+                    Intent intent = new Intent(GroupDetailActivity.this, InviteMembersActivity.class);
+                    intent.putExtra("groupId", groupId);
+                    startActivity(intent);
                     overridePendingTransition(R.anim.slide_in_bottom,
                             R.anim.slide_out_top);
                 }
