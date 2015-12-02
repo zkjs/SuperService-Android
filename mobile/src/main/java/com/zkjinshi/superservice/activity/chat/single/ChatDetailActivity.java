@@ -5,6 +5,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,21 +21,37 @@ import android.widget.TextView;
 import com.easemob.chat.EMChatManager;
 import com.easemob.chat.EMGroupManager;
 import com.easemob.exceptions.EaseMobException;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.zkjinshi.base.net.core.WebSocketManager;
+import com.zkjinshi.base.net.protocol.ProtocolMSG;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.base.util.DisplayUtil;
 import com.zkjinshi.base.view.CustomDialog;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.chat.group.CreateGroupActivity;
 import com.zkjinshi.superservice.activity.common.MainActivity;
+import com.zkjinshi.superservice.activity.set.ClientController;
 import com.zkjinshi.superservice.adapter.ChatDetailAdapter;
+import com.zkjinshi.superservice.bean.ClientDetailBean;
+import com.zkjinshi.superservice.entity.MsgUserOnlineStatus;
+import com.zkjinshi.superservice.factory.ClientFactory;
 import com.zkjinshi.superservice.factory.EContactFactory;
+import com.zkjinshi.superservice.factory.SortModelFactory;
+import com.zkjinshi.superservice.net.ExtNetRequestListener;
+import com.zkjinshi.superservice.net.NetResponse;
 import com.zkjinshi.superservice.sqlite.ClientDBUtil;
 import com.zkjinshi.superservice.sqlite.ShopEmployeeDBUtil;
+import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.vo.ClientVo;
+import com.zkjinshi.superservice.vo.ContactType;
 import com.zkjinshi.superservice.vo.EContactVo;
+import com.zkjinshi.superservice.vo.OnlineStatus;
 import com.zkjinshi.superservice.vo.ShopEmployeeVo;
+import com.zkjinshi.superservice.vo.SortModel;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 单聊详情页
@@ -49,9 +67,11 @@ public class ChatDetailActivity extends Activity{
     private ChatDetailAdapter chatDetailAdapter;
     private ArrayList<EContactVo> contactList = new ArrayList<EContactVo>();
     private String userId;
+    private String userName;
     private ShopEmployeeVo shopEmployeeVo;
     private EContactVo contactVo;
     private ClientVo clientVo;
+    private String clientId;
     private GridView shopEmpGv;
     private boolean addSucc;
     private RelativeLayout clearHistoryLayout;
@@ -80,14 +100,23 @@ public class ChatDetailActivity extends Activity{
                 if(null != clientVo){
                     contactVo = EContactFactory.getInstance().buildEContactVo(clientVo);
                     if(!contactList.contains(contactVo)){
-                        contactList.add(contactVo);
+                        addSucc = contactList.add(contactVo);
                     }
                 }
             }
+            if(!addSucc) {//网络获取用户私聊信息
+                if(null != getIntent() && null != getIntent().getStringExtra("userName")){
+                    userName = getIntent().getStringExtra("userName");
+                    contactVo = EContactFactory.getInstance().buildDefaultContactVo(userId,userName);
+                    if(!contactList.contains(contactVo)){
+                        addSucc = contactList.add(contactVo);
+                    }
+                }
+            }
+            chatDetailAdapter = new ChatDetailAdapter(this, contactList);
+            shopEmpGv.setAdapter(chatDetailAdapter);
+            setGridViewHeightBasedOnChildren(shopEmpGv);
         }
-        chatDetailAdapter = new ChatDetailAdapter(this, contactList);
-        shopEmpGv.setAdapter(chatDetailAdapter);
-        setGridViewHeightBasedOnChildren(shopEmpGv);
     }
 
     private void initListeners(){

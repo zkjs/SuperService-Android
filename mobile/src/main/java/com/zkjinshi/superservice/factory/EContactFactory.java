@@ -55,4 +55,15 @@ public class EContactFactory {
         return contactVo;
     }
 
+    public EContactVo buildDefaultContactVo(String userId,String userName){
+        EContactVo contactVo = new EContactVo();
+        if(!TextUtils.isEmpty(userId)){
+            contactVo.setContactId(userId);
+        }
+        if(!TextUtils.isEmpty(userName)){
+            contactVo.setContactName(userName);
+        }
+        return contactVo;
+    }
+
 }

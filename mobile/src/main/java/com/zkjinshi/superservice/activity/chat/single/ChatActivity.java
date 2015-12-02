@@ -207,6 +207,8 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
                         {
                             Intent intent = new Intent(ChatActivity.this,ChatDetailActivity.class);
                             intent.putExtra("userId",userId);
+                            String userName = mTvCenterTitle.getText().toString();
+                            intent.putExtra("userName",userName);
                             startActivity(intent);
                         }
                         break;
