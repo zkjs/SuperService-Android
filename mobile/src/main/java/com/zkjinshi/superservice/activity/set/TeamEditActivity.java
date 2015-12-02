@@ -47,6 +47,8 @@ import java.util.List;
  */
 public class TeamEditActivity extends Activity {
 
+    private static final String TAG = TeamEditActivity.class.getSimpleName();
+
     private List<String>    mCheckedList;
     private RelativeLayout  mRlBack;
     private TextView        mTvTitle;

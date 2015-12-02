@@ -20,7 +20,7 @@ import com.zkjinshi.superservice.utils.CacheUtil;
  */
 public abstract class ExtNetRequestListener  implements NetRequestListener{
 
-    public static final String TAG = ExtNetRequestListener.class.getSimpleName();
+    public static final String MTAG = ExtNetRequestListener.class.getSimpleName();
 
     private Context context;
 
@@ -34,13 +34,13 @@ public abstract class ExtNetRequestListener  implements NetRequestListener{
 
     @Override
     public void onNetworkRequestError(int errorCode, String errorMessage) {
-        Log.i(TAG,"errorCode:"+errorCode);
-        Log.i(TAG,"errorMessage:"+errorMessage);
+        Log.i(MTAG,"errorCode:"+errorCode);
+        Log.i(MTAG,"errorMessage:"+errorMessage);
     }
 
     @Override
     public void onNetworkRequestCancelled() {
-        Log.i(TAG,"onNetworkRequestCancelled");
+        Log.i(MTAG,"onNetworkRequestCancelled");
     }
 
     @Override
@@ -64,6 +64,6 @@ public abstract class ExtNetRequestListener  implements NetRequestListener{
 
     @Override
     public void beforeNetworkRequestStart() {
-        Log.i(TAG,"beforeNetworkRequestStart");
+        Log.i(MTAG,"beforeNetworkRequestStart");
     }
 }

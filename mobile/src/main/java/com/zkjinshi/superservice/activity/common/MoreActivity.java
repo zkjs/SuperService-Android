@@ -116,6 +116,8 @@ public class MoreActivity extends FragmentActivity implements MultiImageSelector
         nameTv = (TextView)findViewById(R.id.org_username_tv);
         inputNameEt = (EditText)findViewById(R.id.new_username_et);
         sexCbx = (CheckBox)findViewById(R.id.sex_cbx);
+
+        findViewById(R.id.back_btn).setVisibility(View.GONE);
     }
 
     private void initData() {
