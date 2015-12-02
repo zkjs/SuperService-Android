@@ -22,10 +22,8 @@ import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.adapter.InviteTeamAdapter;
 import com.zkjinshi.superservice.factory.EContactFactory;
 import com.zkjinshi.superservice.listener.RecyclerItemClickListener;
-import com.zkjinshi.superservice.sqlite.ClientDBUtil;
 import com.zkjinshi.superservice.sqlite.ShopEmployeeDBUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
-import com.zkjinshi.superservice.vo.ClientVo;
 import com.zkjinshi.superservice.vo.EContactVo;
 import com.zkjinshi.superservice.vo.ShopEmployeeVo;
 
@@ -53,16 +51,16 @@ public class InviteMembersActivity extends Activity {
 
     private LinearLayoutManager mLayoutManager;
     private InviteTeamAdapter mContactsAdapter;
-    private List<ShopEmployeeVo>    mShopEmployeeVos;
+    private List<ShopEmployeeVo> shopEmployeeList;
     private RelativeLayout createGroupLayout;
-    private ShopEmployeeVo shopEmployeeVo;
-    private ClientVo clientVo;
     private EContactVo contactVo;
-    private String contactId;
-    private String shopEmployeeId;
-    private Map<Integer, Boolean> checkedMap = new HashMap<Integer, Boolean>();
-    private boolean addSucc;
+    private Map<Integer, Boolean> selectMap = new HashMap<Integer, Boolean>();
+    private Map<Integer, Boolean> enabledMap = new HashMap<Integer, Boolean>();
     private String groupId;
+    private ShopEmployeeVo shopEmployeeVo;
+    private EMGroup group;
+    private List<String> memberList;
+    private String empid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,21 +86,17 @@ public class InviteMembersActivity extends Activity {
         mLayoutManager = new LinearLayoutManager(this);
         mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRcvTeamContacts.setLayoutManager(mLayoutManager);
-        mShopEmployeeVos = ShopEmployeeDBUtil.getInstance().queryAllByDeptIDAsc();
-        if(null != mShopEmployeeVos && !mShopEmployeeVos.isEmpty()){
-            for(int i= 0 ; i< mShopEmployeeVos.size(); i++){
-                shopEmployeeVo = mShopEmployeeVos.get(i);
-                if(null != shopEmployeeVo){
-                    shopEmployeeId = shopEmployeeVo.getEmpid();
-                    if(!TextUtils.isEmpty(shopEmployeeId) && shopEmployeeId.equals(contactId)){
-                        checkedMap.put(i,true);
-                    }
-                }
+        shopEmployeeList = ShopEmployeeDBUtil.getInstance().queryAllByDeptIDAsc();
+        mContactsAdapter = new InviteTeamAdapter(InviteMembersActivity.this, shopEmployeeList);
+        mRcvTeamContacts.setAdapter(mContactsAdapter);
+        mContactsAdapter.setSelectMap(selectMap);
+        mContactsAdapter.setEnabledMap(enabledMap);
+        if(null != getIntent() && null != getIntent().getStringExtra("groupId")){
+            groupId = getIntent().getStringExtra("groupId");
+            if(!TextUtils.isEmpty(groupId)){
+                requestGroupTask(groupId,shopEmployeeList,mRcvTeamContacts);
             }
         }
-        mContactsAdapter = new InviteTeamAdapter(InviteMembersActivity.this, mShopEmployeeVos);
-        mRcvTeamContacts.setAdapter(mContactsAdapter);
-        mContactsAdapter.setCheckedMap(checkedMap);
     }
 
     private void initListener() {
@@ -118,8 +112,11 @@ public class InviteMembersActivity extends Activity {
 
         mContactsAdapter.setOnItemClickListener(new RecyclerItemClickListener() {
             @Override
-            public void onItemClick(View view, int postion) {
-                ShopEmployeeVo shopEmployeeVo = mShopEmployeeVos.get(postion);
+            public void onItemClick(View view, int position) {
+                if (enabledMap != null && enabledMap.containsKey(position)
+                        && enabledMap.get(position))
+                    return;
+                ShopEmployeeVo shopEmployeeVo = shopEmployeeList.get(position);
                 String empID = shopEmployeeVo.getEmpid();
                 contactVo = EContactFactory.getInstance().buildEContactVo(shopEmployeeVo);
                 if (selectList.contains(empID)) {
@@ -132,53 +129,13 @@ public class InviteMembersActivity extends Activity {
             }
         });
 
-        //创建群
+        //邀请好友
         createGroupLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-                requestCreateGroupTask();
+                requestInviteUserTask(groupId,selectList);
             }
         });
-    }
-
-    /**
-     * 创建团队
-     */
-    private void requestCreateGroupTask(){
-        new AsyncTask<Void,Void,EMGroup>(){
-
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-                DialogUtil.getInstance().showProgressDialog(InviteMembersActivity.this);
-            }
-
-            @Override
-            protected EMGroup doInBackground(Void... params) {
-                EMGroup emGroup = null;
-                try {
-                    if(null != selectList && selectList.size() >= 1){
-                        String[] members = convertList2Array(selectList);
-                        String title = convertList2String(selectContactList);
-                        emGroup = EMGroupManager.getInstance().createPrivateGroup(title, "内部私聊群", members, true);
-                    }else {
-                        DialogUtil.getInstance().showCustomToast(InviteMembersActivity.this,"至少要选择一个联系人",Gravity.CENTER);
-                    }
-                } catch (EaseMobException e) {
-                    e.printStackTrace();
-                }
-                return emGroup;
-            }
-
-            @Override
-            protected void onPostExecute(EMGroup group) {
-                super.onPostExecute(group);
-                DialogUtil.getInstance().cancelProgressDialog();
-                if (null != group) {
-                    showCreateGroupSuccDialog(group.getGroupId());
-                }
-            }
-        }.execute();
     }
 
     /**
@@ -238,5 +195,106 @@ public class InviteMembersActivity extends Activity {
             }
         });
         customBuilder.create().show();
+    }
+
+    /**
+     * 邀请团队成员
+     * @param groupId
+     * @param memberList
+     */
+    private void requestInviteUserTask(final String groupId, final List<String> memberList){
+        new AsyncTask<Void,Void,Void>(){
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                DialogUtil.getInstance().showProgressDialog(InviteMembersActivity.this);
+            }
+
+            @Override
+            protected Void doInBackground(Void... params) {
+                try {
+                    group =  EMGroupManager.getInstance().getGroupFromServer(groupId);
+                    if(null != group){
+                        String ownerId = group.getOwner();
+                        if(null != memberList && !memberList.isEmpty()){
+                            String[] memberArray = convertList2Array(memberList);
+                            if(!TextUtils.isEmpty(ownerId) && ownerId.equals(CacheUtil.getInstance().getUserId())){//群主
+                                EMGroupManager.getInstance().addUsersToGroup(groupId, memberArray);
+                            }else {//普通成员
+                                EMGroupManager.getInstance().inviteUser(groupId, memberArray, null);
+                            }
+                        }
+                    }
+                } catch (EaseMobException e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                DialogUtil.getInstance().cancelProgressDialog();
+                if (null != group) {
+                    Intent intent = new Intent(InviteMembersActivity.this,ChatGroupActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.putExtra("groupId",group.getGroupId());
+                    startActivity(intent);
+                    finish();
+                }
+
+            }
+        }.execute();
+    }
+
+    /**
+     * 获取群详情
+     * @param groupId
+     * @param recyclerView
+     */
+    private void requestGroupTask(final String groupId, final List<ShopEmployeeVo> shopEmployeeList,final RecyclerView recyclerView){
+
+        new AsyncTask<Void,Void,Void>(){
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                DialogUtil.getInstance().showProgressDialog(InviteMembersActivity.this);
+            }
+
+            @Override
+            protected Void doInBackground(Void... params) {
+                try {
+                    group =  EMGroupManager.getInstance().getGroupFromServer(groupId);
+                } catch (EaseMobException e) {
+                    e.printStackTrace();
+                }
+                if(null != group){
+                    memberList = group.getMembers();
+                    if(null != memberList && !memberList.isEmpty()){
+                        if(null != shopEmployeeList && !shopEmployeeList.isEmpty()){
+                            for(int i = 0 ; i< shopEmployeeList.size(); i++){
+                                shopEmployeeVo = shopEmployeeList.get(i);
+                                empid = shopEmployeeVo.getEmpid();
+                                if(!TextUtils.isEmpty(empid)){
+                                    if(memberList.contains(empid)){
+                                        enabledMap.put(i,true);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                DialogUtil.getInstance().cancelProgressDialog();
+                mContactsAdapter.setEnabledMap(enabledMap);
+            }
+        }.execute();
     }
 }

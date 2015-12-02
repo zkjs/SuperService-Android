@@ -30,6 +30,7 @@ import java.util.List;
  * 版权所有
  */
 public class TeamContactsController {
+    private static final String TAG = TeamContactsController.class.getSimpleName();
 
     private TeamContactsController(){}
 

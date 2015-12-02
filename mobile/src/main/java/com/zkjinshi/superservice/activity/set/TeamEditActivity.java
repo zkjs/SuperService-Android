@@ -47,6 +47,8 @@ import java.util.List;
  */
 public class TeamEditActivity extends Activity {
 
+    private static final String TAG = TeamEditActivity.class.getSimpleName();
+
     private List<String>    mCheckedList;
     private RelativeLayout  mRlBack;
     private TextView        mTvTitle;
@@ -111,8 +113,8 @@ public class TeamEditActivity extends Activity {
 
         mContactsAdapter.setOnItemClickListener(new RecyclerItemClickListener() {
             @Override
-            public void onItemClick(View view, int postion) {
-                ShopEmployeeVo shopEmployeeVo = mShopEmployeeVos.get(postion);
+            public void onItemClick(View view, int position) {
+                ShopEmployeeVo shopEmployeeVo = mShopEmployeeVos.get(position);
                 String empID = shopEmployeeVo.getEmpid();
                 if (mCheckedList.contains(empID)) {
                     mCheckedList.remove(empID);

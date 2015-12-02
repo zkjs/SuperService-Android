@@ -69,6 +69,8 @@ public class ZoneActivity extends Activity {
     private void initView() {
         header = getLayoutInflater().inflate(R.layout.header, null);
         zoneLv = (ListView)findViewById(R.id.zone_listview);
+
+        findViewById(R.id.back_btn).setVisibility(View.GONE);
     }
 
     private void initData() {

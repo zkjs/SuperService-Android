@@ -104,10 +104,9 @@ public class GroupDetailActivity extends Activity{
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (contactList.size() < 12 && contactList.size() == position || position == 11) { //点击加号
-                    Intent intent = new Intent(GroupDetailActivity.this, CreateGroupActivity.class);
-                    if (contactList != null && contactList.size() > 0)
-                        intent.putExtra("shopEmployeeVo", contactList.get(0));
-                   // startActivity(intent);
+                    Intent intent = new Intent(GroupDetailActivity.this, InviteMembersActivity.class);
+                    intent.putExtra("groupId", groupId);
+                    startActivity(intent);
                     overridePendingTransition(R.anim.slide_in_bottom,
                             R.anim.slide_out_top);
                 }
@@ -168,20 +167,22 @@ public class GroupDetailActivity extends Activity{
      * @param memberList
      */
     private ArrayList<EContactVo> setContactList(List<String> memberList){
+        boolean isSucc = false;
         for (String memberId : memberList){
+            isSucc = false;
             shopEmployeeVo = ShopEmployeeDBUtil.getInstance().queryEmployeeById(memberId);
             if(null != shopEmployeeVo){
                 contactVo = EContactFactory.getInstance().buildEContactVo(shopEmployeeVo);
-                if(!contactList.contains(contactVo)){
-                    boolean isSucc = contactList.add(contactVo);
-                    if(!isSucc){
-                        clientVo = ClientDBUtil.getInstance().queryClientByClientID(memberId);
-                        if(null != clientVo){
-                            contactVo = EContactFactory.getInstance().buildEContactVo(clientVo);
-                            if(!contactList.contains(contactVo)){
-                                contactList.add(contactVo);
-                            }
-                        }
+                if(null != contactVo &&!contactList.contains(contactVo)){
+                    isSucc = contactList.add(contactVo);
+                }
+            }
+            if(!isSucc){
+                clientVo = ClientDBUtil.getInstance().queryClientByClientID(memberId);
+                if(null != clientVo){
+                    contactVo = EContactFactory.getInstance().buildEContactVo(clientVo);
+                    if(null != contactVo && !contactList.contains(contactVo)){
+                        contactList.add(contactVo);
                     }
                 }
             }

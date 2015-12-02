@@ -25,6 +25,7 @@ import com.zkjinshi.superservice.utils.RandomDrawbleUtil;
 import com.zkjinshi.superservice.view.CircleImageView;
 import com.zkjinshi.superservice.vo.ShopEmployeeVo;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -35,26 +36,15 @@ import java.util.Map;
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class InviteTeamAdapter extends  RecyclerView.Adapter<RecyclerView.ViewHolder> implements SectionIndexer {
+public class CreateGroupAdapter extends  RecyclerView.Adapter<RecyclerView.ViewHolder> implements SectionIndexer {
 
     private List<ShopEmployeeVo> mList;
     private Context mContext;
     private DisplayImageOptions options;
-    private Map<Integer, Boolean> selectMap;
-    private Map<Integer, Boolean> enabledMap;
-
-    public void setSelectMap(Map<Integer, Boolean> selectMap) {
-        this.selectMap = selectMap;
-        notifyDataSetChanged();
-    }
-
-    public void setEnabledMap(Map<Integer, Boolean> enabledMap) {
-        this.enabledMap = enabledMap;
-        notifyDataSetChanged();
-    }
+    private Map<Integer, Boolean> checkedMap = new HashMap<Integer, Boolean>();
     private RecyclerItemClickListener mRecyclerItemClickListener;
 
-    public InviteTeamAdapter(Context mContext, List<ShopEmployeeVo> list) {
+    public CreateGroupAdapter(Context mContext, List<ShopEmployeeVo> list) {
         this.mContext = mContext;
         this.mList    = list;
         this.options  = new DisplayImageOptions.Builder()
@@ -64,6 +54,11 @@ public class InviteTeamAdapter extends  RecyclerView.Adapter<RecyclerView.ViewHo
                 .cacheInMemory(true)
                 .cacheOnDisk(true)
                 .build();
+    }
+
+    public void setCheckedMap(Map<Integer, Boolean> checkedMap) {
+        this.checkedMap = checkedMap;
+        this.notifyDataSetChanged();
     }
 
     @Override
@@ -126,26 +121,19 @@ public class InviteTeamAdapter extends  RecyclerView.Adapter<RecyclerView.ViewHo
             }
         });
 
+        //set the checkbox
         ((ContactViewHolder) holder).cbCheck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                selectMap.put(position, isChecked);
+                checkedMap.put(position, isChecked);
             }
         });
 
-        if(null != selectMap && selectMap.containsKey(position) && selectMap.get(position)){
+        if(checkedMap.containsKey(position) && checkedMap.get(position)){
             ((ContactViewHolder) holder).cbCheck.setChecked(true);
         } else {
             ((ContactViewHolder) holder).cbCheck.setChecked(false);
         }
-
-        if (enabledMap != null && enabledMap.containsKey(position)
-                && enabledMap.get(position)) {
-            ((ContactViewHolder) holder).cbCheck.setEnabled(false);
-        } else {
-            ((ContactViewHolder) holder).cbCheck.setEnabled(true);
-        }
-
     }
 
     @Override

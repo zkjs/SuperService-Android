@@ -313,8 +313,8 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
 
         mTeamContactAdapter.setOnItemClickListener(new RecyclerItemClickListener() {
             @Override
-            public void onItemClick(View view, int postion) {
-                ShopEmployeeVo shopEmployeeVo = mShopEmployeeVos.get(postion);
+            public void onItemClick(View view, int position) {
+                ShopEmployeeVo shopEmployeeVo = mShopEmployeeVos.get(position);
                 String userId    = shopEmployeeVo.getEmpid();
                 String toName  = shopEmployeeVo.getName();
                 String shopName = CacheUtil.getInstance().getShopFullName();
