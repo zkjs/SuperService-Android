@@ -205,14 +205,6 @@ public class MainActivity extends AppCompatActivity{
                 customExtBuilder.create().show();
             }
         });
-
-        //关于我们点击事件
-        findViewById(R.id.about_tv).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

@@ -18,6 +18,7 @@ import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.common.InviteCodesActivity;
 import com.zkjinshi.superservice.activity.common.MoreActivity;
+import com.zkjinshi.superservice.activity.common.WebViewActivity;
 import com.zkjinshi.superservice.activity.common.ZoneActivity;
 import com.zkjinshi.superservice.bean.Head;
 import com.zkjinshi.superservice.bean.InviteCode;
@@ -163,12 +164,23 @@ public class SettingActivity extends Activity  {
                 overridePendingTransition(R.anim.activity_new, R.anim.activity_out);
             }
         });
-
+        // 返回
         findViewById(R.id.back_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 finish();
                 overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
+            }
+        });
+        //关于我们
+        findViewById(R.id.about_iusv).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(SettingActivity.this, WebViewActivity.class);
+                intent.putExtra("webview_url","http://zkjinshi.com/about_us/");
+                startActivity(intent);
+                overridePendingTransition(R.anim.slide_in_right,
+                        R.anim.slide_out_left);
             }
         });
 
