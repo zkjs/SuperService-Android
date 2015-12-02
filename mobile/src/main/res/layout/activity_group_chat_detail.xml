@@ -29,8 +29,10 @@
                 android:visibility="visible"/>
 
             <RelativeLayout
+                android:id="@+id/chat_group_detail_layout_group_name"
                 android:layout_width="match_parent"
                 android:background="@drawable/bg_layout_item_selector"
+                android:clickable="true"
                 android:layout_marginTop="10dp"
                 android:layout_height="45dp">
 
@@ -55,7 +57,7 @@
                     android:layout_centerVertical="true"
                     android:layout_alignParentRight="true"
                     android:singleLine="true"
-                    android:gravity="center"
+                    android:gravity="center_vertical|right"
                     android:drawablePadding="10dp"
                     android:layout_marginLeft="16dp"
                     android:layout_marginRight="16dp"
