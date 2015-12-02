@@ -84,7 +84,7 @@ public class OrderNewActivity extends Activity {
     private ImageButton mBtnBack;
     private ImageView mIvRoomImg;
     private LinearLayout mLlOrderPerson;
-    private RelativeLayout mRlOrderDate;
+//    private RelativeLayout mRlOrderDate;
     private LinearLayout mLlOrderDate;
     private LinearLayout mLltYuan;
     private LinearLayout mLlLivePerson;
@@ -139,7 +139,7 @@ public class OrderNewActivity extends Activity {
         mBtnBack = (ImageButton) findViewById(R.id.back_btn);
         mIvRoomImg = (ImageView) findViewById(R.id.iv_room_img);
         mLlOrderPerson = (LinearLayout) findViewById(R.id.ll_order_person);
-        mRlOrderDate = (RelativeLayout) findViewById(R.id.rl_order_date);
+//        mRlOrderDate = (RelativeLayout) findViewById(R.id.rl_order_date);
         mLlOrderDate = (LinearLayout) findViewById(R.id.ll_order_date);
         mLlLivePerson = (LinearLayout) findViewById(R.id.ll_live_person);
         nLlPersons = (LinearLayout) findViewById(R.id.ll_persons);
@@ -225,8 +225,21 @@ public class OrderNewActivity extends Activity {
             }
         });
 
+//        //选择入住时间
+//        mRlOrderDate.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(OrderNewActivity.this, CalendarActivity.class);
+//                if (calendarList != null) {
+//                    intent.putExtra("calendarList", calendarList);
+//                }
+//                startActivityForResult(intent, CalendarActivity.CALENDAR_REQUEST_CODE);
+//                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+//            }
+//        });
+
         //选择入住时间
-        mRlOrderDate.setOnClickListener(new View.OnClickListener() {
+        mLlOrderDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(OrderNewActivity.this, CalendarActivity.class);
@@ -237,7 +250,6 @@ public class OrderNewActivity extends Activity {
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
         });
-
 
         mLlPayMethod.setOnClickListener(new View.OnClickListener() {
             @Override
