@@ -74,6 +74,8 @@ public class ServiceApplication extends Application{
      */
     private void initEmchat(){
         EMChat.getInstance().init(this);
+        //在做打包混淆时，要关闭debug模式，避免消耗不必要的资源
+        EMChat.getInstance().setDebugMode(false);
         EMChatOptions options = EMChatManager.getInstance().getChatOptions();
         // 默认添加好友时，是不需要验证的，改成需要验证
         options.setAcceptInvitationAlways(false);
