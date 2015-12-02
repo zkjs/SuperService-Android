@@ -31,66 +31,7 @@
                 android:visibility="visible"/>
 
             <RelativeLayout
-                android:layout_width="match_parent"
-                android:background="@drawable/bg_layout_item_selector"
-                android:layout_marginTop="10dp"
-                android:layout_height="45dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="消息免打扰"
-                    android:layout_centerVertical="true"
-                    android:textSize="14sp"
-                    android:layout_marginLeft="16dp"
-                    android:textColor="#101010"
-                    android:gravity="center"/>
-
-                <CheckBox
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginRight="16dp"
-                    android:layout_centerVertical="true"
-                    android:background="@drawable/cm_check_box"
-                    android:button="@null"
-                    android:checked="true"
-                    android:textColor="@color/white" />
-
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:background="@drawable/bg_layout_item_selector"
-                android:layout_marginTop="10dp"
-                android:layout_height="45dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="举报"
-                    android:layout_centerVertical="true"
-                    android:textSize="14sp"
-                    android:layout_marginLeft="16dp"
-                    android:textColor="#101010"
-                    android:gravity="center"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@null"
-                    android:textSize="12sp"
-                    android:layout_centerVertical="true"
-                    android:layout_alignParentRight="true"
-                    android:gravity="center"
-                    android:drawablePadding="10dp"
-                    android:layout_marginRight="16dp"
-                    android:textColor="#828282"
-                    android:drawableRight="@mipmap/ic_get_into_w"/>
-
-            </RelativeLayout>
-
-            <RelativeLayout
+                android:id="@+id/chat_detail_layout_clear_history"
                 android:layout_width="match_parent"
                 android:background="@drawable/bg_layout_item_selector"
                 android:layout_marginTop="10dp"
@@ -107,18 +48,6 @@
                     android:gravity="center"/>
 
             </RelativeLayout>
-
-            <Button
-                android:layout_width="match_parent"
-                android:layout_marginTop="45dp"
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
-                android:layout_height="42dp"
-                android:text="聊天"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:background="@drawable/btn_bule_selector_shape"
-                android:textColor="@android:color/white"/>
 
         </LinearLayout>
 

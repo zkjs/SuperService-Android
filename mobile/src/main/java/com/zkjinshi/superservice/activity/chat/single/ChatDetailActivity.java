@@ -1,20 +1,30 @@
 package com.zkjinshi.superservice.activity.chat.single;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.CheckBox;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ListAdapter;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.easemob.chat.EMChatManager;
+import com.easemob.chat.EMGroupManager;
+import com.easemob.exceptions.EaseMobException;
+import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.base.util.DisplayUtil;
+import com.zkjinshi.base.view.CustomDialog;
 import com.zkjinshi.superservice.R;
-import com.zkjinshi.superservice.activity.chat.group.InviteTeamActivity;
-import com.zkjinshi.superservice.activity.set.EmployeeInfoActivity;
+import com.zkjinshi.superservice.activity.chat.group.CreateGroupActivity;
+import com.zkjinshi.superservice.activity.common.MainActivity;
 import com.zkjinshi.superservice.adapter.ChatDetailAdapter;
 import com.zkjinshi.superservice.factory.EContactFactory;
 import com.zkjinshi.superservice.sqlite.ClientDBUtil;
@@ -44,11 +54,13 @@ public class ChatDetailActivity extends Activity{
     private ClientVo clientVo;
     private GridView shopEmpGv;
     private boolean addSucc;
+    private RelativeLayout clearHistoryLayout;
 
     private void initView(){
         titleTv = (TextView)findViewById(R.id.header_bar_tv_title);
         backIBtn = (ImageButton)findViewById(R.id.header_bar_btn_back);
         shopEmpGv = (GridView)findViewById(R.id.chat_detail_gv_contacts);
+        clearHistoryLayout = (RelativeLayout)findViewById(R.id.chat_detail_layout_clear_history);
     }
 
     private void initData(){
@@ -61,15 +73,18 @@ public class ChatDetailActivity extends Activity{
                 contactVo = EContactFactory.getInstance().buildEContactVo(shopEmployeeVo);
                 if(!contactList.contains(contactVo)){
                     addSucc = contactList.add(contactVo);
+                    if(!addSucc){
+                        clientVo = ClientDBUtil.getInstance().queryClientByClientID(userId);
+                        if(null != clientVo){
+                            contactVo = EContactFactory.getInstance().buildEContactVo(clientVo);
+                            if(!contactList.contains(contactVo)){
+                                contactList.add(contactVo);
+                            }
+                        }
+                    }
                 }
             }
-            clientVo = ClientDBUtil.getInstance().queryClientByClientID(userId);
-            if(null != clientVo && !addSucc){
-                contactVo = EContactFactory.getInstance().buildEContactVo(clientVo);
-                if(!contactList.contains(contactVo)){
-                    contactList.add(contactVo);
-                }
-            }
+
         }
         chatDetailAdapter = new ChatDetailAdapter(this, contactList);
         shopEmpGv.setAdapter(chatDetailAdapter);
@@ -91,13 +106,21 @@ public class ChatDetailActivity extends Activity{
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (contactList.size() < 12 && contactList.size() == position || position == 11) { //点击加号
-                    Intent intent = new Intent(ChatDetailActivity.this, InviteTeamActivity.class);
+                    Intent intent = new Intent(ChatDetailActivity.this, CreateGroupActivity.class);
                     if (contactList != null && contactList.size() > 0){}
                         intent.putExtra("userId", contactList.get(0).getContactId());
                     startActivity(intent);
                     overridePendingTransition(R.anim.slide_in_bottom,
                             R.anim.slide_out_top);
                 }
+            }
+        });
+
+        //清空记录
+        clearHistoryLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showClearHistoryDialog(userId);
             }
         });
     }
@@ -131,6 +154,38 @@ public class ChatDetailActivity extends Activity{
         ViewGroup.LayoutParams params = gridView.getLayoutParams();
         params.height = totalHeight + DisplayUtil.dip2px(this, 20);
         gridView.setLayoutParams(params);
+    }
+
+    /**
+     * 清空聊天记录
+     * @param userId
+     */
+    private void showClearHistoryDialog(final String userId){
+        CustomDialog.Builder customBuilder = new CustomDialog.Builder(ChatDetailActivity.this);
+        customBuilder.setTitle("提示");
+        customBuilder.setMessage("确认清空聊天记录？");
+        customBuilder.setGravity(Gravity.CENTER);
+        customBuilder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        customBuilder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                EMChatManager.getInstance().clearConversation(userId);
+                Intent intent = new Intent(ChatDetailActivity.this, MainActivity.class);
+                intent.putExtra("currentItem",1);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                finish();
+            }
+        });
+        customBuilder.create().show();
     }
 
 }

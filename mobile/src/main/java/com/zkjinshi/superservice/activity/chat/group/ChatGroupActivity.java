@@ -189,7 +189,9 @@ public class ChatGroupActivity extends AppCompatActivity implements CompoundButt
                 switch (item.getItemId()) {
                     case R.id.menu_single_chat_info:
                     {
-                       //TODO Jimmy 暂未实现，后续优化
+                        Intent intent = new Intent(ChatGroupActivity.this,GroupDetailActivity.class);
+                        intent.putExtra("groupId",groupId);
+                        startActivity(intent);
                     }
                     break;
                 }

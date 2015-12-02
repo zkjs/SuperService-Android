@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -42,9 +41,9 @@ import java.util.Map;
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class InviteTeamActivity extends Activity {
+public class InviteMembersActivity extends Activity {
 
-    public static final String TAG = InviteTeamActivity.class.getSimpleName();
+    public static final String TAG = InviteMembersActivity.class.getSimpleName();
 
     private List<String> selectList;
     private List<EContactVo> selectContactList;
@@ -63,6 +62,7 @@ public class InviteTeamActivity extends Activity {
     private String shopEmployeeId;
     private Map<Integer, Boolean> checkedMap = new HashMap<Integer, Boolean>();
     private boolean addSucc;
+    private String groupId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,26 +83,7 @@ public class InviteTeamActivity extends Activity {
     private void initData() {
         selectList = new ArrayList<String>();
         selectContactList = new ArrayList<EContactVo>();
-        if(null != getIntent() && null != getIntent().getStringExtra("userId")){
-            contactId = getIntent().getStringExtra("userId");
-            shopEmployeeVo = ShopEmployeeDBUtil.getInstance().queryEmployeeById(contactId);
-            if(null != shopEmployeeVo){
-                contactVo = EContactFactory.getInstance().buildEContactVo(shopEmployeeVo);
-                if(!selectContactList.contains(contactVo)){
-                    addSucc = selectContactList.add(contactVo);
-                    selectList.add(contactId);
-                }
-            }
-            clientVo = ClientDBUtil.getInstance().queryClientByClientID(contactId);
-            if(null != clientVo && !addSucc){
-                contactVo = EContactFactory.getInstance().buildEContactVo(clientVo);
-                if(!selectContactList.contains(contactVo)){
-                    selectContactList.add(contactVo);
-                    selectList.add(contactId);
-                }
-            }
-        }
-        mTvTitle.setText("团队");
+        mTvTitle.setText("邀请好友");
         mRcvTeamContacts.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(this);
         mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -119,7 +100,7 @@ public class InviteTeamActivity extends Activity {
                 }
             }
         }
-        mContactsAdapter = new InviteTeamAdapter(InviteTeamActivity.this, mShopEmployeeVos);
+        mContactsAdapter = new InviteTeamAdapter(InviteMembersActivity.this, mShopEmployeeVos);
         mRcvTeamContacts.setAdapter(mContactsAdapter);
         mContactsAdapter.setCheckedMap(checkedMap);
     }
@@ -130,7 +111,7 @@ public class InviteTeamActivity extends Activity {
         mRlBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                InviteTeamActivity.this.finish();
+                InviteMembersActivity.this.finish();
                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
             }
         });
@@ -169,7 +150,7 @@ public class InviteTeamActivity extends Activity {
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-                DialogUtil.getInstance().showProgressDialog(InviteTeamActivity.this);
+                DialogUtil.getInstance().showProgressDialog(InviteMembersActivity.this);
             }
 
             @Override
@@ -181,7 +162,7 @@ public class InviteTeamActivity extends Activity {
                         String title = convertList2String(selectContactList);
                         emGroup = EMGroupManager.getInstance().createPrivateGroup(title, "内部私聊群", members, true);
                     }else {
-                        DialogUtil.getInstance().showCustomToast(InviteTeamActivity.this,"至少要选择一个联系人",Gravity.CENTER);
+                        DialogUtil.getInstance().showCustomToast(InviteMembersActivity.this,"至少要选择一个联系人",Gravity.CENTER);
                     }
                 } catch (EaseMobException e) {
                     e.printStackTrace();
@@ -249,7 +230,7 @@ public class InviteTeamActivity extends Activity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
-                Intent intent = new Intent(InviteTeamActivity.this,ChatGroupActivity.class);
+                Intent intent = new Intent(InviteMembersActivity.this,ChatGroupActivity.class);
                 intent.putExtra("groupId",groupId);
                 startActivity(intent);
                 finish();
