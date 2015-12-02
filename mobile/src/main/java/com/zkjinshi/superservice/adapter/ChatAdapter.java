@@ -432,7 +432,6 @@ public class ChatAdapter extends BaseAdapter {
 
                             @Override
                             public boolean onLongClick(View v) {
-                                showChildQuickActionBar(v, isComMsg, position);
                                 return true;
                             }
                         });

@@ -50,6 +50,8 @@ import java.util.List;
  */
 public class GroupDetailActivity extends Activity{
 
+    public static final int MODIFY_GROUP_NAME_REQUEST_CODE = 1;
+
     private TextView titleTv;
     private ImageButton backIBtn;
     private TextView groupNameTv;
@@ -63,7 +65,7 @@ public class GroupDetailActivity extends Activity{
     private ClientVo clientVo;
     private ShopEmployeeVo shopEmployeeVo;
     private CheckBox blockMessageCb;
-    private RelativeLayout blockMessageLayout,clearHistoryLayout;
+    private RelativeLayout blockMessageLayout,clearHistoryLayout,groupNameLayout;
     private Button dissolveBtn,quitBtn;
 
     private void initView(){
@@ -74,6 +76,7 @@ public class GroupDetailActivity extends Activity{
         blockMessageCb = (CheckBox)findViewById(R.id.chat_group_detail_cb_block_group_message);
         blockMessageLayout = (RelativeLayout)findViewById(R.id.chat_group_detail_layout_block_group_message);
         clearHistoryLayout = (RelativeLayout)findViewById(R.id.chat_group_detail_layout_clear_history);
+        groupNameLayout = (RelativeLayout)findViewById(R.id.chat_group_detail_layout_group_name);
         dissolveBtn = (Button)findViewById(R.id.chat_group_detail_btn_dissolve_group);
         quitBtn = (Button)findViewById(R.id.chat_group_detail_btn_quit_group);
     }
@@ -151,6 +154,16 @@ public class GroupDetailActivity extends Activity{
                 showExitAndDeleteDialog(groupId);
             }
         });
+
+        //修改群名称
+        groupNameLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(GroupDetailActivity.this,ModifyGroupActivity.class);
+                intent.putExtra("groupId",groupId);
+                startActivityForResult(intent,MODIFY_GROUP_NAME_REQUEST_CODE);
+            }
+        });
     }
 
     @Override
@@ -160,6 +173,21 @@ public class GroupDetailActivity extends Activity{
         initView();
         initData();
         initListeners();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(RESULT_OK == resultCode){
+            if(requestCode == MODIFY_GROUP_NAME_REQUEST_CODE){
+                if(null != data){
+                    String groupName =  data.getStringExtra("groupName");
+                    if(!TextUtils.isEmpty(groupName)){
+                        groupNameTv.setText(groupName);
+                    }
+                }
+            }
+        }
     }
 
     /**

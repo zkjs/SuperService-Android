@@ -418,8 +418,11 @@ public class ChatGroupActivity extends AppCompatActivity implements CompoundButt
 
     @Override
     protected void onResume() {
-        MediaPlayerUtil.stop();
         super.onResume();
+        MediaPlayerUtil.stop();
+        if(null != messageListViewManager){
+            messageListViewManager.setTitle(mTvCenterTitle);
+        }
     }
 
     @Override
