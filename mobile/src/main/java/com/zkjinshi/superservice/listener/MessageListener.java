@@ -140,19 +140,23 @@ public class MessageListener extends Handler implements IMessageListener {
 
                     MsgPushTriggerLocNotificationM2S msgLocNotification = gson.fromJson(message,
                                                         MsgPushTriggerLocNotificationM2S.class);
-                    int intRoleID = Integer.parseInt(roleID);
 
-                    //判断当前用户角色类型 1是管理员, 2是销售,3 其他前台什么的
-                    if(intRoleID == 2){
-                        String   clientID = msgLocNotification.getUserid();
-                        ClientVo clientVo = ClientDBUtil.getInstance().queryClientByClientID(clientID);
-                        if(null != clientVo && clientVo.getContactType() == ContactType.NORMAL){
-                            NotificationHelper.getInstance().showNotification(ServiceApplication.getContext(), msgLocNotification);
-                        }
-                    }else{
-                        NotificationHelper.getInstance().showNotification(ServiceApplication.getContext(),
-                                                                                      msgLocNotification);
-                    }
+                    NotificationHelper.getInstance().showNotification(
+                                       ServiceApplication.getContext(),
+                                                   msgLocNotification);
+
+//                    //判断当前用户角色类型 1是管理员, 2是销售,3 其他前台什么的
+//                    int intRoleID = Integer.parseInt(roleID);
+//                    if(intRoleID == 2){
+//                        String   clientID = msgLocNotification.getUserid();
+//                        ClientVo clientVo = ClientDBUtil.getInstance().queryClientByClientID(clientID);
+//                        if(null != clientVo && clientVo.getContactType() == ContactType.NORMAL){
+//                            NotificationHelper.getInstance().showNotification(ServiceApplication.getContext(), msgLocNotification);
+//                        }
+//                    }else{
+//                        NotificationHelper.getInstance().showNotification(ServiceApplication.getContext(),
+//                                                                                      msgLocNotification);
+//                    }
                 }
             }
 
