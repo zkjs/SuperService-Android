@@ -238,6 +238,7 @@ public class InviteMembersActivity extends Activity {
                 DialogUtil.getInstance().cancelProgressDialog();
                 if (null != group) {
                     Intent intent = new Intent(InviteMembersActivity.this,ChatGroupActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     intent.putExtra("groupId",group.getGroupId());
                     startActivity(intent);
                     finish();
