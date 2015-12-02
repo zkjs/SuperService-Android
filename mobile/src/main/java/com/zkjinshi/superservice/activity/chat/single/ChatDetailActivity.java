@@ -73,18 +73,17 @@ public class ChatDetailActivity extends Activity{
                 contactVo = EContactFactory.getInstance().buildEContactVo(shopEmployeeVo);
                 if(!contactList.contains(contactVo)){
                     addSucc = contactList.add(contactVo);
-                    if(!addSucc){
-                        clientVo = ClientDBUtil.getInstance().queryClientByClientID(userId);
-                        if(null != clientVo){
-                            contactVo = EContactFactory.getInstance().buildEContactVo(clientVo);
-                            if(!contactList.contains(contactVo)){
-                                contactList.add(contactVo);
-                            }
-                        }
+                }
+            }
+            if(!addSucc){
+                clientVo = ClientDBUtil.getInstance().queryClientByClientID(userId);
+                if(null != clientVo){
+                    contactVo = EContactFactory.getInstance().buildEContactVo(clientVo);
+                    if(!contactList.contains(contactVo)){
+                        contactList.add(contactVo);
                     }
                 }
             }
-
         }
         chatDetailAdapter = new ChatDetailAdapter(this, contactList);
         shopEmpGv.setAdapter(chatDetailAdapter);

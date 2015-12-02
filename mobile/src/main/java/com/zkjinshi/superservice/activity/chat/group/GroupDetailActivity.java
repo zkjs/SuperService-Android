@@ -168,20 +168,22 @@ public class GroupDetailActivity extends Activity{
      * @param memberList
      */
     private ArrayList<EContactVo> setContactList(List<String> memberList){
+        boolean isSucc = false;
         for (String memberId : memberList){
+            isSucc = false;
             shopEmployeeVo = ShopEmployeeDBUtil.getInstance().queryEmployeeById(memberId);
             if(null != shopEmployeeVo){
                 contactVo = EContactFactory.getInstance().buildEContactVo(shopEmployeeVo);
-                if(!contactList.contains(contactVo)){
-                    boolean isSucc = contactList.add(contactVo);
-                    if(!isSucc){
-                        clientVo = ClientDBUtil.getInstance().queryClientByClientID(memberId);
-                        if(null != clientVo){
-                            contactVo = EContactFactory.getInstance().buildEContactVo(clientVo);
-                            if(!contactList.contains(contactVo)){
-                                contactList.add(contactVo);
-                            }
-                        }
+                if(null != contactVo &&!contactList.contains(contactVo)){
+                    isSucc = contactList.add(contactVo);
+                }
+            }
+            if(!isSucc){
+                clientVo = ClientDBUtil.getInstance().queryClientByClientID(memberId);
+                if(null != clientVo){
+                    contactVo = EContactFactory.getInstance().buildEContactVo(clientVo);
+                    if(null != contactVo && !contactList.contains(contactVo)){
+                        contactList.add(contactVo);
                     }
                 }
             }
