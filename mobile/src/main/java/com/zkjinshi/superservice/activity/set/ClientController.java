@@ -32,6 +32,8 @@ import java.util.List;
  */
 public class ClientController {
 
+    private static final String TAG = ClientController.class.getSimpleName();
+
     private ClientController(){}
 
     private static ClientController instance;
