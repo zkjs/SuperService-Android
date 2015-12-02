@@ -104,10 +104,10 @@ public class ChatDetailActivity extends Activity{
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (contactList.size() < 12 && contactList.size() == position || position == 11) { //点击加号
+                if (null != contactList && !contactList.isEmpty() && contactList.size() < 12 && contactList.size() == position || position == 11) { //点击加号
                     Intent intent = new Intent(ChatDetailActivity.this, CreateGroupActivity.class);
                     if (contactList != null && contactList.size() > 0){}
-                        intent.putExtra("userId", contactList.get(0).getContactId());
+                         intent.putExtra("userId", contactList.get(0).getContactId());
                     startActivity(intent);
                     overridePendingTransition(R.anim.slide_in_bottom,
                             R.anim.slide_out_top);

@@ -14,7 +14,7 @@ public interface RecyclerItemClickListener {
     /**
      * 监听点击item事件
      * @param view
-     * @param postion
+     * @param position
      */
-    public void onItemClick(View view,int postion);
+    public void onItemClick(View view,int position);
 }

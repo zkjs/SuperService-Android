@@ -122,7 +122,7 @@ public class GoodListActivity extends AppCompatActivity {
         //设置条目点击事件
         mGoodInfoAdatper.setOnItemClickListener(new RecyclerItemClickListener() {
             @Override
-            public void onItemClick(View view, int postion) {
+            public void onItemClick(View view, int position) {
                 mCheckedPosition = mGoodInfoAdatper.getCheckedPosition();
                 mGoodInfoVo = mGoodInfoVoList.get(mCheckedPosition);
             }

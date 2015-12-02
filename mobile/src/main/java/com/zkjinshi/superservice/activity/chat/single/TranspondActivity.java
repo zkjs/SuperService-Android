@@ -200,8 +200,8 @@ public class TranspondActivity extends AppCompatActivity {
 
         mTeamContactAdapter.setOnItemClickListener(new RecyclerItemClickListener() {
             @Override
-            public void onItemClick(View view, int postion) {
-                ShopEmployeeVo shopEmployeeVo = mShopEmployeeVos.get(postion);
+            public void onItemClick(View view, int position) {
+                ShopEmployeeVo shopEmployeeVo = mShopEmployeeVos.get(position);
                 showTranspondDialog(TranspondActivity.this,shopEmployeeVo);
             }
         });

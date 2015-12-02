@@ -113,8 +113,8 @@ public class TeamEditActivity extends Activity {
 
         mContactsAdapter.setOnItemClickListener(new RecyclerItemClickListener() {
             @Override
-            public void onItemClick(View view, int postion) {
-                ShopEmployeeVo shopEmployeeVo = mShopEmployeeVos.get(postion);
+            public void onItemClick(View view, int position) {
+                ShopEmployeeVo shopEmployeeVo = mShopEmployeeVos.get(position);
                 String empID = shopEmployeeVo.getEmpid();
                 if (mCheckedList.contains(empID)) {
                     mCheckedList.remove(empID);

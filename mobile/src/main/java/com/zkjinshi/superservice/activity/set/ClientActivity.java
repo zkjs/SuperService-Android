@@ -172,9 +172,9 @@ public class ClientActivity extends AppCompatActivity implements IMessageObserve
         /** 我的客人条目点击事件 */
         mContactsAdapter.setOnItemClickListener(new RecyclerItemClickListener() {
             @Override
-            public void onItemClick(View view, int postion) {
+            public void onItemClick(View view, int position) {
 
-                SortModel sortModel = mAllContactsList.get(postion);
+                SortModel sortModel = mAllContactsList.get(position);
                 final String clientId    = sortModel.getClientID();
                 final String clientName  = sortModel.getName();
                 final String clientPhone = sortModel.getNumber();
