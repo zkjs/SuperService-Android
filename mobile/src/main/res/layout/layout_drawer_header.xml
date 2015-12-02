@@ -109,10 +109,6 @@
             android:text="退出"
             android:id="@+id/exit_tv" />
 
-        <TextView
-            style="@style/leftMenuText"
-            android:text="关于我们"
-            android:id="@+id/about_tv" />
 
 
     </LinearLayout>
