@@ -137,7 +137,7 @@ public class MainActivityController implements View.OnClickListener{
             @Override
             public void onPageSelected(int i) {
                 updatePage(i);
-                setMessageNum(i,0);
+                //setMessageNum(i,0);
             }
 
             @Override
