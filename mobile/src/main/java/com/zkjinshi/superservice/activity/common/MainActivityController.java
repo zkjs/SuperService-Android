@@ -43,6 +43,8 @@ public class MainActivityController implements View.OnClickListener{
     private DisplayImageOptions options;
     private Intent intent;
 
+    ViewPagerAdapter viewPagerAdapter;
+
     public MainActivityController(MainActivity activity){
         this.activity = activity;
         this.intent = activity.getIntent();
@@ -115,12 +117,18 @@ public class MainActivityController implements View.OnClickListener{
     private void setupTabs() {
         // 设置ViewPager
         ViewPager viewpager = (ViewPager) activity.findViewById(R.id.viewpager);
-        viewpager.setAdapter(new ViewPagerAdapter(activity, activity.getSupportFragmentManager()));
+       viewPagerAdapter = new ViewPagerAdapter(activity, activity.getSupportFragmentManager());
+        viewpager.setAdapter(viewPagerAdapter);
         viewpager.setOffscreenPageLimit(ViewPagerAdapter.NUM_ITEMS);
         updatePage(viewpager.getCurrentItem());
         // 设置导航菜单
         TabLayout tabLayout = (TabLayout) activity.findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewpager);
+        tabLayout.setTabMode(TabLayout.MODE_FIXED);
+        for (int i = 0; i < tabLayout.getTabCount(); i++) {
+            TabLayout.Tab tab = tabLayout.getTabAt(i);
+            tab.setCustomView(viewPagerAdapter.getTabView(i));
+        }
         viewpager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int i, float v, int i1) {
@@ -129,6 +137,7 @@ public class MainActivityController implements View.OnClickListener{
             @Override
             public void onPageSelected(int i) {
                 updatePage(i);
+                setMessageNum(i,0);
             }
 
             @Override
@@ -137,6 +146,11 @@ public class MainActivityController implements View.OnClickListener{
         });
         int currentItem = intent.getIntExtra("currentItem",0);
         viewpager.setCurrentItem(currentItem);
+
+    }
+
+    public void setMessageNum(int postion,int num){
+        viewPagerAdapter.setNumText(postion,num);
     }
 
     /**
