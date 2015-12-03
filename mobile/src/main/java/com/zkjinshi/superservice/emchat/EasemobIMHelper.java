@@ -165,33 +165,6 @@ public class EasemobIMHelper {
 
     }
 
-    public void requestGroupListTask(){
-        new AsyncTask<Void,Void,Void>(){
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-            }
-
-            @Override
-            protected Void doInBackground(Void... params) {
-                try {
-                    EMGroupManager.getInstance().getGroupsFromServer();
-                } catch (EaseMobException e) {
-                    e.printStackTrace();
-                    Log.i(TAG,"errorCode:"+e.getErrorCode());
-                    Log.i(TAG,"errorMessage:"+e.getMessage());
-                }
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Void aVoid) {
-                super.onPostExecute(aVoid);
-            }
-        }.execute();
-
-    }
-
     /**
      * 接收好友请求
      * @param username

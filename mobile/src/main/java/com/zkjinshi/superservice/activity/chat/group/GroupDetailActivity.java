@@ -82,7 +82,7 @@ public class GroupDetailActivity extends Activity{
     }
 
     private void initData(){
-        titleTv.setText("群详情");
+        titleTv.setText("团队详情");
         backIBtn.setVisibility(View.VISIBLE);
         if(null != getIntent() && null != getIntent().getStringExtra("groupId")){
             groupId = getIntent().getStringExtra("groupId");
