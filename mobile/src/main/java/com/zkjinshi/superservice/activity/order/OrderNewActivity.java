@@ -87,8 +87,8 @@ public class OrderNewActivity extends Activity {
 //    private RelativeLayout mRlOrderDate;
     private LinearLayout mLlOrderDate;
     private LinearLayout mLltYuan;
-    private LinearLayout mLlLivePerson;
-    private LinearLayout nLlPersons;
+//    private LinearLayout mLlLivePerson;
+//    private LinearLayout nLlPersons;
     private TextView mTvOrderPerson;
     private TextView mTvOrderStatus;
     private LinearLayout mLlPayMethod;
@@ -141,8 +141,8 @@ public class OrderNewActivity extends Activity {
         mLlOrderPerson = (LinearLayout) findViewById(R.id.ll_order_person);
 //        mRlOrderDate = (RelativeLayout) findViewById(R.id.rl_order_date);
         mLlOrderDate = (LinearLayout) findViewById(R.id.ll_order_date);
-        mLlLivePerson = (LinearLayout) findViewById(R.id.ll_live_person);
-        nLlPersons = (LinearLayout) findViewById(R.id.ll_persons);
+//        mLlLivePerson = (LinearLayout) findViewById(R.id.ll_live_person);
+//        nLlPersons = (LinearLayout) findViewById(R.id.ll_persons);
         mTvOrderPerson = (TextView) findViewById(R.id.tv_order_person);
 
         mLlPayMethod = (LinearLayout) findViewById(R.id.ll_pay_method);
@@ -213,17 +213,17 @@ public class OrderNewActivity extends Activity {
         });
 
         //点击进入入住人
-        mLlLivePerson.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(OrderNewActivity.this, AddLivePersonActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putStringArrayList("live_persons", mLiveNames);
-                intent.putExtras(bundle);
-                startActivityForResult(intent, REQUEST_LIVE_PERSON);
-                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-            }
-        });
+//        mLlLivePerson.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(OrderNewActivity.this, AddLivePersonActivity.class);
+//                Bundle bundle = new Bundle();
+//                bundle.putStringArrayList("live_persons", mLiveNames);
+//                intent.putExtras(bundle);
+//                startActivityForResult(intent, REQUEST_LIVE_PERSON);
+//                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+//            }
+//        });
 
 //        //选择入住时间
 //        mRlOrderDate.setOnClickListener(new View.OnClickListener() {
@@ -357,16 +357,16 @@ public class OrderNewActivity extends Activity {
                 }
             }
             //请求选择入住人
-            else if (REQUEST_LIVE_PERSON == requestCode) {
-                if (null != data) {
-                    Bundle bundle = data.getExtras();
-                    mLiveNames = (ArrayList<String>) bundle.get("live_persons");
-                    for (String liveName : mLiveNames) {
-                        nLlPersons.addView(getItemLivePersonView(getString(R.string.live_person) +
-                                mLiveNames.indexOf(liveName) + 1, liveName));
-                    }
-                }
-            }
+//            else if (REQUEST_LIVE_PERSON == requestCode) {
+//                if (null != data) {
+//                    Bundle bundle = data.getExtras();
+//                    mLiveNames = (ArrayList<String>) bundle.get("live_persons");
+//                    for (String liveName : mLiveNames) {
+//                        nLlPersons.addView(getItemLivePersonView(getString(R.string.live_person) +
+//                                mLiveNames.indexOf(liveName) + 1, liveName));
+//                    }
+//                }
+//            }
             //请求选择支付方式和金额
             else if (REQUEST_PAY_METHOD == requestCode) {
                 if (null != data) {

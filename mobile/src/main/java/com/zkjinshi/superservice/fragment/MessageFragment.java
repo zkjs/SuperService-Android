@@ -150,6 +150,7 @@ public class MessageFragment extends Fragment implements IEMessageObserver {
     @Override
     public void onResume() {
         super.onResume();
+        EMConversationHelper.getInstance().requestGroupListTask();
         conversationList = (ArrayList<EMConversation>) EMConversationHelper.getInstance().loadConversationList();
         messageAdapter.setConversationList(conversationList);
         if(conversationList.size() > 0){

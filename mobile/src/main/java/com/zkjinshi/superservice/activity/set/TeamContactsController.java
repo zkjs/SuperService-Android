@@ -57,7 +57,9 @@ public class TeamContactsController {
         netRequestTask.setNetRequestListener(new ExtNetRequestListener(activity) {
             @Override
             public void onNetworkRequestError(int errorCode, String errorMessage) {
-                listener.getContactsFailed();
+                if(null != listener){
+                    listener.getContactsFailed();
+                }
                 Log.i(TAG, "errorCode:" + errorCode);
                 Log.i(TAG, "errorMessage:" + errorMessage);
             }

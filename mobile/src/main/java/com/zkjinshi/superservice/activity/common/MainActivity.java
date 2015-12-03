@@ -34,6 +34,7 @@ import com.zkjinshi.superservice.activity.set.ClientActivity;
 import com.zkjinshi.superservice.activity.set.SettingActivity;
 import com.zkjinshi.superservice.activity.set.TeamContactsActivity;
 import com.zkjinshi.superservice.bean.BaseBean;
+import com.zkjinshi.superservice.emchat.EMConversationHelper;
 import com.zkjinshi.superservice.emchat.EasemobIMHelper;
 import com.zkjinshi.superservice.emchat.observer.EMessageListener;
 import com.zkjinshi.superservice.entity.MsgOfflineMessage;
@@ -393,7 +394,7 @@ public class MainActivity extends AppCompatActivity{
                 //  ReceiverHelper.getInstance().regiserAckMessageReceiver();
                 // ReceiverHelper.getInstance().regiserSuccMessageReceiver();
                 EMessageListener.getInstance().registerEventListener();
-                EasemobIMHelper.getInstance().requestGroupListTask();
+                EMConversationHelper.getInstance().requestGroupListTask();
             }
 
             @Override
