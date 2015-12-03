@@ -289,6 +289,17 @@ public class MainActivity extends AppCompatActivity{
         initView();
         initData();
         initListeners();
+
+
+    }
+
+    /**
+     * 设置tab右上角上的消息数量
+     * @param postion
+     * @param num
+     */
+    public void setMessageNum(int postion,int num){
+        mainActivityController.setMessageNum(postion,num);
     }
 
     protected void onResume(){
