@@ -410,6 +410,13 @@
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" >
         </activity>
 
+        <activity
+            android:name=".activity.preview.ScanImagesActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" >
+        </activity>
+
         <!--单聊详情页-->
         <activity
             android:name=".activity.chat.single.ChatDetailActivity"
