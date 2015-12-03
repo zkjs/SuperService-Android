@@ -21,6 +21,7 @@ import com.easemob.exceptions.EaseMobException;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.chat.group.ChatGroupActivity;
 import com.zkjinshi.superservice.activity.chat.single.ChatActivity;
+import com.zkjinshi.superservice.activity.common.MainActivity;
 import com.zkjinshi.superservice.adapter.MessageAdapter;
 import com.zkjinshi.superservice.emchat.EMConversationHelper;
 import com.zkjinshi.superservice.emchat.observer.EMessageSubject;
@@ -30,6 +31,7 @@ import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.Constants;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 消息通知Fragment页面
@@ -158,12 +160,28 @@ public class MessageFragment extends Fragment implements IEMessageObserver {
         }else{
             emptyLayout.setVisibility(View.VISIBLE);
         }
+        ((MainActivity)getActivity()).setMessageNum(1,unreadTotalCount(conversationList));
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         removeAllObserver();
+    }
+
+    /**
+     * 获取未读消息总个数
+     * @param conversationList
+     * @return
+     */
+    private int unreadTotalCount(List<EMConversation> conversationList){
+        int totalCount = 0;
+        if(null != conversationList && !conversationList.isEmpty()){
+            for(EMConversation conversation : conversationList){
+                totalCount = totalCount+ conversation.getUnreadMsgCount();
+            }
+        }
+        return  totalCount;
     }
 
     /**
@@ -181,6 +199,7 @@ public class MessageFragment extends Fragment implements IEMessageObserver {
                     emptyLayout.setVisibility(View.VISIBLE);
                 }
                 messageAdapter.setConversationList(conversationList);
+                ((MainActivity)getActivity()).setMessageNum(1,unreadTotalCount(conversationList));
             }
         });
     }
