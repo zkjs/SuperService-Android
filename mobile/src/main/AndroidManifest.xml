@@ -322,7 +322,7 @@
             android:name=".activity.order.OrderNewActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Holo.Light.NoActionBar">
+            android:theme="@android:style/Theme.Translucent.NoTitleBar">
         </activity>
 
         <activity
