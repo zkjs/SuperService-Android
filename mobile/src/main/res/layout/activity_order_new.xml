@@ -185,7 +185,7 @@
                 android:clickable="true"
                 android:background="@drawable/bg_btn_default"
                 android:orientation="vertical"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <!--入住离店日期-->
