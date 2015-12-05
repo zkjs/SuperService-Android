@@ -330,13 +330,15 @@ public class NoticeFragment extends Fragment implements IMessageObserver{
                                         }
                                         if (null != comingVo) {
                                             ComingDBUtil.getInstance().addComing(comingVo);
-                                            notifyComingList.add(comingVo);
+                                            notifyComingList.add(0,comingVo);
                                             getActivity().runOnUiThread(new Runnable() {
                                                 @Override
                                                 public void run() {
                                                     emptyLayout.setVisibility(View.GONE);
                                                     moreLayout.setVisibility(View.VISIBLE);
+                                                    notityRecyclerView.scrollToPosition(0);
                                                     mNotificationAdapter.setComingList(notifyComingList);
+                                                    mNotificationAdapter.notifyItemInserted(0);
                                                 }
                                             });
 
