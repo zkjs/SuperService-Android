@@ -291,7 +291,6 @@ public class MainActivity extends AppCompatActivity{
         initData();
         initListeners();
 
-
     }
 
     /**
