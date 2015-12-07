@@ -8,8 +8,8 @@
 
     <!--测试环境-->
     <http-host>112.74.38.81</http-host>
-    <im-host>112.74.38.81</im-host>
-    <im-port>6666</im-port>
+    <im-host>im.zkjinshi.com</im-host>
+    <im-port>7777</im-port>
 
     <!--媒体服务器-->
     <media-host>112.74.205.31</media-host>

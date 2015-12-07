@@ -93,11 +93,11 @@ public class WebSocketClient {
 
                     PrintWriter out = new PrintWriter(mSocket.getOutputStream());
                     out.print("GET " + path + " HTTP/1.1\r\n");
-                    out.print("Upgrade: websocket\r\n");
-                    out.print("Connection: Upgrade\r\n");
                     out.print("Host: " + mURI.getHost() + "\r\n");
-                    out.print("Origin: " + origin.toString() + "\r\n");
+                    out.print("Upgrade: WebSocket\r\n");
+                    out.print("Connection: Upgrade\r\n");
                     out.print("Sec-WebSocket-Key: " + secret + "\r\n");
+                    out.print("Origin: " + origin.toString() + "\r\n");
                     out.print("Sec-WebSocket-Version: 13\r\n");
                     out.print("\r\n");
                     out.flush();
