@@ -112,16 +112,6 @@
                 zkjinshi:itemSettingContent2=""
                 android:background="#ffffff"/>
             <View style="@style/GrayLineBorder"></View>
-            <com.zkjinshi.superservice.view.ItemUserSettingView
-                android:id="@+id/code_iusv"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:clickable="true"
-                zkjinshi:itemSettingTitle="邀请码"
-                zkjinshi:itemSettingContent2=""
-                android:background="#ffffff"/>
-            <View style="@style/GrayLineBorder"></View>
 
             <View style="@style/GrayLineBorder"  android:layout_marginTop="10dp"></View>
             <com.zkjinshi.superservice.view.ItemUserSettingView

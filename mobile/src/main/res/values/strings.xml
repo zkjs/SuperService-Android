@@ -145,5 +145,6 @@
     <string name="please_input_payment_unit_yuan"> 请输入房间价格 (单位：元)</string>
     <string name="please_choose_the_pay_method_and_room_amount">请选择支付方式并输入金额</string>
     <string name="yuan">元</string>
+    <string name="invite_code">邀请码</string>
 
 </resources>

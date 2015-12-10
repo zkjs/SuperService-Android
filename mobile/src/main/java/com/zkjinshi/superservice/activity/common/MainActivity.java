@@ -149,6 +149,16 @@ public class MainActivity extends AppCompatActivity{
             }
         });
 
+        //邀请码点击
+        findViewById(R.id.tv_invite_code).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent inviteCode = new Intent(MainActivity.this, InviteCodesActivity.class);
+                MainActivity.this.startActivity(inviteCode);
+                overridePendingTransition(R.anim.activity_new, R.anim.activity_out);
+            }
+        });
+
         //我的客人点击事件
         findViewById(R.id.client_tv).setOnClickListener(new View.OnClickListener() {
             @Override
