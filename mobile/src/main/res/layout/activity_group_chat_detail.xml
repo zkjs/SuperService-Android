@@ -71,6 +71,7 @@
                 android:layout_width="match_parent"
                 android:background="@drawable/bg_layout_item_selector"
                 android:clickable="true"
+                android:visibility="gone"
                 android:layout_marginTop="10dp"
                 android:layout_height="45dp">
 

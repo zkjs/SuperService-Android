@@ -45,8 +45,7 @@ public class CreateGroupActivity extends Activity {
 
     public static final String TAG = CreateGroupActivity.class.getSimpleName();
 
-    private List<String> selectList;
-    private List<EContactVo> selectContactList;
+    private List<String> selectList;;
     private RelativeLayout mRlBack;
     private TextView mTvTitle;
     private RecyclerView mRcvTeamContacts;
@@ -60,7 +59,8 @@ public class CreateGroupActivity extends Activity {
     private EContactVo contactVo;
     private String contactId;
     private String shopEmployeeId;
-    private Map<Integer, Boolean> checkedMap = new HashMap<Integer, Boolean>();
+    private Map<Integer, Boolean> selectMap = new HashMap<Integer, Boolean>();
+    private Map<Integer, Boolean> enabledMap = new HashMap<Integer, Boolean>();
     private boolean addSucc;
 
     @Override
@@ -81,22 +81,19 @@ public class CreateGroupActivity extends Activity {
 
     private void initData() {
         selectList = new ArrayList<String>();
-        selectContactList = new ArrayList<EContactVo>();
         if(null != getIntent() && null != getIntent().getStringExtra("userId")){
             contactId = getIntent().getStringExtra("userId");
             shopEmployeeVo = ShopEmployeeDBUtil.getInstance().queryEmployeeById(contactId);
             if(null != shopEmployeeVo){
                 contactVo = EContactFactory.getInstance().buildEContactVo(shopEmployeeVo);
-                if(!selectContactList.contains(contactVo)){
-                    addSucc = selectContactList.add(contactVo);
-                    selectList.add(contactId);
+                if(!selectList.contains(contactId)){
+                    addSucc = selectList.add(contactId);
                 }
             }
             clientVo = ClientDBUtil.getInstance().queryClientByClientID(contactId);
             if(null != clientVo && !addSucc){
                 contactVo = EContactFactory.getInstance().buildEContactVo(clientVo);
-                if(!selectContactList.contains(contactVo)){
-                    selectContactList.add(contactVo);
+                if(!selectList.contains(contactId)){
                     selectList.add(contactId);
                 }
             }
@@ -113,14 +110,18 @@ public class CreateGroupActivity extends Activity {
                 if(null != shopEmployeeVo){
                     shopEmployeeId = shopEmployeeVo.getEmpid();
                     if(!TextUtils.isEmpty(shopEmployeeId) && shopEmployeeId.equals(contactId)){
-                        checkedMap.put(i,true);
+                        enabledMap.put(i,true);
+                    }
+                    if(!TextUtils.isEmpty(shopEmployeeId) && shopEmployeeId.equals(CacheUtil.getInstance().getUserId())){
+                        enabledMap.put(i,true);
                     }
                 }
             }
         }
         mContactsAdapter = new CreateGroupAdapter(CreateGroupActivity.this, mShopEmployeeVos);
         mRcvTeamContacts.setAdapter(mContactsAdapter);
-        mContactsAdapter.setCheckedMap(checkedMap);
+        mContactsAdapter.setEnabledMap(enabledMap);
+        mContactsAdapter.setSelectMap(selectMap);
     }
 
     private void initListener() {
@@ -142,10 +143,8 @@ public class CreateGroupActivity extends Activity {
                 contactVo = EContactFactory.getInstance().buildEContactVo(shopEmployeeVo);
                 if (selectList.contains(empID)) {
                     selectList.remove(empID);
-                    selectContactList.remove(contactVo);
                 } else {
                     selectList.add(empID);
-                    selectContactList.add(contactVo);
                 }
             }
         });
@@ -177,8 +176,8 @@ public class CreateGroupActivity extends Activity {
                 try {
                     if(null != selectList && selectList.size() >= 1){
                         String[] members = convertList2Array(selectList);
-                        String title = convertList2String(selectContactList);
-                        emGroup = EMGroupManager.getInstance().createPrivateGroup(title, "内部私聊群", members, true);
+                        String title = convertList2String(selectList);
+                        emGroup = EMGroupManager.getInstance().createPrivateGroup(title, CacheUtil.getInstance().getShopID(), members, true);
                     }else {
                         DialogUtil.getInstance().showCustomToast(CreateGroupActivity.this,"至少要选择一个联系人",Gravity.CENTER);
                     }
@@ -217,14 +216,26 @@ public class CreateGroupActivity extends Activity {
 
     /**
      * 获取群标题
-     * @param contactList
+     * @param selectList
      * @return
      */
-    private String convertList2String(List<EContactVo> contactList){
+    private String convertList2String(List<String> selectList){
         StringBuilder teamTitle = new StringBuilder();
-        for(EContactVo contactVo : contactList){
-            String employeeName = contactVo.getContactName();
-            teamTitle.append(employeeName).append("、");
+        for(String contactId : selectList){
+            shopEmployeeVo = ShopEmployeeDBUtil.getInstance().queryEmployeeById(contactId);
+            if(null != shopEmployeeVo){
+                contactVo = EContactFactory.getInstance().buildEContactVo(shopEmployeeVo);
+            }
+            if(null == contactVo){
+                clientVo = ClientDBUtil.getInstance().queryClientByClientID(contactId);
+                if(null != clientVo){
+                    contactVo = EContactFactory.getInstance().buildEContactVo(clientVo);
+                }
+            }
+            if(null != contactVo){
+                String employeeName = contactVo.getContactName();
+                teamTitle.append(employeeName).append("、");
+            }
         }
         teamTitle.append(CacheUtil.getInstance().getUserName()).append("、");
         if(!TextUtils.isEmpty(teamTitle)){

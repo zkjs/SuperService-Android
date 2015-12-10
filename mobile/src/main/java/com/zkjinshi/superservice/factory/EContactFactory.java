@@ -2,9 +2,12 @@ package com.zkjinshi.superservice.factory;
 
 import android.text.TextUtils;
 
+import com.zkjinshi.superservice.bean.MemberBean;
 import com.zkjinshi.superservice.vo.ClientVo;
 import com.zkjinshi.superservice.vo.EContactVo;
 import com.zkjinshi.superservice.vo.ShopEmployeeVo;
+
+import java.util.ArrayList;
 
 /**
  * 开发者：JimmyZhang
@@ -23,6 +26,15 @@ public class EContactFactory {
             instance = new EContactFactory();
         }
         return instance;
+    }
+
+    public EContactVo buildEContactVo(MemberBean memberBean){
+        EContactVo contactVo = new EContactVo();
+        if(null != memberBean){
+            contactVo.setContactName(memberBean.getUsername());
+            contactVo.setContactId(memberBean.getUserid());
+        }
+        return contactVo;
     }
 
     public EContactVo buildEContactVo(ShopEmployeeVo shopEmployeeVo){

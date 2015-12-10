@@ -351,4 +351,13 @@ public class ProtocolUtil {
     public static String geTicketListUrl(){
         return ConfigUtil.getInst().getHttpDomain()+"user/fplist";
     }
+
+    /**
+     * 获取环信群成员
+     * @return
+     */
+    public static String getGroupMemberUrl(){
+
+        return ConfigUtil.getInst().getHttpDomain()+"hxim/member";
+    }
 }

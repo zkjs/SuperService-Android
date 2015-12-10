@@ -324,7 +324,7 @@ public class MessageListViewManager extends Handler implements MsgListView.IXLis
                 String username = null;
                 // 群组消息
                 if (newMessage.getChatType() == EMMessage.ChatType.GroupChat || newMessage.getChatType() == EMMessage.ChatType.ChatRoom) {
-                    username = newMessage.getFrom();
+                    username = newMessage.getTo();
                 } else {
                     // 单聊消息
                     username = newMessage.getFrom();
