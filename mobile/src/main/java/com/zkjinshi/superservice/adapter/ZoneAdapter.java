@@ -49,6 +49,26 @@ public class ZoneAdapter extends BaseAdapter{
         }
     }
 
+    public String[] getLocIds(){
+        String[] topics = null;
+        ArrayList<ZoneBean> selectZoneList = new ArrayList<ZoneBean>();
+        if(null != zoneList && !zoneList.isEmpty()){
+            for(int i=0;i<zoneList.size();i++){
+                ZoneBean zoneBean = zoneList.get(i);
+                if(zoneBean.isHasAdd()){
+                    selectZoneList.add(zoneBean);
+                }
+            }
+        }
+        if(null != selectZoneList && !selectZoneList.isEmpty()){
+           topics = new String[selectZoneList.size()];
+            for(int i = 0; i < selectZoneList.size(); i++){
+                topics[i] = ""+selectZoneList.get(i).getLocid();
+            }
+        }
+        return  topics;
+    }
+
     public String getCheckedIds(){
         String ids = "";
         if(zoneList == null){

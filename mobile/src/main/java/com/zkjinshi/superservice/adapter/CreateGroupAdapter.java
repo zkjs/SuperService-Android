@@ -41,7 +41,6 @@ public class CreateGroupAdapter extends  RecyclerView.Adapter<RecyclerView.ViewH
     private List<ShopEmployeeVo> mList;
     private Context mContext;
     private DisplayImageOptions options;
-    private Map<Integer, Boolean> checkedMap = new HashMap<Integer, Boolean>();
     private RecyclerItemClickListener mRecyclerItemClickListener;
 
     public CreateGroupAdapter(Context mContext, List<ShopEmployeeVo> list) {
@@ -56,9 +55,17 @@ public class CreateGroupAdapter extends  RecyclerView.Adapter<RecyclerView.ViewH
                 .build();
     }
 
-    public void setCheckedMap(Map<Integer, Boolean> checkedMap) {
-        this.checkedMap = checkedMap;
-        this.notifyDataSetChanged();
+    private Map<Integer, Boolean> selectMap;
+    private Map<Integer, Boolean> enabledMap;
+
+    public void setSelectMap(Map<Integer, Boolean> selectMap) {
+        this.selectMap = selectMap;
+        notifyDataSetChanged();
+    }
+
+    public void setEnabledMap(Map<Integer, Boolean> enabledMap) {
+        this.enabledMap = enabledMap;
+        notifyDataSetChanged();
     }
 
     @Override
@@ -121,18 +128,24 @@ public class CreateGroupAdapter extends  RecyclerView.Adapter<RecyclerView.ViewH
             }
         });
 
-        //set the checkbox
         ((ContactViewHolder) holder).cbCheck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                checkedMap.put(position, isChecked);
+                selectMap.put(position, isChecked);
             }
         });
 
-        if(checkedMap.containsKey(position) && checkedMap.get(position)){
+        if(null != selectMap && selectMap.containsKey(position) && selectMap.get(position)){
             ((ContactViewHolder) holder).cbCheck.setChecked(true);
         } else {
             ((ContactViewHolder) holder).cbCheck.setChecked(false);
+        }
+
+        if (enabledMap != null && enabledMap.containsKey(position)
+                && enabledMap.get(position)) {
+            ((ContactViewHolder) holder).cbCheck.setEnabled(false);
+        } else {
+            ((ContactViewHolder) holder).cbCheck.setEnabled(true);
         }
     }
 

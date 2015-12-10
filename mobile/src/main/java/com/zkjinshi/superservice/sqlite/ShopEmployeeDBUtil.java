@@ -9,6 +9,7 @@ import com.zkjinshi.base.log.LogLevel;
 import com.zkjinshi.base.log.LogUtil;
 import com.zkjinshi.superservice.ServiceApplication;
 import com.zkjinshi.superservice.factory.ShopEmployeeFactory;
+import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.vo.ShopEmployeeVo;
 
 import java.util.ArrayList;

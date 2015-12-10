@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,13 +25,20 @@ import com.easemob.chat.EMChatManager;
 import com.easemob.chat.EMGroup;
 import com.easemob.chat.EMGroupManager;
 import com.easemob.exceptions.EaseMobException;
+import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
+import com.google.gson.reflect.TypeToken;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.base.util.DisplayUtil;
 import com.zkjinshi.base.view.CustomDialog;
 import com.zkjinshi.superservice.R;
+import com.zkjinshi.superservice.activity.chat.group.controller.GroupMemberController;
 import com.zkjinshi.superservice.activity.common.MainActivity;
 import com.zkjinshi.superservice.adapter.ChatDetailAdapter;
+import com.zkjinshi.superservice.bean.MemberBean;
 import com.zkjinshi.superservice.factory.EContactFactory;
+import com.zkjinshi.superservice.net.ExtNetRequestListener;
+import com.zkjinshi.superservice.net.NetResponse;
 import com.zkjinshi.superservice.sqlite.ClientDBUtil;
 import com.zkjinshi.superservice.sqlite.ShopEmployeeDBUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
@@ -38,6 +46,7 @@ import com.zkjinshi.superservice.vo.ClientVo;
 import com.zkjinshi.superservice.vo.EContactVo;
 import com.zkjinshi.superservice.vo.ShopEmployeeVo;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,6 +59,8 @@ import java.util.List;
  */
 public class GroupDetailActivity extends Activity{
 
+    public static final String TAG = GroupDetailActivity.class.getSimpleName();
+
     public static final int MODIFY_GROUP_NAME_REQUEST_CODE = 1;
 
     private TextView titleTv;
@@ -61,9 +72,7 @@ public class GroupDetailActivity extends Activity{
     private GridView shopEmpGv;
     private String groupId;
     private EMGroup group;
-    private List<String> memberList;
-    private ClientVo clientVo;
-    private ShopEmployeeVo shopEmployeeVo;
+    private List<MemberBean> memberList;
     private CheckBox blockMessageCb;
     private RelativeLayout blockMessageLayout,clearHistoryLayout,groupNameLayout;
     private Button dissolveBtn,quitBtn;
@@ -194,24 +203,12 @@ public class GroupDetailActivity extends Activity{
      * 设置联系人集合
      * @param memberList
      */
-    private ArrayList<EContactVo> setContactList(List<String> memberList){
-        boolean isSucc = false;
-        for (String memberId : memberList){
-            isSucc = false;
-            shopEmployeeVo = ShopEmployeeDBUtil.getInstance().queryEmployeeById(memberId);
-            if(null != shopEmployeeVo){
-                contactVo = EContactFactory.getInstance().buildEContactVo(shopEmployeeVo);
-                if(null != contactVo &&!contactList.contains(contactVo)){
-                    isSucc = contactList.add(contactVo);
-                }
-            }
-            if(!isSucc){
-                clientVo = ClientDBUtil.getInstance().queryClientByClientID(memberId);
-                if(null != clientVo){
-                    contactVo = EContactFactory.getInstance().buildEContactVo(clientVo);
-                    if(null != contactVo && !contactList.contains(contactVo)){
-                        contactList.add(contactVo);
-                    }
+    private ArrayList<EContactVo> setContactList(List<MemberBean> memberList){
+        if(null != memberList && !memberList.isEmpty()){
+            for(MemberBean member : memberList){
+                contactVo = EContactFactory.getInstance().buildEContactVo(member);
+                if(null != contactList && !contactList.contains(contactVo)){
+                    contactList.add(contactVo);
                 }
             }
         }
@@ -248,55 +245,49 @@ public class GroupDetailActivity extends Activity{
      */
     private void requestGroupTask(final String groupId,final GridView gridView,final TextView groupNameTv){
 
-        new AsyncTask<Void,Void,Void>(){
-
+        GroupMemberController.getInstance().requestGroupMembersTask(groupId,new ExtNetRequestListener(GroupDetailActivity.this) {
             @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-                DialogUtil.getInstance().showProgressDialog(GroupDetailActivity.this);
+            public void onNetworkRequestError(int errorCode, String errorMessage) {
+                super.onNetworkRequestError(errorCode, errorMessage);
+                Log.i(TAG, "errorCode:" + errorCode);
+                Log.i(TAG, "errorMessage:" + errorMessage);
             }
 
             @Override
-            protected Void doInBackground(Void... params) {
-                try {
-                    group =  EMGroupManager.getInstance().getGroupFromServer(groupId);
-                } catch (EaseMobException e) {
-                    e.printStackTrace();
-                }
-                if(null != group){
-                    memberList = group.getMembers();
-                    if(null != memberList && memberList.size() > 0){
+            public void onNetworkResponseSucceed(NetResponse result) {
+                super.onNetworkResponseSucceed(result);
+                if(null != result && !TextUtils.isEmpty(result.rawResult)){
+                    try {
+                        Log.i(TAG, "result:" + result.rawResult);
+                        Type listType = new TypeToken<ArrayList<MemberBean>>(){}.getType();
+                        Gson gson = new Gson();
+                        memberList = gson.fromJson(result.rawResult, listType);
                         contactList = setContactList(memberList);
-                    }
-                }
-                chatDetailAdapter = new ChatDetailAdapter(GroupDetailActivity.this, contactList);
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Void aVoid) {
-                super.onPostExecute(aVoid);
-                DialogUtil.getInstance().cancelProgressDialog();
-                gridView.setAdapter(chatDetailAdapter);
-                setGridViewHeightBasedOnChildren(gridView);
-                if(null != group){
-                    String groupName = group.getGroupName();
-                    if(!TextUtils.isEmpty(groupName)){
-                        groupNameTv.setText(groupName);
-                    }
-                    boolean msgBlocked = group.isMsgBlocked();
-                    blockMessageCb.setChecked(msgBlocked);
-                    String ownerId = group.getOwner();
-                    if(!TextUtils.isEmpty(ownerId) && ownerId.equals(CacheUtil.getInstance().getUserId())){
-                        dissolveBtn.setVisibility(View.VISIBLE);
-                        quitBtn.setVisibility(View.GONE);
-                    }else{
-                        dissolveBtn.setVisibility(View.GONE);
-                        quitBtn.setVisibility(View.VISIBLE);
+                        chatDetailAdapter = new ChatDetailAdapter(GroupDetailActivity.this, contactList);
+                        gridView.setAdapter(chatDetailAdapter);
+                        setGridViewHeightBasedOnChildren(gridView);
+                        if(null != group){
+                            String groupName = group.getGroupName();
+                            if(!TextUtils.isEmpty(groupName)){
+                                groupNameTv.setText(groupName);
+                            }
+                            boolean msgBlocked = group.isMsgBlocked();
+                            blockMessageCb.setChecked(msgBlocked);
+                            String ownerId = group.getOwner();
+                            if(!TextUtils.isEmpty(ownerId) && ownerId.equals(CacheUtil.getInstance().getUserId())){
+                                dissolveBtn.setVisibility(View.VISIBLE);
+                                quitBtn.setVisibility(View.GONE);
+                            }else{
+                                dissolveBtn.setVisibility(View.GONE);
+                                quitBtn.setVisibility(View.VISIBLE);
+                            }
+                        }
+                    } catch (JsonSyntaxException e) {
+                        e.printStackTrace();
                     }
                 }
             }
-        }.execute();
+        },GroupDetailActivity.this);
     }
 
     /**

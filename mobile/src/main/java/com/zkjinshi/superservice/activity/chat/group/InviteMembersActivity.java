@@ -1,14 +1,12 @@
 package com.zkjinshi.superservice.activity.chat.group;
 
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -17,7 +15,6 @@ import com.easemob.chat.EMGroup;
 import com.easemob.chat.EMGroupManager;
 import com.easemob.exceptions.EaseMobException;
 import com.zkjinshi.base.util.DialogUtil;
-import com.zkjinshi.base.view.CustomDialog;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.adapter.InviteTeamAdapter;
 import com.zkjinshi.superservice.factory.EContactFactory;
@@ -44,7 +41,6 @@ public class InviteMembersActivity extends Activity {
     public static final String TAG = InviteMembersActivity.class.getSimpleName();
 
     private List<String> selectList;
-    private List<EContactVo> selectContactList;
     private RelativeLayout mRlBack;
     private TextView mTvTitle;
     private RecyclerView mRcvTeamContacts;
@@ -80,7 +76,6 @@ public class InviteMembersActivity extends Activity {
 
     private void initData() {
         selectList = new ArrayList<String>();
-        selectContactList = new ArrayList<EContactVo>();
         mTvTitle.setText("邀请好友");
         mRcvTeamContacts.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(this);
@@ -121,10 +116,8 @@ public class InviteMembersActivity extends Activity {
                 contactVo = EContactFactory.getInstance().buildEContactVo(shopEmployeeVo);
                 if (selectList.contains(empID)) {
                     selectList.remove(empID);
-                    selectContactList.remove(contactVo);
                 } else {
-                    selectList.add(empID);
-                    selectContactList.add(contactVo);
+                    selectList.add(empID);;
                 }
             }
         });
@@ -149,52 +142,6 @@ public class InviteMembersActivity extends Activity {
             members[i] = shopEmployeeVos.get(i);
         }
         return members;
-    }
-
-    /**
-     * 获取群标题
-     * @param contactList
-     * @return
-     */
-    private String convertList2String(List<EContactVo> contactList){
-        StringBuilder teamTitle = new StringBuilder();
-        for(EContactVo contactVo : contactList){
-            String employeeName = contactVo.getContactName();
-            teamTitle.append(employeeName).append("、");
-        }
-        teamTitle.append(CacheUtil.getInstance().getUserName()).append("、");
-        if(!TextUtils.isEmpty(teamTitle)){
-            teamTitle.deleteCharAt(teamTitle.length()-1);
-        }
-        return teamTitle.toString();
-    }
-
-    private void showCreateGroupSuccDialog(final String groupId){
-        CustomDialog.Builder customBuilder = new CustomDialog.Builder(this);
-        customBuilder.setTitle("提示");
-        customBuilder.setMessage("创建群成功，是否打开?");
-        customBuilder.setGravity(Gravity.CENTER);
-        customBuilder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-                finish();
-            }
-        });
-        customBuilder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-                Intent intent = new Intent(InviteMembersActivity.this,ChatGroupActivity.class);
-                intent.putExtra("groupId",groupId);
-                startActivity(intent);
-                finish();
-
-            }
-        });
-        customBuilder.create().show();
     }
 
     /**
