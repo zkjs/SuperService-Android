@@ -166,6 +166,7 @@ public class PayMethodActivity  extends AppCompatActivity implements AdapterView
             @Override
             public void onNetworkResponseSucceed(NetResponse result) {
                 super.onNetworkResponseSucceed(result);
+
                 Log.i(TAG, "result.rawResult:" + result.rawResult);
                 try {
                     mPayBeanList = new Gson().fromJson(result.rawResult, new TypeToken<ArrayList<PayBean>>()

@@ -157,7 +157,7 @@ public class VoiceCallActivity extends CallActivity implements View.OnClickListe
             ringtone.play();
         }
         if(isInComingCall){
-            requestUserTask(this, username, new ExtNetRequestListener() {
+            requestUserTask(this, username, new ExtNetRequestListener(VoiceCallActivity.this) {
                 @Override
                 public void onNetworkRequestError(int errorCode, String errorMessage) {
                     Log.i(TAG,"errorCode:"+errorCode);
@@ -171,6 +171,8 @@ public class VoiceCallActivity extends CallActivity implements View.OnClickListe
 
                 @Override
                 public void onNetworkResponseSucceed(NetResponse result) {
+                    super.onNetworkResponseSucceed(result);
+
                     Log.i(TAG,"rawResult:"+result.rawResult);
                     try {
                         UserCallVo userCallVo = new Gson().fromJson(result.rawResult,UserCallVo.class);

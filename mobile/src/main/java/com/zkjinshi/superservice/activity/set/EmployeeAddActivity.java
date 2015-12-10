@@ -255,6 +255,8 @@ public class EmployeeAddActivity extends Activity {
 
                 @Override
                 public void onNetworkResponseSucceed(NetResponse result) {
+                    super.onNetworkResponseSucceed(result);
+
                     Log.i(TAG, "result.rawResult:" + result.rawResult);
                     try {
                         ArrayList<DepartmentVo> dlist = new Gson().fromJson(result.rawResult, new TypeToken<ArrayList<DepartmentVo>>() {
@@ -369,6 +371,8 @@ public class EmployeeAddActivity extends Activity {
 
             @Override
             public void onNetworkResponseSucceed(NetResponse result) {
+                super.onNetworkResponseSucceed(result);
+
                 Log.i(TAG, "result.rawResult:" + result.rawResult);
                 try{
                     ImportSempBean importSempBean = new Gson().fromJson(result.rawResult,ImportSempBean.class);

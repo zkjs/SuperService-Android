@@ -293,6 +293,7 @@ public class NoticeFragment extends Fragment implements IMessageObserver{
 
                             @Override
                             public void onNetworkResponseSucceed(NetResponse result) {
+                                super.onNetworkResponseSucceed(result);
                                 Log.i(TAG, "result.rawResult:" + result.rawResult);
                                 try {
                                     NoticeBean noticeBean = new Gson().fromJson(result.rawResult, NoticeBean.class);

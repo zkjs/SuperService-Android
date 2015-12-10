@@ -81,7 +81,7 @@ public class SplashActivity extends Activity{
                 CacheUtil.getInstance().getUserPhone(),
                 MD5Util.MD5(CacheUtil.getInstance().getPassword()),
                 false,
-                new ExtNetRequestListener() {
+                new ExtNetRequestListener(SplashActivity.this) {
                 @Override
                 public void onNetworkRequestError(int errorCode, String errorMessage) {
                     Log.i(TAG, "errorCode:" + errorCode);
@@ -95,6 +95,8 @@ public class SplashActivity extends Activity{
 
                 @Override
                 public void onNetworkResponseSucceed(NetResponse result) {
+                    super.onNetworkResponseSucceed(result);
+
                     if(null != result && !TextUtils.isEmpty(result.rawResult)){
                         Log.i(TAG, "result.rawResult:" + result.rawResult);
                         AdminLoginBean adminLoginBean = new Gson().fromJson(result.rawResult, AdminLoginBean.class);
@@ -132,7 +134,7 @@ public class SplashActivity extends Activity{
             LoginController.getInstance().requestLogin(
                 CacheUtil.getInstance().getUserPhone(),
                 false,
-                new ExtNetRequestListener() {
+                new ExtNetRequestListener(SplashActivity.this) {
                 @Override
                 public void onNetworkRequestError(int errorCode, String errorMessage) {
                     Log.i(TAG, "errorCode:" + errorCode);
@@ -146,6 +148,8 @@ public class SplashActivity extends Activity{
 
                 @Override
                 public void onNetworkResponseSucceed(NetResponse result) {
+                    super.onNetworkResponseSucceed(result);
+
                     Log.i(TAG, "result.rawResult:" + result.rawResult);
                     SempLoginBean sempLoginbean = new Gson().fromJson(result.rawResult, SempLoginBean.class);
                     if (sempLoginbean.isSet()) {

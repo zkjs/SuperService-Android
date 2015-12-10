@@ -177,6 +177,7 @@ public class GoodListActivity extends AppCompatActivity {
             @Override
             public void onNetworkResponseSucceed(NetResponse result) {
                 super.onNetworkResponseSucceed(result);
+
                 Log.i(TAG, "result.rawResult:" + result.rawResult);
                 try {
                     Type listType = new TypeToken<List<GoodInfoVo>>() {}.getType();

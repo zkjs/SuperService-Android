@@ -196,6 +196,7 @@ public class ChooseInvoiceActivity extends AppCompatActivity {
             @Override
             public void onNetworkResponseSucceed(NetResponse result) {
                 super.onNetworkResponseSucceed(result);
+
                 Log.i(TAG, "result.rawResult:" + result.rawResult);
                 try {
                     InsertResponse insertResponse = new Gson().fromJson(result.rawResult, InsertResponse.class);
@@ -254,6 +255,7 @@ public class ChooseInvoiceActivity extends AppCompatActivity {
             @Override
             public void onNetworkResponseSucceed(NetResponse result) {
                 super.onNetworkResponseSucceed(result);
+
                 Log.i(TAG, "result.rawResult:" + result.rawResult);
                 try {
                     Gson gson = new Gson();

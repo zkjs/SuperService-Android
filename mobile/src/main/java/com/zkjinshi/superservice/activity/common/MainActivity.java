@@ -259,6 +259,8 @@ public class MainActivity extends AppCompatActivity{
 
             @Override
             public void onNetworkResponseSucceed(NetResponse result) {
+                super.onNetworkResponseSucceed(result);
+
                 Log.i(TAG, "result.rawResult:" + result.rawResult);
                 BaseBean baseBean = new Gson().fromJson(result.rawResult, BaseBean.class);
                 if (baseBean.isSet()) {
@@ -433,6 +435,7 @@ public class MainActivity extends AppCompatActivity{
             @Override
             public void onNetworkResponseSucceed(NetResponse result) {
                 super.onNetworkResponseSucceed(result);
+
                 Log.i(TAG, "result.rawResult:" + result.rawResult);
                 LogUtil.getInstance().info(LogLevel.ERROR, "http退出成功");
             }

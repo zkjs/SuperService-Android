@@ -153,6 +153,7 @@ public class OrderDealActivity extends Activity {
             @Override
             public void onNetworkResponseSucceed(NetResponse result) {
                 super.onNetworkResponseSucceed(result);
+
                 Log.i(TAG, "result.rawResult:" + result.rawResult);
                 try {
                     orderDetailBean = new Gson().fromJson(result.rawResult, OrderDetailBean.class);
@@ -319,6 +320,7 @@ public class OrderDealActivity extends Activity {
             @Override
             public void onNetworkResponseSucceed(NetResponse result) {
                 super.onNetworkResponseSucceed(result);
+
                 Log.i(TAG, "result.rawResult:" + result.rawResult);
                 try {
                     CommentBean commentBean = new Gson().fromJson(result.rawResult, CommentBean.class);
@@ -544,6 +546,7 @@ public class OrderDealActivity extends Activity {
             @Override
             public void onNetworkResponseSucceed(NetResponse result) {
                 super.onNetworkResponseSucceed(result);
+
                 Log.i(TAG, "result.rawResult:" + result.rawResult);
                 try {
                     AddOrderBean addOrderBean = new Gson().fromJson(result.rawResult, AddOrderBean.class);
@@ -606,6 +609,7 @@ public class OrderDealActivity extends Activity {
             @Override
             public void onNetworkResponseSucceed(NetResponse result) {
                 super.onNetworkResponseSucceed(result);
+
                 Log.i(TAG, "result.rawResult:" + result.rawResult);
                 try {
                     AddOrderBean addOrderBean = new Gson().fromJson(result.rawResult, AddOrderBean.class);
@@ -686,6 +690,7 @@ public class OrderDealActivity extends Activity {
             @Override
             public void onNetworkResponseSucceed(NetResponse result) {
                 super.onNetworkResponseSucceed(result);
+
                 Log.i(TAG, "result.rawResult:" + result.rawResult);
                 try {
                     AddOrderBean addOrderBean = new Gson().fromJson(result.rawResult, AddOrderBean.class);

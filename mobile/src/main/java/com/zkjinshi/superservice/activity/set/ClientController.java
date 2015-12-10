@@ -110,7 +110,7 @@ public class ClientController {
         netRequest.setBizParamMap(bizMap);
         NetRequestTask netRequestTask = new NetRequestTask(context, netRequest, NetResponse.class);
         netRequestTask.methodType     = MethodType.PUSH;
-        netRequestTask.setNetRequestListener(new ExtNetRequestListener() {
+        netRequestTask.setNetRequestListener(new ExtNetRequestListener(context) {
             @Override
             public void onNetworkRequestError(int errorCode, String errorMessage) {
                 super.onNetworkRequestError(errorCode, errorMessage);

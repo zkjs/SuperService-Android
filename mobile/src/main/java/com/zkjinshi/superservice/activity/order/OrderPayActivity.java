@@ -186,6 +186,7 @@ public class OrderPayActivity  extends Activity implements AdapterView.OnItemCli
             @Override
             public void onNetworkResponseSucceed(NetResponse result) {
                 super.onNetworkResponseSucceed(result);
+
                 Log.i(TAG, "result.rawResult:" + result.rawResult);
                 try {
                     NoticeBean noticeBean = new Gson().fromJson(result.rawResult,NoticeBean.class);
@@ -241,6 +242,7 @@ public class OrderPayActivity  extends Activity implements AdapterView.OnItemCli
             @Override
             public void onNetworkResponseSucceed(NetResponse result) {
                 super.onNetworkResponseSucceed(result);
+
                 Log.i(TAG, "result.rawResult:" + result.rawResult);
                 try {
                     payBeanList = new Gson().fromJson(result.rawResult, new TypeToken<ArrayList<PayBean>>() {}.getType());

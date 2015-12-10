@@ -153,6 +153,8 @@ public class ClientDetailActivity extends Activity {
 
                 @Override
                 public void onNetworkResponseSucceed(NetResponse result) {
+                    super.onNetworkResponseSucceed(result);
+
                     Log.i(TAG, "result.rawResult:" + result.rawResult);
                     DialogUtil.getInstance().cancelProgressDialog();
                     String jsonResult = result.rawResult;

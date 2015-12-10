@@ -183,6 +183,7 @@
             <LinearLayout
                 android:id="@+id/ll_order_date"
                 android:clickable="true"
+                android:layout_marginTop="10dp"
                 android:background="@drawable/bg_btn_default"
                 android:orientation="vertical"
                 android:layout_width="match_parent"

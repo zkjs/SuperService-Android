@@ -100,7 +100,8 @@ public class LoginActivity extends Activity implements VerifyPhoneControler.Succ
             return;
         }
         //LogUtil.getInstance().info(LogLevel.INFO,"服务员开始登陆。。。");
-        LoginController.getInstance().requestLogin(phone, true, new ExtNetRequestListener() {
+        LoginController.getInstance().requestLogin(phone, true,
+            new ExtNetRequestListener(LoginActivity.this) {
             @Override
             public void onNetworkRequestError(int errorCode, String errorMessage) {
                 Log.i(TAG, "errorCode:" + errorCode);
@@ -114,6 +115,7 @@ public class LoginActivity extends Activity implements VerifyPhoneControler.Succ
 
             @Override
             public void onNetworkResponseSucceed(NetResponse result) {
+                super.onNetworkResponseSucceed(result);
                 Log.i(TAG, "result.rawResult:" + result.rawResult);
                 SempLoginBean sempLoginbean = new Gson().fromJson(result.rawResult, SempLoginBean.class);
                 if (sempLoginbean.isSet()) {

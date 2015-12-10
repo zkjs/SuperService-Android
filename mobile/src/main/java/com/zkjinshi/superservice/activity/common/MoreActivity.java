@@ -216,8 +216,10 @@ public class MoreActivity extends FragmentActivity implements MultiImageSelector
 
             @Override
             public void onNetworkResponseSucceed(NetResponse result) {
+                super.onNetworkResponseSucceed(result);
+
                 Log.i(TAG, "result.rawResult:" + result.rawResult);
-                 BaseBean baseBean = new Gson().fromJson(result.rawResult, BaseBean.class);
+                BaseBean baseBean = new Gson().fromJson(result.rawResult, BaseBean.class);
                 if (baseBean.isSet()) {
                     userVo.setSex(sexCbx.isChecked() ? SexType.MALE : SexType.FEMALE);
                     userVo.setUserName(name);

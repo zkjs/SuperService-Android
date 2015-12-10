@@ -179,7 +179,7 @@ public class VideoCallActivity extends CallActivity implements View.OnClickListe
         }
 
         if(isInComingCall){
-            requestUserTask(this, username, new ExtNetRequestListener() {
+            requestUserTask(this, username, new ExtNetRequestListener(VideoCallActivity.this) {
                 @Override
                 public void onNetworkRequestError(int errorCode, String errorMessage) {
                     Log.i(TAG, "errorCode:" + errorCode);
@@ -193,6 +193,7 @@ public class VideoCallActivity extends CallActivity implements View.OnClickListe
 
                 @Override
                 public void onNetworkResponseSucceed(NetResponse result) {
+                    super.onNetworkResponseSucceed(result);
 
                     Log.i(TAG, "rawResult:" + result.rawResult);
                     try {

@@ -138,7 +138,8 @@ public class OrderGoodsActivity extends Activity implements AdapterView.OnItemCl
         NetRequest netRequest = new NetRequest(ProtocolUtil.getGoodslistUrl(userVo.getShopId()));
         NetRequestTask netRequestTask = new NetRequestTask(this,netRequest, NetResponse.class);
         netRequestTask.methodType = MethodType.GET;
-        netRequestTask.setNetRequestListener(new ExtNetRequestListener() {
+        netRequestTask.setNetRequestListener(
+            new ExtNetRequestListener(OrderGoodsActivity.this) {
             @Override
             public void onNetworkRequestError(int errorCode, String errorMessage) {
                 Log.i(TAG, "errorCode:" + errorCode);
@@ -152,6 +153,8 @@ public class OrderGoodsActivity extends Activity implements AdapterView.OnItemCl
 
             @Override
             public void onNetworkResponseSucceed(NetResponse result) {
+                super.onNetworkResponseSucceed(result);
+
                 Log.i(TAG, "result.rawResult:" + result.rawResult);
                 try {
                     ArrayList<GoodBean> goodList = new Gson().fromJson(result.rawResult, new TypeToken<ArrayList<GoodBean>>() {

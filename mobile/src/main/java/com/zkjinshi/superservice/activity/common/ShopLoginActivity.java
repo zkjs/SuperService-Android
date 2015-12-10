@@ -89,7 +89,8 @@ public class ShopLoginActivity extends Activity{
             return;
         }
        // LogUtil.getInstance().info(LogLevel.INFO,"管理员开始登陆。。。");
-        LoginController.getInstance().requestAdminLogin(phone, MD5Util.MD5(password),true,new ExtNetRequestListener() {
+        LoginController.getInstance().requestAdminLogin(phone, MD5Util.MD5(password),true,
+            new ExtNetRequestListener(ShopLoginActivity.this) {
             @Override
             public void onNetworkRequestError(int errorCode, String errorMessage) {
                 Log.i(TAG, "errorCode:" + errorCode);
@@ -103,6 +104,8 @@ public class ShopLoginActivity extends Activity{
 
             @Override
             public void onNetworkResponseSucceed(NetResponse result) {
+                super.onNetworkResponseSucceed(result);
+
                 if(null != result && !TextUtils.isEmpty(result.rawResult)){
                     Log.i(TAG, "result.rawResult:" + result.rawResult);
                     AdminLoginBean adminLoginBean = new Gson().fromJson(result.rawResult, AdminLoginBean.class);

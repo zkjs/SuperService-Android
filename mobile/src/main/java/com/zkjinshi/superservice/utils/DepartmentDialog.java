@@ -110,6 +110,8 @@ public class DepartmentDialog  extends Dialog {
 
             @Override
             public void onNetworkResponseSucceed(NetResponse result) {
+                super.onNetworkResponseSucceed(result);
+
                 Log.i(TAG, "result.rawResult:" + result.rawResult);
                 try{
                     ArrayList<DepartmentVo> depts = new Gson().fromJson(result.rawResult, new TypeToken< ArrayList<DepartmentVo>>(){}.getType());
