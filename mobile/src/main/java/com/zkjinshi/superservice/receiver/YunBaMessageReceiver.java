@@ -14,8 +14,6 @@ import com.zkjinshi.base.util.TimeUtil;
 import com.zkjinshi.superservice.bean.BookOrderBean;
 import com.zkjinshi.superservice.bean.LocPushBean;
 import com.zkjinshi.superservice.bean.NoticeBean;
-import com.zkjinshi.superservice.entity.MsgEmpStatusCountRSP;
-import com.zkjinshi.superservice.entity.MsgPushTriggerLocNotificationM2S;
 import com.zkjinshi.superservice.net.ExtNetRequestListener;
 import com.zkjinshi.superservice.net.MethodType;
 import com.zkjinshi.superservice.net.NetRequest;

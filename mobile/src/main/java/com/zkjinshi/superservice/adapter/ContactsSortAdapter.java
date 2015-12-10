@@ -162,8 +162,6 @@ public class ContactsSortAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 ((ClientViewHolder)holder).tvContactName.setText(clientName);
             }
         }
-
-        //星星表示 是否为绑定我的专属客服的客户
         ContactType contactType = sortModel.getContactType();
         if(contactType == ContactType.NORMAL){
             ((ClientViewHolder)holder).ivStar.setVisibility(View.VISIBLE);
@@ -171,15 +169,7 @@ public class ContactsSortAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         }else {
             ((ClientViewHolder)holder).ivStar.setVisibility(View.GONE);
         }
-
-        //设置显示在线状态时间
-        if(sortModel.getIsOnLine() == OnlineStatus.ONLINE) {
-            ((ClientViewHolder)holder).tvContactOnLine.setTextColor(Color.BLUE);
-            ((ClientViewHolder)holder).tvContactOnLine.setText(mContext.getString(R.string.online));
-        } else {
-            ((ClientViewHolder)holder).tvContactOnLine.setTextColor(Color.GRAY);
-            ((ClientViewHolder)holder).tvContactOnLine.setText(mContext.getString(R.string.offline));
-        }
+        ((ClientViewHolder)holder).tvContactOnLine.setVisibility(View.INVISIBLE);
         ((ClientViewHolder) holder).civContactAvatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -193,8 +183,6 @@ public class ContactsSortAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 }
             }
         });
-        //TODO 1.显示客户订单描述
-        //TODO 2.显示客户在线状态
     }
 
     public void setOnItemClickListener(RecyclerItemClickListener listener) {

@@ -33,7 +33,6 @@ import com.zkjinshi.superservice.net.MethodType;
 import com.zkjinshi.superservice.net.NetRequest;
 import com.zkjinshi.superservice.net.NetRequestTask;
 import com.zkjinshi.superservice.net.NetResponse;
-import com.zkjinshi.superservice.request.MsgUserDefineTool;
 import com.zkjinshi.superservice.sqlite.DBOpenHelper;
 import com.zkjinshi.superservice.sqlite.UserDBUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
@@ -696,16 +695,6 @@ public class OrderDealActivity extends Activity {
                     AddOrderBean addOrderBean = new Gson().fromJson(result.rawResult, AddOrderBean.class);
                     if(addOrderBean.isSet()){
                         DialogUtil.getInstance().showToast(OrderDealActivity.this,"订单添加成功。\n订单号是："+addOrderBean.getReservation_no());
-                        //确认成功订单，发送IM消息
-                      /*  MsgUserDefine msgUserDefine = MsgUserDefineTool.buildSuccMsgUserDefine(
-                                CacheUtil.getInstance().getUserId(),
-                                orderDetailBean.getRoom().getGuestid(),
-                                addOrderBean.getReservation_no(),
-                                orderDetailBean.getRoom().getShopid()
-                        );
-                        Gson gson = new Gson();
-                        String jsonMsg = gson.toJson(msgUserDefine);
-                        WebSocketManager.getInstance().sendMessage(jsonMsg);*/
                         EMConversationHelper.getInstance().sendOrderCmdMessage(orderDetailBean.getRoom().getShopid(), addOrderBean.getReservation_no(), orderDetailBean.getRoom().getGuestid(), new EMCallBack() {
                             @Override
                             public void onSuccess() {
@@ -726,8 +715,6 @@ public class OrderDealActivity extends Activity {
                         finish();
                     }else{
                         DialogUtil.getInstance().showToast(OrderDealActivity.this,"订单添加失败");
-                        //确认失败订单，发送IM消息
-                        MsgUserDefineTool.buildFailMsgUserDefine( CacheUtil.getInstance().getUserId(),  orderDetailBean.getRoom().getGuestid());
                         Log.e(TAG,addOrderBean.getErr());
                     }
                 } catch (Exception e) {

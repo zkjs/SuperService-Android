@@ -22,7 +22,6 @@ import com.zkjinshi.base.log.LogUtil;
 import com.zkjinshi.base.net.util.ImCacheUtil;
 import com.zkjinshi.base.util.BaseContext;
 import com.zkjinshi.base.util.DeviceUtils;
-import com.zkjinshi.superservice.activity.chat.single.actions.MessageSendFailChecker;
 import com.zkjinshi.superservice.emchat.EasemobIMHelper;
 import com.zkjinshi.superservice.emchat.observer.EGroupReomveListener;
 import com.zkjinshi.superservice.receiver.ECallReceiver;
@@ -61,7 +60,6 @@ public class ServiceApplication extends Application{
         initImCache();
         initCache();
         initLog();
-        initChecker();
         initDevice();
         initFace();
         initImageLoader();
@@ -194,11 +192,4 @@ public class ServiceApplication extends Application{
         EmotionUtil.getInstance().initEmotion();
     }
 
-    /**
-     * 初始化发送状态更新Checker
-     */
-    private void initChecker() {
-        MessageSendFailChecker.getInstance().startCheckMessages();
-        MessageSendFailChecker.getInstance().resetSendFailMessages();
-    }
 }

@@ -225,22 +225,13 @@ public class TeamContactsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             });
 
             if(!TextUtils.isEmpty(empName)){
-                //去除wen
                 if("?".equals(empName.trim().substring(0, 1))) {
                     ((ContactViewHolder)holder).tvContactName.setText(empName.substring(1));
                 }else {
                     ((ContactViewHolder)holder).tvContactName.setText(empName);
                 }
             }
-
-            //设置显示在线状态时间
-            if(shopEmployeeVo.getOnline_status() == OnlineStatus.ONLINE) {
-                ((ContactViewHolder)holder).tvContactOnLine.setTextColor(Color.BLUE);
-                ((ContactViewHolder)holder).tvContactOnLine.setText(mContext.getString(R.string.online));
-            } else {
-                ((ContactViewHolder)holder).tvContactOnLine.setTextColor(Color.GRAY);
-                ((ContactViewHolder)holder).tvContactOnLine.setText(mContext.getString(R.string.offline));
-            }
+            ((ContactViewHolder)holder).tvContactOnLine.setVisibility(View.INVISIBLE);
         }
 
     }
@@ -265,9 +256,7 @@ public class TeamContactsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             flContactAvatar  = (FrameLayout) view.findViewById(R.id.fl_contact_avatar);
             civContactAvatar = (CircleImageView) view.findViewById(R.id.civ_contact_avatar);
             tvContactAvatar = (TextView) view.findViewById(R.id.tv_contact_avatar);
-            tvContactName    = (TextView) view.findViewById(R.id.tv_contact_name);
-//            rlContactStatus  = (RelativeLayout) view.findViewById(R.id.rl_contact_status);
-//            tvContactStatus    = (TextView) view.findViewById(R.id.tv_contact_status);
+            tvContactName    = (TextView) view.findViewById(R.id.tv_contact_name);;
             rlContactOnStatus  = (RelativeLayout) view.findViewById(R.id.rl_contact_on_status);
             tvContactOnLine    = (TextView) view.findViewById(R.id.tv_contact_on_line);
             this.mItemClickListener = itemClickListener;

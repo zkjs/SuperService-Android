@@ -9,52 +9,31 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
 import com.zkjinshi.base.net.core.WebSocketManager;
-import com.zkjinshi.base.net.observer.IMessageObserver;
-import com.zkjinshi.base.net.observer.MessageSubject;
-import com.zkjinshi.base.net.protocol.ProtocolMSG;
-import com.zkjinshi.base.util.Constants;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.base.util.DisplayUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.chat.single.ChatActivity;
 import com.zkjinshi.superservice.adapter.TeamContactsAdapter;
 import com.zkjinshi.superservice.bean.TeamContactBean;
-import com.zkjinshi.superservice.entity.EmpStatusRecord;
-import com.zkjinshi.superservice.entity.MsgBuildSession;
-import com.zkjinshi.superservice.entity.MsgBuildSessionRSP;
-import com.zkjinshi.superservice.entity.MsgEmpStatus;
-import com.zkjinshi.superservice.entity.MsgEmpStatusRSP;
-import com.zkjinshi.superservice.entity.MsgIMSessionUser;
-import com.zkjinshi.superservice.entity.MsgSessionMemberInfo;
-import com.zkjinshi.superservice.entity.MsgShopSessionSearchRSP;
 import com.zkjinshi.superservice.listener.GetTeamContactsListener;
 import com.zkjinshi.superservice.listener.RecyclerItemClickListener;
 import com.zkjinshi.superservice.sqlite.ShopEmployeeDBUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.view.AutoSideBar;
 import com.zkjinshi.superservice.vo.IdentityType;
-import com.zkjinshi.superservice.vo.MsgAdmin;
 import com.zkjinshi.superservice.vo.OnlineStatus;
 import com.zkjinshi.superservice.vo.ShopEmployeeVo;
-import com.zkjinshi.superservice.vo.WorkStatus;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 团队联系人显示界面
@@ -63,7 +42,7 @@ import java.util.Map;
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class TeamContactsActivity extends AppCompatActivity implements IMessageObserver{
+public class TeamContactsActivity extends AppCompatActivity{
 
     private final static String TAG = TeamContactsActivity.class.getSimpleName();
 
@@ -89,9 +68,6 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
 
     private IdentityType mUserType;
 
-    private MsgIMSessionUser mFromUser;
-    private MsgIMSessionUser mToUser;
-
     private Handler handler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
@@ -109,8 +85,6 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_team_contacts);
-
-        addObservers();
         initView();
         initData();
         initListener();
@@ -233,20 +207,6 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
                             DialogUtil.getInstance().cancelProgressDialog();
                             mTeamContactAdapter.updateListView(mShopEmployeeVos);
                         }
-
-                        //发送查询团队是否在线请求
-                        MsgEmpStatus msgEmpStatus = new MsgEmpStatus();
-                        msgEmpStatus.setType(ProtocolMSG.MSG_ShopEmpStatus);
-                        msgEmpStatus.setTimestamp(System.currentTimeMillis());
-                        msgEmpStatus.setShopid(mShopID);
-                        msgEmpStatus.setEmps(empids);
-
-                        Gson gson = new Gson();
-                        String jsonMsgEmpStatus = gson.toJson(msgEmpStatus, MsgEmpStatus.class);
-                        Message getOnlineMsg = Message.obtain();
-                        getOnlineMsg.what = GET_CONTACTS_ONLINE_STATUS;
-                        getOnlineMsg.obj  = jsonMsgEmpStatus;
-                        handler.sendMessageDelayed(getOnlineMsg, 2000);
                         //更新数据库数据
                         ShopEmployeeDBUtil.getInstance().batchAddShopEmployees(shopEmployeeVos);
                     }
@@ -352,161 +312,6 @@ public class TeamContactsActivity extends AppCompatActivity implements IMessageO
             getMenuInflater().inflate(R.menu.menu_team_for_waiter, menu);
         }
         return true;
-    }
-
-    private void addObservers() {
-        MessageSubject.getInstance().addObserver(this, ProtocolMSG.MSG_ShopEmpStatus_RSP);
-        MessageSubject.getInstance().addObserver(this, ProtocolMSG.MSG_ShopSessionSearch_RSP);
-        MessageSubject.getInstance().addObserver(this, ProtocolMSG.MSG_BuildSession_RSP);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        MessageSubject.getInstance().removeObserver(this, ProtocolMSG.MSG_ShopEmpStatus_RSP);
-        MessageSubject.getInstance().removeObserver(this, ProtocolMSG.MSG_ShopSessionSearch_RSP);
-        MessageSubject.getInstance().removeObserver(this, ProtocolMSG.MSG_BuildSession_RSP);
-    }
-
-    @Override
-    public void receive(String message) {
-        System.out.print("message:" + message);
-        if(TextUtils.isEmpty(message)){
-            return ;
-        }
-
-        Gson gson = null;
-        if(null == gson )
-            gson = new Gson();
-
-        try {
-            JSONObject messageObj = new JSONObject(message);
-            int type = messageObj.getInt("type");
-
-            if (type == ProtocolMSG.MSG_ShopEmpStatus_RSP) {
-                MsgEmpStatusRSP msgEmpStatusRSP = gson.fromJson(message, MsgEmpStatusRSP.class);
-                if(null != msgEmpStatusRSP && mShopID.equals(msgEmpStatusRSP.getShopid())){
-                    List<EmpStatusRecord> empStatusRecords = msgEmpStatusRSP.getResult();
-                    Map<String, EmpStatusRecord> empStatusRecordMap = new HashMap<>();
-
-                    //接收服务器返回在线员工数组
-                    for(EmpStatusRecord empStatusRecord : empStatusRecords){
-                        empStatusRecordMap.put(empStatusRecord.getEmpid(), empStatusRecord);
-                    }
-
-                    //接收服务器返回在线员工数组
-                    for(int i=0; i< mShopEmployeeVos.size(); i++){
-                        ShopEmployeeVo shopEmployeeVo = mShopEmployeeVos.get(i);
-                        String empID = shopEmployeeVo.getEmpid();
-                        if(empStatusRecordMap.containsKey(empID)){
-                            EmpStatusRecord empStatusRecord = empStatusRecordMap.get(empID);
-
-                            //获得员工是否服务器在线
-                            if(empStatusRecord.getOnlinestatus() == OnlineStatus.ONLINE.getValue()){
-                                shopEmployeeVo.setOnline_status(OnlineStatus.ONLINE);
-                                //获得登录时间
-                                Long LatestOnlineTime = empStatusRecord.getLogintimestamp();
-                                shopEmployeeVo.setLastOnLineTime(LatestOnlineTime);
-
-                            } else {
-                                shopEmployeeVo.setOnline_status(OnlineStatus.OFFLINE);
-                                Long LatestOnlineTime = ShopEmployeeDBUtil.getInstance().queryLatestOnlineByEmpID(empID);
-                                shopEmployeeVo.setLastOnLineTime(LatestOnlineTime);
-                            }
-
-                            //获得员工是否工作中
-                            if(empStatusRecord.getWorkstatus() == WorkStatus.ONWORK.getValue()){
-                                shopEmployeeVo.setWork_status(WorkStatus.ONWORK);
-                            } else {
-                                shopEmployeeVo.setWork_status(WorkStatus.OFFWORK);
-                            }
-                            //更新数据库
-                            ShopEmployeeDBUtil.getInstance().addShopEmployee(shopEmployeeVo);
-                            mShopEmployeeVos.remove(i);
-                            mShopEmployeeVos.add(i, shopEmployeeVo);
-                        }
-                    }
-                    mTeamContactAdapter.updateListView(mShopEmployeeVos);
-                }
-            }
-
-            //会话查询协议
-            if (type == ProtocolMSG.MSG_ShopSessionSearch_RSP) {
-                //TODO: 判断服务器此sessionID是否存在
-                MsgShopSessionSearchRSP msgShopSessionSearchRSP = gson.fromJson(message,
-                        MsgShopSessionSearchRSP.class);
-                int result = msgShopSessionSearchRSP.getResult();
-                List<MsgSessionMemberInfo> msgSessionMemberInfos = msgShopSessionSearchRSP.getDetail();
-
-                //成功
-                if(result <= 0 && null != msgSessionMemberInfos && !msgSessionMemberInfos.isEmpty()){
-                    //开启单聊界面
-                    String sessionID = msgShopSessionSearchRSP.getSessionid();
-                    String shopID    = msgShopSessionSearchRSP.getShopid();
-                   /* SessionIDBuilder.getInstance().goSession(TeamContactsActivity.this,
-                                             mShopID, sessionID, mToUser.getUsername());*/
-                }else {
-                    if(null == mFromUser){
-                        mFromUser = new MsgIMSessionUser();
-                        mFromUser.setShopid(mShopID);
-                        mFromUser.setUserid(mUserID);
-                        mFromUser.setUsername(mUserName);
-                        mFromUser.setIsadmin(MsgAdmin.ISADMIN.getValue());
-                    }
-                    if(null != mFromUser && null != mToUser){
-                        String sessionName = mFromUser.getUsername() + mToUser.getUsername() + "会话";
-                        String fromID = mFromUser.getUserid();
-                        String toID   = mToUser.getUserid();
-
-                        String sessionID = SessionIDBuilder.getInstance().buildSingleSessionID(mShopID, fromID, toID);
-                        sendBuildNewSessionMsg(mShopID, sessionID, sessionName, mFromUser, mToUser);
-                    }
-                }
-            }
-
-            //建立会话协议回复
-            if (type == ProtocolMSG.MSG_BuildSession_RSP) {
-                MsgBuildSessionRSP msgBuildSessionRSP = gson.fromJson(message, MsgBuildSessionRSP.class);
-                //创建会话成功 进入聊天界面
-                if(msgBuildSessionRSP.getResult() <= 0){
-                    String sessionID = msgBuildSessionRSP.getSessionid();
-                  /*  SessionIDBuilder.getInstance().goSession(TeamContactsActivity.this, mShopID, sessionID, mToUser.getUsername());*/
-                }
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        Log.i(Constants.ZKJINSHI_BASE_TAG, TAG + ".onNetReceiveSucceed()->message:" + message);
-    }
-
-    /**
-     * 发送创建新会话请求
-     * @param shopID
-     * @param sessionID
-     * @param sessionName
-     * @param fromUser
-     * @param toUser
-     */
-    private void sendBuildNewSessionMsg(String shopID, String sessionID, String sessionName,
-                                   MsgIMSessionUser fromUser, MsgIMSessionUser toUser) {
-
-        List<MsgIMSessionUser> msgIMSessionUsers = new ArrayList<>();
-        MsgBuildSession msgBuildSession = new MsgBuildSession();
-        msgBuildSession.setType(ProtocolMSG.MSG_BuildSession);
-        msgBuildSession.setTimestamp(System.currentTimeMillis());
-        msgBuildSession.setSessionid(sessionID);
-        msgBuildSession.setSessionname(sessionName);
-        msgBuildSession.setShopid(shopID);
-        msgBuildSession.setUserid(fromUser.getUserid());
-
-        msgIMSessionUsers.add(fromUser);
-        msgIMSessionUsers.add(toUser);
-        msgBuildSession.setDetail(msgIMSessionUsers);
-
-        Gson gson = new Gson();
-        String msgBuildSessionJson = gson.toJson(msgBuildSession, MsgBuildSession.class);
-        WebSocketManager.getInstance().sendMessage(msgBuildSessionJson);
-
     }
 
 }

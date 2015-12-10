@@ -2,8 +2,6 @@ package com.zkjinshi.superservice.activity.order;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -17,7 +15,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.easemob.EMCallBack;
-import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.gson.Gson;
@@ -35,7 +32,6 @@ import com.zkjinshi.superservice.net.MethodType;
 import com.zkjinshi.superservice.net.NetRequest;
 import com.zkjinshi.superservice.net.NetRequestTask;
 import com.zkjinshi.superservice.net.NetResponse;
-import com.zkjinshi.superservice.request.MsgUserDefineTool;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.view.AmountInDecreaseView;

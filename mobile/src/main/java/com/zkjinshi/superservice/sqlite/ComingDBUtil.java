@@ -5,19 +5,11 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.zkjinshi.base.log.LogLevel;
-import com.zkjinshi.base.log.LogUtil;
 import com.zkjinshi.superservice.ServiceApplication;
-import com.zkjinshi.superservice.bean.ZoneBean;
 import com.zkjinshi.superservice.factory.ComingFactory;
-import com.zkjinshi.superservice.factory.MessageFactory;
-import com.zkjinshi.superservice.factory.ZoneFactory;
 import com.zkjinshi.superservice.vo.ComingVo;
-import com.zkjinshi.superservice.vo.MessageVo;
-import com.zkjinshi.superservice.vo.ZoneVo;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * 区域信息表操作工具类
