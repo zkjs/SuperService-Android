@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.zkjinshi.superservice"
-    android:versionCode="41"
-    android:versionName="1.4.0">
+    android:versionCode="42"
+    android:versionName="1.4.1">
 
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.VIBRATE" />
@@ -168,6 +168,7 @@
             android:name=".activity.chat.single.ChatActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize|stateHidden"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <intent-filter>
                 <action android:name="com.zkjinshi.superservice.intent.action.RELAY"/>
@@ -179,6 +180,7 @@
             android:name=".activity.chat.group.ChatGroupActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize|stateHidden"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <intent-filter>
                 <action android:name="com.zkjinshi.superservice.intent.action.RELAY"/>
@@ -442,6 +444,27 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" >
         </activity>
+
+        <!--云巴推送-->
+        <meta-data android:name="YUNBA_APPKEY" android:value="566563014407a3cd028aa72f" />
+
+        <service
+            android:name="io.yunba.android.core.YunBaService" android:exported="true"/>
+
+        <receiver android:name="io.yunba.android.core.YunBaReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.USER_PRESENT" />
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name="com.zkjinshi.superservice.receiver.YunBaMessageReceiver">
+            <intent-filter>
+                <action android:name="io.yunba.android.MESSAGE_RECEIVED_ACTION" />
+                <action android:name="io.yunba.android.PRESENCE_RECEIVED_ACTION" />
+                <category android:name="com.zkjinshi.superservice" />
+            </intent-filter>
+        </receiver>
 
     </application>
 

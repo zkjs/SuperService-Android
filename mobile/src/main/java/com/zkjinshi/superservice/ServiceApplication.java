@@ -34,6 +34,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import io.yunba.android.manager.YunBaManager;
+
 /**
  * 超级服务入口
  * 开发者：JimmyZhang
@@ -51,6 +53,7 @@ public class ServiceApplication extends Application{
     @Override
     public void onCreate() {
         super.onCreate();
+        YunBaManager.start(getApplicationContext());
         mContext = this.getApplicationContext();
         initContext();
         initEmchat();
@@ -63,6 +66,12 @@ public class ServiceApplication extends Application{
         initFace();
         initImageLoader();
         initTest();
+    }
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        //MultiDex.install(this);
     }
 
     public static Context getContext(){

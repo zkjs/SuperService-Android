@@ -46,4 +46,6 @@ public class Constants {
 
     public static final String ACTION_VOICE_RELAY = "com.zkjinshi.superservice.intent.action.RELAY";
 
+    public static final String ACTION_NOTICE = "com.zkjinshi.superservice.intent.action.NOTICE";
+
 }

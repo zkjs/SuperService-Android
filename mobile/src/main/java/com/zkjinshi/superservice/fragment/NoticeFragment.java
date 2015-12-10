@@ -1,7 +1,10 @@
 package com.zkjinshi.superservice.fragment;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -38,6 +41,7 @@ import com.zkjinshi.superservice.net.NetResponse;
 import com.zkjinshi.superservice.sqlite.ComingDBUtil;
 import com.zkjinshi.superservice.sqlite.ShopEmployeeDBUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
+import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.view.CircleStatusView;
 import com.zkjinshi.superservice.vo.ComingVo;
@@ -83,6 +87,8 @@ public class NoticeFragment extends Fragment implements IMessageObserver{
 
     private TextView emptyTips;
     private View emptyLayout,moreLayout;
+    private NoticeReceiver noticeReceiver;
+    private IntentFilter intentFilter;
 
     public static NoticeFragment newInstance() {
         return new NoticeFragment();
@@ -139,6 +145,10 @@ public class NoticeFragment extends Fragment implements IMessageObserver{
             onlineLayout.setVisibility(View.VISIBLE);
         }
 
+        noticeReceiver = new NoticeReceiver();
+        intentFilter = new IntentFilter();
+        intentFilter.addAction(Constants.ACTION_NOTICE);
+        getActivity().registerReceiver(noticeReceiver,intentFilter);
     }
 
     private void initListeners(){
@@ -226,13 +236,15 @@ public class NoticeFragment extends Fragment implements IMessageObserver{
     @Override
     public void onResume() {
         super.onResume();
-        //TODO: 随机修改圆形图片背景色
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         removeObservers();
+        if(null != noticeReceiver){
+            getActivity().unregisterReceiver(noticeReceiver);
+        }
     }
 
     @Override
@@ -331,18 +343,19 @@ public class NoticeFragment extends Fragment implements IMessageObserver{
                                         }
                                         if (null != comingVo) {
                                             ComingDBUtil.getInstance().addComing(comingVo);
-                                            notifyComingList.add(0,comingVo);
-                                            getActivity().runOnUiThread(new Runnable() {
-                                                @Override
-                                                public void run() {
-                                                    emptyLayout.setVisibility(View.GONE);
-                                                    moreLayout.setVisibility(View.VISIBLE);
-                                                    notityRecyclerView.scrollToPosition(0);
-                                                    mNotificationAdapter.setComingList(notifyComingList);
-                                                    mNotificationAdapter.notifyItemInserted(0);
-                                                }
-                                            });
-
+                                            if(!notifyComingList.contains(comingVo)){
+                                                notifyComingList.add(0,comingVo);
+                                                getActivity().runOnUiThread(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        emptyLayout.setVisibility(View.GONE);
+                                                        moreLayout.setVisibility(View.VISIBLE);
+                                                        notityRecyclerView.scrollToPosition(0);
+                                                        mNotificationAdapter.setComingList(notifyComingList);
+                                                        mNotificationAdapter.notifyItemInserted(0);
+                                                    }
+                                                });
+                                            }
                                         }
                                     }
                                 } catch (Exception e) {
@@ -434,6 +447,39 @@ public class NoticeFragment extends Fragment implements IMessageObserver{
         msgEmpStatusCount.setShopid(CacheUtil.getInstance().getShopID());
         String jsonMsgEmpStatusCount = new Gson().toJson(msgEmpStatusCount);
         WebSocketManager.getInstance().sendMessage(jsonMsgEmpStatusCount);
+    }
+
+    /**
+     * 收到云巴订阅消息,更新界面ui
+     *
+     */
+    class NoticeReceiver extends BroadcastReceiver{
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if(null != intent){
+                String action = intent.getAction();
+                if(!TextUtils.isEmpty(action) && action.equals(Constants.ACTION_NOTICE)){
+                    if(null != intent.getSerializableExtra("comingVo")){
+                        comingVo = (ComingVo) intent.getSerializableExtra("comingVo");
+                        if(null != comingVo){
+                            if(null != notifyComingList && !notifyComingList.contains(comingVo)){
+                                notifyComingList.add(0,comingVo);
+                                getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        emptyLayout.setVisibility(View.GONE);
+                                        moreLayout.setVisibility(View.VISIBLE);
+                                        notityRecyclerView.scrollToPosition(0);
+                                        mNotificationAdapter.setComingList(notifyComingList);
+                                        mNotificationAdapter.notifyItemInserted(0);
+                                    }
+                                });
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
 }
