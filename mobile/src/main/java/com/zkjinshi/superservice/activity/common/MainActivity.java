@@ -18,7 +18,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 import com.easemob.EMCallBack;
 import com.easemob.chat.EMChatManager;
 import com.easemob.chat.EMGroupManager;
@@ -26,7 +25,6 @@ import com.google.gson.Gson;
 import com.zkjinshi.base.log.LogLevel;
 import com.zkjinshi.base.log.LogUtil;
 import com.zkjinshi.base.net.core.WebSocketManager;
-import com.zkjinshi.base.net.protocol.ProtocolMSG;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.ServiceApplication;
@@ -37,8 +35,6 @@ import com.zkjinshi.superservice.bean.BaseBean;
 import com.zkjinshi.superservice.emchat.EMConversationHelper;
 import com.zkjinshi.superservice.emchat.EasemobIMHelper;
 import com.zkjinshi.superservice.emchat.observer.EMessageListener;
-import com.zkjinshi.superservice.entity.MsgOfflineMessage;
-import com.zkjinshi.superservice.listener.MessageListener;
 import com.zkjinshi.superservice.net.ExtNetRequestListener;
 import com.zkjinshi.superservice.net.MethodType;
 import com.zkjinshi.superservice.net.NetRequest;
@@ -52,11 +48,9 @@ import com.zkjinshi.superservice.utils.task.ImgAsyncTask;
 import com.zkjinshi.superservice.view.CustomExtDialog;
 import com.zkjinshi.superservice.vo.IdentityType;
 import com.zkjinshi.superservice.vo.UserVo;
-
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;
-
 import me.nereo.multi_image_selector.MultiImageSelectorActivity;
 
 /**
@@ -78,7 +72,6 @@ public class MainActivity extends AppCompatActivity{
     private TextView shopnameTv;
     private CheckBox onlineCbx;
     private RelativeLayout  avatarLayout;
-    private MessageListener messageListener;
     private UserVo userVo;
     private ImageButton setIbtn;
 
@@ -93,22 +86,6 @@ public class MainActivity extends AppCompatActivity{
 
     private void initData(){
         loginUser();
-        messageListener = new MessageListener();
-        initService(messageListener);
-
-        //获取用户离线消息
-        initOfflineMsg();
-
-    }
-
-    /**
-     * 初始化用户离线消息
-     */
-    private void initOfflineMsg() {
-        MsgOfflineMessage msgOfflineMessage = new MsgOfflineMessage();
-        msgOfflineMessage.setType(ProtocolMSG.MSG_OfflineMssage);
-        msgOfflineMessage.setTimestamp(System.currentTimeMillis());
-        msgOfflineMessage.setUserid(CacheUtil.getInstance().getUserId());
     }
 
     private void initListeners(){
@@ -378,13 +355,6 @@ public class MainActivity extends AppCompatActivity{
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-
-    /**
-     * 初始化socket
-     */
-    private void initService(MessageListener messageListener) {
-        WebSocketManager.getInstance().initService(this).setMessageListener(messageListener);
     }
 
     /**

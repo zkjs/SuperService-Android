@@ -13,13 +13,9 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.zkjinshi.base.util.TimeUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.listener.RecyclerItemClickListener;
-import com.zkjinshi.superservice.sqlite.ChatRoomDBUtil;
 import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.view.CircleImageView;
-import com.zkjinshi.superservice.vo.ChatRoomVo;
 import com.zkjinshi.superservice.vo.EmpStatusVo;
-import com.zkjinshi.superservice.vo.MessageVo;
-import com.zkjinshi.superservice.vo.MimeType;
 
 import java.util.ArrayList;
 

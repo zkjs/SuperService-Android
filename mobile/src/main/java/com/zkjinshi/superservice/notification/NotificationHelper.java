@@ -24,7 +24,7 @@ import com.zkjinshi.superservice.activity.common.LoginActivity;
 import com.zkjinshi.superservice.activity.common.MainActivity;
 import com.zkjinshi.superservice.activity.common.SplashActivity;
 import com.zkjinshi.superservice.bean.ClientBaseBean;
-import com.zkjinshi.superservice.entity.MsgPushTriggerLocNotificationM2S;
+import com.zkjinshi.superservice.bean.LocPushBean;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.utils.MediaPlayerUtil;
@@ -189,32 +189,32 @@ public class NotificationHelper {
      * 接收到店通知
      *
      * @param context
-     * @param msgPushTriggerLocNotificationM2S
+     * @param locPushBean
      */
-    public void showNotification(Context context, MsgPushTriggerLocNotificationM2S msgPushTriggerLocNotificationM2S) {
-            NotificationCompat.Builder notificationBuilder = null;
-            // 1.设置显示信息
-            notificationBuilder = new NotificationCompat.Builder(context);
-            String contactName = msgPushTriggerLocNotificationM2S.getUsername();
-            notificationBuilder.setContentTitle("" + contactName);
-            notificationBuilder.setContentText("欢迎" + contactName+"先生/女士光临酒店");
-            notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
-            String contactId = msgPushTriggerLocNotificationM2S.getUserid();
-            String imageUrl = Constants.GET_USER_AVATAR + contactId + ".jpg";
-            Bitmap bitmap = ImageLoader.getInstance().loadImageSync(imageUrl);
-            notificationBuilder.setLargeIcon(bitmap);
-            // 2.设置点击跳转事件
-            Intent intent = new Intent(context, SplashActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0,
-                    intent, 0);
-            notificationBuilder.setContentIntent(pendingIntent);
-            // 3.设置通知栏其他属性
-            notificationBuilder.setAutoCancel(true);
-            notificationBuilder.setDefaults(Notification.DEFAULT_ALL);
-            NotificationManagerCompat notificationManager =
-                    NotificationManagerCompat.from(context);
-            notificationManager.notify(++NOTIFY_ID, notificationBuilder.build());
+    public void showNotification(Context context, LocPushBean locPushBean) {
+        NotificationCompat.Builder notificationBuilder = null;
+        // 1.设置显示信息
+        notificationBuilder = new NotificationCompat.Builder(context);
+        String contactName = locPushBean.getUsername();
+        notificationBuilder.setContentTitle("" + contactName);
+        notificationBuilder.setContentText("欢迎" + contactName+"先生/女士光临酒店");
+        notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
+        String contactId = locPushBean.getUserid();
+        String imageUrl = Constants.GET_USER_AVATAR + contactId + ".jpg";
+        Bitmap bitmap = ImageLoader.getInstance().loadImageSync(imageUrl);
+        notificationBuilder.setLargeIcon(bitmap);
+        // 2.设置点击跳转事件
+        Intent intent = new Intent(context, SplashActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0,
+                intent, 0);
+        notificationBuilder.setContentIntent(pendingIntent);
+        // 3.设置通知栏其他属性
+        notificationBuilder.setAutoCancel(true);
+        notificationBuilder.setDefaults(Notification.DEFAULT_ALL);
+        NotificationManagerCompat notificationManager =
+                NotificationManagerCompat.from(context);
+        notificationManager.notify(++NOTIFY_ID, notificationBuilder.build());
     }
 
     /**

@@ -16,18 +16,11 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.zkjinshi.base.net.core.WebSocketManager;
-import com.zkjinshi.base.net.observer.IMessageObserver;
-import com.zkjinshi.base.net.observer.MessageSubject;
-import com.zkjinshi.base.net.protocol.ProtocolMSG;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.chat.single.ChatActivity;
 import com.zkjinshi.superservice.adapter.ContactsSortAdapter;
 import com.zkjinshi.superservice.bean.ClientDetailBean;
-import com.zkjinshi.superservice.entity.MsgUserOnlineStatus;
-import com.zkjinshi.superservice.entity.MsgUserOnlineStatusRSP;
-import com.zkjinshi.superservice.entity.UserOnlineStatusRecord;
 import com.zkjinshi.superservice.factory.ClientFactory;
 import com.zkjinshi.superservice.factory.SortModelFactory;
 import com.zkjinshi.superservice.listener.RecyclerItemClickListener;
@@ -60,7 +53,7 @@ import java.util.Map;
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class ClientActivity extends AppCompatActivity implements IMessageObserver{
+public class ClientActivity extends AppCompatActivity{
 
     private final static String TAG = ClientActivity.class.getSimpleName();
 
@@ -85,8 +78,6 @@ public class ClientActivity extends AppCompatActivity implements IMessageObserve
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_client);
-
-        addObservers();
         initView();
         initData();
         initListener();
@@ -313,23 +304,6 @@ public class ClientActivity extends AppCompatActivity implements IMessageObserve
 
                         ClientActivity.this.updateListView(mAllContactsList);
 
-                        //获得需要查询是否在线的userID的集合
-                        if (!mLocalClientMap.isEmpty()) {
-                            List<String> keyList = new ArrayList<>(mLocalClientMap.keySet());
-
-                            MsgUserOnlineStatus msgUserOnlineStatus = new MsgUserOnlineStatus();
-                            msgUserOnlineStatus.setType(ProtocolMSG.MSG_UserOnlineStatus);
-                            msgUserOnlineStatus.setTimestamp(System.currentTimeMillis());
-                            msgUserOnlineStatus.setEmpid(mUserID);
-                            msgUserOnlineStatus.setShopid(mShopID);
-                            msgUserOnlineStatus.setClients(keyList);
-
-                            if (null == gson)
-                                gson = new Gson();
-
-                            String jsonMsg = gson.toJson(msgUserOnlineStatus, MsgUserOnlineStatus.class);
-                            WebSocketManager.getInstance().sendMessage(jsonMsg);
-                        }
                     }
                 }
             }
@@ -358,55 +332,15 @@ public class ClientActivity extends AppCompatActivity implements IMessageObserve
         }
     }
 
-    private void addObservers() {
-        MessageSubject.getInstance().addObserver(ClientActivity.this, ProtocolMSG.MSG_UserOnlineStatus_RSP);
-    }
-
     @Override
     protected void onResume() {
         super.onResume();
-        //show the client list again
         showMyClientList(mUserID, mToken, mShopID);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        MessageSubject.getInstance().removeObserver(this, ProtocolMSG.MSG_UserOnlineStatus_RSP);
     }
 
-    @Override
-    public void receive(String message) {
-        System.out.print("message:" + message);
-        if(TextUtils.isEmpty(message)){
-            return ;
-        }
-
-        Gson gson = null;
-        if(null == gson )
-            gson = new Gson();
-
-        try {
-            JSONObject messageObj = new JSONObject(message);
-            int type = messageObj.getInt("type");
-
-            if (type == ProtocolMSG.MSG_UserOnlineStatus_RSP) {
-                MsgUserOnlineStatusRSP userOnlineStatusRSP = gson.fromJson(message, MsgUserOnlineStatusRSP.class);
-                List<UserOnlineStatusRecord> userOnlineStatusRecords =  userOnlineStatusRSP.getResult();
-                if(null != userOnlineStatusRecords && !userOnlineStatusRecords.isEmpty()){
-                    for(UserOnlineStatusRecord userOnlineStatusRecord : userOnlineStatusRecords){
-                        String userID = userOnlineStatusRecord.getUserid();
-                        if(mLocalClientMap.containsKey(userID)){
-                            int onlineStatus = userOnlineStatusRecord.getOnlinestatus();
-                            mLocalClientMap.get(userID).setIsOnLine(onlineStatus == OnlineStatus.ONLINE.getValue() ?
-                                                                    OnlineStatus.ONLINE : OnlineStatus.OFFLINE);
-                        }
-                    }
-                    updateListView(mAllContactsList);
-                }
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
 }

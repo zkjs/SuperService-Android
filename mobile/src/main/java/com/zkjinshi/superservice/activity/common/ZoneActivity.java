@@ -34,8 +34,14 @@ import com.zkjinshi.superservice.view.RefreshLayout;
 import com.zkjinshi.superservice.vo.IdentityType;
 import com.zkjinshi.superservice.vo.UserVo;
 
+import org.eclipse.paho.client.mqttv3.IMqttActionListener;
+import org.eclipse.paho.client.mqttv3.IMqttToken;
+import org.eclipse.paho.client.mqttv3.MqttException;
+
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import io.yunba.android.manager.YunBaManager;
 
 
 /**
@@ -195,6 +201,7 @@ public class ZoneActivity extends Activity {
         findViewById(R.id.go_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                submitChooseLocs();//订阅云巴消息
                 semplocationupdate();
             }
         });
@@ -211,9 +218,30 @@ public class ZoneActivity extends Activity {
 
     }
 
-/*
-* 服务员修改自己管辖的区域通知
-* */
+    public void submitChooseLocs(){
+        YunBaManager.subscribe(getApplicationContext(),zoneAdapter.getLocIds(),
+                new IMqttActionListener() {
+                    @Override
+                    public void onSuccess(IMqttToken asyncActionToken) {
+                        Log.i(TAG,"订阅云巴成功");
+                    }
+
+                    @Override
+                    public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
+                        if (exception instanceof MqttException) {
+                            MqttException ex = (MqttException)exception;
+                            String msg =  "Subscribe failed with error code : " + ex.getReasonCode();
+                            Log.i(TAG,"订阅云巴失败:"+msg);
+                        }
+                    }
+                }
+        );
+    }
+
+    /*
+     * 服务员修改自己管辖的区域通知
+     *
+     */
     public void semplocationupdate(){
         String locid = zoneAdapter.getCheckedIds();
         NetRequest netRequest = new NetRequest(ProtocolUtil.getSemplocationupdateUrl());
