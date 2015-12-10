@@ -118,6 +118,7 @@ public class NoticeFragment extends Fragment{
         notifyLayoutManager = new LinearLayoutManager(activity);
         notifyLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         notityRecyclerView.setLayoutManager(notifyLayoutManager);
+
         locMoreAdapter = new LocMoreAdapter(activity, moreComingList);
         moreLayoutManager = new LinearLayoutManager(activity);
         moreLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);

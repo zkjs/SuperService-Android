@@ -12,7 +12,7 @@
 
     <item
         android:id="@+id/menu_client_jia"
-        android:icon="@mipmap/ic_tianjia_w"
+        android:icon="@drawable/bg_ic_tianjia"
         android:title="@string/action_tian_jia"
         app:showAsAction="always" />
 

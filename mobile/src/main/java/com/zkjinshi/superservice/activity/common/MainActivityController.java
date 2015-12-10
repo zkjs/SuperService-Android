@@ -117,7 +117,7 @@ public class MainActivityController implements View.OnClickListener{
     private void setupTabs() {
         // 设置ViewPager
         ViewPager viewpager = (ViewPager) activity.findViewById(R.id.viewpager);
-       viewPagerAdapter = new ViewPagerAdapter(activity, activity.getSupportFragmentManager());
+        viewPagerAdapter = new ViewPagerAdapter(activity, activity.getSupportFragmentManager());
         viewpager.setAdapter(viewPagerAdapter);
         viewpager.setOffscreenPageLimit(ViewPagerAdapter.NUM_ITEMS);
         updatePage(viewpager.getCurrentItem());
@@ -144,7 +144,7 @@ public class MainActivityController implements View.OnClickListener{
             public void onPageScrollStateChanged(int i) {
             }
         });
-        int currentItem = intent.getIntExtra("currentItem",0);
+        int currentItem = intent.getIntExtra("currentItem", 0);
         viewpager.setCurrentItem(currentItem);
 
     }

@@ -302,7 +302,7 @@
             android:name=".activity.common.InviteCodesActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar">
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         </activity>
 
         <activity

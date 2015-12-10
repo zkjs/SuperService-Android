@@ -1,8 +1,8 @@
 package com.zkjinshi.superservice.response;
 
-import com.zkjinshi.superservice.http.post.HttpResponse;
+import com.zkjinshi.superservice.net.NetResponse;
 
-public class OrderInvoiceResponse extends HttpResponse {
+public class OrderInvoiceResponse extends NetResponse {
 
     private int id ;//            发票id int
     private String invoice_title ;//   发票抬头

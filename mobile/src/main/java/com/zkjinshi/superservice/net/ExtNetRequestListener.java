@@ -18,7 +18,7 @@ import com.zkjinshi.superservice.utils.CacheUtil;
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public abstract class ExtNetRequestListener  implements NetRequestListener{
+public abstract class ExtNetRequestListener implements NetRequestListener{
 
     public static final String MTAG = ExtNetRequestListener.class.getSimpleName();
 

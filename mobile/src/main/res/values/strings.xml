@@ -146,5 +146,8 @@
     <string name="please_choose_the_pay_method_and_room_amount">请选择支付方式并输入金额</string>
     <string name="yuan">元</string>
     <string name="invite_code">邀请码</string>
+    <string name="used">已使用</string>
+    <string name="unused">未使用</string>
+    <string name="slash" >/</string>
 
 </resources>

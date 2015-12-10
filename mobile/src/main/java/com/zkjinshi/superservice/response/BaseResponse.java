@@ -1,6 +1,6 @@
 package com.zkjinshi.superservice.response;
 
-import com.zkjinshi.superservice.http.post.HttpResponse;
+import com.zkjinshi.superservice.net.NetResponse;
 
 /**
  * http响应基类
@@ -9,7 +9,7 @@ import com.zkjinshi.superservice.http.post.HttpResponse;
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class BaseResponse extends HttpResponse {
+public class BaseResponse extends NetResponse {
 
     private boolean set = true;
 
