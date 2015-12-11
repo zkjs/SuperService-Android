@@ -3,7 +3,6 @@ package com.zkjinshi.superservice.activity.common;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -30,7 +29,6 @@ import com.zkjinshi.superservice.sqlite.UserDBUtil;
 
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
-import com.zkjinshi.superservice.view.RefreshLayout;
 import com.zkjinshi.superservice.vo.IdentityType;
 import com.zkjinshi.superservice.vo.UserVo;
 
@@ -109,6 +107,7 @@ public class ZoneActivity extends Activity {
                     ArrayList<ZoneBean> zoneList = new Gson().fromJson(result.rawResult, new TypeToken< ArrayList<ZoneBean>>(){}.getType());
                     zoneAdapter = new ZoneAdapter(ZoneActivity.this, zoneList);
                     zoneLv.setAdapter(zoneAdapter);
+                    unsubscribeLocs();
                     getMyZone();
                 }catch (Exception e){
                     Log.e(TAG,e.getMessage());
@@ -180,7 +179,6 @@ public class ZoneActivity extends Activity {
         findViewById(R.id.back_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //CacheUtil.getInstance().setLoginIdentity(IdentityType.BUSINESS);
                 if(CacheUtil.getInstance().getLoginIdentity() == IdentityType.BUSINESS){
                     if(!getIntent().getBooleanExtra("from_setting",false)){
                         startActivity(new Intent(ZoneActivity.this,ShopLoginActivity.class));
@@ -201,7 +199,7 @@ public class ZoneActivity extends Activity {
         findViewById(R.id.go_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                submitChooseLocs();//订阅云巴消息
+                subscribeLocs();//订阅云巴消息
                 semplocationupdate();
             }
         });
@@ -218,7 +216,33 @@ public class ZoneActivity extends Activity {
 
     }
 
-    public void submitChooseLocs(){
+    /**
+     * 取消订阅区域
+     */
+    public void unsubscribeLocs(){
+        YunBaManager.unsubscribe(getApplicationContext(),zoneAdapter.getAllLocIds(),
+                new IMqttActionListener() {
+                    @Override
+                    public void onSuccess(IMqttToken asyncActionToken) {
+                        Log.i(TAG,"取消订阅云巴成功");
+                    }
+
+                    @Override
+                    public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
+                        if (exception instanceof MqttException) {
+                            MqttException ex = (MqttException)exception;
+                            String msg =  "Subscribe failed with error code : " + ex.getReasonCode();
+                            Log.i(TAG,"取消订阅云巴失败:"+msg);
+                        }
+                    }
+                }
+        );
+    }
+
+    /**
+     * 订阅区域
+     */
+    public void subscribeLocs(){
         YunBaManager.subscribe(getApplicationContext(),zoneAdapter.getLocIds(),
                 new IMqttActionListener() {
                     @Override

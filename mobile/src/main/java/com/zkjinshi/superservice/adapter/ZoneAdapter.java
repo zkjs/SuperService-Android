@@ -49,6 +49,26 @@ public class ZoneAdapter extends BaseAdapter{
         }
     }
 
+    /**
+     * 获得所有订阅区域
+     * @return
+     */
+    public String[] getAllLocIds(){
+        String[] topics = null;
+        if(null != zoneList && !zoneList.isEmpty()){
+            topics = new String[zoneList.size()];
+            for(int i=0;i<zoneList.size();i++){
+                ZoneBean zoneBean = zoneList.get(i);
+                topics[i] = ""+zoneBean.getLocid();
+            }
+        }
+        return  topics;
+    }
+
+    /**
+     * 获取选择订阅区域
+     * @return
+     */
     public String[] getLocIds(){
         String[] topics = null;
         ArrayList<ZoneBean> selectZoneList = new ArrayList<ZoneBean>();
