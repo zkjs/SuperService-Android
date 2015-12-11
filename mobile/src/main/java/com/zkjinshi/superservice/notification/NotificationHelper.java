@@ -11,6 +11,8 @@ import android.support.v4.app.RemoteInput;
 import android.text.TextUtils;
 
 import com.easemob.EMNotifierEvent;
+import com.easemob.chat.EMGroup;
+import com.easemob.chat.EMGroupManager;
 import com.easemob.chat.EMMessage;
 import com.easemob.chat.TextMessageBody;
 import com.easemob.exceptions.EaseMobException;
@@ -19,12 +21,14 @@ import com.zkjinshi.base.util.ActivityManagerHelper;
 import com.zkjinshi.base.util.TimeUtil;
 import com.zkjinshi.base.util.VibratorHelper;
 import com.zkjinshi.superservice.R;
+import com.zkjinshi.superservice.activity.chat.group.ChatGroupActivity;
 import com.zkjinshi.superservice.activity.chat.single.ChatActivity;
 import com.zkjinshi.superservice.activity.common.LoginActivity;
 import com.zkjinshi.superservice.activity.common.MainActivity;
 import com.zkjinshi.superservice.activity.common.SplashActivity;
 import com.zkjinshi.superservice.bean.ClientBaseBean;
 import com.zkjinshi.superservice.bean.LocPushBean;
+import com.zkjinshi.superservice.emchat.EMConversationHelper;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.utils.MediaPlayerUtil;
@@ -61,56 +65,11 @@ public class NotificationHelper {
 
     /**
      * 后台通知栏通知用户收到消息
-     *
-     * @param context
-     * @param messageVo
-     */
-    public void showNotification(Context context, MessageVo messageVo) {
-        if (ActivityManagerHelper.isRunningBackground(context)) {
-            int nofifyFlag = 0;
-            NotificationCompat.Builder notificationBuilder = null;
-            // 1.设置显示信息
-            notificationBuilder = new NotificationCompat.Builder(context);
-            notificationBuilder.setContentTitle("" + messageVo.getContactName());
-            MimeType msgType = messageVo.getMimeType();
-            if (msgType == MimeType.TEXT) {
-                notificationBuilder.setContentText("" + messageVo.getContent());
-            } else if (msgType == MimeType.IMAGE) {
-                notificationBuilder.setContentText("[图片]");
-            } else {
-                notificationBuilder.setContentText("[语音]");
-            }
-            notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
-            String contactId = messageVo.getContactId();
-            String imageUrl = Constants.GET_USER_AVATAR + contactId + ".jpg";
-            Bitmap bitmap = ImageLoader.getInstance().loadImageSync(imageUrl);
-            notificationBuilder.setLargeIcon(bitmap);
-            // 2.设置点击跳转事件
-            Intent intent = new Intent(context, SplashActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0,
-                    intent, 0);
-            notificationBuilder.setContentIntent(pendingIntent);
-            // 3.设置通知栏其他属性
-            notificationBuilder.setAutoCancel(true);
-            notificationBuilder.setDefaults(Notification.DEFAULT_ALL);
-            //4、设置手表特有属性
-            notificationBuilder.extend(extendWear(context, notificationBuilder,messageVo));
-            NotificationManagerCompat notificationManager =
-                    NotificationManagerCompat.from(context);
-            notificationManager.notify(nofifyFlag, notificationBuilder.build());
-        } else {
-            MediaPlayerUtil.playNotifyVoice(context);
-            VibratorHelper.vibratorShark(context);
-        }
-    }
-
-    /**
-     * 后台通知栏通知用户收到消息
      * @param context
      * @param event
      */
     public void showNotification(Context context, EMNotifierEvent event) {
+        int nofifyFlag = 0;
         switch (event.getEvent()) {
             case EventNewMessage:
                 EMMessage message = (EMMessage) event.getData();
@@ -120,28 +79,30 @@ public class NotificationHelper {
                     if(!username.equals(CacheUtil.getInstance().getUserId())){
                         EMMessage.Type msgType = message.getType();
                         if (ActivityManagerHelper.isRunningBackground(context)) {
-                            int nofifyFlag = 0;
                             NotificationCompat.Builder notificationBuilder = null;
-                            // 1.设置显示信息
                             notificationBuilder = new NotificationCompat.Builder(context);
                             if (message.getChatType() == EMMessage.ChatType.GroupChat || message.getChatType() == EMMessage.ChatType.ChatRoom) {
-                                //TODO JIMMY 后续需要修改
-                                titleName = message.getTo();
+                                EMConversationHelper.getInstance().requestGroupListTask();
+                                String groupId = message.getTo();
+                                EMGroup group = EMGroupManager.getInstance().getGroup(groupId);
+                                if (group != null){
+                                    titleName = group.getGroupName();
+                                }
                             } else {
                                 titleName = message.getFrom();
-                            }
-                            try {
-                                String fromName = message.getStringAttribute("fromName");
-                                String toName = message.getStringAttribute("toName");
-                                if(!TextUtils.isEmpty(fromName) && !fromName.equals(CacheUtil.getInstance().getUserName())){
-                                    titleName = fromName;
-                                }else{
-                                    if(!TextUtils.isEmpty(toName)){
-                                        titleName = toName;
+                                try {
+                                    String fromName = message.getStringAttribute("fromName");
+                                    String toName = message.getStringAttribute("toName");
+                                    if(!TextUtils.isEmpty(fromName) && !fromName.equals(CacheUtil.getInstance().getUserName())){
+                                        titleName = fromName;
+                                    }else{
+                                        if(!TextUtils.isEmpty(toName)){
+                                            titleName = toName;
+                                        }
                                     }
+                                } catch (EaseMobException e) {
+                                    e.printStackTrace();
                                 }
-                            } catch (EaseMobException e) {
-                                e.printStackTrace();
                             }
                             notificationBuilder.setContentTitle("" + titleName);
                             if (msgType == EMMessage.Type.TXT) {
@@ -172,6 +133,8 @@ public class NotificationHelper {
                             // 3.设置通知栏其他属性
                             notificationBuilder.setAutoCancel(true);
                             notificationBuilder.setDefaults(Notification.DEFAULT_ALL);
+                            //4、设置手表特有属性
+                            notificationBuilder.extend(extendWear(context, notificationBuilder,message));
                             NotificationManagerCompat notificationManager =
                                     NotificationManagerCompat.from(context);
                             notificationManager.notify(nofifyFlag, notificationBuilder.build());
@@ -289,16 +252,41 @@ public class NotificationHelper {
     }
 
     private NotificationCompat.WearableExtender extendWear(
-            Context context,NotificationCompat.Builder builder,MessageVo messageVo) {
+            Context context,NotificationCompat.Builder builder,EMMessage message) {
         NotificationCompat.WearableExtender wearableExtender = new NotificationCompat.WearableExtender();
-        String shopId = messageVo.getShopId();
-        String sessionId = messageVo.getSessionId();
         // 1、增加语音快捷回复
-        Intent intent = new Intent(context, ChatActivity.class);
+        Intent intent = new Intent();
+        if (message.getChatType() == EMMessage.ChatType.GroupChat || message.getChatType() == EMMessage.ChatType.ChatRoom) {
+            String groupId = message.getTo();
+            intent.setClass(context, ChatGroupActivity.class);
+            intent.putExtra("groupId",groupId);
+        }else {
+            String username = message.getUserName();
+            intent.setClass(context, ChatActivity.class);
+            intent.putExtra(Constants.EXTRA_USER_ID, username);
+            try {
+                intent.putExtra(Constants.EXTRA_FROM_NAME, CacheUtil.getInstance().getUserName());
+                String shopId = CacheUtil.getInstance().getShopID();
+                String shopName = CacheUtil.getInstance().getShopFullName();
+                String fromName = message.getStringAttribute("fromName");
+                String toName = message.getStringAttribute("toName");
+                if (!TextUtils.isEmpty(shopId)) {
+                    intent.putExtra(Constants.EXTRA_SHOP_ID, shopId);
+                }
+                if (!TextUtils.isEmpty(shopName)) {
+                    intent.putExtra(Constants.EXTRA_SHOP_NAME, shopName);
+                }
+                if (!toName.equals(CacheUtil.getInstance().getUserName())) {
+                    intent.putExtra(Constants.EXTRA_TO_NAME, toName);
+                } else {
+                    intent.putExtra(Constants.EXTRA_TO_NAME, fromName);
+                }
+            } catch (EaseMobException e) {
+                e.printStackTrace();
+            }
+        }
         intent.setAction(Constants.ACTION_VOICE_RELAY);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.putExtra("session_id", sessionId);
-        intent.putExtra("shop_id", shopId);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0,
                 intent, 0);
         String replyLabel = context.getResources().getString(R.string.reply_label);

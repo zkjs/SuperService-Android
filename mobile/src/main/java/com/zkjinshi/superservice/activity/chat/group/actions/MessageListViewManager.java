@@ -27,6 +27,7 @@ import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.chat.group.controller.GroupMemberController;
 import com.zkjinshi.superservice.adapter.GroupChatAdapter;
 import com.zkjinshi.superservice.bean.MemberBean;
+import com.zkjinshi.superservice.emchat.EMConversationHelper;
 import com.zkjinshi.superservice.emchat.observer.EMessageSubject;
 import com.zkjinshi.superservice.emchat.observer.IEMessageObserver;
 import com.zkjinshi.superservice.net.ExtNetRequestListener;
@@ -87,6 +88,7 @@ public class MessageListViewManager extends Handler implements MsgListView.IXLis
         if(!TextUtils.isEmpty(groupId)){
             conversation = EMChatManager.getInstance().getConversation(groupId);
             requestGroupMembersTask();
+            EMConversationHelper.getInstance().requestGroupListTask();
         }
         clearChatRoomBadgeNum();
         setOverScrollMode(messageListView);
