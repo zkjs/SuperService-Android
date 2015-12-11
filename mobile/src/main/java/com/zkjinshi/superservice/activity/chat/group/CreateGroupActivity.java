@@ -58,6 +58,7 @@ public class CreateGroupActivity extends Activity {
     private ClientVo clientVo;
     private EContactVo contactVo;
     private String contactId;
+    private String contanctName;
     private String shopEmployeeId;
     private Map<Integer, Boolean> selectMap = new HashMap<Integer, Boolean>();
     private Map<Integer, Boolean> enabledMap = new HashMap<Integer, Boolean>();
@@ -85,16 +86,20 @@ public class CreateGroupActivity extends Activity {
             contactId = getIntent().getStringExtra("userId");
             shopEmployeeVo = ShopEmployeeDBUtil.getInstance().queryEmployeeById(contactId);
             if(null != shopEmployeeVo){
-                contactVo = EContactFactory.getInstance().buildEContactVo(shopEmployeeVo);
                 if(!selectList.contains(contactId)){
                     addSucc = selectList.add(contactId);
                 }
             }
             clientVo = ClientDBUtil.getInstance().queryClientByClientID(contactId);
             if(null != clientVo && !addSucc){
-                contactVo = EContactFactory.getInstance().buildEContactVo(clientVo);
                 if(!selectList.contains(contactId)){
-                    selectList.add(contactId);
+                    addSucc = selectList.add(contactId);
+                }
+            }
+            if(!addSucc) {
+                if(null != getIntent() && null != getIntent().getStringExtra("userName")){
+                    addSucc = selectList.add(contactId);
+                    contanctName = getIntent().getStringExtra("userName");
                 }
             }
         }
@@ -140,7 +145,6 @@ public class CreateGroupActivity extends Activity {
             public void onItemClick(View view, int position) {
                 ShopEmployeeVo shopEmployeeVo = mShopEmployeeVos.get(position);
                 String empID = shopEmployeeVo.getEmpid();
-                contactVo = EContactFactory.getInstance().buildEContactVo(shopEmployeeVo);
                 if (selectList.contains(empID)) {
                     selectList.remove(empID);
                 } else {
@@ -231,6 +235,9 @@ public class CreateGroupActivity extends Activity {
                 if(null != clientVo){
                     contactVo = EContactFactory.getInstance().buildEContactVo(clientVo);
                 }
+            }
+            if(null == contactVo){
+                contactVo = EContactFactory.getInstance().buildDefaultContactVo(contactId,contanctName);
             }
             if(null != contactVo){
                 String employeeName = contactVo.getContactName();

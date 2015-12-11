@@ -111,12 +111,17 @@ public class ChatDetailActivity extends Activity{
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (null != contactList && !contactList.isEmpty() && contactList.size() < 12 && contactList.size() == position || position == 11) { //点击加号
-                    Intent intent = new Intent(ChatDetailActivity.this, CreateGroupActivity.class);
-                    if (contactList != null && contactList.size() > 0){}
-                         intent.putExtra("userId", contactList.get(0).getContactId());
-                    startActivity(intent);
-                    overridePendingTransition(R.anim.slide_in_bottom,
-                            R.anim.slide_out_top);
+                    if (contactList != null && !contactList.isEmpty()){
+                        Intent intent = new Intent(ChatDetailActivity.this, CreateGroupActivity.class);
+                        contactVo = contactList.get(0);
+                        String userId = contactVo.getContactId();
+                        String userName = contactVo.getContactName();
+                        intent.putExtra("userId", userId);
+                        intent.putExtra("userName", userName);
+                        startActivity(intent);
+                        overridePendingTransition(R.anim.slide_in_bottom,
+                                R.anim.slide_out_top);
+                    }
                 }
             }
         });

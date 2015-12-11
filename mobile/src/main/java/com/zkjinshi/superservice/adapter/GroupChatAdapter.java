@@ -523,7 +523,6 @@ public class GroupChatAdapter extends BaseAdapter {
                         .setOnLongClickListener(new View.OnLongClickListener() {
                             @Override
                             public boolean onLongClick(View v) {
-                                showChildQuickActionBar(v, isComMsg, position);
                                 return true;
                             }
                         });
