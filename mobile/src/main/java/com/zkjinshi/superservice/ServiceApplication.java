@@ -1,9 +1,12 @@
 package com.zkjinshi.superservice;
 
+import android.app.ActivityManager;
 import android.app.Application;
 import android.content.Context;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.os.Environment;
+import android.support.multidex.MultiDex;
 import android.util.Log;
 
 import com.easemob.chat.EMChat;
@@ -32,6 +35,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Iterator;
+import java.util.List;
 
 import io.yunba.android.manager.YunBaManager;
 
@@ -44,7 +49,7 @@ import io.yunba.android.manager.YunBaManager;
  */
 public class ServiceApplication extends Application{
 
-    public static final String TAG = "ServiceApplication";
+    public static final String TAG = ServiceApplication.class.getSimpleName();
 
     private static Context mContext;
     private ECallReceiver callReceiver;
@@ -69,7 +74,7 @@ public class ServiceApplication extends Application{
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
-        //MultiDex.install(this);
+        MultiDex.install(this);
     }
 
     public static Context getContext(){
@@ -80,6 +85,16 @@ public class ServiceApplication extends Application{
      * 设置环信ios推送昵称
      */
     private void initEmchat(){
+        int pid = android.os.Process.myPid();
+        String processAppName = getAppName(pid);
+        // 如果app启用了远程的service，此application:onCreate会被调用2次
+        // 为了防止环信SDK被初始化2次，加此判断会保证SDK被初始化1次
+        // 默认的app会在以包名为默认的process name下运行，如果查到的process name不是app的process name就立即返回
+        if (processAppName == null ||!processAppName.equalsIgnoreCase(getPackageName())) {
+            Log.e(TAG, "enter the service process!");
+            // 则此application::onCreate 是被service 调用的，直接返回
+            return;
+        }
         EMChat.getInstance().init(this);
         //在做打包混淆时，要关闭debug模式，避免消耗不必要的资源
         EMChat.getInstance().setDebugMode(false);
@@ -102,6 +117,27 @@ public class ServiceApplication extends Application{
         registerReceiver(callReceiver, callFilter);
         EasemobIMHelper.getInstance().initConnectionListener();
         EMGroupManager.getInstance().addGroupChangeListener(new EGroupReomveListener());
+    }
+
+    private String getAppName(int pID) {
+        String processName = null;
+        ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        List l = am.getRunningAppProcesses();
+        Iterator i = l.iterator();
+        PackageManager pm = getPackageManager();
+        while (i.hasNext()) {
+            ActivityManager.RunningAppProcessInfo info = (ActivityManager.RunningAppProcessInfo) (i.next());
+            try {
+                if (info.pid == pID) {
+                    CharSequence c = pm.getApplicationLabel(pm.getApplicationInfo(info.processName, PackageManager.GET_META_DATA));
+                    processName = info.processName;
+                    return processName;
+                }
+            } catch (Exception e) {
+               e.printStackTrace();
+            }
+        }
+        return processName;
     }
 
     public void initContext(){
