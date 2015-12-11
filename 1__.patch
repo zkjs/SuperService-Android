@@ -1,0 +1,64 @@
+Index: mobile/src/main/res/drawable/amount_indecrease_edit.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- mobile/src/main/res/drawable/amount_indecrease_edit.xml	(revision bbee1c662e6ddbeb7437cd2a1e97ee96f5c9af4a)
++++ mobile/src/main/res/drawable/amount_indecrease_edit.xml	(revision )
+@@ -5,6 +5,7 @@
+ 	        <stroke
+ 	            android:width="1dp"
+ 	            android:color="@color/Gray9E9E9E" />
++			<solid android:color="@color/white"/>
+ 	    </shape>
+     </item>
+ </selector>
+\ No newline at end of file
+Index: mobile/src/main/res/layout/activity_order_new.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- mobile/src/main/res/layout/activity_order_new.xml	(revision bbee1c662e6ddbeb7437cd2a1e97ee96f5c9af4a)
++++ mobile/src/main/res/layout/activity_order_new.xml	(revision )
+@@ -185,7 +185,7 @@
+                 android:clickable="true"
+                 android:background="@drawable/bg_btn_default"
+                 android:orientation="vertical"
+-                android:layout_width="wrap_content"
++                android:layout_width="match_parent"
+                 android:layout_height="wrap_content">
+ 
+                 <!--入住离店日期-->
+Index: mobile/src/main/res/layout/amount_indecrease_view.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- mobile/src/main/res/layout/amount_indecrease_view.xml	(revision bbee1c662e6ddbeb7437cd2a1e97ee96f5c9af4a)
++++ mobile/src/main/res/layout/amount_indecrease_view.xml	(revision )
+@@ -5,6 +5,7 @@
+     android:orientation="horizontal"
+     android:focusable="true"
+     android:padding="5dp"
++    android:background="@color/white"
+     android:gravity="center_vertical"
+     android:focusableInTouchMode="true" >
+ 
+\ No newline at end of file
+Index: mobile/src/main/AndroidManifest.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- mobile/src/main/AndroidManifest.xml	(revision bbee1c662e6ddbeb7437cd2a1e97ee96f5c9af4a)
++++ mobile/src/main/AndroidManifest.xml	(revision )
+@@ -322,7 +322,7 @@
+             android:name=".activity.order.OrderNewActivity"
+             android:label="@string/app_name"
+             android:screenOrientation="portrait"
+-            android:theme="@android:style/Theme.Translucent.NoTitleBar">
++            android:theme="@android:style/Theme.Holo.Light.NoActionBar">
+         </activity>
+ 
+         <activity
