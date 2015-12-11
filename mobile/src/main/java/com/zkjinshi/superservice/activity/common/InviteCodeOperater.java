@@ -1,8 +1,9 @@
-package com.zkjinshi.superservice.activity.order;
+package com.zkjinshi.superservice.activity.common;
 
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,8 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 
 import com.zkjinshi.superservice.R;
+import com.zkjinshi.superservice.activity.order.OrderNewActivity;
+import com.zkjinshi.superservice.activity.set.TeamContactsActivity;
 
 /**
  * 开发者：WinkyQin
@@ -19,53 +22,46 @@ import com.zkjinshi.superservice.R;
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class OrderOperationController {
+public class InviteCodeOperater {
 
-    private static OrderOperationController instance;
+    private static InviteCodeOperater instance;
 
-    private OrderOperationController(){}
+    private InviteCodeOperater(){}
 
-    public static synchronized OrderOperationController getInstance(){
+    public static synchronized InviteCodeOperater getInstance(){
         if(null ==  instance){
-            instance = new OrderOperationController();
+            instance = new InviteCodeOperater();
         }
         return  instance;
     }
 
-    private Context context;
+    public void showOperationDialog(final Context context, final String inviteCode){
 
-    public void init(Context context){
-        this.context = context;
-    }
-
-    public void showOrderOperationDialog(){
-
-        final Dialog dlg = new Dialog(context, R.style.ActionTheme_DataSheet);
+        final Dialog dlg   = new Dialog(context, R.style.ActionTheme_DataSheet);
         LinearLayout layout = (LinearLayout) LayoutInflater.from(context).inflate(
-                                            R.layout.dialog_order_operation, null);
+                                            R.layout.dialog_invite_code_operation, null);
         final int cFullFillWidth = 10000;
         layout.setMinimumWidth(cFullFillWidth);
-        Button btnMyOrders = (Button) layout.findViewById(R.id.btn_my_orders);
-        Button btnOrderNew = (Button) layout.findViewById(R.id.btn_order_new);
-        Button btnCancel   = (Button) layout.findViewById(R.id.btn_cancel);
+        Button btnSMS    = (Button) layout.findViewById(R.id.btn_short_message);
+        Button btnWeChat = (Button) layout.findViewById(R.id.btn_we_chat);
+        Button btnCancel = (Button) layout.findViewById(R.id.btn_cancel);
 
-        //我的订单
-        btnMyOrders.setOnClickListener(new View.OnClickListener() {
+        btnSMS.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent orderNew = new Intent(context, OrderNewActivity.class );
-                context.startActivity(orderNew);
-                dlg.dismiss();
+                Uri smsToUri = Uri.parse("smsto:");
+                Intent intent = new Intent(Intent.ACTION_SENDTO, smsToUri);
+                intent.putExtra("sms_body", inviteCode);
+                context.startActivity(intent);
             }
         });
 
-        //订单新增
-        btnOrderNew.setOnClickListener(new View.OnClickListener() {
+        btnWeChat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent orderNew = new Intent(context, OrderNewActivity.class );
-                context.startActivity(orderNew);
-                dlg.dismiss();
+//                Intent orderNew = new Intent(context, OrderNewActivity.class );
+//                context.startActivity(orderNew);
+//                dlg.dismiss();
             }
         });
 

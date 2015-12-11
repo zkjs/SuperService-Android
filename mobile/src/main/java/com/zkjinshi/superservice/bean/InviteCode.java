@@ -13,7 +13,8 @@ public class InviteCode implements Serializable{
 
     private String salesid;
     private int    codeid;
-    private String salecode;
+    private String salecode;//邀请码
+    private int    is_validity; //0有效,1失效(已被使用)
 
     public String getSalesid() {
         return salesid;
@@ -21,6 +22,14 @@ public class InviteCode implements Serializable{
 
     public void setSalesid(String salesid) {
         this.salesid = salesid;
+    }
+
+    public int getCodeid() {
+        return codeid;
+    }
+
+    public void setCodeid(int codeid) {
+        this.codeid = codeid;
     }
 
     public String getSalecode() {
@@ -31,11 +40,11 @@ public class InviteCode implements Serializable{
         this.salecode = salecode;
     }
 
-    public int getCodeid() {
-        return codeid;
+    public int getIs_validity() {
+        return is_validity;
     }
 
-    public void setCodeid(int codeid) {
-        this.codeid = codeid;
+    public void setIs_validity(int is_validity) {
+        this.is_validity = is_validity;
     }
 }

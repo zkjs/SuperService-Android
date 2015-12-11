@@ -5,8 +5,8 @@
     tools:context=".activity.set.TeamContactsActivity">
 
     <item
-        android:id="@+id/menu_team_edit"
-        android:title="@string/action_edit"
+        android:id="@+id/item_add_invite_code"
+        android:title="@string/action_tian_jia"
         android:icon="@drawable/bg_ic_tianjia"
         app:showAsAction="always" />
 

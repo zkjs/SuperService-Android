@@ -50,7 +50,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-
 /**
  * 到店通知Fragment页面
  * 开发者：JimmyZhang

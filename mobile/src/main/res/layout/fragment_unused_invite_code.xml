@@ -7,7 +7,7 @@
     <include
         android:id="@+id/empty_layout"
         layout="@layout/empty_layout"
-        android:visibility="visible" />
+        android:visibility="gone" />
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/srl_container"

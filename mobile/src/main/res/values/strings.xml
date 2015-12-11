@@ -149,5 +149,11 @@
     <string name="used">已使用</string>
     <string name="unused">未使用</string>
     <string name="slash" >/</string>
+    <string name="share">分享</string>
+    <string name="we_chat">微信</string>
+    <string name="client">客户</string>
+    <string name="confirm_to_create_new_invite_code">确定生成新的邀请码</string>
+    <string name="no_more_data">已无更多数据！</string>
+    <string name="short_message">短信</string>
 
 </resources>

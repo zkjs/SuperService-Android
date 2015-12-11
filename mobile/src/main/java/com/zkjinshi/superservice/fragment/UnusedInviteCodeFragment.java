@@ -7,13 +7,29 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
+import com.google.gson.Gson;
+import com.zkjinshi.base.log.LogLevel;
+import com.zkjinshi.base.log.LogUtil;
+import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
+import com.zkjinshi.superservice.activity.common.InviteCodeController;
+import com.zkjinshi.superservice.activity.common.InviteCodeOperater;
+import com.zkjinshi.superservice.activity.common.InviteCodesActivity;
 import com.zkjinshi.superservice.adapter.InviteCodeAdapter;
+import com.zkjinshi.superservice.bean.Head;
+import com.zkjinshi.superservice.bean.InviteCode;
+import com.zkjinshi.superservice.bean.InviteCodeData;
+import com.zkjinshi.superservice.listener.RecyclerItemClickListener;
+import com.zkjinshi.superservice.net.ExtNetRequestListener;
+import com.zkjinshi.superservice.net.NetResponse;
+import com.zkjinshi.superservice.vo.ComingVo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,9 +46,10 @@ public class UnusedInviteCodeFragment extends Fragment {
     private RelativeLayout     mEmptyLayout;
     private SwipeRefreshLayout mSrlContainer;
     private RecyclerView       mRvUnusedCodes;
-    private InviteCodeAdapter  mInviteCodeAdapter;
-    private LinearLayoutManager mLayoutManager;
-    private List<String>        mInviteCodes;
+    private InviteCodeAdapter    mInviteCodeAdapter;
+    private LinearLayoutManager  mLayoutManager;
+    private List<InviteCode>     mInviteCodes;
+    private int mPage;
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -57,6 +74,8 @@ public class UnusedInviteCodeFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        mPage = 1;
+        getInviteCode(mPage);
     }
 
     private void initView(View view){
@@ -66,9 +85,8 @@ public class UnusedInviteCodeFragment extends Fragment {
     }
 
     private void initData(){
-        mActivity = this.getActivity();
-        mInviteCodes = new ArrayList<>();
-        mInviteCodes.add("invite_code");
+        mActivity          = this.getActivity();
+        mInviteCodes       = new ArrayList<>();
         mInviteCodeAdapter = new InviteCodeAdapter(mActivity, mInviteCodes);
         mRvUnusedCodes.setAdapter(mInviteCodeAdapter);
         mRvUnusedCodes.setHasFixedSize(true);
@@ -79,6 +97,117 @@ public class UnusedInviteCodeFragment extends Fragment {
 
     private void initListeners(){
 
+        //下拉加载数据
+        mSrlContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getInviteCode(mPage);
+            }
+        });
+
+        //上拉加载数据
+        mRvUnusedCodes.setOnScrollListener(new RecyclerView.OnScrollListener() {
+            boolean isSlidingToLast = false;
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                LinearLayoutManager linearLayoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    int lastVisibleItem = linearLayoutManager.findLastCompletelyVisibleItemPosition();
+                    int totalItemCount  = linearLayoutManager.getItemCount();
+                    if (lastVisibleItem == (totalItemCount - 1) && isSlidingToLast) {
+                        //加载更多功能的代码
+                        getInviteCode(mPage);
+                    }
+                }
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                //dx用来判断横向滑动方向，dy用来判断纵向滑动方向
+                if (dy > 0) {
+                    //大于0表示，正在向下滚动
+                    isSlidingToLast = true;
+                } else {
+                    //小于等于0 表示停止或向下滚动
+                    isSlidingToLast = false;
+                }
+            }
+        });
+
+        mInviteCodeAdapter.setOnItemClickListener(
+            new RecyclerItemClickListener() {
+                @Override
+                public void onItemClick(View view, int position) {
+                    InviteCode inviteCode = mInviteCodes.get(position);
+                    String inviteCodeStr  = inviteCode.getSalecode();
+                    InviteCodeOperater.getInstance().showOperationDialog(mActivity, inviteCodeStr);
+                }
+            }
+        );
     }
 
+    /**
+     * 获取我的邀请码列表
+     * @param page
+     */
+    private void getInviteCode(int page) {
+        InviteCodeController.getInstance().getInviteCodes(
+            page,
+            mActivity,
+            new ExtNetRequestListener(mActivity) {
+                @Override
+                public void onNetworkRequestError(int errorCode, String errorMessage) {
+                    super.onNetworkRequestError(errorCode, errorMessage);
+                    mSrlContainer.setRefreshing(false);
+                }
+
+                @Override
+                public void onNetworkRequestCancelled() {
+                    super.onNetworkRequestCancelled();
+                    mSrlContainer.setRefreshing(false);
+                }
+
+                @Override
+                public void onNetworkResponseSucceed(NetResponse result) {
+                    super.onNetworkResponseSucceed(result);
+                    LogUtil.getInstance().info(LogLevel.INFO, result.rawResult);
+
+                    Gson gson = new Gson();
+                    InviteCodeData inviteCodeData = gson.fromJson(result.rawResult, InviteCodeData.class);
+                    if(null != inviteCodeData){
+                        Head head = inviteCodeData.getHead();
+                        if(head.isSet()){
+                            mEmptyLayout.setVisibility(View.GONE);
+                            int count = head.getCount();
+                            ((InviteCodesActivity)mActivity).udpateUnusedCodeCount(count);
+
+                            mPage++;
+                            List<InviteCode> inviteCodes = inviteCodeData.getCode_data();
+                            if(null!=inviteCodes && !inviteCodes.isEmpty()){
+                                mInviteCodeAdapter.clear();
+                                mInviteCodes.addAll(inviteCodes);
+//                                mInviteCodeAdapter.addAll(mInviteCodes);
+                            } else {
+                                DialogUtil.getInstance().showCustomToast(mActivity, mActivity.
+                                                                        getString(R.string.no_more_data),
+                                                                        Gravity.CENTER);
+                            }
+                        }
+                    }
+
+                    if(null==mInviteCodes || mInviteCodes.isEmpty()){
+                        mEmptyLayout.setVisibility(View.VISIBLE);
+                    }
+
+                    mSrlContainer.setRefreshing(false);
+                }
+
+                @Override
+                public void beforeNetworkRequestStart() {
+                    super.beforeNetworkRequestStart();
+                }
+            });
+    }
 }

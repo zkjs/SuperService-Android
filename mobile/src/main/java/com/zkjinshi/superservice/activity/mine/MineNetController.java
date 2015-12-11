@@ -3,6 +3,7 @@ package com.zkjinshi.superservice.activity.mine;
 import android.content.Context;
 
 import com.zkjinshi.superservice.net.ExtNetRequestListener;
+import com.zkjinshi.superservice.net.MethodType;
 import com.zkjinshi.superservice.net.NetRequest;
 import com.zkjinshi.superservice.net.NetRequestTask;
 import com.zkjinshi.superservice.net.NetResponse;
@@ -32,6 +33,7 @@ public class MineNetController {
 
     public void requestSetInfoTask(NetRequest request, ExtNetRequestListener requestListener){
         NetRequestTask httpAsyncTask = new NetRequestTask(context, request, NetResponse.class);
+        httpAsyncTask.methodType = MethodType.PUSH;
         httpAsyncTask.setNetRequestListener(requestListener);
         httpAsyncTask.isShowLoadingDialog = true;
         httpAsyncTask.execute();

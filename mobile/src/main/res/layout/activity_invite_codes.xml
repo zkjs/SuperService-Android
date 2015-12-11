@@ -13,6 +13,5 @@
         android:id="@+id/vp_invite_codes"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
     </android.support.v4.view.ViewPager>
 </LinearLayout>

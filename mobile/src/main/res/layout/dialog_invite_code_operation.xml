@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/action_sheet_button_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="bottom"
+    android:background="@null"
+    android:orientation="vertical">
+
+    <Button
+        android:id="@+id/btn_short_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_background_white"
+        android:text="@string/short_message"
+        android:textColor="@color/TextColorBlack"
+        android:textSize="14sp" />
+
+    <View style="@style/GrayLineBorder" />
+
+    <Button
+        android:id="@+id/btn_we_chat"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_background_white"
+        android:text="@string/we_chat"
+        android:textColor="@color/black"
+        android:textSize="14sp" />
+
+    <Button
+        android:id="@+id/btn_cancel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/bg_background_white"
+        android:text="取消"
+        android:textColor="@color/TextColorBlack"
+        android:textSize="14sp" />
+
+</LinearLayout>

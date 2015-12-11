@@ -272,11 +272,19 @@ public class ProtocolUtil {
     }
 
     /**
-     * POST 服务员查看我的邀请码
+     * POST 服务员查看我的邀请码列表
      * @return
      */
-    public static String getEmpInviteCodeUrl(){
+    public static String getInviteCodeUrl(){
         return ConfigUtil.getInst().getHttpDomain()+"invitation/sempcode";
+    }
+
+    /**
+     * POST 服务员查看我的邀请码已使用记录列表
+     * @return
+     */
+    public static String getCodeUserAllUrl(){
+        return ConfigUtil.getInst().getHttpDomain()+"invitation/codeuserall";
     }
 
     /**

@@ -518,4 +518,10 @@
     <color name="Gray7C7C7C">#7C7C7C</color>
     <color name="light_gray">#fafafa</color>
 
+    <color name="TextColorBlack">#101010</color>
+    <color name="TextColorGray">#666666</color>
+
+    <color name="BackgroundWhite">#ffffff</color>
+    <color name="BackgroundDarkWhite">#e3e3e3</color>
+
 </resources>

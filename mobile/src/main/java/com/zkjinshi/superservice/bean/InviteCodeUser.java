@@ -10,9 +10,12 @@ package com.zkjinshi.superservice.bean;
 public class InviteCodeUser {
 
     private String salecode;
+    private String userid;
     private String username;
     private String created;
-    private String userid;
+    private String phone;
+    private String lasttime;
+    private int    user_applevel;
 
     public String getSalecode() {
         return salecode;
@@ -20,6 +23,14 @@ public class InviteCodeUser {
 
     public void setSalecode(String salecode) {
         this.salecode = salecode;
+    }
+
+    public String getUserid() {
+        return userid;
+    }
+
+    public void setUserid(String userid) {
+        this.userid = userid;
     }
 
     public String getUsername() {
@@ -38,11 +49,27 @@ public class InviteCodeUser {
         this.created = created;
     }
 
-    public String getUserid() {
-        return userid;
+    public String getPhone() {
+        return phone;
     }
 
-    public void setUserid(String userid) {
-        this.userid = userid;
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getLasttime() {
+        return lasttime;
+    }
+
+    public void setLasttime(String lasttime) {
+        this.lasttime = lasttime;
+    }
+
+    public int getUser_applevel() {
+        return user_applevel;
+    }
+
+    public void setUser_applevel(int user_applevel) {
+        this.user_applevel = user_applevel;
     }
 }
