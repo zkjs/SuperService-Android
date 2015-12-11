@@ -120,7 +120,7 @@ public class ShopLoginActivity extends Activity{
                         CacheUtil.getInstance().setPassword(password);
                         CacheUtil.getInstance().setAreaInfo(adminLoginBean.getLocid());
                         CacheUtil.getInstance().setRoleID(adminLoginBean.getRoleid());
-
+                        LoginController.getInstance().loginHxUser();
                         String userID = CacheUtil.getInstance().getUserId();
                         String token  = CacheUtil.getInstance().getToken();
                         String shopiD = CacheUtil.getInstance().getShopID();

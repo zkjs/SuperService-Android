@@ -4,14 +4,21 @@ import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 
+import com.easemob.EMCallBack;
+import com.easemob.chat.EMChatManager;
+import com.easemob.chat.EMGroupManager;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.zkjinshi.superservice.emchat.EMConversationHelper;
+import com.zkjinshi.superservice.emchat.EasemobIMHelper;
+import com.zkjinshi.superservice.emchat.observer.EMessageListener;
 import com.zkjinshi.superservice.net.ExtNetRequestListener;
 import com.zkjinshi.superservice.net.MethodType;
 import com.zkjinshi.superservice.net.NetRequest;
 import com.zkjinshi.superservice.net.NetRequestTask;
 import com.zkjinshi.superservice.net.NetResponse;
 import com.zkjinshi.superservice.sqlite.ShopDepartmentDBUtil;
+import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.vo.DepartmentVo;
 
@@ -139,6 +146,33 @@ public class LoginController {
         });
         netRequestTask.isShowLoadingDialog = false;
         netRequestTask.execute();
+    }
+
+    /**
+     * 登录环形IM
+     */
+    public void loginHxUser(){
+        EasemobIMHelper.getInstance().loginUser(CacheUtil.getInstance().getUserId(), "123456", new EMCallBack() {
+            @Override
+            public void onSuccess() {
+                // ** 第一次登录或者之前logout后再登录，加载所有本地群和回话
+                EMGroupManager.getInstance().loadAllGroups();
+                EMChatManager.getInstance().loadAllConversations();
+                EMessageListener.getInstance().registerEventListener();
+                EMConversationHelper.getInstance().requestGroupListTask();
+            }
+
+            @Override
+            public void onError(int i, String s) {
+                Log.i(TAG, "errorCode:" + i);
+                Log.i(TAG, "errorMessage:" + s);
+            }
+
+            @Override
+            public void onProgress(int i, String s) {
+
+            }
+        });
     }
 
 }

@@ -128,13 +128,11 @@ public class LoginActivity extends Activity implements VerifyPhoneControler.Succ
                     CacheUtil.getInstance().setShopFullName(sempLoginbean.getFullname());
                     CacheUtil.getInstance().setLoginIdentity(IdentityType.WAITER);
                     CacheUtil.getInstance().setRoleID(sempLoginbean.getRoleid());
-
+                    LoginController.getInstance().loginHxUser();
                     String userID = CacheUtil.getInstance().getUserId();
                     String token  = CacheUtil.getInstance().getToken();
                     String shopiD = CacheUtil.getInstance().getShopID();
-
                     DBOpenHelper.DB_NAME = sempLoginbean.getSalesid() + ".db";
-
                     LoginController.getInstance().getDeptList(userID, token, shopiD);//获取部门列表
                     ClientController.getInstance().getShopClients(LoginActivity.this, userID, token, shopiD);
                     TeamContactsController.getInstance().getTeamContacts(LoginActivity.this, userID, token, shopiD, null);//获取团队列表

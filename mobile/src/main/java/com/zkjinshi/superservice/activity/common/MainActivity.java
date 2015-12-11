@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity{
     }
 
     private void initData(){
-        loginUser();
+
     }
 
     private void initListeners(){
@@ -355,40 +355,6 @@ public class MainActivity extends AppCompatActivity{
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-
-    /**
-     * 登录环形IM
-     */
-    private void loginUser(){
-        EasemobIMHelper.getInstance().loginUser(CacheUtil.getInstance().getUserId(), "123456", new EMCallBack() {
-            @Override
-            public void onSuccess() {
-                // ** 第一次登录或者之前logout后再登录，加载所有本地群和回话
-                EMGroupManager.getInstance().loadAllGroups();
-                EMChatManager.getInstance().loadAllConversations();
-                // EasemobIMHelper.getInstance().getFriendList();
-                //  EasemobIMHelper.getInstance().addFriend("hanton","jimmy add you to friend");
-                // EasemobIMHelper.getInstance().acceptInvitation("jimmyzhang");
-                // ReceiverHelper.getInstance().init(MainActivity.this);
-                // ReceiverHelper.getInstance().regiserNewMessageReceiver();
-                //  ReceiverHelper.getInstance().regiserAckMessageReceiver();
-                // ReceiverHelper.getInstance().regiserSuccMessageReceiver();
-                EMessageListener.getInstance().registerEventListener();
-                EMConversationHelper.getInstance().requestGroupListTask();
-            }
-
-            @Override
-            public void onError(int i, String s) {
-                Log.i(TAG, "errorCode:" + i);
-                Log.i(TAG, "errorMessage:" + s);
-            }
-
-            @Override
-            public void onProgress(int i, String s) {
-
-            }
-        });
     }
 
     /**

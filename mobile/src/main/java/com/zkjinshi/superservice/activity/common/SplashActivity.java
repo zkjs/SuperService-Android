@@ -111,6 +111,7 @@ public class SplashActivity extends Activity{
                             CacheUtil.getInstance().setPassword(CacheUtil.getInstance().getPassword());
                             CacheUtil.getInstance().setLogin(true);
                             CacheUtil.getInstance().setAreaInfo(adminLoginBean.getLocid());
+                            LoginController.getInstance().loginHxUser();
                             String userID = CacheUtil.getInstance().getUserId();
                             String token = CacheUtil.getInstance().getToken();
                             String shopiD = CacheUtil.getInstance().getShopID();
@@ -161,6 +162,7 @@ public class SplashActivity extends Activity{
                         CacheUtil.getInstance().setShopID(sempLoginbean.getShopid());
                         CacheUtil.getInstance().setShopFullName(sempLoginbean.getFullname());
                         CacheUtil.getInstance().setLoginIdentity(IdentityType.WAITER);
+                        LoginController.getInstance().loginHxUser();
                         String userID = CacheUtil.getInstance().getUserId();
                         String token  = CacheUtil.getInstance().getToken();
                         String shopiD = CacheUtil.getInstance().getShopID();
