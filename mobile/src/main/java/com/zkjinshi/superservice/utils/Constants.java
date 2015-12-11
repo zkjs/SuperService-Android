@@ -29,6 +29,7 @@ public class Constants {
     public static final String EXTRA_TO_NAME = "toName";
     public static final String EXTRA_SHOP_ID = "shopId";
     public static final String EXTRA_SHOP_NAME = "shopName";
+    public static final String EXTRA_TXT_MSG_CONTENT = "txtMsgContent";
     public static final String MSG_TXT_EXT_TYPE= "extType";
     public static final String MESSAGE_ATTR_IS_VOICE_CALL = "is_voice_call";
     public static final String MESSAGE_ATTR_IS_VIDEO_CALL = "is_video_call";

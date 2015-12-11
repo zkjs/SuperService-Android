@@ -104,6 +104,7 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
 
     private String remoteAction;
     private String remoteMessage;
+    private String txtMsgContent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -187,6 +188,14 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
             if(!TextUtils.isEmpty(remoteMessage)){
                 messageListViewManager.sendTextMessage(remoteMessage);
                 remoteMessage = null;
+            }
+        }
+        //邀请码自动发送
+        if(null != getIntent() && !TextUtils.isEmpty(getIntent().getStringExtra(Constants.EXTRA_TXT_MSG_CONTENT))){
+            txtMsgContent = getIntent().getStringExtra(Constants.EXTRA_TXT_MSG_CONTENT);
+            if(!TextUtils.isEmpty(txtMsgContent)){
+                messageListViewManager.sendTextMessage(txtMsgContent);
+                txtMsgContent = null;
             }
         }
     }
