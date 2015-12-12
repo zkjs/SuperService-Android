@@ -139,6 +139,12 @@
 -dontwarn com.testin.agent.**
 -keep class com.testin.agent.** { *; }
 
+#云巴
+-dontwarn io.yunba.android.**
+-keep class io.yunba.android.**{ *; }
+-dontwarn org.eclipse.paho.client.mqttv3.**
+-keep class org.eclipse.paho.client.mqttv3.**{ *; }
+
  #5 环信app打包混淆
  -keep class com.easemob.** {*;}
  -keep class org.jivesoftware.** {*;}
