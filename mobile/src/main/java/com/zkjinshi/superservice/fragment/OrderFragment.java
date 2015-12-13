@@ -87,8 +87,7 @@ public class OrderFragment extends Fragment{
         moreStatsuView.setStatus(CircleStatusView.CircleStatus.STATUS_MORE);
         moreStatsuView.invalidate();
 
-        swipeRefreshLayout.setRefreshing(true);
-        loadOrderList(0);
+
         initListeners();
 
     }
@@ -272,6 +271,8 @@ public class OrderFragment extends Fragment{
 
     @Override
     public void onResume() {
+        swipeRefreshLayout.setRefreshing(true);
+        loadOrderList(0);
         super.onResume();
     }
 
