@@ -159,8 +159,16 @@ public class NotificationHelper {
         // 1.设置显示信息
         notificationBuilder = new NotificationCompat.Builder(context);
         String contactName = locPushBean.getUsername();
-        notificationBuilder.setContentTitle("" + contactName);
-        notificationBuilder.setContentText("欢迎" + contactName+"先生/女士光临酒店");
+        int sex = locPushBean.getSex();
+        String locDesc = locPushBean.getLocdesc();
+        notificationBuilder.setContentTitle("" + context.getString(R.string.app_name));
+        String welcomeMsg = "";
+        if(sex == 0){
+            welcomeMsg = contactName+"女士到达"+locDesc;
+        }else {
+            welcomeMsg = contactName+"先生到达"+locDesc;
+        }
+        notificationBuilder.setContentText(welcomeMsg);
         notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
         String contactId = locPushBean.getUserid();
         String imageUrl = Constants.GET_USER_AVATAR + contactId + ".jpg";
