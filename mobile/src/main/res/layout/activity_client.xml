@@ -31,7 +31,7 @@
             android:layout_gravity="center"
             android:background="@android:color/holo_blue_light"
             android:gravity="center"
-            android:textColor="#ffffffff"
+            android:textColor="@color/white"
             android:textSize="30.0dip"
             android:visibility="invisible" />
 
@@ -40,6 +40,7 @@
             android:layout_width="30.0dip"
             android:layout_height="match_parent"
             android:layout_gravity="right|center" />
+
     </FrameLayout>
 
 </LinearLayout>

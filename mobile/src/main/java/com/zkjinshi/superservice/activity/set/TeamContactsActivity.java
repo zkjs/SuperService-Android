@@ -47,7 +47,6 @@ public class TeamContactsActivity extends AppCompatActivity{
     private final static String TAG = TeamContactsActivity.class.getSimpleName();
 
     public static final int ADD_REQUEST_CODE = 1;
-    public static final int GET_CONTACTS_ONLINE_STATUS = 0X11;//获取团队成员是否在线状态
 
     private Toolbar         mToolbar;
     private TextView        mTvCenterTitle;
@@ -64,22 +63,8 @@ public class TeamContactsActivity extends AppCompatActivity{
     private String mUserID;
     private String mShopID;
     private String mToken;
-    private String mUserName;
 
     private IdentityType mUserType;
-
-    private Handler handler = new Handler(){
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            switch (msg.what) {
-                case GET_CONTACTS_ONLINE_STATUS:
-                    String jsonMsg = (String) msg.obj;
-                    WebSocketManager.getInstance().sendMessage(jsonMsg);
-                    break;
-            }
-        }
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,7 +100,6 @@ public class TeamContactsActivity extends AppCompatActivity{
         mUserID     = CacheUtil.getInstance().getUserId();
         mToken      = CacheUtil.getInstance().getToken();
         mShopID     = CacheUtil.getInstance().getShopID();
-        mUserName   = CacheUtil.getInstance().getUserName();
         mUserType   = CacheUtil.getInstance().getLoginIdentity();
 
         mRvTeamContacts.setHasFixedSize(true);
@@ -139,7 +123,6 @@ public class TeamContactsActivity extends AppCompatActivity{
     @Override
     protected void onResume() {
         super.onResume();
-        //TODO: 1.服务器获得最近 5位联系人列表的客户列表
         showDataList();
     }
 

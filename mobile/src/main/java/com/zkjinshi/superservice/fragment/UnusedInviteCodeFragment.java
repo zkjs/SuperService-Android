@@ -74,6 +74,9 @@ public class UnusedInviteCodeFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        if(null != mInviteCodeAdapter){
+            mInviteCodeAdapter.clear();
+        }
         mPage = 1;
         getInviteCode(mPage);
     }
@@ -186,13 +189,12 @@ public class UnusedInviteCodeFragment extends Fragment {
                             mPage++;
                             List<InviteCode> inviteCodes = inviteCodeData.getCode_data();
                             if(null!=inviteCodes && !inviteCodes.isEmpty()){
-                                mInviteCodeAdapter.clear();
                                 mInviteCodes.addAll(inviteCodes);
-//                                mInviteCodeAdapter.addAll(mInviteCodes);
+                                mInviteCodeAdapter.notifyDataSetChanged();
                             } else {
-                                DialogUtil.getInstance().showCustomToast(mActivity, mActivity.
-                                                                        getString(R.string.no_more_data),
-                                                                        Gravity.CENTER);
+//                                DialogUtil.getInstance().showCustomToast(mActivity, mActivity.getString(
+//                                                                         R.string.no_more_data),
+//                                                                         Gravity.CENTER);
                             }
                         }
                     }
@@ -200,7 +202,6 @@ public class UnusedInviteCodeFragment extends Fragment {
                     if(null==mInviteCodes || mInviteCodes.isEmpty()){
                         mEmptyLayout.setVisibility(View.VISIBLE);
                     }
-
                     mSrlContainer.setRefreshing(false);
                 }
 

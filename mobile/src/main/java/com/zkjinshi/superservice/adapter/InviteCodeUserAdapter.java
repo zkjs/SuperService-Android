@@ -78,7 +78,7 @@ public class InviteCodeUserAdapter extends RecyclerView.Adapter<InviteCodeUserAd
         }
 
         if (!TextUtils.isEmpty(userPhone)) {
-            holder.tvContactPhone.setText(userName);
+            holder.tvContactPhone.setText(userPhone);
         }
     }
 
@@ -90,14 +90,13 @@ public class InviteCodeUserAdapter extends RecyclerView.Adapter<InviteCodeUserAd
         return 0;
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder
+    public class ViewHolder extends RecyclerView.ViewHolder
                                      implements View.OnClickListener {
         TextView tvInviteCode;
         TextView tvContactName;
         TextView tvContactPhone;
         TextView tvContactAvatar;
         CircleImageView civContactAvatar;
-        RecyclerItemClickListener itemClickListener;
 
         public ViewHolder(View itemView) {
             super(itemView);

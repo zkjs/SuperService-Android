@@ -109,7 +109,7 @@ public class InviteCodeController {
      * @param listener
      */
     public void getAllInviteCodeUsers(int page, Context context, ExtNetRequestListener listener) {
-        NetRequest netRequest = new NetRequest(ProtocolUtil.getInviteCodeUrl());
+        NetRequest netRequest = new NetRequest(ProtocolUtil.getCodeUserAllUrl());
         HashMap<String,String> bizMap = new HashMap<>();
         bizMap.put("salesid", CacheUtil.getInstance().getUserId());
         bizMap.put("token", CacheUtil.getInstance().getToken());
