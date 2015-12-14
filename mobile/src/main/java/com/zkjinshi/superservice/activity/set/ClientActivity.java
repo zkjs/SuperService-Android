@@ -71,8 +71,8 @@ public class ClientActivity extends AppCompatActivity{
 
     private List<SortModel>         mAllContactsList;
     private Map<String, SortModel>  mLocalClientMap;
-    private PinyinComparator     pinyinComparator;
-    private ContactsSortAdapter  mContactsAdapter;
+    private PinyinComparator        pinyinComparator;
+    private ContactsSortAdapter     mContactsAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -228,7 +228,6 @@ public class ClientActivity extends AppCompatActivity{
      * @param shopID
      */
     public void showMyClientList(String userID, String token, String shopID) {
-        //TODO: 1. 获取本地最近联系人列表
         //  2  获取本地客户联系人列表
         if(null != mAllContactsList && !mAllContactsList.isEmpty()){
             mAllContactsList.removeAll(mAllContactsList);
@@ -321,10 +320,7 @@ public class ClientActivity extends AppCompatActivity{
      * @param mAllContactsList
      */
     private void updateListView(List<SortModel> mAllContactsList) {
-        if(null == mAllContactsList || mAllContactsList.isEmpty()){
-            mTvDialog.setVisibility(View.VISIBLE);
-            mTvDialog.setText(ClientActivity.this.getString(R.string.current_none));
-        }else {
+        if(null != mAllContactsList && !mAllContactsList.isEmpty()){
             // 根据a-z进行排序源数据
             mTvDialog.setVisibility(View.GONE);
             Collections.sort(mAllContactsList, pinyinComparator);

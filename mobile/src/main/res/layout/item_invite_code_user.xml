@@ -64,7 +64,7 @@
 
             </LinearLayout>
 
-            <include layout="@layout/divider_line"></include>
+
 
         </RelativeLayout>
 
@@ -93,5 +93,7 @@
         </FrameLayout>
 
     </LinearLayout>
+
+    <include layout="@layout/divider_line"></include>
 
 </LinearLayout>

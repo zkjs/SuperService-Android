@@ -73,6 +73,11 @@ public class UsedInviteCodeFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+
+        if(null != mInviteCodeAdapter){
+            mInviteCodeAdapter.clear();
+        }
+
         mPage = 1;
         getAllInviteCodeUsers(mPage);
     }
@@ -170,9 +175,10 @@ public class UsedInviteCodeFragment extends Fragment {
                                 int size = inviteCodeUsers.size();
                                 ((InviteCodesActivity)mActivity).updateUsedCodeCount(size);
                                 mEmptyLayout.setVisibility(View.GONE);
-                                mInviteCodeAdapter.clear();
+
+                                mPage++;
                                 mInviteCodeUsers.addAll(inviteCodeUsers);
-//                                mInviteCodeAdapter.addAll(mInviteCodeUsers);
+                                mInviteCodeAdapter.notifyDataSetChanged();
                             }
                         }else {
                             DialogUtil.getInstance().showCustomToast(mActivity, mActivity.

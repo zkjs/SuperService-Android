@@ -1,13 +1,11 @@
 package com.zkjinshi.superservice.activity.common;
 
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
@@ -17,24 +15,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
-import com.zkjinshi.base.log.LogLevel;
-import com.zkjinshi.base.log.LogUtil;
-import com.zkjinshi.base.util.DialogUtil;
-import com.zkjinshi.base.view.CustomDialog;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.adapter.InviteCodeFragmentAdapter;
-import com.zkjinshi.superservice.bean.CodeUserData;
-import com.zkjinshi.superservice.bean.Head;
-import com.zkjinshi.superservice.bean.InviteCodeUser;
-import com.zkjinshi.superservice.factory.ClientFactory;
 import com.zkjinshi.superservice.fragment.UnusedInviteCodeFragment;
 import com.zkjinshi.superservice.fragment.UsedInviteCodeFragment;
 import com.zkjinshi.superservice.net.ExtNetRequestListener;
 import com.zkjinshi.superservice.net.NetResponse;
-import com.zkjinshi.superservice.sqlite.ClientDBUtil;
-import com.zkjinshi.superservice.vo.ClientVo;
-import com.zkjinshi.superservice.vo.ContactType;
 
 import org.json.JSONException;
 import org.json.JSONObject;

@@ -13,7 +13,7 @@ public class CodeUserData {
 
     private Head                 head;
     private List<InviteCodeUser> data;
-    private Link                 _link;
+    private Link                 link;
 
     public Head getHead() {
         return head;
@@ -31,11 +31,11 @@ public class CodeUserData {
         this.data = data;
     }
 
-    public Link get_link() {
-        return _link;
+    public Link getLink() {
+        return link;
     }
 
-    public void set_link(Link _link) {
-        this._link = _link;
+    public void setLink(Link link) {
+        this.link = link;
     }
 }
