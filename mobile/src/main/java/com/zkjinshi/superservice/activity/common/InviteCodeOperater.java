@@ -3,6 +3,8 @@ package com.zkjinshi.superservice.activity.common;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -16,6 +18,7 @@ import com.tencent.mm.sdk.modelmsg.GetMessageFromWX;
 import com.tencent.mm.sdk.modelmsg.SendMessageToWX;
 import com.tencent.mm.sdk.modelmsg.WXMediaMessage;
 import com.tencent.mm.sdk.modelmsg.WXTextObject;
+import com.tencent.mm.sdk.modelmsg.WXWebpageObject;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
 import com.zkjinshi.base.util.DialogUtil;
@@ -53,15 +56,18 @@ public class InviteCodeOperater {
         Button btnSMS    = (Button) layout.findViewById(R.id.btn_short_message);
         Button btnWeChat = (Button) layout.findViewById(R.id.btn_we_chat);
         Button btnCancel = (Button) layout.findViewById(R.id.btn_cancel);
+        final String sms =  context.getString(R.string.your_invite_code)
+                             + inviteCode + " 。"
+                             + context.getString(R.string.share_invite_code)
+                             + context.getString(R.string.download_link)
+                             + "http://android.myapp.com/myapp/detail.htm?apkName=com.zkjinshi.svip";
 
         btnSMS.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Uri smsToUri = Uri.parse("smsto:");
                 Intent intent = new Intent(Intent.ACTION_SENDTO, smsToUri);
-                intent.putExtra("sms_body", context.getString(R.string.your_invite_code)
-                                            + inviteCode + " 。"
-                                            + context.getString(R.string.share_invite_code));
+                intent.putExtra("sms_body", sms);
                 context.startActivity(intent);
                 dlg.dismiss();
             }
@@ -71,8 +77,8 @@ public class InviteCodeOperater {
             @Override
             public void onClick(View v) {
                 mWxApi = WXAPIFactory.createWXAPI(context, Constants.WECHAT_APP_ID);
+                mWxApi.registerApp(Constants.WECHAT_APP_ID);
                 //TODO：判断是否预装微信app
-
                 if(!mWxApi.isWXAppInstalled()){
                     DialogUtil.getInstance().showCustomToast(context, "尚未安装微信app", 0);
                     return ;
@@ -84,13 +90,13 @@ public class InviteCodeOperater {
 
                 // 初始化一个WXTextObject对象
                 WXTextObject textObj = new WXTextObject();
-                textObj.text = inviteCode;
+                textObj.text = sms;
                 // 用WXTextObject对象初始化一个WXMediaMessage对象
                 WXMediaMessage msg = new WXMediaMessage();
                 msg.mediaObject = textObj;
                 // 发送文本类型的消息时，title字段不起作用
                 // msg.title = "Will be ignored";
-                msg.description = context.getString(R.string.share_invite_code);
+                msg.description = sms;
 
                 // 构造一个Req
                 SendMessageToWX.Req req = new SendMessageToWX.Req();
@@ -126,4 +132,5 @@ public class InviteCodeOperater {
     private String buildTransaction(final String type) {
         return (type == null) ? String.valueOf(System.currentTimeMillis()) : type + System.currentTimeMillis();
     }
+
 }

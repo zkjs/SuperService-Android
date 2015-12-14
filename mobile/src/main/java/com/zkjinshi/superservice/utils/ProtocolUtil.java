@@ -304,6 +304,14 @@ public class ProtocolUtil {
     }
 
     /**
+     * POST 超级服务生产邀请注册链接
+     * @return
+     */
+    public static String getMakeInviteCodeUrl(){
+        return ConfigUtil.getInst().getHttpDomain()+"invitation/makeurl";
+    }
+
+    /**
      * POST 根据订单号显示评论
      * @return
      */

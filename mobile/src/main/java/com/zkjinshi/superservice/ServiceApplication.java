@@ -72,18 +72,12 @@ public class ServiceApplication extends Application{
         initFace();
         initImageLoader();
         initTest();
-        initWXApi();
     }
 
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
         MultiDex.install(this);
-    }
-
-    private void initWXApi() {
-        IWXAPI api = WXAPIFactory.createWXAPI(this, Constants.WECHAT_APP_ID, false);
-        api.registerApp(Constants.WECHAT_APP_ID);
     }
 
     public static Context getContext(){
