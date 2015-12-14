@@ -141,6 +141,14 @@ public class ConfigUtil {
     }
 
     /**
+     * 获取铁式API请求链接
+     * @return
+     */
+    public String getApiDomain() {
+        return "http://" + getConfigValue(Constants.API_HOST)+ "/";
+    }
+
+    /**
      * 根据标签名取得配置文件中的对应的文本
      *
      * @param key 标签名
