@@ -155,5 +155,7 @@
     <string name="confirm_to_create_new_invite_code">确定生成新的邀请码</string>
     <string name="no_more_data">已无更多数据！</string>
     <string name="short_message">短信</string>
+    <string name="share_invite_code" >激活超级身份，把您在某商家的会员保障扩展至全国，超过百家顶级商户和1000+名人工客服将竭诚为您服务。</string>
+    <string name="your_invite_code" >您当前的邀请码为:</string>
 
 </resources>

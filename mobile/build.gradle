@@ -8,8 +8,8 @@ android {
         applicationId "com.zkjinshi.superservice"
         minSdkVersion 15
         targetSdkVersion 22
-        versionCode 44
-        versionName "1.4.3"
+        versionCode 45
+        versionName "1.4.4"
         multiDexEnabled true
     }
     buildTypes {
@@ -38,4 +38,5 @@ dependencies {
     compile project(':library.FileChoser')
     compile 'com.android.support:recyclerview-v7:22.0.0'
     compile 'com.google.android.gms:play-services-appindexing:8.1.0'
+    compile files('libs/libammsdk.jar')
 }

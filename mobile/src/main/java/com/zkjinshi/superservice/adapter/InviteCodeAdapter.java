@@ -51,6 +51,7 @@ public class InviteCodeAdapter extends RecyclerView.Adapter<InviteCodeAdapter.Vi
     public void onBindViewHolder(InviteCodeAdapter.ViewHolder holder, int position) {
         InviteCode inviteCode = mDatas.get(position);
         int isValid = inviteCode.getIs_validity();
+
         //邀请码有效
         if(isValid == IsValidity.ISVALID.getValue()){
             String salesCode = inviteCode.getSalecode();
@@ -58,6 +59,14 @@ public class InviteCodeAdapter extends RecyclerView.Adapter<InviteCodeAdapter.Vi
                 holder.tvInviteCode.setText(salesCode);
             }
         }
+
+        //生成短信链接并且发送
+        holder.ibtnTransfer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
     }
 
     @Override

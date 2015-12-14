@@ -12,9 +12,17 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
+import com.tencent.mm.sdk.modelmsg.GetMessageFromWX;
+import com.tencent.mm.sdk.modelmsg.SendMessageToWX;
+import com.tencent.mm.sdk.modelmsg.WXMediaMessage;
+import com.tencent.mm.sdk.modelmsg.WXTextObject;
+import com.tencent.mm.sdk.openapi.IWXAPI;
+import com.tencent.mm.sdk.openapi.WXAPIFactory;
+import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.order.OrderNewActivity;
 import com.zkjinshi.superservice.activity.set.TeamContactsActivity;
+import com.zkjinshi.superservice.utils.Constants;
 
 /**
  * 开发者：WinkyQin
@@ -25,7 +33,7 @@ import com.zkjinshi.superservice.activity.set.TeamContactsActivity;
 public class InviteCodeOperater {
 
     private static InviteCodeOperater instance;
-
+    private IWXAPI  mWxApi;
     private InviteCodeOperater(){}
 
     public static synchronized InviteCodeOperater getInstance(){
@@ -51,17 +59,47 @@ public class InviteCodeOperater {
             public void onClick(View v) {
                 Uri smsToUri = Uri.parse("smsto:");
                 Intent intent = new Intent(Intent.ACTION_SENDTO, smsToUri);
-                intent.putExtra("sms_body", inviteCode);
+                intent.putExtra("sms_body", context.getString(R.string.your_invite_code)
+                                            + inviteCode + " 。"
+                                            + context.getString(R.string.share_invite_code));
                 context.startActivity(intent);
+                dlg.dismiss();
             }
         });
 
         btnWeChat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Intent orderNew = new Intent(context, OrderNewActivity.class );
-//                context.startActivity(orderNew);
-//                dlg.dismiss();
+                mWxApi = WXAPIFactory.createWXAPI(context, Constants.WECHAT_APP_ID);
+                //TODO：判断是否预装微信app
+
+                if(!mWxApi.isWXAppInstalled()){
+                    DialogUtil.getInstance().showCustomToast(context, "尚未安装微信app", 0);
+                    return ;
+                }
+                if(!mWxApi.isWXAppSupportAPI()){
+                    DialogUtil.getInstance().showCustomToast(context, "您的当前的安卓版本不支持朋友圈发送", 0);
+                    return ;
+                }
+
+                // 初始化一个WXTextObject对象
+                WXTextObject textObj = new WXTextObject();
+                textObj.text = inviteCode;
+                // 用WXTextObject对象初始化一个WXMediaMessage对象
+                WXMediaMessage msg = new WXMediaMessage();
+                msg.mediaObject = textObj;
+                // 发送文本类型的消息时，title字段不起作用
+                // msg.title = "Will be ignored";
+                msg.description = context.getString(R.string.share_invite_code);
+
+                // 构造一个Req
+                SendMessageToWX.Req req = new SendMessageToWX.Req();
+                req.transaction = buildTransaction("text"); // transaction字段用于唯一标识一个请求
+                req.message = msg;
+                req.scene   = SendMessageToWX.Req.WXSceneSession;
+                // 调用api接口发送数据到微信
+                mWxApi.sendReq(req);
+                dlg.dismiss();
             }
         });
 
@@ -85,4 +123,7 @@ public class InviteCodeOperater {
         dlg.show();
     }
 
+    private String buildTransaction(final String type) {
+        return (type == null) ? String.valueOf(System.currentTimeMillis()) : type + System.currentTimeMillis();
+    }
 }

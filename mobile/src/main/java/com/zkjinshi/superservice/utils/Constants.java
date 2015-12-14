@@ -49,4 +49,7 @@ public class Constants {
 
     public static final String ACTION_NOTICE = "com.zkjinshi.superservice.intent.action.NOTICE";
 
+    public static final String WECHAT_APP_ID = "wx55cd1d05f22990a0";
+
+
 }

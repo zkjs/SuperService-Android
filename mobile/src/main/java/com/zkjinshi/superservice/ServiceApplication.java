@@ -17,6 +17,8 @@ import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
+import com.tencent.mm.sdk.openapi.IWXAPI;
+import com.tencent.mm.sdk.openapi.WXAPIFactory;
 import com.testin.agent.TestinAgent;
 import com.zkjinshi.base.config.ConfigUtil;
 import com.zkjinshi.base.log.LogConfig;
@@ -29,6 +31,7 @@ import com.zkjinshi.superservice.emchat.EasemobIMHelper;
 import com.zkjinshi.superservice.emchat.observer.EGroupReomveListener;
 import com.zkjinshi.superservice.receiver.ECallReceiver;
 import com.zkjinshi.superservice.utils.CacheUtil;
+import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.utils.EmotionUtil;
 
 import java.io.File;
@@ -69,12 +72,18 @@ public class ServiceApplication extends Application{
         initFace();
         initImageLoader();
         initTest();
+        initWXApi();
     }
 
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
         MultiDex.install(this);
+    }
+
+    private void initWXApi() {
+        IWXAPI api = WXAPIFactory.createWXAPI(this, Constants.WECHAT_APP_ID, false);
+        api.registerApp(Constants.WECHAT_APP_ID);
     }
 
     public static Context getContext(){

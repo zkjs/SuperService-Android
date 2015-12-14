@@ -170,6 +170,9 @@
  -keep class org.slf4j.** {*;}
  -keep class ch.imvs.** {*;}
 
+ # 微信sdk不混淆
+ -keep class com.tencent.mm.sdk.** {*;}
+
 #---配置lib jar包over---#
 
 
