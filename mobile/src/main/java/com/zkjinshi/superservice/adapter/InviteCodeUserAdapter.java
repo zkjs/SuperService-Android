@@ -51,7 +51,7 @@ public class InviteCodeUserAdapter extends RecyclerView.Adapter<InviteCodeUserAd
 
     @Override
     public InviteCodeUserAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mActivity).inflate(R.layout.item_invite_code_user, null);
+        View view = LayoutInflater.from(mActivity).inflate(R.layout.item_invite_code_used, null);
         ViewHolder viewHolder = new ViewHolder(view);
         return viewHolder;
     }
@@ -59,7 +59,7 @@ public class InviteCodeUserAdapter extends RecyclerView.Adapter<InviteCodeUserAd
     @Override
     public void onBindViewHolder(InviteCodeUserAdapter.ViewHolder holder, int position) {
         InviteCodeUser inviteCodeUser = mDatas.get(position);
-        String inviteCode = inviteCodeUser.getSalecode();
+        String inviteCode = inviteCodeUser.getCode();
         String userID     = inviteCodeUser.getUserid();
         String userName   = inviteCodeUser.getUsername();
         String userPhone  = inviteCodeUser.getPhone();

@@ -9,23 +9,14 @@ package com.zkjinshi.superservice.bean;
  */
 public class InviteCodeUser {
 
-    private String salecode;
     private String userid;
     private String username;
+    private int    sex;
+    private String code;
     private String created;
     private String phone;
     private String lasttime;
-    private int    sex;
-    private String code;
     private int    user_applevel;
-
-    public String getSalecode() {
-        return salecode;
-    }
-
-    public void setSalecode(String salecode) {
-        this.salecode = salecode;
-    }
 
     public String getUsername() {
         return username;
