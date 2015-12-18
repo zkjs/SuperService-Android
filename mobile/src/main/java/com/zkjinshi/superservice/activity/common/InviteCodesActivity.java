@@ -1,5 +1,9 @@
 package com.zkjinshi.superservice.activity.common;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -53,6 +57,7 @@ public class InviteCodesActivity extends AppCompatActivity {
     private List<Fragment>  mFragmentLists;
 
     private InviteCodeFragmentAdapter mPagerAdapter;
+    private InviteCodeReceiver        mReceiver;
 
     private int mCurrentIndex ;
     private int mScreenWidth ;
@@ -62,9 +67,22 @@ public class InviteCodesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_invite_codes);
 
+        mReceiver = new InviteCodeReceiver();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("com.zkjinshi.invite_code");
+        registerReceiver(mReceiver, filter);
+
         initView();
         initData();
         initListener();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(null != mReceiver){
+            unregisterReceiver(mReceiver);
+        }
     }
 
     private void initView() {
@@ -257,31 +275,16 @@ public class InviteCodesActivity extends AppCompatActivity {
         });
     }
 
-//    /**
-//     * 弹出新增邀请码提示框
-//     */
-//    private void showAddInviteCodeDialog() {
-//        CustomDialog.Builder builder = new CustomDialog.Builder(this);
-//        builder.setMessage(getString(R.string.confirm_to_create_new_invite_code));
-//        //设置确定按钮
-//        builder.setPositiveButton(
-//            getString((R.string.confirm)),
-//            new DialogInterface.OnClickListener() {
-//                @Override
-//                public void onClick(DialogInterface dialog, int which) {
-//                    dialog.dismiss();
-//                    createNewInviteCode();
-//                }
-//        });
-//        //设置取消按钮
-//        builder.setNegativeButton(
-//            getString((R.string.cancel)),
-//            new DialogInterface.OnClickListener() {
-//                @Override
-//                public void onClick(DialogInterface dialog, int which) {
-//                    dialog.dismiss();
-//            }
-//        });
-//        builder.create().show();
-//    }
+    /**
+     * 收到邀请码使用信息，刷新当前界面
+     */
+    public class InviteCodeReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            for(int i=0; i<mFragmentLists.size(); i++){
+                mFragmentLists.get(i).onResume();
+            }
+        }
+    }
+
 }

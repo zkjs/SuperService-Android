@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/action_sheet_button_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -10,6 +11,7 @@
 
     <Button
         android:id="@+id/btn_my_orders"
+        android:visibility="invisible"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/actionsheet_top"

@@ -139,7 +139,7 @@ public class TeamContactsActivity extends AppCompatActivity{
                     public void getContactsDone(List<TeamContactBean> teamContacts) {
                         List<ShopEmployeeVo> shopEmployeeVos = ShopEmployeeDBUtil.getInstance().queryTeamByShopID(mShopID);
                         List<String> strLetters = new ArrayList<>();//首字母显示数组
-                        List<String> empids = new ArrayList<>();//员工ID数组
+                        List<String> empids     = new ArrayList<>();//员工ID数组
 
                         if (null != shopEmployeeVos && !shopEmployeeVos.isEmpty()) {
                             Iterator<ShopEmployeeVo> shopEmployeeVoIterator = shopEmployeeVos.iterator();
@@ -258,8 +258,8 @@ public class TeamContactsActivity extends AppCompatActivity{
             @Override
             public void onItemClick(View view, int position) {
                 ShopEmployeeVo shopEmployeeVo = mShopEmployeeVos.get(position);
-                String userId    = shopEmployeeVo.getEmpid();
-                String toName  = shopEmployeeVo.getName();
+                String userId = shopEmployeeVo.getEmpid();
+                String toName = shopEmployeeVo.getName();
                 String shopName = CacheUtil.getInstance().getShopFullName();
                 Intent intent = new Intent(TeamContactsActivity.this, ChatActivity.class);
                 intent.putExtra(com.zkjinshi.superservice.utils.Constants.EXTRA_USER_ID, userId);

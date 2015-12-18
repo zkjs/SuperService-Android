@@ -23,10 +23,12 @@ import com.zkjinshi.base.util.VibratorHelper;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.chat.group.ChatGroupActivity;
 import com.zkjinshi.superservice.activity.chat.single.ChatActivity;
+import com.zkjinshi.superservice.activity.common.InviteCodesActivity;
 import com.zkjinshi.superservice.activity.common.LoginActivity;
 import com.zkjinshi.superservice.activity.common.MainActivity;
 import com.zkjinshi.superservice.activity.common.SplashActivity;
 import com.zkjinshi.superservice.bean.ClientBaseBean;
+import com.zkjinshi.superservice.bean.InviteCode;
 import com.zkjinshi.superservice.bean.LocPushBean;
 import com.zkjinshi.superservice.emchat.EMConversationHelper;
 import com.zkjinshi.superservice.utils.CacheUtil;
@@ -195,6 +197,10 @@ public class NotificationHelper {
      * @param dateTime
      */
     public void showNotification(Context context, ClientBaseBean clientBase, long dateTime) {
+
+        Intent receiver = new Intent();
+        receiver.setAction("com.zkjinshi.invite_code");
+        context.sendBroadcast(receiver);
 
         String time = TimeUtil.getChatTime(dateTime);
         String userName = clientBase.getUsername();
