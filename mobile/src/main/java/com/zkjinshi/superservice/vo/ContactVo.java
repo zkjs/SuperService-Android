@@ -1,5 +1,7 @@
 package com.zkjinshi.superservice.vo;
 
+import com.zkjinshi.superservice.bean.BaseContact;
+
 import java.io.Serializable;
 
 /**
@@ -9,47 +11,34 @@ import java.io.Serializable;
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class ContactVo implements Serializable{
+public class ContactVo extends BaseContact implements Serializable{
 
 	private long   contactID;
 	private String name;
 	private String number;
 	private String simpleNumber;
-	private String sortKey;
     private String clientID;
 	private OnlineStatus isOnLine;
 	private int	bgDrawableRes;
+	private ContactType contactType;
+	private String      avatarUrl;
 
 	public ContactVo() {}
 
-	public ContactVo(long contactID, String clientID, String name,String number,
-					  String sortKey, OnlineStatus isOnLine, int bgDrawableRes) {
+	public ContactVo(long contactID, String name, String number,
+					  String simpleNumber, String clientID,
+					  OnlineStatus isOnLine, int bgDrawableRes,
+					  ContactType contactType, String avatarUrl) {
+
 		this.contactID = contactID;
-		this.name		= name;
-		this.number  	= number;
-		this.sortKey 	= sortKey;
-		this.clientID  = clientID;
-		this.isOnLine 	= isOnLine;
-		this.bgDrawableRes 	= bgDrawableRes;
-		if(number!=null){
-			this.simpleNumber=number.replaceAll("\\-|\\s", "");
-		}
-	}
-
-	public long getContactID() {
-		return contactID;
-	}
-
-	public void setContactID(long contactID) {
-		this.contactID = contactID;
-	}
-
-	public String getClientID() {
-		return clientID;
-	}
-
-	public void setClientID(String clientID) {
+		this.name = name;
+		this.number = number;
+		this.simpleNumber = simpleNumber;
 		this.clientID = clientID;
+		this.isOnLine = isOnLine;
+		this.bgDrawableRes = bgDrawableRes;
+		this.contactType = contactType;
+		this.avatarUrl = avatarUrl;
 	}
 
 	public String getName() {
@@ -76,22 +65,21 @@ public class ContactVo implements Serializable{
 		this.simpleNumber = simpleNumber;
 	}
 
-	public String getSortKey() {
-		return sortKey;
+	public String getClientID() {
+		return clientID;
 	}
 
-	public void setSortKey(String sortKey) {
-		this.sortKey = sortKey;
+	public void setClientID(String clientID) {
+		this.clientID = clientID;
 	}
 
-    public OnlineStatus getIsOnLine() {
-        return isOnLine;
-    }
+	public OnlineStatus getIsOnLine() {
+		return isOnLine;
+	}
 
-    public SortModel setIsOnLine(OnlineStatus isOnLine) {
-        this.isOnLine = isOnLine;
-        return null;
-    }
+	public void setIsOnLine(OnlineStatus isOnLine) {
+		this.isOnLine = isOnLine;
+	}
 
 	public int getBgDrawableRes() {
 		return bgDrawableRes;
@@ -101,6 +89,30 @@ public class ContactVo implements Serializable{
 		this.bgDrawableRes = bgDrawableRes;
 	}
 
+	public ContactType getContactType() {
+		return contactType;
+	}
+
+	public void setContactType(ContactType contactType) {
+		this.contactType = contactType;
+	}
+
+	public String getAvatarUrl() {
+		return avatarUrl;
+	}
+
+	public void setAvatarUrl(String avatarUrl) {
+		this.avatarUrl = avatarUrl;
+	}
+
+	public long getContactID() {
+		return contactID;
+	}
+
+	public void setContactID(long contactID) {
+		this.contactID = contactID;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -108,7 +120,6 @@ public class ContactVo implements Serializable{
 		result = prime * result + ((clientID == null) ? 0 : clientID.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		result = prime * result + ((number == null) ? 0 : number.hashCode());
-		result = prime * result + ((sortKey == null) ? 0 : sortKey.hashCode());
 		return result;
 	}
 
@@ -140,12 +151,6 @@ public class ContactVo implements Serializable{
 			if (other.number != null)
 				return false;
 		} else if (!number.equals(other.number))
-			return false;
-
-		if (sortKey == null) {
-			if (other.sortKey != null)
-				return false;
-		} else if (!sortKey.equals(other.sortKey))
 			return false;
 
 		return true;

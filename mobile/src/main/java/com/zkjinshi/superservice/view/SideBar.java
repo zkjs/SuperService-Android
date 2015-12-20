@@ -71,14 +71,14 @@ public class SideBar extends View {
         singleHeight = (height * 1f - singleHeight/2) / b.length;
 		for (int i = 0; i < b.length; i++) {
 			//设置字体显示颜色
-			paint.setColor(Color.parseColor("#808080"));
+			paint.setColor(Color.GRAY);
 			// paint.setColor(Color.WHITE);
 			// paint.setTypeface(Typeface.DEFAULT_BOLD);// 去除加粗
 			paint.setAntiAlias(true);
 			paint.setTextSize(DisplayUtil.sp2px(getContext(), 16));
 			// 选中的状态
 			if (i == choose) {
-				paint.setColor(Color.parseColor("#c60000"));
+				paint.setColor(Color.WHITE);
 				paint.setFakeBoldText(true);
 			}
 

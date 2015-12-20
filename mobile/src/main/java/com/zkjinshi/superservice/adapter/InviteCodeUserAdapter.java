@@ -64,11 +64,9 @@ public class InviteCodeUserAdapter extends RecyclerView.Adapter<InviteCodeUserAd
         String userName   = inviteCodeUser.getUsername();
         String userPhone  = inviteCodeUser.getPhone();
 
-        if (!TextUtils.isEmpty(userID)) {
-            ImageLoader.getInstance().displayImage(ProtocolUtil.getAvatarUrl(userID),
-                                                   holder.civContactAvatar,
-                                                   mOptions);
-        }
+        ImageLoader.getInstance().displayImage(ProtocolUtil.getAvatarUrl(userID),
+                                               holder.civContactAvatar, mOptions);
+
         if (!TextUtils.isEmpty(inviteCode)) {
             holder.tvInviteCode.setText(inviteCode);
         }
@@ -128,9 +126,6 @@ public class InviteCodeUserAdapter extends RecyclerView.Adapter<InviteCodeUserAd
     }
 
     public void addAll(List<InviteCodeUser> list) {
-        if(null == mDatas){
-            mDatas = new ArrayList<>();
-        }
         mDatas.addAll(list);
         notifyDataSetChanged();
     }

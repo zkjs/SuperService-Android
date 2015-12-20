@@ -243,8 +243,6 @@ public class TeamContactsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         public CircleImageView  civContactAvatar;
         public TextView         tvContactAvatar;
         public TextView         tvContactName;
-//        public RelativeLayout   rlContactStatus;
-//        public TextView         tvContactStatus;
         public RelativeLayout   rlContactOnStatus;
         public TextView         tvContactOnLine;
 
@@ -292,8 +290,7 @@ public class TeamContactsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
      */
     public int getPositionForSection(int section) {
         for (int i = 0; i < getItemCount(); i++) {
-            String sortStr = mList.get(i).getDept_name();
-            char firstChar = sortStr.toUpperCase(Locale.CHINESE).charAt(0);
+            char firstChar = mList.get(i).getDept_name().charAt(0);
             if (firstChar == section) {
                 return i;
             }

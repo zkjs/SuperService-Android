@@ -22,21 +22,17 @@ import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
-import com.zkjinshi.superservice.activity.set.ClientActivity;
 import com.zkjinshi.superservice.activity.set.ClientDetailActivity;
 import com.zkjinshi.superservice.listener.RecyclerItemClickListener;
 import com.zkjinshi.superservice.sqlite.ClientDBUtil;
-import com.zkjinshi.superservice.sqlite.ShopEmployeeDBUtil;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.utils.RandomDrawbleUtil;
 import com.zkjinshi.superservice.vo.ContactType;
-import com.zkjinshi.superservice.vo.OnlineStatus;
-import com.zkjinshi.superservice.vo.SortModel;
+import com.zkjinshi.superservice.vo.ContactVo;
 import com.zkjinshi.superservice.view.CircleImageView;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * 联系人适配器
@@ -48,14 +44,14 @@ import java.util.Locale;
 public class ContactsSortAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                                   implements SectionIndexer {
 
-    private List<SortModel> mList;
+    private List<ContactVo> mList;
     private Context         mContext;
 
     private DisplayImageOptions options;
 
     private RecyclerItemClickListener mRecyclerItemClickListener;
 
-    public ContactsSortAdapter(Context mContext, List<SortModel> list) {
+    public ContactsSortAdapter(Context mContext, List<ContactVo> list) {
         this.mContext = mContext;
         this.mList    = list;
 
@@ -72,7 +68,7 @@ public class ContactsSortAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
      * 当ListView数据发生变化时,调用此方法来更新ListView
      * @param list
      */
-    public void updateListView(List<SortModel> list) {
+    public void updateListView(List<ContactVo> list) {
         if (list == null) {
             this.mList = new ArrayList<>();
         } else {
@@ -99,13 +95,13 @@ public class ContactsSortAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
         //根据position获取分类的首字母的Char ascii值
-        final SortModel sortModel = mList.get(position);
+        final ContactVo contact = mList.get(position);
         int section = getSectionForPosition(position);
 
         //是否显示首字母
         if (position == getPositionForSection(section)) {
             ((ClientViewHolder)holder).tvLetter.setVisibility(View.VISIBLE);
-            String sortLetter = sortModel.getSortLetters();
+            String sortLetter = contact.getFirstLetter();
             if("?".equals(sortLetter)){
                 ((ClientViewHolder)holder).tvLetter.setText(mContext.getString(R.string.latest_contact));
             }else {
@@ -115,14 +111,14 @@ public class ContactsSortAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             ((ClientViewHolder)holder).tvLetter.setVisibility(View.GONE);
         }
 
-        String clientID    = sortModel.getClientID();
-        int bgDrawableRes =  ClientDBUtil.getInstance().queryBgDrawableResByClientID(sortModel.getClientID());
+        String clientID   = contact.getClientID();
+        int bgDrawableRes =  ClientDBUtil.getInstance().queryBgDrawableResByClientID(contact.getClientID());
         if(bgDrawableRes != 0){
-            sortModel.setBgDrawableRes(bgDrawableRes);
+            contact.setBgDrawableRes(bgDrawableRes);
         } else {
             int bgRes = RandomDrawbleUtil.getRandomDrawable();
             ClientDBUtil.getInstance().updateClientBgDrawableResByClientID(clientID, bgRes);
-            sortModel.setBgDrawableRes(bgRes);
+            contact.setBgDrawableRes(bgRes);
         }
 
         //根据url显示图片
@@ -130,14 +126,14 @@ public class ContactsSortAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         ImageLoader.getInstance().displayImage(avatarUrl, ((ClientViewHolder) holder).civContactAvatar, options, new ImageLoadingListener() {
             @Override
             public void onLoadingStarted(String imageUri, View view) {
-                ((ClientViewHolder) holder).tvContactAvatar.setBackgroundResource(sortModel.getBgDrawableRes());
+                ((ClientViewHolder) holder).tvContactAvatar.setBackgroundResource(contact.getBgDrawableRes());
                 ((ClientViewHolder) holder).civContactAvatar.setBackgroundColor(Color.TRANSPARENT);
             }
 
             @Override
             public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
                 ((ClientViewHolder) holder).civContactAvatar.setBackgroundColor(Color.TRANSPARENT);
-                ((ClientViewHolder) holder).tvContactAvatar.setBackgroundResource(sortModel.getBgDrawableRes());
+                ((ClientViewHolder) holder).tvContactAvatar.setBackgroundResource(contact.getBgDrawableRes());
             }
 
             @Override
@@ -147,12 +143,12 @@ public class ContactsSortAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             @Override
             public void onLoadingCancelled(String imageUri, View view) {
                 ((ClientViewHolder) holder).civContactAvatar.setBackgroundColor(Color.TRANSPARENT);
-                ((ClientViewHolder) holder).tvContactAvatar.setBackgroundResource(sortModel.getBgDrawableRes());
+                ((ClientViewHolder) holder).tvContactAvatar.setBackgroundResource(contact.getBgDrawableRes());
             }
         });
 
         //显示客户名称
-        String      clientName  = sortModel.getName();
+        String      clientName  = contact.getName();
         if(!TextUtils.isEmpty(clientName)){
             ((ClientViewHolder) holder).tvContactAvatar.setText(clientName.substring(0, 1));
             //去除问号
@@ -162,7 +158,7 @@ public class ContactsSortAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 ((ClientViewHolder)holder).tvContactName.setText(clientName);
             }
         }
-        ContactType contactType = sortModel.getContactType();
+        ContactType contactType = contact.getContactType();
         if(contactType == ContactType.NORMAL){
             ((ClientViewHolder)holder).ivStar.setVisibility(View.VISIBLE);
             ((ClientViewHolder)holder).ivStar.setBackgroundResource(R.mipmap.ic_star_shouye_pre);
@@ -173,8 +169,8 @@ public class ContactsSortAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         ((ClientViewHolder) holder).civContactAvatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (sortModel.getContactType().getValue() == ContactType.NORMAL.getValue()) {
-                    String phoneNumber = sortModel.getNumber();
+                if (contact.getContactType().getValue() == ContactType.NORMAL.getValue()) {
+                    String phoneNumber = contact.getNumber();
                     Intent clientDetail = new Intent(mContext, ClientDetailActivity.class);
                     clientDetail.putExtra("phone_number", phoneNumber);
                     mContext.startActivity(clientDetail);
@@ -231,7 +227,7 @@ public class ContactsSortAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
      * 根据ListView的当前位置获取分类的首字母的Char ascii值
      */
     public int getSectionForPosition(int position) {
-        return mList.get(position).getSortLetters().charAt(0);
+        return mList.get(position).getFirstLetter().charAt(0);
     }
 
     @Override
@@ -244,8 +240,7 @@ public class ContactsSortAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
      */
     public int getPositionForSection(int section) {
         for (int i = 0; i < getItemCount(); i++) {
-            String sortStr = mList.get(i).getSortLetters();
-            char firstChar = sortStr.toUpperCase(Locale.CHINESE).charAt(0);
+            char firstChar = mList.get(i).getFirstLetter().charAt(0);
             if (firstChar == section) {
                 return i;
             }

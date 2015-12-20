@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/bg_btn_default"
+    android:background="@drawable/bg_white_light_gray"
     android:gravity="center_vertical"
     android:orientation="vertical" >
 
@@ -61,8 +61,6 @@
 
             </LinearLayout>
 
-
-
         </RelativeLayout>
 
         <FrameLayout
@@ -84,7 +82,7 @@
                 android:id="@+id/civ_contact_avatar"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:background="@drawable/ic_launcher"
+                android:background="@mipmap/img_hotel_zhanwei"
                 android:layout_gravity="center_vertical"/>
 
         </FrameLayout>

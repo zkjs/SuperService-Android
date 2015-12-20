@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
  * 日期：2015/9/24
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
- */
+*/
 public class SortKeyUtil {
 
     public final static String chReg = "[\\u4E00-\\u9FA5]+";//中文字符串匹配
