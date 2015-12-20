@@ -172,8 +172,8 @@ public class UsedInviteCodeFragment extends Fragment {
                         if(head.isSet()){
                             List<InviteCodeUser> inviteCodeUsers = codeUserData.getData();
                             if (null != inviteCodeUsers && !inviteCodeUsers.isEmpty()) {
-                                int size = inviteCodeUsers.size();
-                                ((InviteCodesActivity)mActivity).updateUsedCodeCount(size);
+                                int count = codeUserData.getHead().getCount();
+                                ((InviteCodesActivity)mActivity).updateUsedCodeCount(count);
                                 mEmptyLayout.setVisibility(View.GONE);
 
                                 mPage++;
