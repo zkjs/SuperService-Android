@@ -149,6 +149,30 @@ public class ConfigUtil {
     }
 
     /**
+     * 获取短信SMS_ACCOUNT_SID
+     * @return
+     */
+    public String getSmsAccountSID() {
+        return getConfigValue(Constants.SMS_ACCOUNT_SID);
+    }
+
+    /**
+     * 获取短信SMS_APP_ID
+     * @return
+     */
+    public String getSmsAppID() {
+        return getConfigValue(Constants.SMS_APP_ID);
+    }
+
+    /**
+     * 获取短信SMS_AUTH_TOKEN
+     * @return
+     */
+    public String getSmsAuthToken() {
+        return getConfigValue(Constants.SMS_AUTH_TOKEN);
+    }
+
+    /**
      * 根据标签名取得配置文件中的对应的文本
      *
      * @param key 标签名
@@ -161,7 +185,6 @@ public class ConfigUtil {
             value = configValue.get(key.toLowerCase());
         return value;
     }
-
 
     /**
      * 取得配置文件键值对
