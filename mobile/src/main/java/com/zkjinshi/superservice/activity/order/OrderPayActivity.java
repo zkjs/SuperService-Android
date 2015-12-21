@@ -87,6 +87,8 @@ public class OrderPayActivity  extends Activity implements AdapterView.OnItemCli
         priceEt = (EditText)findViewById(R.id.order_rate);
         priceReasonEt = (EditText)findViewById(R.id.price_remark);
         payListView = (ListView)findViewById(R.id.pay_listview);
+
+        priceReasonEt.setVisibility(View.GONE);
     }
 
     private void initData() {
