@@ -1,5 +1,6 @@
 package com.zkjinshi.superservice.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -10,6 +11,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -41,19 +43,18 @@ import java.util.List;
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class ContactsSortAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
+public class ContactsSortAdapter extends ServiceBaseAdapter<ContactVo>
                                   implements SectionIndexer {
 
     private List<ContactVo> mList;
-    private Context         mContext;
-
+    private Context         mActivity;
     private DisplayImageOptions options;
 
-    private RecyclerItemClickListener mRecyclerItemClickListener;
+    public ContactsSortAdapter(Activity activity, List<ContactVo> datas) {
+        super(activity, datas);
 
-    public ContactsSortAdapter(Context mContext, List<ContactVo> list) {
-        this.mContext = mContext;
-        this.mList    = list;
+        this.mActivity = activity;
+        this.mList   = datas;
 
         this.options = new DisplayImageOptions.Builder()
                 .showImageOnLoading(Color.TRANSPARENT)// 设置图片下载期间显示的图片
@@ -78,37 +79,40 @@ public class ContactsSortAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     }
 
     @Override
-    public int getItemCount() {
-        return mList.size();
-    }
+    public View getView(int position, View convertView, ViewGroup parent) {
+        ViewHolder holder = null;
+        if(null == convertView){
+            holder      = new ViewHolder();
+            convertView = View.inflate(mActivity, R.layout.item_my_cilent, null);
+            holder.tvLetter         = (TextView) convertView.findViewById(R.id.catalog);
+            holder.civContactAvatar = (CircleImageView) convertView.findViewById(R.id.civ_contact_avatar);
+            holder.tvContactAvatar  = (TextView) convertView.findViewById(R.id.tv_contact_avatar);
+            holder.tvContactName    = (TextView) convertView.findViewById(R.id.tv_contact_name);
+            holder.ivStar           = (ImageView) convertView.findViewById(R.id.iv_star);
+            holder.tvContactDes     = (TextView) convertView.findViewById(R.id.tv_contact_des);
+            holder.rlContactOnStatus = (RelativeLayout) convertView.findViewById(R.id.rl_contact_on_status);
+            holder.tvContactOnLine   = (TextView) convertView.findViewById(R.id.tv_contact_on_line);
+            holder.tvContactOnShop   = (TextView) convertView.findViewById(R.id.tv_contact_on_shop);
+            convertView.setTag(holder);
+        } else {
+            holder = (ViewHolder) convertView.getTag();
+        }
 
-    @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.item_my_cilent, null);
-        //设置条目宽度满足屏幕
-        view.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                                                            LinearLayout.LayoutParams.WRAP_CONTENT));
-        ClientViewHolder clientHolder = new ClientViewHolder(view, mRecyclerItemClickListener);
-        return clientHolder;
-    }
-
-    @Override
-    public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
         //根据position获取分类的首字母的Char ascii值
         final ContactVo contact = mList.get(position);
         int section = getSectionForPosition(position);
 
         //是否显示首字母
         if (position == getPositionForSection(section)) {
-            ((ClientViewHolder)holder).tvLetter.setVisibility(View.VISIBLE);
+            holder.tvLetter.setVisibility(View.VISIBLE);
             String sortLetter = contact.getFirstLetter();
             if("?".equals(sortLetter)){
-                ((ClientViewHolder)holder).tvLetter.setText(mContext.getString(R.string.latest_contact));
+                holder.tvLetter.setText(mActivity.getString(R.string.latest_contact));
             }else {
-                ((ClientViewHolder)holder).tvLetter.setText(sortLetter);
+                holder.tvLetter.setText(sortLetter);
             }
         } else {
-            ((ClientViewHolder)holder).tvLetter.setVisibility(View.GONE);
+            holder.tvLetter.setVisibility(View.GONE);
         }
 
         String clientID   = contact.getClientID();
@@ -120,20 +124,21 @@ public class ContactsSortAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             ClientDBUtil.getInstance().updateClientBgDrawableResByClientID(clientID, bgRes);
             contact.setBgDrawableRes(bgRes);
         }
-
+        final TextView tvContactAvatar = holder.tvContactAvatar;
+        final CircleImageView civContactAvatar = holder.civContactAvatar;
         //根据url显示图片
         String avatarUrl = ProtocolUtil.getAvatarUrl(clientID);
-        ImageLoader.getInstance().displayImage(avatarUrl, ((ClientViewHolder) holder).civContactAvatar, options, new ImageLoadingListener() {
+        ImageLoader.getInstance().displayImage(avatarUrl, holder.civContactAvatar, options, new ImageLoadingListener() {
             @Override
             public void onLoadingStarted(String imageUri, View view) {
-                ((ClientViewHolder) holder).tvContactAvatar.setBackgroundResource(contact.getBgDrawableRes());
-                ((ClientViewHolder) holder).civContactAvatar.setBackgroundColor(Color.TRANSPARENT);
+                tvContactAvatar.setBackgroundResource(contact.getBgDrawableRes());
+                civContactAvatar.setBackgroundColor(Color.TRANSPARENT);
             }
 
             @Override
             public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-                ((ClientViewHolder) holder).civContactAvatar.setBackgroundColor(Color.TRANSPARENT);
-                ((ClientViewHolder) holder).tvContactAvatar.setBackgroundResource(contact.getBgDrawableRes());
+                civContactAvatar.setBackgroundColor(Color.TRANSPARENT);
+                tvContactAvatar.setBackgroundResource(contact.getBgDrawableRes());
             }
 
             @Override
@@ -142,85 +147,56 @@ public class ContactsSortAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
             @Override
             public void onLoadingCancelled(String imageUri, View view) {
-                ((ClientViewHolder) holder).civContactAvatar.setBackgroundColor(Color.TRANSPARENT);
-                ((ClientViewHolder) holder).tvContactAvatar.setBackgroundResource(contact.getBgDrawableRes());
+                civContactAvatar.setBackgroundColor(Color.TRANSPARENT);
+                tvContactAvatar.setBackgroundResource(contact.getBgDrawableRes());
             }
         });
 
         //显示客户名称
         String      clientName  = contact.getName();
         if(!TextUtils.isEmpty(clientName)){
-            ((ClientViewHolder) holder).tvContactAvatar.setText(clientName.substring(0, 1));
+            holder.tvContactAvatar.setText(clientName.substring(0, 1));
             //去除问号
             if("?".equals(clientName.trim().substring(0, 1))){
-                ((ClientViewHolder)holder).tvContactName.setText(clientName.substring(1));
+                holder.tvContactName.setText(clientName.substring(1));
             } else {
-                ((ClientViewHolder)holder).tvContactName.setText(clientName);
+                holder.tvContactName.setText(clientName);
             }
         }
         ContactType contactType = contact.getContactType();
         if(contactType == ContactType.NORMAL){
-            ((ClientViewHolder)holder).ivStar.setVisibility(View.VISIBLE);
-            ((ClientViewHolder)holder).ivStar.setBackgroundResource(R.mipmap.ic_star_shouye_pre);
+            holder.ivStar.setVisibility(View.VISIBLE);
+            holder.ivStar.setBackgroundResource(R.mipmap.ic_star_shouye_pre);
         }else {
-            ((ClientViewHolder)holder).ivStar.setVisibility(View.GONE);
+            holder.ivStar.setVisibility(View.GONE);
         }
-        ((ClientViewHolder)holder).tvContactOnLine.setVisibility(View.INVISIBLE);
-        ((ClientViewHolder) holder).civContactAvatar.setOnClickListener(new View.OnClickListener() {
+        holder.tvContactOnLine.setVisibility(View.INVISIBLE);
+        holder.civContactAvatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (contact.getContactType().getValue() == ContactType.NORMAL.getValue()) {
                     String phoneNumber = contact.getNumber();
-                    Intent clientDetail = new Intent(mContext, ClientDetailActivity.class);
+                    Intent clientDetail = new Intent(mActivity, ClientDetailActivity.class);
                     clientDetail.putExtra("phone_number", phoneNumber);
-                    mContext.startActivity(clientDetail);
+                    mActivity.startActivity(clientDetail);
                 } else {
-                    DialogUtil.getInstance().showCustomToast(mContext, "当前客户为本地联系人，无详细信息。", Gravity.CENTER);
+                    DialogUtil.getInstance().showCustomToast(mActivity, "当前客户为本地联系人，无详细信息。", Gravity.CENTER);
                 }
             }
         });
+        return convertView;
     }
 
-    public void setOnItemClickListener(RecyclerItemClickListener listener) {
-        this.mRecyclerItemClickListener = listener;
-    }
-
-    public static class ClientViewHolder extends RecyclerView.ViewHolder{
-
-        public TextView         tvLetter;
-        public CircleImageView  civContactAvatar;
-        public TextView         tvContactAvatar;
-        public TextView         tvContactName;
-        public ImageView        ivStar;
-        public TextView         tvContactDes;
-        public RelativeLayout   rlContactOnStatus;
-        public TextView         tvContactOnLine;
-        public TextView         tvContactOnShop;
-
-        private RecyclerItemClickListener mItemClickListener;
-
-        public ClientViewHolder(View view, RecyclerItemClickListener itemClickListener) {
-            super(view);
-            tvLetter         = (TextView) view.findViewById(R.id.catalog);
-            civContactAvatar = (CircleImageView) view.findViewById(R.id.civ_contact_avatar);
-            tvContactAvatar  = (TextView) view.findViewById(R.id.tv_contact_avatar);
-            tvContactName    = (TextView) view.findViewById(R.id.tv_contact_name);
-            ivStar           = (ImageView) view.findViewById(R.id.iv_star);
-            tvContactDes     = (TextView) view.findViewById(R.id.tv_contact_des);
-            rlContactOnStatus  = (RelativeLayout) view.findViewById(R.id.rl_contact_on_status);
-            tvContactOnLine    = (TextView) view.findViewById(R.id.tv_contact_on_line);
-            tvContactOnShop    = (TextView) view.findViewById(R.id.tv_contact_on_shop);
-            this.mItemClickListener = itemClickListener;
-
-            view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if(mItemClickListener != null){
-                        mItemClickListener.onItemClick(v, getPosition());
-                    }
-                }
-            });
-        }
+    public static class ViewHolder{
+        TextView         tvLetter;
+        CircleImageView  civContactAvatar;
+        TextView         tvContactAvatar;
+        TextView         tvContactName;
+        ImageView        ivStar;
+        TextView         tvContactDes;
+        RelativeLayout   rlContactOnStatus;
+        TextView         tvContactOnLine;
+        TextView         tvContactOnShop;
     }
 
     /**
@@ -239,7 +215,7 @@ public class ContactsSortAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
      * 根据分类的首字母的Char ascii值获取其第一次出现该首字母的位置
      */
     public int getPositionForSection(int section) {
-        for (int i = 0; i < getItemCount(); i++) {
+        for (int i = 0; i < getCount(); i++) {
             char firstChar = mList.get(i).getFirstLetter().charAt(0);
             if (firstChar == section) {
                 return i;

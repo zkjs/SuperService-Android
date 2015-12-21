@@ -5,6 +5,7 @@ import android.database.Cursor;
 
 import com.zkjinshi.superservice.bean.TeamContactBean;
 import com.zkjinshi.superservice.sqlite.ShopDepartmentDBUtil;
+import com.zkjinshi.superservice.utils.RandomDrawbleUtil;
 import com.zkjinshi.superservice.vo.OnlineStatus;
 import com.zkjinshi.superservice.vo.ShopEmployeeVo;
 import com.zkjinshi.superservice.vo.WorkStatus;
@@ -67,7 +68,7 @@ public class ShopEmployeeFactory {
         values.put("desc", shopEmployeeVo.getDesc());
         values.put("shop_id", shopEmployeeVo.getShop_id());
         values.put("dept_name", shopEmployeeVo.getDept_name());
-        values.put("bg_color_res", shopEmployeeVo.getBg_color_res());
+        values.put("bg_color_res", RandomDrawbleUtil.getRandomDrawable());
         return values;
     }
 
@@ -164,7 +165,6 @@ public class ShopEmployeeFactory {
         values.put("desc", shopEmployeeVo.getDesc());
         values.put("shop_id", shopEmployeeVo.getShop_id());
         values.put("dept_name", shopEmployeeVo.getDept_name());
-        values.put("bg_color_res", shopEmployeeVo.getBg_color_res());
         return values;
     }
 }

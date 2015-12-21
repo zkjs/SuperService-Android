@@ -5,6 +5,7 @@ import android.database.Cursor;
 
 import com.zkjinshi.superservice.bean.ClientBaseBean;
 import com.zkjinshi.superservice.bean.ClientDetailBean;
+import com.zkjinshi.superservice.utils.RandomDrawbleUtil;
 import com.zkjinshi.superservice.vo.ClientVo;
 import com.zkjinshi.superservice.vo.ContactType;
 import com.zkjinshi.superservice.vo.IsBill;
@@ -63,7 +64,6 @@ public class ClientFactory {
         SexType     setType     = client.getSex();
         int    orderCount  = client.getOrder_count();
         String tags        = client.getTags();
-        int bgDrawableRes  = client.getBgDrawableRes();
 
         values.put("userid", userId);
         values.put("id", id);
@@ -93,7 +93,7 @@ public class ClientFactory {
        }
         values.put("order_count", orderCount);
         values.put("tags", tags);
-        values.put("bg_drawable_res", bgDrawableRes);
+        values.put("bg_drawable_res", RandomDrawbleUtil.getRandomDrawable());
         return values;
     }
 
@@ -245,7 +245,6 @@ public class ClientFactory {
         values.put("order_count", client.getOrder_count());
         values.put("tags", client.getTags());
         values.put("online_status", client.getIsOnline().getValue());
-        values.put("bg_drawable_res", client.getBgDrawableRes());
         return values;
     }
 

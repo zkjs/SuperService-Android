@@ -12,6 +12,8 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -63,8 +65,7 @@ public class ClientActivity extends AppCompatActivity{
     private SideBar     mSideBar;
     private TextView    mTvDialog;
 
-    private RecyclerView        mRcvContacts;
-    private LinearLayoutManager mLayoutManager;
+    private ListView            mRcvContacts;
 
     private List<ContactVo>         mAllContactsList;
     private Map<String, ContactVo>  mLocalClientMap;
@@ -89,9 +90,9 @@ public class ClientActivity extends AppCompatActivity{
         mTvCenterTitle = (TextView) findViewById(R.id.tv_center_title);
         mTvCenterTitle.setText(getString(R.string.my_clients));
 
-        mSideBar     = (SideBar)    findViewById(R.id.sb_sidebar);
-        mTvDialog    = (TextView)   findViewById(R.id.tv_dialog);
-        mRcvContacts = (RecyclerView) findViewById(R.id.rcv_contacts);
+        mSideBar     = (SideBar)  findViewById(R.id.sb_sidebar);
+        mTvDialog    = (TextView) findViewById(R.id.tv_dialog);
+        mRcvContacts = (ListView) findViewById(R.id.rcv_contacts);
     }
 
     private void initData() {
@@ -110,12 +111,7 @@ public class ClientActivity extends AppCompatActivity{
         pinyinComparator = new PinyinComparator();
         mContactsAdapter = new ContactsSortAdapter(this, mAllContactsList);
 
-        mRcvContacts.setHasFixedSize(true);
-        mLayoutManager = new LinearLayoutManager(this);
-        mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        mRcvContacts.setLayoutManager(mLayoutManager);
         mRcvContacts.setAdapter(mContactsAdapter);
-
         showMyClientList(mUserID, mToken, mShopID);
     }
 
@@ -152,23 +148,22 @@ public class ClientActivity extends AppCompatActivity{
             public void onTouchingLetterChanged(String s) {
                 int position = mContactsAdapter.getPositionForSection(s.charAt(0));
                 if (position != -1) {
-                    mRcvContacts.scrollToPosition(position);
+                    mRcvContacts.setSelection(position);
                 }
             }
         });
 
 
         /** 我的客人条目点击事件 */
-        mContactsAdapter.setOnItemClickListener(new RecyclerItemClickListener() {
+        mRcvContacts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(View view, int position) {
-
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 ContactVo contact = mAllContactsList.get(position);
-                final String clientId    = contact.getClientID();
-                final String clientName  = contact.getName();
+                final String clientId = contact.getClientID();
+                final String clientName = contact.getName();
                 final String clientPhone = contact.getNumber();
 
-                if(mChooseOrderPerson){
+                if (mChooseOrderPerson) {
                     final CustomExtDialog.Builder customExtBuilder = new CustomExtDialog.Builder(ClientActivity.this);
                     customExtBuilder.setTitle(getString(R.string.add_order_person));
                     customExtBuilder.setMessage(getString(R.string.add_client) + clientName + getString(R.string.order_person) + "?");
@@ -200,10 +195,10 @@ public class ClientActivity extends AppCompatActivity{
                     Intent intent = new Intent(ClientActivity.this, ChatActivity.class);
                     intent.putExtra(Constants.EXTRA_USER_ID, clientId);
                     if (!TextUtils.isEmpty(mShopID)) {
-                        intent.putExtra(Constants.EXTRA_SHOP_ID,mShopID);
+                        intent.putExtra(Constants.EXTRA_SHOP_ID, mShopID);
                     }
-                    intent.putExtra(Constants.EXTRA_SHOP_NAME,CacheUtil.getInstance().getShopFullName());
-                    if(!TextUtils.isEmpty(clientName)){
+                    intent.putExtra(Constants.EXTRA_SHOP_NAME, CacheUtil.getInstance().getShopFullName());
+                    if (!TextUtils.isEmpty(clientName)) {
                         intent.putExtra(Constants.EXTRA_TO_NAME, clientName);
                     }
                     intent.putExtra(Constants.EXTRA_FROM_NAME, CacheUtil.getInstance().getUserName());

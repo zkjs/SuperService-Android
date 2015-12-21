@@ -13,6 +13,8 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -51,12 +53,11 @@ public class TeamContactsActivity extends AppCompatActivity{
 
     private Toolbar         mToolbar;
     private TextView        mTvCenterTitle;
-    private RecyclerView    mRvTeamContacts;
+    private ListView        mRvTeamContacts;
     private RelativeLayout  mRlSideBar;
     private TextView        mTvDialog;
     private AutoSideBar     mAutoSideBar;
 
-    private LinearLayoutManager     mLayoutManager;
     private TeamContactsAdapter     mTeamContactAdapter;
     private List<ShopEmployeeVo>    mShopEmployeeVos;
     private ShopEmployeeVo          mFirstShopEmployee;
@@ -71,6 +72,7 @@ public class TeamContactsActivity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_team_contacts);
+
         initView();
         initData();
         initListener();
@@ -85,7 +87,7 @@ public class TeamContactsActivity extends AppCompatActivity{
         mTvCenterTitle = (TextView) findViewById(R.id.tv_center_title);
         mTvCenterTitle.setText(getString(R.string.team));
 
-        mRvTeamContacts = (RecyclerView)     findViewById(R.id.rcv_team_contacts);
+        mRvTeamContacts = (ListView)     findViewById(R.id.rcv_team_contacts);
         mRlSideBar      = (RelativeLayout)   findViewById(R.id.rl_side_bar);
         mTvDialog       = (TextView)         findViewById(R.id.tv_dialog);
         mAutoSideBar    = new AutoSideBar(TeamContactsActivity.this);
@@ -103,11 +105,6 @@ public class TeamContactsActivity extends AppCompatActivity{
         mShopID     = CacheUtil.getInstance().getShopID();
         mUserType   = CacheUtil.getInstance().getLoginIdentity();
 
-        mRvTeamContacts.setHasFixedSize(true);
-        mLayoutManager = new LinearLayoutManager(this);
-        mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        mRvTeamContacts.setLayoutManager(mLayoutManager);
-
         // 创建商店排序对象
         mFirstShopEmployee = new ShopEmployeeVo();
         String shopName    = CacheUtil.getInstance().getShopFullName();
@@ -115,7 +112,7 @@ public class TeamContactsActivity extends AppCompatActivity{
         mFirstShopEmployee.setDept_name(shopName);
         mFirstShopEmployee.setEmpid(System.currentTimeMillis() + "");
 
-        mShopEmployeeVos = new ArrayList<>();
+        mShopEmployeeVos    = new ArrayList<>();
         mTeamContactAdapter = new TeamContactsAdapter(TeamContactsActivity.this,
                                                                mShopEmployeeVos);
         mRvTeamContacts.setAdapter(mTeamContactAdapter);
@@ -189,7 +186,7 @@ public class TeamContactsActivity extends AppCompatActivity{
                             }
 
                             DialogUtil.getInstance().cancelProgressDialog();
-                            mTeamContactAdapter.updateListView(mShopEmployeeVos);
+                            mTeamContactAdapter.setData(mShopEmployeeVos);
                         }
                         //更新数据库数据
                         ShopEmployeeDBUtil.getInstance().batchAddShopEmployees(shopEmployeeVos);
@@ -206,7 +203,7 @@ public class TeamContactsActivity extends AppCompatActivity{
                             mShopEmployeeVos.add(0, mFirstShopEmployee);
                             mShopEmployeeVos.addAll(shopEmployeeVos);
                         }
-                        mTeamContactAdapter.updateListView(mShopEmployeeVos);
+                        mTeamContactAdapter.setData(mShopEmployeeVos);
                         DialogUtil.getInstance().cancelProgressDialog();
                     }
                 }
@@ -250,14 +247,14 @@ public class TeamContactsActivity extends AppCompatActivity{
             public void onTouchingLetterChanged(String s) {
                 int position = mTeamContactAdapter.getPositionForSection(s.charAt(0));
                 if (position != -1) {
-                    mRvTeamContacts.scrollToPosition(position);
+                    mRvTeamContacts.setSelection(position);
                 }
             }
         });
 
-        mTeamContactAdapter.setOnItemClickListener(new RecyclerItemClickListener() {
+        mRvTeamContacts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(View view, int position) {
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 ShopEmployeeVo shopEmployeeVo = mShopEmployeeVos.get(position);
                 String userId = shopEmployeeVo.getEmpid();
                 String toName = shopEmployeeVo.getName();
