@@ -7,6 +7,8 @@ import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.vo.ClientVo;
 import com.zkjinshi.superservice.vo.ContactVo;
 
+import org.w3c.dom.Text;
+
 /**
  * 构建联系人工厂类
  * 开发者：vincent
@@ -41,15 +43,22 @@ public class ContactFactory {
         contact.setContactType(clientVo.getContactType());
         contact.setName(userName);
         if(!TextUtils.isEmpty(clientID)){
-            contact.setAvatarUrl(ProtocolUtil.getAvatarUrl(clientVo.getUserid()));
+            contact.setAvatarUrl(ProtocolUtil.getAvatarUrl(clientID));
         }
         contact.setNumber(clientVo.getPhone());
-        String pinyin = PinyinHelper.getInstance().getPinYin(userName);
-        contact.setSortKey(pinyin);
-
-        //获得首字母
-        String firstLetter = PinyinHelper.getInstance().getFirstLetter(pinyin);
-        contact.setFirstLetter(firstLetter);
+        if(!TextUtils.isEmpty(userName)){
+            contact.setSortKey(userName);
+            String pinyin = PinyinHelper.getInstance().getPinYin(userName);
+            //获得首字母
+            String firstLetter = PinyinHelper.getInstance().getFirstLetter(pinyin);
+            contact.setFirstLetter(firstLetter);
+        }else {
+            contact.setSortKey(clientID);
+            String pinyin = PinyinHelper.getInstance().getPinYin(userName);
+            //获得首字母
+            String firstLetter = PinyinHelper.getInstance().getFirstLetter(pinyin);
+            contact.setFirstLetter(firstLetter);
+        }
         contact.setClientID(clientID);
         contact.setIsOnLine(clientVo.getIsOnline());
         contact.setBgDrawableRes(clientVo.getBgDrawableRes());

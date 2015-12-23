@@ -1,5 +1,7 @@
 package com.zkjinshi.superservice.utils;
 
+import android.text.TextUtils;
+
 import java.util.ArrayList;
 
 /**
@@ -106,9 +108,13 @@ public class PinyinHelper {
      * @return
      */
     public String getFirstLetter(String sortKey){
-        String first = sortKey.substring(0, 1);
-        if (first.matches("[A-Za-z]")) {
-            return first.toUpperCase();
+        if(!TextUtils.isEmpty(sortKey)){
+            String first = sortKey.substring(0, 1);
+            if (first.matches("[A-Za-z]")) {
+                return first.toUpperCase();
+            } else {
+                return "#";
+            }
         } else {
             return "#";
         }
