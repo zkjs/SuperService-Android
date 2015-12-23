@@ -1,35 +1,36 @@
 package com.zkjinshi.superservice.vo;
 
+import com.zkjinshi.superservice.bean.BaseContact;
+
 import java.io.Serializable;
 
 /**
- *
  * 开发者：vincent
  * 日期：2015/10/12
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class ShopEmployeeVo implements Serializable{
+public class ShopEmployeeVo extends BaseContact implements Serializable {
 
     private String empid;
     private String empcode;
     private String name;
-    private int    roleid;
+    private int roleid;
     private String email;
     private String phone;
     private String phone2;
     private String fax;
-    private long   created;
-    private int    locationid;
-    private String  role_name;
-    private OnlineStatus  online_status;
-    private WorkStatus    work_status;
-    private long          lastOnLineTime;
-    private int            dept_id;
-    private String         desc;
-    private String         shop_id;
-    private String         dept_name;
-    private int            bg_color_res;//颜色资源值
+    private long created;
+    private int locationid;
+    private String role_name;
+    private OnlineStatus online_status;
+    private WorkStatus work_status;
+    private long lastOnLineTime;
+    private int dept_id;
+    private String desc;
+    private String shop_id;
+    private String dept_name;
+    private int bg_color_res;//颜色资源值
 
     public String getEmpid() {
         return empid;

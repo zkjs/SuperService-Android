@@ -244,7 +244,7 @@ public class TeamContactsAdapter extends ServiceBaseAdapter<ShopEmployeeVo>
         if(!TextUtils.isEmpty(mList.get(position).getDept_name())){
             return mList.get(position).getDept_name().charAt(0);
         }
-        return ( mList.get(position).getDept_id()+"").charAt(0);
+        return -1;
     }
 
     @Override
@@ -257,9 +257,11 @@ public class TeamContactsAdapter extends ServiceBaseAdapter<ShopEmployeeVo>
      */
     public int getPositionForSection(int section) {
         for (int i = 0; i < getCount(); i++) {
-            char firstChar = mList.get(i).getDept_name().charAt(0);
-            if (firstChar == section) {
-                return i;
+            String deptName = mList.get(i).getDept_name();
+            if(!TextUtils.isEmpty(deptName)){
+                if (deptName.charAt(0) == section) {
+                    return i;
+                }
             }
         }
         return -1;
