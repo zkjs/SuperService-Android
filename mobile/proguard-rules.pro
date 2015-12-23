@@ -81,6 +81,7 @@
 -keep class com.zkjinshi.superservice.net.** { *; }
 -keep class com.zkjinshi.superservice.fragment.**{ *; }
 -keep class com.zkjinshi.superservice.activity.**{ *; }
+-keep class io.codetail.animation.arcanimator.** { *; }
 
 #保留扩展控件不被混淆
 -keep class android.support.**{ *; }
