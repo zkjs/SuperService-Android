@@ -174,7 +174,10 @@ public class TeamEditContactsAdapter extends RecyclerView.Adapter<RecyclerView.V
      * 根据ListView的当前位置获取分类的首字母的Char ascii值
      */
     public int getSectionForPosition(int position) {
-        return mList.get(position).getDept_name().charAt(0);
+        if(!TextUtils.isEmpty(mList.get(position).getDept_name())){
+            return mList.get(position).getDept_name().charAt(0);
+        }
+        return -1;
     }
 
     @Override
@@ -188,9 +191,11 @@ public class TeamEditContactsAdapter extends RecyclerView.Adapter<RecyclerView.V
     public int getPositionForSection(int section) {
         for (int i = 0; i < getItemCount(); i++) {
             String sortStr = mList.get(i).getDept_name();
-            char firstChar = sortStr.toUpperCase(Locale.CHINESE).charAt(0);
-            if (firstChar == section) {
-                return i;
+            if(!TextUtils.isEmpty(sortStr)){
+                char firstChar = sortStr.toUpperCase(Locale.CHINESE).charAt(0);
+                if (firstChar == section) {
+                    return i;
+                }
             }
         }
         return -1;

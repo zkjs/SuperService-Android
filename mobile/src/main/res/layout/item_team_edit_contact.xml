@@ -76,13 +76,6 @@
 
         </RelativeLayout>
 
-        <View
-            android:layout_toRightOf="@id/fl_contact_avatar"
-            android:layout_alignParentBottom="true"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/divider_line_color" />
-
     </RelativeLayout>
 
 </LinearLayout>

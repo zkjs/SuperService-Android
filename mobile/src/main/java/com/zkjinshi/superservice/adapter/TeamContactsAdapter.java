@@ -267,4 +267,6 @@ public class TeamContactsAdapter extends ServiceBaseAdapter<ShopEmployeeVo>
         return -1;
     }
 
+
+
 }
