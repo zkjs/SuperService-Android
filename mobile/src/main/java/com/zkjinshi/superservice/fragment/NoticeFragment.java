@@ -114,6 +114,7 @@ public class NoticeFragment extends Fragment{
         mNotificationAdapter = new LocNotificationAdapter(activity, notifyComingList);
         notityRecyclerView.setAdapter(mNotificationAdapter);
         notityRecyclerView.setHasFixedSize(true);
+        notityRecyclerView.setNestedScrollingEnabled(false);
         notifyLayoutManager = new LinearLayoutManager(activity);
         notifyLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         notityRecyclerView.setLayoutManager(notifyLayoutManager);
@@ -121,6 +122,7 @@ public class NoticeFragment extends Fragment{
         locMoreAdapter = new LocMoreAdapter(activity, moreComingList);
         moreLayoutManager = new LinearLayoutManager(activity);
         moreLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        moreRecyclerView.setNestedScrollingEnabled(false);
         moreRecyclerView.setLayoutManager(moreLayoutManager);
         moreRecyclerView.setAdapter(locMoreAdapter);
         moreStatsuView.setStatus(CircleStatusView.CircleStatus.STATUS_MORE);

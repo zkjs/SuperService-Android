@@ -67,6 +67,7 @@ public class MessageFragment extends Fragment implements IEMessageObserver {
         messageRCV.setHasFixedSize(true);
         linearLayoutManager = new LinearLayoutManager(getActivity());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        messageRCV.setNestedScrollingEnabled(false);
         messageRCV.setLayoutManager(linearLayoutManager);
         messageRCV.setAdapter(messageAdapter);
     }

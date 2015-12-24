@@ -74,11 +74,13 @@ public class OrderFragment extends Fragment{
         timeTips = (TextView)view.findViewById(R.id.tv_time_info);
         swipeRefreshLayout = (SwipeRefreshLayout)view.findViewById(R.id.srl_order);
 
+        rcyOrder.setNestedScrollingEnabled(false);
         rcyOrder.setHasFixedSize(true);
         rcyOrder.setLayoutManager(new LinearLayoutManager(getActivity()));
         orderAdapter = new OrderAdapter(new ArrayList<OrderBean>());
         rcyOrder.setAdapter(orderAdapter);
 
+        rcyOrderMore.setNestedScrollingEnabled(false);
         rcyOrderMore.setHasFixedSize(true);
         rcyOrderMore.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
         orderMoreAdapter = new OrderMoreAdapter(new ArrayList<OrderBean>());
