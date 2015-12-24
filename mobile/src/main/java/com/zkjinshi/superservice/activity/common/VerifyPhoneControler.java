@@ -343,17 +343,25 @@ public class VerifyPhoneControler {
     private SmsReceiver smsReceiver;
 
     public void unregisterSmsReceiver(){
-        if(null != smsReceiver){
-            context.unregisterReceiver(smsReceiver);
+        try {
+            if(null != smsReceiver){
+                context.unregisterReceiver(smsReceiver);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
     public void registerSmsReceiver(){
-        IntentFilter filter = new IntentFilter();
-        filter.addAction("android.provider.Telephony.SMS_RECEIVED");
-        filter.setPriority(Integer.MAX_VALUE);
-        smsReceiver = new SmsReceiver();
-        context.registerReceiver(smsReceiver, filter);
+        try {
+            IntentFilter filter = new IntentFilter();
+            filter.addAction("android.provider.Telephony.SMS_RECEIVED");
+            filter.setPriority(Integer.MAX_VALUE);
+            smsReceiver = new SmsReceiver();
+            context.registerReceiver(smsReceiver, filter);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     class  SmsReceiver extends BroadcastReceiver {
