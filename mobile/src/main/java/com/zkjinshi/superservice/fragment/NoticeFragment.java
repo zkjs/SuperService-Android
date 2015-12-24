@@ -275,7 +275,7 @@ public class NoticeFragment extends Fragment{
                                     @Override
                                     public void run() {
                                         emptyLayout.setVisibility(View.GONE);
-                                        moreLayout.setVisibility(View.VISIBLE);
+                                        moreLayout.setVisibility(View.GONE);
                                         notityRecyclerView.scrollToPosition(0);
                                         mNotificationAdapter.setComingList(notifyComingList);
                                         mNotificationAdapter.notifyItemInserted(0);
