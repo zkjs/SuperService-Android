@@ -128,6 +128,7 @@ public class NotificationHelper {
                             }
                             notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
                             // 2.设置点击跳转事件
+                            CacheUtil.getInstance().setCurrentItem(1);
                             Intent intent = new Intent(context, MainActivity.class);
                             PendingIntent pendingIntent = PendingIntent.getActivity(context, 0,
                                     intent, 0);

@@ -23,6 +23,7 @@ import com.zkjinshi.superservice.adapter.ChatDetailAdapter;
 import com.zkjinshi.superservice.factory.EContactFactory;
 import com.zkjinshi.superservice.sqlite.ClientDBUtil;
 import com.zkjinshi.superservice.sqlite.ShopEmployeeDBUtil;
+import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.vo.ClientVo;
 import com.zkjinshi.superservice.vo.EContactVo;
 import com.zkjinshi.superservice.vo.ShopEmployeeVo;
@@ -189,7 +190,7 @@ public class ChatDetailActivity extends Activity{
                 dialog.dismiss();
                 EMChatManager.getInstance().clearConversation(userId);
                 Intent intent = new Intent(ChatDetailActivity.this, MainActivity.class);
-                intent.putExtra("currentItem",1);
+                CacheUtil.getInstance().setCurrentItem(1);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
                 finish();

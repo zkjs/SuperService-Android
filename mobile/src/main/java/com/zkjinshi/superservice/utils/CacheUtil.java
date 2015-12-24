@@ -379,6 +379,23 @@ public class CacheUtil {
 		return sp.getString("shop_id", null);
 	}
 
+	public void setCurrentItem(int currentItem) {
+		if (null == context) {
+			return;
+		}
+		SharedPreferences sp = context.getSharedPreferences(SVIP_CACHE, Context.MODE_PRIVATE);
+		sp.edit().putInt("currentItem", currentItem).commit();
+	}
+
+	public int getCurrentItem() {
+		if (null == context) {
+			return 0;
+		}
+		SharedPreferences sp = context.getSharedPreferences(SVIP_CACHE, Context.MODE_PRIVATE);
+		return sp.getInt("currentItem", 0);
+	}
+
+
 	public void setShopFullName(String shopFullName) {
 		if (null == context) {
 			return;

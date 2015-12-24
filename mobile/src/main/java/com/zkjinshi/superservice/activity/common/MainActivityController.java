@@ -20,6 +20,7 @@ import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.set.ClientActivity;
 import com.zkjinshi.superservice.activity.set.TeamContactsActivity;
 import com.zkjinshi.superservice.adapter.ViewPagerAdapter;
+import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.view.Fab;
 
 /**
@@ -139,9 +140,11 @@ public class MainActivityController implements View.OnClickListener{
             public void onPageScrollStateChanged(int i) {
             }
         });
-        int currentItem = intent.getIntExtra("currentItem", 0);
+        int currentItem =  CacheUtil.getInstance().getCurrentItem();
         viewpager.setCurrentItem(currentItem);
-
+        if(currentItem > 0){
+            CacheUtil.getInstance().setCurrentItem(0);
+        }
     }
 
     public void setMessageNum(int postion,int num){

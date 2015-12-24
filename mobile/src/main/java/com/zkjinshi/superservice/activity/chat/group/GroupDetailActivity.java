@@ -386,7 +386,7 @@ public class GroupDetailActivity extends Activity{
                 DialogUtil.getInstance().cancelProgressDialog();
                 Intent intent = new Intent(GroupDetailActivity.this, MainActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                intent.putExtra("currentItem",1);
+                CacheUtil.getInstance().setCurrentItem(1);
                 startActivity(intent);
                 finish();
             }
@@ -422,7 +422,7 @@ public class GroupDetailActivity extends Activity{
                 super.onPostExecute(aVoid);
                 DialogUtil.getInstance().cancelProgressDialog();
                 Intent intent = new Intent(GroupDetailActivity.this, MainActivity.class);
-                intent.putExtra("currentItem",1);
+                CacheUtil.getInstance().setCurrentItem(1);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
                 finish();
@@ -507,7 +507,7 @@ public class GroupDetailActivity extends Activity{
                 dialog.dismiss();
                 EMChatManager.getInstance().clearConversation(groupId);
                 Intent intent = new Intent(GroupDetailActivity.this, MainActivity.class);
-                intent.putExtra("currentItem",1);
+                CacheUtil.getInstance().setCurrentItem(1);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
                 finish();
