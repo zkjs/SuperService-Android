@@ -226,7 +226,7 @@ public class NoticeFragment extends Fragment{
             }
             if(requestComingList.size() > 0){
                 emptyLayout.setVisibility(View.GONE);
-                moreLayout.setVisibility(View.VISIBLE);
+                moreLayout.setVisibility(View.GONE);
             }else{
                 emptyLayout.setVisibility(View.VISIBLE);
                 moreLayout.setVisibility(View.GONE);

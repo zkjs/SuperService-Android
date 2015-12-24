@@ -190,7 +190,7 @@ public class OrderFragment extends Fragment{
                         orderAdapter.refreshingAction(upList);
                         if(orderAdapter.dataList.size() > 0){
                             emptyLayout.setVisibility(View.GONE);
-                            moreLayout.setVisibility(View.VISIBLE);
+                            moreLayout.setVisibility(View.GONE);
                         }else{
                             emptyLayout.setVisibility(View.VISIBLE);
                             moreLayout.setVisibility(View.GONE);

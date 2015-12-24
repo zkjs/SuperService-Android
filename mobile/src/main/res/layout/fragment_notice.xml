@@ -32,6 +32,7 @@
         android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
         android:gravity="center_vertical"
+        android:visibility="gone"
         android:layout_height="137dp"
         android:orientation="horizontal"
         android:id="@+id/more_layout">
