@@ -29,6 +29,7 @@ import com.zkjinshi.superservice.listener.RecyclerItemClickListener;
 import com.zkjinshi.superservice.sqlite.ClientDBUtil;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.utils.RandomDrawbleUtil;
+import com.zkjinshi.superservice.vo.ClientContactVo;
 import com.zkjinshi.superservice.vo.ContactType;
 import com.zkjinshi.superservice.vo.ContactVo;
 import com.zkjinshi.superservice.view.CircleImageView;
@@ -43,39 +44,19 @@ import java.util.List;
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class ContactsSortAdapter extends ServiceBaseAdapter<ContactVo>
-                                  implements SectionIndexer {
+public class ContactsSortAdapter extends ServiceBaseAdapter<ClientContactVo> implements SectionIndexer {
 
-    private List<ContactVo> mList;
-    private Context         mActivity;
-    private DisplayImageOptions options;
+    private DisplayImageOptions   options;
 
-    public ContactsSortAdapter(Activity activity, List<ContactVo> datas) {
+    public ContactsSortAdapter(Activity activity, List<ClientContactVo> datas) {
         super(activity, datas);
-
-        this.mActivity = activity;
-        this.mList   = datas;
-
         this.options = new DisplayImageOptions.Builder()
-                .showImageOnLoading(Color.TRANSPARENT)// 设置图片下载期间显示的图片
-                .showImageForEmptyUri(Color.TRANSPARENT)// 设置图片Uri为空或是错误的时候显示的图片
-                .showImageOnFail(Color.TRANSPARENT)// 设置图片加载或解码过程中发生错误显示的图片
+                .showImageOnLoading(null)// 设置图片下载期间显示的图片
+                .showImageForEmptyUri(null)// 设置图片Uri为空或是错误的时候显示的图片
+                .showImageOnFail(null)// 设置图片加载或解码过程中发生错误显示的图片
                 .cacheInMemory(true) // 设置下载的图片是否缓存在内存中
                 .cacheOnDisk(true) // 设置下载的图片是否缓存在SD卡中
                 .build();
-    }
-
-    /**
-     * 当ListView数据发生变化时,调用此方法来更新ListView
-     * @param list
-     */
-    public void updateListView(List<ContactVo> list) {
-        if (list == null) {
-            this.mList = new ArrayList<>();
-        } else {
-            this.mList = list;
-        }
-        this.notifyDataSetChanged();
     }
 
     @Override
@@ -99,7 +80,7 @@ public class ContactsSortAdapter extends ServiceBaseAdapter<ContactVo>
         }
 
         //根据position获取分类的首字母的Char ascii值
-        final ContactVo contact = mList.get(position);
+        final ClientContactVo contact = mDatas.get(position);
         int section = getSectionForPosition(position);
 
         //是否显示首字母
@@ -115,15 +96,15 @@ public class ContactsSortAdapter extends ServiceBaseAdapter<ContactVo>
             holder.tvLetter.setVisibility(View.GONE);
         }
 
-        String clientID   = contact.getClientID();
-        int bgDrawableRes =  ClientDBUtil.getInstance().queryBgDrawableResByClientID(contact.getClientID());
-        if(bgDrawableRes != 0){
-            contact.setBgDrawableRes(bgDrawableRes);
-        } else {
-            int bgRes = RandomDrawbleUtil.getRandomDrawable();
-            ClientDBUtil.getInstance().updateClientBgDrawableResByClientID(clientID, bgRes);
-            contact.setBgDrawableRes(bgRes);
-        }
+        String clientID = contact.getFuid();
+//        int bgDrawableRes =  ClientDBUtil.getInstance().queryBgDrawableResByClientID(clientID);
+//        if(bgDrawableRes != 0){
+//            contact.setBgDrawableRes(bgDrawableRes);
+//        } else {
+//            int bgRes = RandomDrawbleUtil.getRandomDrawable();
+//            ClientDBUtil.getInstance().updateClientBgDrawableResByClientID(clientID, bgRes);
+//            contact.setBgDrawableRes(bgRes);
+//        }
         final TextView tvContactAvatar = holder.tvContactAvatar;
         final CircleImageView civContactAvatar = holder.civContactAvatar;
         //根据url显示图片
@@ -131,14 +112,14 @@ public class ContactsSortAdapter extends ServiceBaseAdapter<ContactVo>
         ImageLoader.getInstance().displayImage(avatarUrl, holder.civContactAvatar, options, new ImageLoadingListener() {
             @Override
             public void onLoadingStarted(String imageUri, View view) {
-                tvContactAvatar.setBackgroundResource(contact.getBgDrawableRes());
+                tvContactAvatar.setBackgroundResource(RandomDrawbleUtil.getRandomDrawable());
                 civContactAvatar.setBackgroundColor(Color.TRANSPARENT);
             }
 
             @Override
             public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
                 civContactAvatar.setBackgroundColor(Color.TRANSPARENT);
-                tvContactAvatar.setBackgroundResource(contact.getBgDrawableRes());
+                tvContactAvatar.setBackgroundResource(RandomDrawbleUtil.getRandomDrawable());
             }
 
             @Override
@@ -148,12 +129,12 @@ public class ContactsSortAdapter extends ServiceBaseAdapter<ContactVo>
             @Override
             public void onLoadingCancelled(String imageUri, View view) {
                 civContactAvatar.setBackgroundColor(Color.TRANSPARENT);
-                tvContactAvatar.setBackgroundResource(contact.getBgDrawableRes());
+                tvContactAvatar.setBackgroundResource(RandomDrawbleUtil.getRandomDrawable());
             }
         });
 
         //显示客户名称
-        String      clientName  = contact.getName();
+        String clientName = contact.getFname();
         if(!TextUtils.isEmpty(clientName)){
             holder.tvContactAvatar.setText(clientName.substring(0, 1));
             //去除问号
@@ -163,25 +144,45 @@ public class ContactsSortAdapter extends ServiceBaseAdapter<ContactVo>
                 holder.tvContactName.setText(clientName);
             }
         }
-        ContactType contactType = contact.getContactType();
-        if(contactType == ContactType.NORMAL){
-            holder.ivStar.setVisibility(View.VISIBLE);
-            holder.ivStar.setBackgroundResource(R.mipmap.ic_star_shouye_pre);
-        }else {
-            holder.ivStar.setVisibility(View.GONE);
+
+        //显示客户名称
+        String phone = contact.getPhone();
+        if(!TextUtils.isEmpty(phone)){
+            holder.tvContactDes.setText(phone);
+        } else {
+            holder.tvContactDes.setText("无联系电话");
         }
+
+//        ContactType contactType = contact.getContactType();
+//        if(contactType == ContactType.NORMAL){
+//            holder.ivStar.setVisibility(View.VISIBLE);
+//            holder.ivStar.setBackgroundResource(R.mipmap.ic_star_shouye_pre);
+//        }else {
+//            holder.ivStar.setVisibility(View.GONE);
+//        }
         holder.tvContactOnLine.setVisibility(View.INVISIBLE);
         holder.civContactAvatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (contact.getContactType().getValue() == ContactType.NORMAL.getValue()) {
-                    String phoneNumber = contact.getNumber();
+
+                String phoneNumber  = contact.getPhone();
+                if(!TextUtils.isEmpty(phoneNumber)) {
                     Intent clientDetail = new Intent(mActivity, ClientDetailActivity.class);
                     clientDetail.putExtra("phone_number", phoneNumber);
                     mActivity.startActivity(clientDetail);
                 } else {
-                    DialogUtil.getInstance().showCustomToast(mActivity, "当前客户为本地联系人，无详细信息。", Gravity.CENTER);
+                    DialogUtil.getInstance().showCustomToast(mActivity, "电话号码为空！", Gravity.CENTER);
                 }
+
+//                if (contact.getContactType().getValue() == ContactType.NORMAL.getValue()) {
+//                    String phoneNumber = contact.getNumber();
+//                    Intent clientDetail = new Intent(mActivity, ClientDetailActivity.class);
+//                    clientDetail.putExtra("phone_number", phoneNumber);
+//                    mActivity.startActivity(clientDetail);
+//                } else {
+//                    DialogUtil.getInstance().showCustomToast(mActivity, "当前客户为本地联系人，无详细信息。", Gravity.CENTER);
+//                }
+
             }
         });
         return convertView;
@@ -203,7 +204,11 @@ public class ContactsSortAdapter extends ServiceBaseAdapter<ContactVo>
      * 根据ListView的当前位置获取分类的首字母的Char ascii值
      */
     public int getSectionForPosition(int position) {
-        return mList.get(position).getFirstLetter().charAt(0);
+        String firstLetter = mDatas.get(position).getFirstLetter();
+        if(!TextUtils.isEmpty(firstLetter)){
+           return firstLetter.charAt(0);
+        }
+        return '#';
     }
 
     @Override
@@ -216,9 +221,12 @@ public class ContactsSortAdapter extends ServiceBaseAdapter<ContactVo>
      */
     public int getPositionForSection(int section) {
         for (int i = 0; i < getCount(); i++) {
-            char firstChar = mList.get(i).getFirstLetter().charAt(0);
-            if (firstChar == section) {
-                return i;
+            String firstLetter = mDatas.get(i).getFirstLetter();
+            if(!TextUtils.isEmpty(firstLetter)){
+                int firstChar = firstLetter.charAt(0);
+                if (firstChar == section) {
+                    return i;
+                }
             }
         }
         return -1;

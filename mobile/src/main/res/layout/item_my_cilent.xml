@@ -114,12 +114,8 @@
 
             </RelativeLayout>
 
-            <include layout="@layout/divider_line"></include>
-
         </RelativeLayout>
 
     </LinearLayout>
-
-
 
 </LinearLayout>

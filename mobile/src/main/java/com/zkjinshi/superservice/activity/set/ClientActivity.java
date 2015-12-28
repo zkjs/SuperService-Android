@@ -28,10 +28,12 @@ import com.zkjinshi.superservice.net.ExtNetRequestListener;
 import com.zkjinshi.superservice.net.NetResponse;
 import com.zkjinshi.superservice.sqlite.ClientDBUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
+import com.zkjinshi.superservice.utils.ClientComparator;
 import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.utils.PinyinComparator;
 import com.zkjinshi.superservice.view.CustomExtDialog;
 import com.zkjinshi.superservice.view.SideBar;
+import com.zkjinshi.superservice.vo.ClientContactVo;
 import com.zkjinshi.superservice.vo.ClientVo;
 import com.zkjinshi.superservice.vo.ContactType;
 import com.zkjinshi.superservice.vo.ContactVo;
@@ -44,7 +46,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 联系人列表显示， 提供字母快速进入和查找联系人功能
+ * 联系人列表显示
  * 开发者：vincent
  * 日期：2015/9/24
  * Copyright (C) 2015 深圳中科金石科技有限公司
@@ -54,7 +56,7 @@ public class ClientActivity extends AppCompatActivity{
 
     private final static String TAG = ClientActivity.class.getSimpleName();
 
-    private boolean    mChooseOrderPerson;
+    private boolean     mChooseOrderPerson;
     private String      mUserID;
     private String      mToken;
     private String      mShopID;
@@ -62,12 +64,11 @@ public class ClientActivity extends AppCompatActivity{
     private TextView    mTvCenterTitle;
     private SideBar     mSideBar;
     private TextView    mTvDialog;
+    private ListView    mRcvContacts;
 
-    private ListView            mRcvContacts;
-
-    private List<ContactVo>         mAllContactsList;
-    private Map<String, ContactVo>  mLocalClientMap;
-    private PinyinComparator        pinyinComparator;
+    private List<ClientContactVo>   mAllContactsList;
+//    private Map<String, ContactVo>  mLocalClientMap;
+    private ClientComparator        mClientCompatator;
     private ContactsSortAdapter     mContactsAdapter;
 
     @Override
@@ -104,10 +105,10 @@ public class ClientActivity extends AppCompatActivity{
         /** 给ListView设置adapter **/
         mSideBar.setTextView(mTvDialog);
 
-        mLocalClientMap  = new HashMap<>();
-        mAllContactsList = new ArrayList<>();
-        pinyinComparator = new PinyinComparator();
-        mContactsAdapter = new ContactsSortAdapter(this, mAllContactsList);
+//        mLocalClientMap  = new HashMap<>();
+        mAllContactsList  = new ArrayList<>();
+        mClientCompatator = new ClientComparator();
+        mContactsAdapter  = new ContactsSortAdapter(this, mAllContactsList);
 
         mRcvContacts.setAdapter(mContactsAdapter);
         showMyClientList(mUserID, mToken, mShopID);
@@ -151,15 +152,14 @@ public class ClientActivity extends AppCompatActivity{
             }
         });
 
-
         /** 我的客人条目点击事件 */
         mRcvContacts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ContactVo contact = mAllContactsList.get(position);
-                final String clientId = contact.getClientID();
-                final String clientName = contact.getName();
-                final String clientPhone = contact.getNumber();
+                ClientContactVo contact = mAllContactsList.get(position);
+                final String clientId = contact.getFuid();
+                final String clientName = contact.getFname();
+                final String clientPhone = contact.getPhone();
 
                 if (mChooseOrderPerson) {
                     final CustomExtDialog.Builder customExtBuilder = new CustomExtDialog.Builder(ClientActivity.this);
@@ -220,22 +220,21 @@ public class ClientActivity extends AppCompatActivity{
      */
     public void showMyClientList(String userID, String token, String shopID) {
         //  2  获取本地客户联系人列表
-        if(null != mAllContactsList && !mAllContactsList.isEmpty()){
-            mAllContactsList.removeAll(mAllContactsList);
-        }
-
-        List<ClientVo> clientVos = ClientDBUtil.getInstance().queryUnNormalClient();
-        if(null != clientVos && !clientVos.isEmpty()){
-            List<ContactVo> contactVos = new ArrayList<>();
-            for(ClientVo clientVo : clientVos){
-                ContactVo contact =  ContactFactory.getInstance().buildContactVoByMyClientVo(clientVo);
-                contact.setIsOnLine(OnlineStatus.OFFLINE);
-                mLocalClientMap.put(contact.getClientID(), contact);
-                contactVos.add(contact);
-            }
-            Collections.sort(contactVos, pinyinComparator);
-            mAllContactsList.addAll(contactVos);
-        }
+//        if(null != mAllContactsList && !mAllContactsList.isEmpty()){
+//            mAllContactsList.removeAll(mAllContactsList);
+//        }
+//        List<ClientVo> clientVos = ClientDBUtil.getInstance().queryUnNormalClient();
+//        if(null != clientVos && !clientVos.isEmpty()){
+//            List<ContactVo> contactVos = new ArrayList<>();
+//            for(ClientVo clientVo : clientVos){
+//                ContactVo contact =  ContactFactory.getInstance().buildContactVoByMyClientVo(clientVo);
+//                contact.setIsOnLine(OnlineStatus.OFFLINE);
+//                mLocalClientMap.put(contact.getClientID(), contact);
+//                contactVos.add(contact);
+//            }
+//            Collections.sort(contactVos, pinyinComparator);
+//            mAllContactsList.addAll(contactVos);
+//        }
 
         // 1. 服务器获取本地联系人
         ClientController.getInstance().getShopClients(ClientActivity.this, userID, token, shopID,
@@ -243,16 +242,14 @@ public class ClientActivity extends AppCompatActivity{
             @Override
             public void onNetworkRequestError(int errorCode, String errorMessage) {
                 DialogUtil.getInstance().cancelProgressDialog();
+
                 Log.i(TAG, "errorCode:" + errorCode);
                 Log.i(TAG, "errorMessage:" + errorMessage);
-                DialogUtil.getInstance().showToast(ClientActivity.this, "网络访问失败，稍候再试。");
-                ClientActivity.this.updateListView(mAllContactsList);
             }
 
             @Override
             public void onNetworkRequestCancelled() {
                 DialogUtil.getInstance().cancelProgressDialog();
-                ClientActivity.this.updateListView(mAllContactsList);
             }
 
             @Override
@@ -263,29 +260,30 @@ public class ClientActivity extends AppCompatActivity{
                 Log.i(TAG, "result.rawResult:" + result.rawResult);
                 String jsonResult = result.rawResult;
                 Gson gson = new Gson();
-                List<ClientDetailBean> clientDetailBeans = gson.fromJson(jsonResult,
-                         new TypeToken<ArrayList<ClientDetailBean>>() {}.getType());
-                if (null != clientDetailBeans && !clientDetailBeans.isEmpty()) {
-                    List<ClientVo> clientVos = ClientFactory.getInstance().buildClientVosByClientBeans(clientDetailBeans);
-                    for (ClientVo clientVo : clientVos) {
-                        clientVo.setContactType(ContactType.NORMAL);
-                        clientVo.setIsOnline(OnlineStatus.OFFLINE);
-
-                        if (!ClientDBUtil.getInstance().isClientExistByUserID(clientVo.getUserid())) {
-                            ClientDBUtil.getInstance().addClient(clientVo);
-                        }
-                        String    userid  = clientVo.getUserid();
-                        ContactVo contact = ContactFactory.getInstance().buildContactVoByMyClientVo(clientVo);
-                        if (mLocalClientMap.containsKey(userid)) {
-                            mAllContactsList.remove(mLocalClientMap.get(userid));
-                        }
-                        mLocalClientMap.put(userid, contact);
-                        mAllContactsList.add(contact);
-                    }
-
-                    ClientActivity.this.updateListView(mAllContactsList);
-
+                mAllContactsList = gson.fromJson(jsonResult,
+                new TypeToken<ArrayList<ClientContactVo>>() {}.getType());
+                if (null != mAllContactsList && !mAllContactsList.isEmpty()) {
+                    mTvDialog.setVisibility(View.GONE);
+                    Collections.sort(mAllContactsList, mClientCompatator);
+                    mContactsAdapter.setData(mAllContactsList);
                 }
+//                    List<ClientVo> clientVos = ClientFactory.getInstance().buildClientVosByClientBeans(clientDetailBeans);
+//                    for (ClientContactVo client : clients) {
+//                        clientVo.setContactType(ContactType.NORMAL);
+//                        clientVo.setIsOnline(OnlineStatus.OFFLINE);
+//
+//                        if (!ClientDBUtil.getInstance().isClientExistByUserID(clientVo.getUserid())) {
+//                            ClientDBUtil.getInstance().addClient(clientVo);
+//                        }
+//                        String    userid  = clientVo.getUserid();
+//                        ContactVo contact = ContactFactory.getInstance().buildContactVoByMyClientVo(clientVo);
+//                        if (mLocalClientMap.containsKey(userid)) {
+//                            mAllContactsList.remove(mLocalClientMap.get(userid));
+//                        }
+//                        mLocalClientMap.put(userid, contact);
+//                        mAllContactsList.add(contact);
+//                    }
+//                    ClientActivity.this.updateListView(mAllContactsList);
             }
 
             @Override
@@ -296,18 +294,18 @@ public class ClientActivity extends AppCompatActivity{
 
     }
 
-    /**
-     * 更新listview界面展示
-     * @param mAllContactsList
-     */
-    private void updateListView(List<ContactVo> mAllContactsList) {
-        if(null != mAllContactsList && !mAllContactsList.isEmpty()){
-            // 根据a-z进行排序源数据
-            mTvDialog.setVisibility(View.GONE);
-            Collections.sort(mAllContactsList, pinyinComparator);
-            mContactsAdapter.updateListView(mAllContactsList);
-        }
-    }
+//    /**
+//     * 更新listview界面展示
+//     * @param mAllContactsList
+//     */
+//    private void updateListView(List<ContactVo> mAllContactsList) {
+//        if(null != mAllContactsList && !mAllContactsList.isEmpty()){
+//            // 根据a-z进行排序源数据
+//            mTvDialog.setVisibility(View.GONE);
+//            Collections.sort(mAllContactsList, pinyinComparator);
+//            mContactsAdapter.updateListView(mAllContactsList);
+//        }
+//    }
 
     @Override
     protected void onResume() {
