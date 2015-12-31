@@ -20,8 +20,6 @@ public class ProtocolUtil {
         return ConfigUtil.getInst().getHttpDomain()+"semp/semplogin";
     }
 
-
-
     /**
      * 服务员登陆
      * @return
@@ -73,6 +71,7 @@ public class ProtocolUtil {
     }
 
     /**
+     * TODO:
      * 获取订单详情
      * @return
      */
@@ -320,7 +319,7 @@ public class ProtocolUtil {
     }
 
     /**
-     * POST 根据订单号显示评论
+     * POST
      * @return
      */
     public static String getCodeUserListUrl(){
@@ -344,6 +343,7 @@ public class ProtocolUtil {
     }
 
     /**
+     * TODO：
      * 获取商品列表 URL
      * @param shopId
      * @return
