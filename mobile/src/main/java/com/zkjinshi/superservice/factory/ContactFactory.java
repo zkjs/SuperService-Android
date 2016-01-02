@@ -7,8 +7,6 @@ import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.vo.ClientVo;
 import com.zkjinshi.superservice.vo.ContactVo;
 
-import org.w3c.dom.Text;
-
 /**
  * 构建联系人工厂类
  * 开发者：vincent

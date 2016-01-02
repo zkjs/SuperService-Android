@@ -20,30 +20,19 @@ import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.chat.single.ChatActivity;
 import com.zkjinshi.superservice.adapter.ContactsSortAdapter;
-import com.zkjinshi.superservice.bean.ClientDetailBean;
 import com.zkjinshi.superservice.factory.ClientFactory;
-import com.zkjinshi.superservice.factory.ContactFactory;
-import com.zkjinshi.superservice.listener.RecyclerItemClickListener;
 import com.zkjinshi.superservice.net.ExtNetRequestListener;
 import com.zkjinshi.superservice.net.NetResponse;
-import com.zkjinshi.superservice.sqlite.ClientDBUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.ClientComparator;
 import com.zkjinshi.superservice.utils.Constants;
-import com.zkjinshi.superservice.utils.PinyinComparator;
 import com.zkjinshi.superservice.view.CustomExtDialog;
 import com.zkjinshi.superservice.view.SideBar;
 import com.zkjinshi.superservice.vo.ClientContactVo;
-import com.zkjinshi.superservice.vo.ClientVo;
-import com.zkjinshi.superservice.vo.ContactType;
-import com.zkjinshi.superservice.vo.ContactVo;
-import com.zkjinshi.superservice.vo.OnlineStatus;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 联系人列表显示
@@ -236,7 +225,7 @@ public class ClientActivity extends AppCompatActivity{
 //            mAllContactsList.addAll(contactVos);
 //        }
 
-        // 1. 服务器获取本地联系人
+        // 1. 服务器获取联系人
         ClientController.getInstance().getShopClients(ClientActivity.this, userID, token, shopID,
             new ExtNetRequestListener(this) {
             @Override
@@ -262,8 +251,11 @@ public class ClientActivity extends AppCompatActivity{
                 Gson gson = new Gson();
                 mAllContactsList = gson.fromJson(jsonResult,
                 new TypeToken<ArrayList<ClientContactVo>>() {}.getType());
+
                 if (null != mAllContactsList && !mAllContactsList.isEmpty()) {
                     mTvDialog.setVisibility(View.GONE);
+                    mAllContactsList = ClientFactory.getInstance().
+                            buildSortContactList(mAllContactsList);
                     Collections.sort(mAllContactsList, mClientCompatator);
                     mContactsAdapter.setData(mAllContactsList);
                 }
@@ -291,21 +283,7 @@ public class ClientActivity extends AppCompatActivity{
                 //网络请求前
             }
         });
-
     }
-
-//    /**
-//     * 更新listview界面展示
-//     * @param mAllContactsList
-//     */
-//    private void updateListView(List<ContactVo> mAllContactsList) {
-//        if(null != mAllContactsList && !mAllContactsList.isEmpty()){
-//            // 根据a-z进行排序源数据
-//            mTvDialog.setVisibility(View.GONE);
-//            Collections.sort(mAllContactsList, pinyinComparator);
-//            mContactsAdapter.updateListView(mAllContactsList);
-//        }
-//    }
 
     @Override
     protected void onResume() {

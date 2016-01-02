@@ -9,63 +9,83 @@ import java.io.Serializable;
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class OrderBean  implements Serializable {
+public class OrderBean implements Serializable {
 
-    private String reservation_no;
-    private String fullname;
-    private String userid;
+    /**
+     * 订单号
+     */
+    private String orderno;
+    /**
+     * 商店编号
+     */
     private String shopid;
-    private String arrival_date;
-    private String departure_date;
-    private String room_rate;
-    private String room_type;
-    private String room_typeid;
-    private String guest;
-    private String nologin;
-    private int rooms;
-    private String status;
-    private String pay_status;
-    private String created;
-    private String guesttel;
+    /**
+     * 商店名称
+     */
+    private String shopname;
+    /**
+     * 商店Logo
+     */
+    private String shoplogo;
+    /**
+     * 商品编号
+     */
+    private String productid;
+    /**
+     * 销售编号
+     */
+    private String saleid;
+    /**
+     * 用户编号
+     */
+    private String userid;
+    /**
+     * 订单状态(0:未确认 1:已确认 2:已取消)
+     */
+    private String orderstatus;
+    /**
+     * 房间编号
+     */
+    private String roomno;
+    /**
+     * 房间数量
+     */
+    private int roomcount;
+    /**
+     * 房间类型
+     */
+    private String roomtype;
+    /**
+     * 价格
+     */
+    private float roomprice;
+    /**
+     * 到店时间
+     */
+    private long arrivaldate;
+    /**
+     * 离店时间
+     */
+    private long leavedate;
+    /**
+     * 订单创建时间
+     */
+    private long created;
+    /**
+     * 联系电话
+     */
+    private String telephone;
+    /**
+     * 用户名
+     */
+    private String username;
 
-    public String getGuesttel() {
-        return guesttel;
+    public String getOrderno() {
+        return orderno;
     }
 
-    public void setGuesttel(String guesttel) {
-        this.guesttel = guesttel;
-    }
-
-    public String getCreated() {
-        return created;
-    }
-
-    public void setCreated(String created) {
-        this.created = created;
-    }
-
-    public String getReservation_no() {
-        return reservation_no;
-    }
-
-    public void setReservation_no(String reservation_no) {
-        this.reservation_no = reservation_no;
-    }
-
-    public String getFullname() {
-        return fullname;
-    }
-
-    public void setFullname(String fullname) {
-        this.fullname = fullname;
-    }
-
-    public String getUserid() {
-        return userid;
-    }
-
-    public void setUserid(String userid) {
-        this.userid = userid;
+    public void setOrderno(String orderno) {
+        this.orderno = orderno;
     }
 
     public String getShopid() {
@@ -76,85 +96,123 @@ public class OrderBean  implements Serializable {
         this.shopid = shopid;
     }
 
-    public String getArrival_date() {
-        return arrival_date;
+    public String getShopname() {
+        return shopname;
     }
 
-    public void setArrival_date(String arrival_date) {
-        this.arrival_date = arrival_date;
+    public void setShopname(String shopname) {
+        this.shopname = shopname;
     }
 
-    public String getDeparture_date() {
-        return departure_date;
+    public String getShoplogo() {
+        return shoplogo;
     }
 
-    public void setDeparture_date(String departure_date) {
-        this.departure_date = departure_date;
+    public void setShoplogo(String shoplogo) {
+        this.shoplogo = shoplogo;
     }
 
-    public String getRoom_rate() {
-        return room_rate;
+    public String getProductid() {
+        return productid;
     }
 
-    public void setRoom_rate(String room_rate) {
-        this.room_rate = room_rate;
+    public void setProductid(String productid) {
+        this.productid = productid;
     }
 
-    public String getRoom_type() {
-        return room_type;
+    public String getSaleid() {
+        return saleid;
     }
 
-    public void setRoom_type(String room_type) {
-        this.room_type = room_type;
+    public void setSaleid(String saleid) {
+        this.saleid = saleid;
     }
 
-    public String getRoom_typeid() {
-        return room_typeid;
+    public String getUserid() {
+        return userid;
     }
 
-    public void setRoom_typeid(String room_typeid) {
-        this.room_typeid = room_typeid;
+    public void setUserid(String userid) {
+        this.userid = userid;
     }
 
-    public String getGuest() {
-        return guest;
+    public String getOrderstatus() {
+        return orderstatus;
     }
 
-    public void setGuest(String guest) {
-        this.guest = guest;
+    public void setOrderstatus(String orderstatus) {
+        this.orderstatus = orderstatus;
     }
 
-    public String getNologin() {
-        return nologin;
+    public String getRoomno() {
+        return roomno;
     }
 
-    public void setNologin(String nologin) {
-        this.nologin = nologin;
+    public void setRoomno(String roomno) {
+        this.roomno = roomno;
     }
 
-    public int getRooms() {
-        return rooms;
+    public int getRoomcount() {
+        return roomcount;
     }
 
-    public void setRooms(int rooms) {
-        this.rooms = rooms;
+    public void setRoomcount(int roomcount) {
+        this.roomcount = roomcount;
     }
 
-    public String getStatus() {
-        return status;
+    public String getRoomtype() {
+        return roomtype;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setRoomtype(String roomtype) {
+        this.roomtype = roomtype;
     }
 
-    public String getPay_status() {
-        return pay_status;
+    public float getRoomprice() {
+        return roomprice;
     }
 
-    public void setPay_status(String pay_status) {
-        this.pay_status = pay_status;
+    public void setRoomprice(float roomprice) {
+        this.roomprice = roomprice;
     }
 
+    public long getArrivaldate() {
+        return arrivaldate;
+    }
 
+    public void setArrivaldate(long arrivaldate) {
+        this.arrivaldate = arrivaldate;
+    }
+
+    public long getLeavedate() {
+        return leavedate;
+    }
+
+    public void setLeavedate(long leavedate) {
+        this.leavedate = leavedate;
+    }
+
+    public long getCreated() {
+        return created;
+    }
+
+    public void setCreated(long created) {
+        this.created = created;
+    }
+
+    public String getTelephone() {
+        return telephone;
+    }
+
+    public void setTelephone(String telephone) {
+        this.telephone = telephone;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
 }

@@ -1,34 +1,32 @@
-package com.zkjinshi.superservice.bean;
-
+package com.zkjinshi.superservice.vo;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
- * 获取订单详细 返回实体
- * 开发者：dujiande
- * 日期：2015/10/06
+ * 开发者：WinkyQin
+ * 日期：2015/12/31
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class OrderDetailBean implements Serializable {
+public class OrderDetailVo implements Serializable {
 
     /**
      * 订单号
      */
-    private String orderno;
+    private String orderno;//必填
     /**
      * 商店编号
      */
-    private String shopid;
+    private String shopid;//必填
     /**
      * 用户id
      */
-    private String userid;
+    private String userid;//必填
     /**
      * 销售id
      */
-    private String saleid;
-
+    private String saleid;//必填
     /**
      * 商店名称
      */
@@ -72,11 +70,11 @@ public class OrderDetailBean implements Serializable {
     /**
      * 到店时间
      */
-    private String arrivaldate;
+    private Date arrivaldate;
     /**
      * 离店时间
      */
-    private String leavedate;
+    private Date leavedate;
     /**
      * 人数
      */
@@ -101,19 +99,6 @@ public class OrderDetailBean implements Serializable {
      * 备注
      */
     private String remark;
-    /**
-     *用户名
-     */
-    private String username;
-    /**
-     * 订单状态
-     */
-    private String orderstatus;
-
-    /**
-     * 订单创建时间
-     */
-    private long created;
 
     public String getOrderno() {
         return orderno;
@@ -227,19 +212,19 @@ public class OrderDetailBean implements Serializable {
         this.telephone = telephone;
     }
 
-    public String getArrivaldate() {
+    public Date getArrivaldate() {
         return arrivaldate;
     }
 
-    public void setArrivaldate(String arrivaldate) {
+    public void setArrivaldate(Date arrivaldate) {
         this.arrivaldate = arrivaldate;
     }
 
-    public String getLeavedate() {
+    public Date getLeavedate() {
         return leavedate;
     }
 
-    public void setLeavedate(String leavedate) {
+    public void setLeavedate(Date leavedate) {
         this.leavedate = leavedate;
     }
 
@@ -289,29 +274,5 @@ public class OrderDetailBean implements Serializable {
 
     public void setRemark(String remark) {
         this.remark = remark;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getOrderstatus() {
-        return orderstatus;
-    }
-
-    public void setOrderstatus(String orderstatus) {
-        this.orderstatus = orderstatus;
-    }
-
-    public long getCreated() {
-        return created;
-    }
-
-    public void setCreated(long created) {
-        this.created = created;
     }
 }

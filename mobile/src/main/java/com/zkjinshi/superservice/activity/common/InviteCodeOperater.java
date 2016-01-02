@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,9 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.tencent.mm.sdk.modelmsg.GetMessageFromWX;
 import com.tencent.mm.sdk.modelmsg.SendMessageToWX;
 import com.tencent.mm.sdk.modelmsg.WXMediaMessage;
@@ -21,11 +25,26 @@ import com.tencent.mm.sdk.modelmsg.WXTextObject;
 import com.tencent.mm.sdk.modelmsg.WXWebpageObject;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
+import com.zkjinshi.base.config.ConfigUtil;
+import com.zkjinshi.base.log.LogLevel;
+import com.zkjinshi.base.log.LogUtil;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.order.OrderNewActivity;
 import com.zkjinshi.superservice.activity.set.TeamContactsActivity;
+import com.zkjinshi.superservice.net.ExtNetRequestListener;
+import com.zkjinshi.superservice.net.MethodType;
+import com.zkjinshi.superservice.net.NetRequest;
+import com.zkjinshi.superservice.net.NetRequestTask;
+import com.zkjinshi.superservice.net.NetResponse;
+import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.Constants;
+import com.zkjinshi.superservice.utils.ProtocolUtil;
+
+import org.slf4j.helpers.Util;
+
+import java.io.ByteArrayOutputStream;
+import java.util.HashMap;
 
 /**
  * 开发者：WinkyQin
@@ -87,25 +106,14 @@ public class InviteCodeOperater {
                     DialogUtil.getInstance().showCustomToast(context, "您的当前的安卓版本不支持朋友圈发送", 0);
                     return ;
                 }
+                if(TextUtils.isEmpty(inviteCode)){
+                    DialogUtil.getInstance().showCustomToast(context, "邀请码不能为空", 0);
+                    return ;
+                } else {
+                    makeInviteCodeUrl(context, inviteCode);
+                    dlg.dismiss();
+                }
 
-                // 初始化一个WXTextObject对象
-                WXTextObject textObj = new WXTextObject();
-                textObj.text = sms;
-                // 用WXTextObject对象初始化一个WXMediaMessage对象
-                WXMediaMessage msg = new WXMediaMessage();
-                msg.mediaObject = textObj;
-                // 发送文本类型的消息时，title字段不起作用
-                // msg.title = "Will be ignored";
-                msg.description = sms;
-
-                // 构造一个Req
-                SendMessageToWX.Req req = new SendMessageToWX.Req();
-                req.transaction = buildTransaction("text"); // transaction字段用于唯一标识一个请求
-                req.message = msg;
-                req.scene   = SendMessageToWX.Req.WXSceneSession;
-                // 调用api接口发送数据到微信
-                mWxApi.sendReq(req);
-                dlg.dismiss();
             }
         });
 
@@ -131,6 +139,79 @@ public class InviteCodeOperater {
 
     private String buildTransaction(final String type) {
         return (type == null) ? String.valueOf(System.currentTimeMillis()) : type + System.currentTimeMillis();
+    }
+
+    /**
+     * 暂时不生成邀请码链接
+     * @param inviteCode
+     */
+    private void makeInviteCodeUrl(final Context context, final String inviteCode) {
+
+        NetRequest netRequest = new NetRequest(ProtocolUtil.getMakeInviteCodeUrl());
+        HashMap<String,String> bizMap = new HashMap<>();
+        bizMap.put("code", inviteCode);
+        bizMap.put("salesid", CacheUtil.getInstance().getUserId());
+        bizMap.put("host", ConfigUtil.getInst().getHttpDomain());
+
+        netRequest.setBizParamMap(bizMap);
+        NetRequestTask netRequestTask = new NetRequestTask(context, netRequest, NetResponse.class);
+        netRequestTask.methodType = MethodType.PUSH;
+        netRequestTask.setNetRequestListener(new ExtNetRequestListener(context) {
+            @Override
+            public void onNetworkRequestError(int errorCode, String errorMessage) {
+                super.onNetworkRequestError(errorCode, errorMessage);
+            }
+
+            @Override
+            public void onNetworkRequestCancelled() {
+                super.onNetworkRequestCancelled();
+            }
+
+            @Override
+            public void onNetworkResponseSucceed(NetResponse result) {
+                super.onNetworkResponseSucceed(result);
+
+                LogUtil.getInstance().info(LogLevel.INFO, "result:"+result.rawResult);
+                JsonParser paser = new JsonParser();
+                JsonElement element = paser.parse(result.rawResult);
+                JsonObject object  = element.getAsJsonObject();
+                Boolean isSet = object.get("set").getAsBoolean();
+
+                if(isSet){
+                    //获得生成链接地址
+                    String url = object.get("url").getAsString();
+                    // 初始化一个WXWebpageObject对象
+                    WXWebpageObject webPage= new WXWebpageObject();
+                    webPage.webpageUrl = url;
+
+                    // 用WXWebpageObject对象初始化一个WXMediaMessage对象
+                    WXMediaMessage msg = new WXMediaMessage();
+                    msg.title = CacheUtil.getInstance().getUserName() + "邀请您激活超级身份";
+                    msg.description = "激活超级身份，把您在某商家的会员保障扩展至全国，超过百家顶级商户和1000+名人工客服将竭诚为您服务。";
+                    Bitmap thumb = BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher);
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    thumb.compress(Bitmap.CompressFormat.PNG, 100, baos);
+                    msg.thumbData = baos.toByteArray();
+
+                    // 构造一个Req
+                    SendMessageToWX.Req req = new SendMessageToWX.Req();
+                    req.transaction = buildTransaction("webpage"); // transaction字段用于唯一标识一个请求
+                    req.message = msg;
+                    req.scene   = SendMessageToWX.Req.WXSceneSession;
+                    // 调用api接口发送数据到微信
+                    mWxApi.sendReq(req);
+                }else {
+                    DialogUtil.getInstance().showCustomToast(context, "微信发送失败，请稍后再试", 0);
+                }
+            }
+
+            @Override
+            public void beforeNetworkRequestStart() {
+                super.beforeNetworkRequestStart();
+            }
+        });
+        netRequestTask.isShowLoadingDialog = true;
+        netRequestTask.execute();
     }
 
 }

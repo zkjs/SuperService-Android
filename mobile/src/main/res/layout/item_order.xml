@@ -74,7 +74,6 @@
                 android:layout_height="wrap_content"
                 android:textColor="#949494"
                 android:textSize="14sp"
-                android:text="VIP 朱小姐已确认订单"
                 android:id="@+id/tv_name" />
 
             <TextView
@@ -85,7 +84,6 @@
                 android:layout_height="wrap_content"
                 android:textColor="#949494"
                 android:textSize="14sp"
-                android:text="豪华大床房|2晚|10/03-10/05"
                 android:id="@+id/tv_order" />
 
             <TextView
@@ -96,7 +94,6 @@
                 android:layout_height="wrap_content"
                 android:textColor="#000000"
                 android:textSize="14sp"
-                android:text="1068房|￥200.0"
                 android:id="@+id/tv_price" />
 
             <TextView
@@ -108,7 +105,6 @@
                 android:layout_marginLeft="20dp"
                 android:textColor="@color/skyblue"
                 android:textSize="14sp"
-                android:text="已确认/未支付"
                 android:id="@+id/tv_pay_status" />
 
             <LinearLayout
@@ -130,7 +126,6 @@
                     android:layout_marginLeft="10dp"
                     android:layout_width="wrap_content"
                     android:textColor="@color/grayB8B8B8"
-                    android:text="昨天"
                     android:textSize="14sp"
                     android:layout_height="wrap_content" />
 

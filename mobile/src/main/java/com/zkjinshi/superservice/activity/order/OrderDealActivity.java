@@ -15,6 +15,10 @@ import android.widget.TextView;
 
 import com.easemob.EMCallBack;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.base.util.TimeUtil;
 import com.zkjinshi.superservice.R;
@@ -41,7 +45,10 @@ import com.zkjinshi.superservice.utils.StringUtil;
 import com.zkjinshi.superservice.view.ItemUserSettingView;
 import com.zkjinshi.superservice.vo.UserVo;
 
+import org.jivesoftware.smack.util.Base64Encoder;
+
 import java.io.Serializable;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -90,53 +97,45 @@ public class OrderDealActivity extends Activity {
     private ArrayList<Calendar> calendarList = null;
 
     private int dayNum;
-    private OrderDetailBean orderDetailBean;
+    private OrderDetailBean mOrderDetail;
     private boolean isBooking = false;
     private boolean editAble = true;//可编辑的
     private UserVo userVo;
     private String reservationNo;
     private ArrayList<PayBean> payBeans = null;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_deal);
+
         DBOpenHelper.DB_NAME = CacheUtil.getInstance().getUserId() + ".db";
         userVo = UserDBUtil.getInstance().queryUserById(CacheUtil.getInstance().getUserId());
 
         initView();
-        Serializable serializable = getIntent().getSerializableExtra("book_order");
-        if(serializable == null){
+        mOrderDetail = (OrderDetailBean) getIntent().getSerializableExtra("book_order");
+        if(mOrderDetail == null){
             isBooking = false;
             reservationNo = getIntent().getStringExtra("reservation_no");
             if(!TextUtils.isEmpty(reservationNo)){
-                loadOrder();
+                loadOrder(reservationNo);
             }
-
         }else{
             isBooking = true;
-            orderDetailBean = (OrderDetailBean)serializable;
             initData();
         }
         initListener();
     }
 
-
     /*
     加载订单
      */
-    private void loadOrder() {
-        String url = ProtocolUtil.getSempShowUrl();
+    private void loadOrder(String orderNO) {
+        String url = ProtocolUtil.getOrderDetailUrl(orderNO);
         Log.i(TAG,url);
         NetRequest netRequest = new NetRequest(url);
-        HashMap<String,String> bizMap = new HashMap<String,String>();
-        bizMap.put("salesid", CacheUtil.getInstance().getUserId());
-        bizMap.put("token", CacheUtil.getInstance().getToken());
-        bizMap.put("reservation_no", reservationNo);
-        netRequest.setBizParamMap(bizMap);
         NetRequestTask netRequestTask = new NetRequestTask(this,netRequest, NetResponse.class);
-        netRequestTask.methodType = MethodType.PUSH;
+        netRequestTask.methodType = MethodType.GET;
         netRequestTask.setNetRequestListener(new ExtNetRequestListener(this) {
             @Override
             public void onNetworkRequestError(int errorCode, String errorMessage) {
@@ -155,8 +154,8 @@ public class OrderDealActivity extends Activity {
 
                 Log.i(TAG, "result.rawResult:" + result.rawResult);
                 try {
-                    orderDetailBean = new Gson().fromJson(result.rawResult, OrderDetailBean.class);
-                    if (orderDetailBean.isSet()) {
+                    mOrderDetail = new Gson().fromJson(result.rawResult, OrderDetailBean.class);
+                    if (null != mOrderDetail) {
                         initData();
                     } else {
                         DialogUtil.getInstance().showToast(OrderDealActivity.this, "api 错误");
@@ -215,9 +214,6 @@ public class OrderDealActivity extends Activity {
     }
 
     private void initData() {
-        if(orderDetailBean == null){
-            return;
-        }
         //初始化订单状态的显示
         initOrderStatus();
 
@@ -237,27 +233,36 @@ public class OrderDealActivity extends Activity {
 
     //初始化支付方式
     private void initPayType() {
-        String rate = orderDetailBean.getRoom().getRoom_rate();
-        if(TextUtils.isEmpty(rate)){
-            rate = "未设定";
-        }else{
-            rate = "￥"+rate;
+        float rate = mOrderDetail.getRoomprice();
+        if(rate <= 0){
+            mIusvPayType.setTextTitle("未设定");
+        } else {
+            mIusvPayType.setTextTitle("￥"+rate);
         }
-        mIusvPayType.setTextTitle(rate);
-
-        String payType = orderDetailBean.getRoom().getPay_name();
-        if(TextUtils.isEmpty(payType)){
-            payType = "未设定";
-        }
-        mIusvPayType.setTextContent2(payType);
+        int payType = mOrderDetail.getPaytype();
+        mIusvPayType.setTextContent2(getPayMethod(payType));
     }
 
-
+    /**
+     * 根据支付方式ID获得中文显示支付名称
+     * @param payType
+     * @return
+     */
+    private String getPayMethod(int payType) {
+        if (payType == 1) {
+            return "在线支付";
+        } if (payType == 1) {
+            return "挂单";
+        } if (payType == 1) {
+        return "到店支付";
+        } else {
+            return "未设定";
+        }
+    }
 
     //初始化订单状态的显示
     private void initOrderStatus() {
-
-        String reservation_no = orderDetailBean.getRoom().getReservation_no();
+        String reservation_no = mOrderDetail.getOrderno();
         if(TextUtils.isEmpty(reservation_no)){
             editAble = true;
             finishBtn.setText("添加订单");
@@ -266,35 +271,35 @@ public class OrderDealActivity extends Activity {
             //订单状态 默认0可取消订单 1已取消订单 2已确认订单 3已经完成的订单 4正在入住中 5已删除订单
             //支付状态 0未支付,1已支付,3支付一部分,4已退款, 5已挂账
             mIusvOrderNo.setTextContent2(reservation_no);
-            String orderStatus = orderDetailBean.getRoom().getStatus();
-            String payStatus = orderDetailBean.getRoom().getPay_status();
-            if(orderStatus.equals("0") || orderStatus.equals("2")){
-                editAble = true;
-                finishBtn.setVisibility(View.VISIBLE);
-                finishBtn.setText("修改订单");
-            }else{
-                editAble = false;
-                finishBtn.setVisibility(View.GONE);
-            }
-
-            if(orderStatus.equals("2")){
-                successBtn.setVisibility(View.VISIBLE);
-            }else{
-                successBtn.setVisibility(View.GONE);
-            }
-
-            if(orderStatus.equals("3")) {
-                getGradeFromNet();
-            }
+//            String orderStatus = orderDetailBean.get;
+//            String payStatus   = orderDetailBean.getp;
+//
+//            if(orderStatus.equals("0") || orderStatus.equals("2")){
+//                editAble = true;
+//                finishBtn.setVisibility(View.VISIBLE);
+//                finishBtn.setText("修改订单");
+//            }else{
+//                editAble = false;
+//                finishBtn.setVisibility(View.GONE);
+//            }
+//
+//            if(orderStatus.equals("2")){
+//                successBtn.setVisibility(View.VISIBLE);
+//            }else{
+//                successBtn.setVisibility(View.GONE);
+//            }
+//
+//            if(orderStatus.equals("3")) {
+//                getGradeFromNet();
+//            }
         }
-
     }
 
     /**
      * 从网路请求评论结果
      */
-    private void getGradeFromNet(){
-        String url = ProtocolUtil.getCommentShow();
+    private void getGradeFromNet(String orderNO, int mPage, int mPageSize){
+        String url = ProtocolUtil.getCommentShow(orderNO, mPage, mPageSize);
         Log.i(TAG,url);
         NetRequest netRequest = new NetRequest(url);
         HashMap<String,String> bizMap = new HashMap<String,String>();
@@ -349,8 +354,6 @@ public class OrderDealActivity extends Activity {
         netRequestTask.execute();
     }
 
-
-
     /**
      * 显示评分模块
      * @param grade
@@ -386,21 +389,20 @@ public class OrderDealActivity extends Activity {
 
     //初始化订单备注
     private void initRemark() {
-        if(!StringUtil.isEmpty(orderDetailBean.getRoom().getRemark())){
-            mTvRemark.setText(orderDetailBean.getRoom().getRemark());
+        if(!StringUtil.isEmpty(mOrderDetail.getRemark())){
+            mTvRemark.setText(mOrderDetail.getRemark());
         }
     }
 
     //初始化发票
     private void initTicket() {
-        OrderInvoiceBean orderInvoiceBean = orderDetailBean.getInvoice();
-        if(orderInvoiceBean != null && orderInvoiceBean.getInvoice_title() != null){
-            mTvTicket.setText(orderInvoiceBean.getInvoice_title());
-        }
-        else{
-            mTvTicket.setText("");
-        }
-
+//        OrderInvoiceBean orderInvoiceBean = orderDetailBean.getInvoice();
+//        if(orderInvoiceBean != null && orderInvoiceBean.getInvoice_title() != null){
+//            mTvTicket.setText(orderInvoiceBean.getInvoice_title());
+//        }
+//        else{
+//            mTvTicket.setText("");
+//        }
     }
 
     //初始化入住人信息
@@ -413,47 +415,48 @@ public class OrderDealActivity extends Activity {
 //            customerList.get(i).getmTextContent2().setCompoundDrawables(null, null, d, null);
 //        }
 
-        ArrayList<OrderUsersBean> users = orderDetailBean.getUsers();
-        for(int i=0;i< orderDetailBean.getRoom().getRooms();i++){
-            if(i<customerList.size() && users != null && users.size() > 0 && i<users.size()){
-                OrderUsersBean user = users.get(i);
-                customerList.get(i).getmTextContent2().setText(user.getRealname());
-            }
-
-        }
+//        ArrayList<OrderUsersBean> users = orderDetailBean.get;
+//        for(int i=0;i< orderDetailBean.getRoom().getRooms();i++){
+//            if(i<customerList.size() && users != null && users.size() > 0 && i<users.size()){
+//                OrderUsersBean user = users.get(i);
+//                customerList.get(i).getmTextContent2().setText(user.getRealname());
+//            }
+//
+//        }
     }
 
     private void initListener() {
-        successBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                successOrder();
-            }
-        });
+
+//        successBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                successOrder();
+//            }
+//        });
+
         finishBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (orderDetailBean == null) {
+                if (mOrderDetail == null) {
                     return;
                 }
-                if (TextUtils.isEmpty(orderDetailBean.getRoom().getPay_name())) {
-                    DialogUtil.getInstance().showToast(OrderDealActivity.this, "请选择支付方式。");
-                    return;
-                }
-                if (TextUtils.isEmpty(orderDetailBean.getRoom().getRoom_rate())) {
+//                if (TextUtils.isEmpty(orderDetailBean.getRoom().getPay_name())) {
+//                    DialogUtil.getInstance().showToast(OrderDealActivity.this, "请选择支付方式。");
+//                    return;
+//                }
+                if (TextUtils.isEmpty(mOrderDetail.getRoomprice()+"")) {
                     DialogUtil.getInstance().showToast(OrderDealActivity.this, "请输入金额。");
                     return;
                 }
+
                 //订单状态 默认0可取消订单 1已取消订单 2已确认订单 3已经完成的订单 4正在入住中 5已删除订单
                 //支付状态 0未支付,1已支付,3支付一部分,4已退款, 5已挂账
-
-                String getReservation_no = orderDetailBean.getRoom().getReservation_no();
-                if(TextUtils.isEmpty(getReservation_no)){
+                String orderNO = mOrderDetail.getOrderno();
+                if(TextUtils.isEmpty(orderNO)){
                     addOrder();
                 }else{
                     updateOrder();
                 }
-
             }
         });
 
@@ -466,7 +469,7 @@ public class OrderDealActivity extends Activity {
         mLltDateContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(orderDetailBean == null){
+                if(mOrderDetail == null){
                     return;
                 }
                 if(!editAble){
@@ -485,15 +488,16 @@ public class OrderDealActivity extends Activity {
         mIusvRoomNumber.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(orderDetailBean == null){
+
+                if(mOrderDetail == null){
+                    return;
+                } else if(!editAble){
                     return;
                 }
-                if(!editAble){
-                    return;
-                }
+
                 Intent intent = new Intent(OrderDealActivity.this, OrderGoodsActivity.class);
-                intent.putExtra("roomNum", orderDetailBean.getRoom().getRooms());
-                intent.putExtra("selelectId", orderDetailBean.getRoom().getRoom_typeid());
+                intent.putExtra("roomNum", mOrderDetail.getRoomcount());
+                intent.putExtra("selelectId", mOrderDetail.getProductid());
                 startActivityForResult(intent, GOOD_REQUEST_CODE);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
@@ -502,97 +506,94 @@ public class OrderDealActivity extends Activity {
         findViewById(R.id.pay_type).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(orderDetailBean == null){
+                if(mOrderDetail == null){
                     return;
                 }
                 if(!editAble){
                     return;
                 }
                 Intent intent = new Intent(OrderDealActivity.this, OrderPayActivity.class);
-                intent.putExtra("orderDetailBean", orderDetailBean);
+                intent.putExtra("orderDetailBean", mOrderDetail);
                 startActivityForResult(intent, PAY_REQUEST_CODE);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
         });
     }
 
-    //订单完成操作
-    private void successOrder(){
-        String url = ProtocolUtil.getUpdateOrderUrl();
-        Log.i(TAG,url);
-        NetRequest netRequest = new NetRequest(url);
-        HashMap<String,String> bizMap = new HashMap<String,String>();
-        bizMap.put("salesid",CacheUtil.getInstance().getUserId());
-        bizMap.put("token",CacheUtil.getInstance().getToken());
-        bizMap.put("reservation_no",orderDetailBean.getRoom().getReservation_no());
-        bizMap.put("status","3");
-
-        netRequest.setBizParamMap(bizMap);
-        NetRequestTask netRequestTask = new NetRequestTask(this,netRequest, NetResponse.class);
-        netRequestTask.methodType = MethodType.PUSH;
-        netRequestTask.setNetRequestListener(new ExtNetRequestListener(this) {
-            @Override
-            public void onNetworkRequestError(int errorCode, String errorMessage) {
-                Log.i(TAG, "errorCode:" + errorCode);
-                Log.i(TAG, "errorMessage:" + errorMessage);
-            }
-
-            @Override
-            public void onNetworkRequestCancelled() {
-
-            }
-
-            @Override
-            public void onNetworkResponseSucceed(NetResponse result) {
-                super.onNetworkResponseSucceed(result);
-
-                Log.i(TAG, "result.rawResult:" + result.rawResult);
-                try {
-                    AddOrderBean addOrderBean = new Gson().fromJson(result.rawResult, AddOrderBean.class);
-                    if(addOrderBean.isSet()){
-                        DialogUtil.getInstance().showToast(OrderDealActivity.this, "订单修改为完成状态。");
-                        finish();
-                    }else{
-                        DialogUtil.getInstance().showToast(OrderDealActivity.this,"操作失败");
-                        Log.e(TAG,addOrderBean.getErr());
-                    }
-                } catch (Exception e) {
-                    Log.e(TAG, e.getMessage());
-                }
-
-            }
-
-            @Override
-            public void beforeNetworkRequestStart() {
-
-            }
-        });
-        netRequestTask.isShowLoadingDialog = true;
-        netRequestTask.execute();
-    }
+//    //订单完成操作
+//    private void successOrder(){
+//        String url = ProtocolUtil.getUpdateOrderUrl();
+//        Log.i(TAG,url);
+//        NetRequest netRequest = new NetRequest(url);
+//        HashMap<String,String> bizMap = new HashMap<String,String>();
+//        bizMap.put("salesid",CacheUtil.getInstance().getUserId());
+//        bizMap.put("token",CacheUtil.getInstance().getToken());
+//        bizMap.put("reservation_no",orderDetailBean.getOrderno());
+//        bizMap.put("status","3");
+//
+//        netRequest.setBizParamMap(bizMap);
+//        NetRequestTask netRequestTask = new NetRequestTask(this,netRequest, NetResponse.class);
+//        netRequestTask.methodType = MethodType.PUSH;
+//        netRequestTask.setNetRequestListener(new ExtNetRequestListener(this) {
+//            @Override
+//            public void onNetworkRequestError(int errorCode, String errorMessage) {
+//                Log.i(TAG, "errorCode:" + errorCode);
+//                Log.i(TAG, "errorMessage:" + errorMessage);
+//            }
+//
+//            @Override
+//            public void onNetworkRequestCancelled() {
+//
+//            }
+//
+//            @Override
+//            public void onNetworkResponseSucceed(NetResponse result) {
+//                super.onNetworkResponseSucceed(result);
+//
+//                Log.i(TAG, "result.rawResult:" + result.rawResult);
+//                try {
+//                    AddOrderBean addOrderBean = new Gson().fromJson(result.rawResult, AddOrderBean.class);
+//                    if(addOrderBean.isSet()){
+//                        DialogUtil.getInstance().showToast(OrderDealActivity.this, "订单修改为完成状态。");
+//                        finish();
+//                    }else{
+//                        DialogUtil.getInstance().showToast(OrderDealActivity.this,"操作失败");
+//                        Log.e(TAG,addOrderBean.getErr());
+//                    }
+//                } catch (Exception e) {
+//                    Log.e(TAG, e.getMessage());
+//                }
+//
+//            }
+//
+//            @Override
+//            public void beforeNetworkRequestStart() {
+//
+//            }
+//        });
+//        netRequestTask.isShowLoadingDialog = true;
+//        netRequestTask.execute();
+//    }
 
     //修改订单
     private void updateOrder(){
+
         String url = ProtocolUtil.getUpdateOrderUrl();
         Log.i(TAG,url);
         NetRequest netRequest = new NetRequest(url);
-        HashMap<String,String> bizMap = new HashMap<String,String>();
-        bizMap.put("salesid",CacheUtil.getInstance().getUserId());
-        bizMap.put("token",CacheUtil.getInstance().getToken());
-        bizMap.put("reservation_no",orderDetailBean.getRoom().getReservation_no());
-        bizMap.put("status",orderDetailBean.getRoom().getStatus());
-
-        bizMap.put("room_typeid",orderDetailBean.getRoom().getRoom_typeid()+"");
-        bizMap.put("room_type",orderDetailBean.getRoom().getRoom_type());
-        bizMap.put("rooms",orderDetailBean.getRoom().getRooms()+"");
-        bizMap.put("arrival_date",orderDetailBean.getRoom().getArrival_date());
-        bizMap.put("departure_date",orderDetailBean.getRoom().getDeparture_date());
-        bizMap.put("room_rate",orderDetailBean.getRoom().getRoom_rate());
-        bizMap.put("payment",orderDetailBean.getRoom().getPay_id()+"");
-
-        netRequest.setBizParamMap(bizMap);
+        if(null == mOrderDetail){
+            return ;
+        }
+        Gson gson = new GsonBuilder().serializeNulls().create();
+        String jsonOrder = gson.toJson(mOrderDetail, OrderDetailBean.class);
+        if(TextUtils.isEmpty(jsonOrder)){
+            return ;
+        }
+        HashMap<String, String> bigMap = new HashMap<>();
+        bigMap.put("data", Base64Encoder.getInstance().encode(jsonOrder));
+        netRequest.setBizParamMap(bigMap);
         NetRequestTask netRequestTask = new NetRequestTask(this,netRequest, NetResponse.class);
-        netRequestTask.methodType = MethodType.PUSH;
+        netRequestTask.methodType = MethodType.JSON;
         netRequestTask.setNetRequestListener(new ExtNetRequestListener(this) {
             @Override
             public void onNetworkRequestError(int errorCode, String errorMessage) {
@@ -608,35 +609,51 @@ public class OrderDealActivity extends Activity {
             @Override
             public void onNetworkResponseSucceed(NetResponse result) {
                 super.onNetworkResponseSucceed(result);
-
                 Log.i(TAG, "result.rawResult:" + result.rawResult);
-                try {
-                    AddOrderBean addOrderBean = new Gson().fromJson(result.rawResult, AddOrderBean.class);
-                    if(addOrderBean.isSet()){
-                        DialogUtil.getInstance().showToast(OrderDealActivity.this,"订单修改成功。");
 
-                        //TODO 杜健德 待流程完善再做修改
-                        //确认成功订单，发送IM消息
-//                        MsgUserDefine msgUserDefine = MsgUserDefineTool.buildSuccMsgUserDefine(
-//                                CacheUtil.getInstance().getUserId(),
-//                                orderDetailBean.getRoom().getGuestid(),
-//                                addOrderBean.getReservation_no(),
-//                                orderDetailBean.getRoom().getShopid()
-//                        );
-//                        Gson gson = new Gson();
-//                        String jsonMsg = gson.toJson(msgUserDefine);
-//                        WebSocketManager.getInstance().sendMessage(jsonMsg);
-                        finish();
-                    }else{
-                        DialogUtil.getInstance().showToast(OrderDealActivity.this,"订单修改失败");
-                        //确认失败订单，发送IM消息
-                        //MsgUserDefineTool.buildFailMsgUserDefine( CacheUtil.getInstance().getUserId(),  orderDetailBean.getRoom().getGuestid());
-                        Log.e(TAG,addOrderBean.getErr());
-                    }
-                } catch (Exception e) {
-                    Log.e(TAG, e.getMessage());
+                String jsonResult = result.rawResult;
+                if(TextUtils.isEmpty(jsonResult)){
+                    return ;
                 }
 
+                JsonParser parser = new JsonParser();
+                JsonElement element = parser.parse(jsonResult);
+                JsonObject object = element.getAsJsonObject();
+                Boolean updateResult = object.get("result").getAsBoolean();
+                if(updateResult){
+                    DialogUtil.getInstance().showToast(OrderDealActivity.this,"订单修改成功");
+                    finish();
+                } else {
+                    DialogUtil.getInstance().showToast(OrderDealActivity.this,"订单修改失败");
+                }
+//                object.get("data").getAsString();
+
+//                try {
+//                    AddOrderBean addOrderBean = new Gson().fromJson(result.rawResult, AddOrderBean.class);
+//                    if(addOrderBean.isSet()){
+//                        DialogUtil.getInstance().showToast(OrderDealActivity.this,"订单修改成功。");
+//
+//                        //TODO 杜健德 待流程完善再做修改
+//                        //确认成功订单，发送IM消息
+////                        MsgUserDefine msgUserDefine = MsgUserDefineTool.buildSuccMsgUserDefine(
+////                                CacheUtil.getInstance().getUserId(),
+////                                orderDetailBean.getRoom().getGuestid(),
+////                                addOrderBean.getReservation_no(),
+////                                orderDetailBean.getRoom().getShopid()
+////                        );
+////                        Gson gson = new Gson();
+////                        String jsonMsg = gson.toJson(msgUserDefine);
+////                        WebSocketManager.getInstance().sendMessage(jsonMsg);
+//                        finish();
+//                    }else{
+//                        DialogUtil.getInstance().showToast(OrderDealActivity.this,"订单修改失败");
+//                        //确认失败订单，发送IM消息
+//                        //MsgUserDefineTool.buildFailMsgUserDefine( CacheUtil.getInstance().getUserId(),  orderDetailBean.getRoom().getGuestid());
+//                        Log.e(TAG,addOrderBean.getErr());
+//                    }
+//                } catch (Exception e) {
+//                    Log.e(TAG, e.getMessage());
+//                }
             }
 
             @Override
@@ -653,23 +670,18 @@ public class OrderDealActivity extends Activity {
         String url = ProtocolUtil.getAddOrderUrl();
         Log.i(TAG,url);
         NetRequest netRequest = new NetRequest(url);
-        HashMap<String,String> bizMap = new HashMap<String,String>();
-        bizMap.put("salesid",CacheUtil.getInstance().getUserId());
-        bizMap.put("token",CacheUtil.getInstance().getToken());
-        bizMap.put("shopid",orderDetailBean.getRoom().getShopid());
-        bizMap.put("userid",orderDetailBean.getRoom().getGuestid());
-        bizMap.put("guesttel",orderDetailBean.getRoom().getGuesttel());
-        bizMap.put("guest",orderDetailBean.getRoom().getGuest());
-        bizMap.put("fullname",orderDetailBean.getRoom().getFullname());
-        bizMap.put("roomid",orderDetailBean.getRoom().getRoom_typeid()+"");
-        bizMap.put("room_type",orderDetailBean.getRoom().getRoom_type());
-        bizMap.put("imgurl",orderDetailBean.getRoom().getImgurl());
-        bizMap.put("rooms",orderDetailBean.getRoom().getRooms()+"");
-        bizMap.put("arrival_date",orderDetailBean.getRoom().getArrival_date());
-        bizMap.put("departure_date",orderDetailBean.getRoom().getDeparture_date());
-        bizMap.put("room_rate",orderDetailBean.getRoom().getRoom_rate());
-        bizMap.put("status","0");
-        bizMap.put("payment",orderDetailBean.getRoom().getPay_id()+"");
+        HashMap<String,String> bizMap = new HashMap<>();
+        if(null == mOrderDetail){
+            return ;
+        }
+        Gson gson = new GsonBuilder().serializeNulls().create();
+        String jsonOrder = gson.toJson(mOrderDetail, OrderDetailBean.class);
+        if(TextUtils.isEmpty(jsonOrder)){
+            return ;
+        }
+        HashMap<String, String> bigMap = new HashMap<>();
+        bigMap.put("data", Base64Encoder.getInstance().encode(jsonOrder));
+        bizMap.put("category", "0");
 
         netRequest.setBizParamMap(bizMap);
         NetRequestTask netRequestTask = new NetRequestTask(this,netRequest, NetResponse.class);
@@ -689,13 +701,25 @@ public class OrderDealActivity extends Activity {
             @Override
             public void onNetworkResponseSucceed(NetResponse result) {
                 super.onNetworkResponseSucceed(result);
-
                 Log.i(TAG, "result.rawResult:" + result.rawResult);
-                try {
-                    AddOrderBean addOrderBean = new Gson().fromJson(result.rawResult, AddOrderBean.class);
-                    if(addOrderBean.isSet()){
-                        DialogUtil.getInstance().showToast(OrderDealActivity.this,"订单添加成功。\n订单号是："+addOrderBean.getReservation_no());
-                        EMConversationHelper.getInstance().sendOrderCmdMessage(orderDetailBean.getRoom().getShopid(), addOrderBean.getReservation_no(), orderDetailBean.getRoom().getGuestid(), new EMCallBack() {
+
+                String jsonResult = result.rawResult;
+                if(TextUtils.isEmpty(jsonResult)){
+                    return ;
+                }
+                JsonParser parser = new JsonParser();
+                JsonElement element = parser.parse(jsonResult);
+                JsonObject object = element.getAsJsonObject();
+                Boolean updateResult = object.get("result").getAsBoolean();
+                if(updateResult){
+                    String orderNO = object.get("data").getAsString();
+                    DialogUtil.getInstance().showToast(OrderDealActivity.this,"订单添加成功。\n订单号是：" + orderNO);
+                    EMConversationHelper.getInstance().sendOrderCmdMessage(
+                        mOrderDetail.getShopid(),
+                        orderNO,
+                        mOrderDetail.getUserid(),
+                        new EMCallBack() {
+
                             @Override
                             public void onSuccess() {
                                 Log.i(TAG, "发送订单确认信息成功");
@@ -712,15 +736,10 @@ public class OrderDealActivity extends Activity {
 
                             }
                         });
-                        finish();
-                    }else{
-                        DialogUtil.getInstance().showToast(OrderDealActivity.this,"订单添加失败");
-                        Log.e(TAG,addOrderBean.getErr());
-                    }
-                } catch (Exception e) {
-                    Log.e(TAG, e.getMessage());
+                    finish();
+                } else {
+                    DialogUtil.getInstance().showToast(OrderDealActivity.this,"订单添加失败");
                 }
-
             }
 
             @Override
@@ -743,11 +762,11 @@ public class OrderDealActivity extends Activity {
             }else if(GOOD_REQUEST_CODE == requestCode){
                 if(null != data){
                     int roomNum = data.getIntExtra("roomNum",0);
-                    orderDetailBean.getRoom().setRooms(roomNum);
+                    mOrderDetail.setRoomcount(roomNum);
                     GoodBean goodBean = (GoodBean)data.getSerializableExtra("selectGood");
                     int selelectId = goodBean.getId();
-                    orderDetailBean.getRoom().setRoom_typeid(selelectId);
-                    orderDetailBean.getRoom().setRoom_type(goodBean.getRoom() + goodBean.getType());
+                    mOrderDetail.setProductid(selelectId+"");
+                    mOrderDetail.setRoomtype(goodBean.getRoom() + goodBean.getType());
                     notifyRoomNumberChange();
                 }
             }else if(PAY_REQUEST_CODE == requestCode){
@@ -758,10 +777,9 @@ public class OrderDealActivity extends Activity {
                     String reason = data.getStringExtra("reason");
                     String guest = data.getStringExtra("guest");
 
-                    orderDetailBean.getRoom().setGuest(guest);
-                    orderDetailBean.getRoom().setRoom_rate(room_rate);
-                    orderDetailBean.getRoom().setPay_id(Integer.parseInt(payment));
-                    orderDetailBean.getRoom().setPay_name(payment_name);
+                    mOrderDetail.setUsername(guest);
+                    mOrderDetail.setRoomprice(Float.valueOf(room_rate));
+                    mOrderDetail.setPaytype(Integer.parseInt(payment));
                     mIusvPayType.setTextTitle("￥" + room_rate);
                     mIusvPayType.setTextContent2(payment_name);
 
@@ -772,10 +790,10 @@ public class OrderDealActivity extends Activity {
 
     //房间数量已经变 通知UI做调整
     private void notifyRoomNumberChange(){
-        mIusvRoomNumber.setTextContent2(orderDetailBean.getRoom().getRooms() + "间");
-        mIusvRoomNumber.setTextTitle(orderDetailBean.getRoom().getRoom_type());
+        mIusvRoomNumber.setTextContent2(mOrderDetail.getRoomcount() + "间");
+        mIusvRoomNumber.setTextTitle(mOrderDetail.getRoomtype());
         for(int i=0;i<customerList.size();i++){
-            if(i < orderDetailBean.getRoom().getRooms()){
+            if(i < mOrderDetail.getRoomcount()){
                 customerList.get(i).setVisibility(View.VISIBLE);
             }else{
                 customerList.get(i).setVisibility(View.GONE);
@@ -785,36 +803,34 @@ public class OrderDealActivity extends Activity {
 
     //初始化日期
     private void initCalendar() {
-        calendarList = new ArrayList<Calendar>();
+        calendarList = new ArrayList<>();
+        mSimpleFormat = new SimpleDateFormat("yyyy-MM-dd");
+//        mChineseFormat = new SimpleDateFormat("MM月dd日");
 
-        mSimpleFormat  = new SimpleDateFormat("yyyy-MM-dd");
-        mChineseFormat = new SimpleDateFormat("MM月dd日");
-
-//        Calendar today = Calendar.getInstance();
-//        today.setTime(new Date()); //当天
-//        calendarList.add(today);
-//
-//        Calendar tomorrow = Calendar.getInstance();
-//        tomorrow.setTime(new Date());
-//        tomorrow.add(Calendar.DAY_OF_YEAR, 1); //下一天
-//        calendarList.add(tomorrow);
-
-        try{
+        try {
             Calendar arrivalDate = Calendar.getInstance();
-            arrivalDate.setTime(mSimpleFormat.parse(orderDetailBean.getRoom().getArrival_date()));
+            String arriveDate = mOrderDetail.getArrivaldate();
+            if(!TextUtils.isEmpty(arriveDate)){
+                arrivalDate.setTime(mSimpleFormat.parse(arriveDate));
+            } else {
+                arrivalDate.setTime(new Date());
+            }
             calendarList.add(arrivalDate);
 
             Calendar departureDate = Calendar.getInstance();
-            departureDate.setTime(mSimpleFormat.parse(orderDetailBean.getRoom().getDeparture_date()));
+            String leaveDate = mOrderDetail.getLeavedate();
+            if(!TextUtils.isEmpty(leaveDate)){
+                departureDate.setTime(mSimpleFormat.parse(leaveDate));
+            } else {
+                departureDate.setTime(new Date());
+                departureDate.add(Calendar.DAY_OF_YEAR, 1); //下一天
+            }
             calendarList.add(departureDate);
             setOrderDate(calendarList);
-        }catch ( Exception e){
-            Log.e(TAG,e.getMessage() );
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
-
     }
-
-
 
     //设置离开和到达的日期
     private void setOrderDate(ArrayList<Calendar> calendarList){
@@ -826,9 +842,9 @@ public class OrderDealActivity extends Activity {
         mTvArriveDate.setText(mChineseFormat.format(arrivalDate));
         mTvLeaveDate.setText(mChineseFormat.format(leaveDate));
 
-        SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
-        orderDetailBean.getRoom().setArrival_date(sdf.format(arrivalDate));
-        orderDetailBean.getRoom().setDeparture_date(sdf.format(leaveDate));
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        mOrderDetail.setArrivaldate(sdf.format(arrivalDate));
+        mOrderDetail.setLeavedate(sdf.format(leaveDate));
 
         try{
             dayNum = TimeUtil.daysBetween(arrivalDate, leaveDate);
@@ -836,7 +852,6 @@ public class OrderDealActivity extends Activity {
         }catch (Exception e){
             Log.e(TAG,e.getMessage() );
         }
-
     }
 
     //初始化房间选项标签
@@ -845,11 +860,10 @@ public class OrderDealActivity extends Activity {
 //        for(int i=0;i<2;i++){
 //            mRoomTagView.addTag(createTag(i,tags[i],false));
 //        }
-
-        ArrayList<OrderRoomTagBean> roomTagBeans = orderDetailBean.getRoom_tag();
-        for(OrderRoomTagBean roomTagBean : roomTagBeans){
-            mRoomTagView.addTag(createTag(roomTagBean.getId(),roomTagBean.getContent(),false));
-        }
+//        ArrayList<OrderRoomTagBean> roomTagBeans = orderDetailBean.getRoom_tag();
+//        for(OrderRoomTagBean roomTagBean : roomTagBeans){
+//            mRoomTagView.addTag(createTag(roomTagBean.getId(),roomTagBean.getContent(),false));
+//        }
     }
 
     //初始化其他服务标签
@@ -858,10 +872,10 @@ public class OrderDealActivity extends Activity {
 //        for(int i=0;i<2;i++){
 //            mServiceTagView.addTag(createTag(i,tags[i],false));
 //        }
-        ArrayList<OrderPrivilegeBean> orderPrivilegeBeans = orderDetailBean.getPrivilege();
-        for(OrderPrivilegeBean orderPrivilegeBean : orderPrivilegeBeans){
-            mServiceTagView.addTag(createTag(orderPrivilegeBean.getId(),orderPrivilegeBean.getPrivilege_name(),false));
-        }
+//        ArrayList<OrderPrivilegeBean> orderPrivilegeBeans = orderDetailBean.getPrivilege();
+//        for(OrderPrivilegeBean orderPrivilegeBean : orderPrivilegeBeans){
+//            mServiceTagView.addTag(createTag(orderPrivilegeBean.getId(),orderPrivilegeBean.getPrivilege_name(),false));
+//        }
     }
 
     private Tag createTag(int id,String tagstr,boolean isChecked){
@@ -882,9 +896,7 @@ public class OrderDealActivity extends Activity {
 //        }else{
 //            tag.deleteIcon = "";
 //        }
-
         return tag;
     }
-
 
 }

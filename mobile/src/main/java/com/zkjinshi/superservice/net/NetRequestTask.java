@@ -84,6 +84,7 @@ public class NetRequestTask extends AsyncTask<NetRequest, Void, NetResponse> {
         String resultStr = null;
         String requestUrl = null;
         HashMap<String,String> bizParamsMap = null;
+        HashMap<String,Object> objectParamsMap = null;
         HashMap<String,String> fileParamsMap = null;
         HashMap<String,File> fileMap = null;
         try {
@@ -97,6 +98,8 @@ public class NetRequestTask extends AsyncTask<NetRequest, Void, NetResponse> {
                 resultStr = RequestUtil.sendGetRequest(requestUrl);
             }else if(methodType == MethodType.PUSH){
                 resultStr = RequestUtil.sendPostRequest(requestUrl,bizParamsMap,fileMap);
+            }else if(methodType == MethodType.JSON){
+                resultStr = RequestUtil.sendPostRequest(requestUrl, bizParamsMap);
             }
             if(!TextUtils.isEmpty(resultStr)){
                 resultInfo = responseClazz.newInstance();
@@ -144,7 +147,7 @@ public class NetRequestTask extends AsyncTask<NetRequest, Void, NetResponse> {
                 if(errorCode == RESPONSE_ERROR){
                     Toast.makeText(context.getApplicationContext(),"返回数据异常或者无网络",Toast.LENGTH_SHORT).show();
                 }else if(errorCode == REQ_TIME_OUT){
-                    Toast.makeText(context.getApplicationContext(),"网络异常，请检查网络", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context.getApplicationContext(),"网络异常，请检查网络",Toast.LENGTH_SHORT).show();
                 }
                 cancelTask();
             }
@@ -157,7 +160,7 @@ public class NetRequestTask extends AsyncTask<NetRequest, Void, NetResponse> {
     }
 
     public void cancelTask(){
-        if(getStatus() != AsyncTask.Status.FINISHED){
+        if(getStatus() != Status.FINISHED){
             cancel(true);
         }
         onCancelled();
@@ -173,6 +176,5 @@ public class NetRequestTask extends AsyncTask<NetRequest, Void, NetResponse> {
            DialogUtil.getInstance().cancelProgressDialog();
         }
     }
-
 
 }

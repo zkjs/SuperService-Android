@@ -165,58 +165,6 @@ public class UnusedInviteCodeFragment extends Fragment {
         );
     }
 
-//    /**
-//     * 暂时不生成邀请码链接
-//     * @param inviteCode
-//     */
-//    private void makeInviteCodeUrl(Context context, final String inviteCode) {
-//        NetRequest netRequest = new NetRequest(ProtocolUtil.getMakeInviteCodeUrl());
-//        HashMap<String,String> bizMap = new HashMap<>();
-//        bizMap.put("code", inviteCode);
-//        bizMap.put("salesid", CacheUtil.getInstance().getUserId());
-//        bizMap.put("host", ConfigUtil.getInst().getHttpDomain());
-//        netRequest.setBizParamMap(bizMap);
-//        NetRequestTask netRequestTask = new NetRequestTask(context, netRequest, NetResponse.class);
-//        netRequestTask.methodType = MethodType.PUSH;
-//        netRequestTask.setNetRequestListener(new ExtNetRequestListener(context) {
-//            @Override
-//            public void onNetworkRequestError(int errorCode, String errorMessage) {
-//                super.onNetworkRequestError(errorCode, errorMessage);
-//            }
-//
-//            @Override
-//            public void onNetworkRequestCancelled() {
-//                super.onNetworkRequestCancelled();
-//            }
-//
-//            @Override
-//            public void onNetworkResponseSucceed(NetResponse result) {
-//                super.onNetworkResponseSucceed(result);
-//
-//                LogUtil.getInstance().info(LogLevel.INFO, "result:"+result.rawResult);
-//
-//                JsonParser paser = new JsonParser();
-//                JsonElement element = paser.parse(result.rawResult);
-//                JsonObject  object  = element.getAsJsonObject();
-//                Boolean isSet =  object.get("set").getAsBoolean();
-//                if(isSet){
-//                    //获得生成链接地址
-//                    String url = object.get("url").getAsString();
-//                    InviteCodeOperater.getInstance().showOperationDialog(mActivity, inviteCode, url);
-//                }else {
-//                    InviteCodeOperater.getInstance().showOperationDialog(mActivity, inviteCode, "");
-//                }
-//            }
-//
-//            @Override
-//            public void beforeNetworkRequestStart() {
-//                super.beforeNetworkRequestStart();
-//            }
-//        });
-//        netRequestTask.isShowLoadingDialog = true;
-//        netRequestTask.execute();
-//    }
-
     /**
      * 获取我的邀请码列表
      * @param page

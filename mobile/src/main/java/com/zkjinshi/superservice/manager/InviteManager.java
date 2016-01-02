@@ -3,24 +3,13 @@ package com.zkjinshi.superservice.manager;
 import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.easemob.EMNotifierEvent;
 import com.easemob.chat.CmdMessageBody;
 import com.easemob.chat.EMMessage;
 import com.easemob.exceptions.EaseMobException;
-import com.google.gson.Gson;
-import com.zkjinshi.base.util.DialogUtil;
-import com.zkjinshi.superservice.activity.set.ClientController;
-import com.zkjinshi.superservice.bean.ClientDetailBean;
-import com.zkjinshi.superservice.factory.ClientFactory;
-import com.zkjinshi.superservice.net.ExtNetRequestListener;
-import com.zkjinshi.superservice.net.NetResponse;
 import com.zkjinshi.superservice.sqlite.ClientDBUtil;
-import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.vo.ClientVo;
-
-import ytx.org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 
 /**
  * 邀请加入管理器

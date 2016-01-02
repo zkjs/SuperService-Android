@@ -12,10 +12,7 @@ import android.view.WindowManager;
 import com.zkjinshi.base.net.core.WebSocketManager;
 import com.zkjinshi.base.view.CustomDialog;
 import com.zkjinshi.superservice.activity.common.LoginActivity;
-import com.zkjinshi.superservice.activity.set.ClientBindController;
 import com.zkjinshi.superservice.bean.ClientBaseBean;
-import com.zkjinshi.superservice.net.ExtNetRequestListener;
-import com.zkjinshi.superservice.net.NetResponse;
 import com.zkjinshi.superservice.notification.NotificationHelper;
 import com.zkjinshi.superservice.utils.CacheUtil;
 

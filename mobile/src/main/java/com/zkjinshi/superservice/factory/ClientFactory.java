@@ -2,10 +2,13 @@ package com.zkjinshi.superservice.factory;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.text.TextUtils;
 
 import com.zkjinshi.superservice.bean.ClientBaseBean;
 import com.zkjinshi.superservice.bean.ClientDetailBean;
+import com.zkjinshi.superservice.utils.PinyinHelper;
 import com.zkjinshi.superservice.utils.RandomDrawbleUtil;
+import com.zkjinshi.superservice.vo.ClientContactVo;
 import com.zkjinshi.superservice.vo.ClientVo;
 import com.zkjinshi.superservice.vo.ContactType;
 import com.zkjinshi.superservice.vo.IsBill;
@@ -306,4 +309,25 @@ public class ClientFactory {
         return onlineStatus == OnlineStatus.OFFLINE.getValue() ? OnlineStatus.OFFLINE : OnlineStatus.ONLINE;
     }
 
+    /**
+     * 构建排序对象
+     * @param contactsList
+     */
+    public List<ClientContactVo> buildSortContactList(List<ClientContactVo> contactsList) {
+
+        for(ClientContactVo contact : contactsList){
+            String name = contact.getFname();
+            if(TextUtils.isEmpty(name)){
+                name = contact.getFuid();
+            }
+
+            if(!TextUtils.isEmpty(name)){
+                String sortKey = PinyinHelper.getInstance().getPinYin(name);
+                contact.setSortKey(sortKey);
+                String firstLetter = PinyinHelper.getInstance().getFirstLetter(sortKey);
+                contact.setFirstLetter(firstLetter);
+            }
+        }
+        return contactsList;
+    }
 }

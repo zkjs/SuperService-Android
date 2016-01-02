@@ -88,11 +88,10 @@ public class OrderAdapter extends RecyclerView.Adapter {
         this.dataList = dataList;
         int count = dataList.size();
         if(count > 0){
-            lastTimeStamp = TimeUtil.timeStrToTimeStamp(dataList.get(count-1).getCreated());
+            lastTimeStamp = dataList.get(count-1).getCreated();
             lastTimeStamp = lastTimeStamp/1000;
         }
         notifyDataSetChanged();
-
     }
 
     public void loadMoreAction(ArrayList<OrderBean> dataList){
@@ -101,7 +100,7 @@ public class OrderAdapter extends RecyclerView.Adapter {
         if(count > 0){
             this.dataList.addAll(dataList);
             notifyItemRangeInserted(index, count);
-            lastTimeStamp = TimeUtil.timeStrToTimeStamp(dataList.get(count-1).getCreated());
+            lastTimeStamp = dataList.get(count-1).getCreated();
             lastTimeStamp = lastTimeStamp/1000;
         }
     }
@@ -122,69 +121,74 @@ public class OrderAdapter extends RecyclerView.Adapter {
         OrderBean orderBean = dataList.get(position);
 
         //默认0可取消订单 1已取消订单 2已确认订单 3已经完成的订单 4正在入住中 5已删除订单
-        String orderStatus = orderBean.getStatus();
-        String orderStatusStr = "";
-        if(orderStatus.equals("0")){
-            orderStatusStr = "已提交订单";
-            holder.leftIcon.setStatus(CircleStatusView.CircleStatus.STATUS_LOADING);
-            if(OrderUtil.isOrderTimeOut(orderBean.getArrival_date())){
-                orderStatusStr = "订单已失效";
-            }
-        }else if(orderStatus.equals("1")){
-            holder.leftIcon.setStatus(CircleStatusView.CircleStatus.STATUS_FINISH);
-            orderStatusStr = "已取消订单";
-        }else if(orderStatus.equals("2")){
-            holder.leftIcon.setStatus(CircleStatusView.CircleStatus.STATUS_FINISH);
-            orderStatusStr = "已确认订单";
-            if(OrderUtil.isOrderTimeOut(orderBean.getArrival_date())){
-                orderStatusStr = "订单已失效";
-            }
-        }else if(orderStatus.equals("3")){
-            holder.leftIcon.setStatus(CircleStatusView.CircleStatus.STATUS_FINISH);
-            orderStatusStr = "已完成订单";
-        }else if(orderStatus.equals("4")){
-            holder.leftIcon.setStatus(CircleStatusView.CircleStatus.STATUS_FINISH);
-            orderStatusStr = "正在入住中";
-        }else if(orderStatus.equals("5")){
-            holder.leftIcon.setStatus(CircleStatusView.CircleStatus.STATUS_FINISH);
-            orderStatusStr = "已删除订单";
+        String orderStatus = orderBean.getOrderstatus();
+        String userName = orderBean.getUsername();
+        if(TextUtils.isEmpty(userName)){
+            userName = orderBean.getUserid();
         }
-        holder.name.setText(orderBean.getGuest()+"   "+orderStatusStr);
+        holder.name.setText(userName+"   "+orderStatus);
+
+//        if(orderStatus == 0){
+//            orderStatusStr = "已提交订单";
+//            holder.leftIcon.setStatus(CircleStatusView.CircleStatus.STATUS_LOADING);
+//            if(OrderUtil.isOrderTimeOut(new Date(orderBean.getArrivaldate()))){
+//                orderStatusStr = "订单已失效";
+//            }
+//        }else if(orderStatus == 1){
+//            holder.leftIcon.setStatus(CircleStatusView.CircleStatus.STATUS_FINISH);
+//            orderStatusStr = "已取消订单";
+//        }else if(orderStatus == 2){
+//            holder.leftIcon.setStatus(CircleStatusView.CircleStatus.STATUS_FINISH);
+//            orderStatusStr = "已确认订单";
+//            if(OrderUtil.isOrderTimeOut(new Date(orderBean.getArrivaldate()))){
+//                orderStatusStr = "订单已失效";
+//            }
+//        }else if(orderStatus == 3){
+//            holder.leftIcon.setStatus(CircleStatusView.CircleStatus.STATUS_FINISH);
+//            orderStatusStr = "已完成订单";
+//        }else if(orderStatus == 4){
+//            holder.leftIcon.setStatus(CircleStatusView.CircleStatus.STATUS_FINISH);
+//            orderStatusStr = "正在入住中";
+//        }else if(orderStatus == 5){
+//            holder.leftIcon.setStatus(CircleStatusView.CircleStatus.STATUS_FINISH);
+//            orderStatusStr = "已删除订单";
+//        }
 
         try{
             SimpleDateFormat mSimpleFormat  = new SimpleDateFormat("yyyy-MM-dd");
             SimpleDateFormat mChineseFormat = new SimpleDateFormat("MM/dd");
-            Date arrivalDate =  mSimpleFormat.parse(orderBean.getArrival_date());
-            Date departureDate =  mSimpleFormat.parse(orderBean.getDeparture_date());
+            Date arrivalDate = new Date(orderBean.getArrivaldate());
+            Date departureDate = new Date(orderBean.getLeavedate());
             String arrivalStr = mChineseFormat.format(arrivalDate);
             String departureStr = mChineseFormat.format(departureDate);
-            String roomType = orderBean.getRoom_type();
-            int roomNum = orderBean.getRooms();
+            String roomType = orderBean.getRoomtype();
+            int roomNum = orderBean.getRoomcount();
             int dayNum = TimeUtil.daysBetween(arrivalDate, departureDate);
             holder.order.setText(roomType + "×" + roomNum + "|" + dayNum + "晚|" + arrivalStr + "-" + departureStr);
 
         }catch (Exception e){
             Log.e(TAG, e.getMessage());
         }
-        holder.price.setText("￥"+orderBean.getRoom_rate());
+        holder.price.setText("￥"+orderBean.getRoomprice());
 
-        //支付状态 0未支付,1已支付,3支付一部分,4已退款, 5已挂账
-        String payStatus = orderBean.getPay_status();
-        String payStatusStr = "";
-        if(payStatus.equals("0")){
-            payStatusStr = "未支付";
-        }else if(payStatus.equals("1")){
-            payStatusStr = "已支付";
-        }else if(payStatus.equals("2")){
-            payStatusStr = "";
-        }else if(payStatus.equals("3")){
-            payStatusStr = "支付一部分";
-        }else if(payStatus.equals("4")){
-            payStatusStr = "已退款";
-        }else if(payStatus.equals("5")){
-            payStatusStr = "已挂账";
-        }
-        holder.payStatus.setText(payStatusStr);
+//        //支付状态 0未支付,1已支付,3支付一部分,4已退款, 5已挂账
+//        String payStatus = orderBean.getPay_status();
+//        String payStatusStr = "";
+//        if(payStatus.equals("0")){
+//            payStatusStr = "未支付";
+//        }else if(payStatus.equals("1")){
+//            payStatusStr = "已支付";
+//        }else if(payStatus.equals("2")){
+//            payStatusStr = "";
+//        }else if(payStatus.equals("3")){
+//            payStatusStr = "支付一部分";
+//        }else if(payStatus.equals("4")){
+//            payStatusStr = "已退款";
+//        }else if(payStatus.equals("5")){
+//            payStatusStr = "已挂账";
+//        }
+//        holder.payStatus.setText(payStatusStr);
+
         ImageLoader.getInstance().displayImage(ProtocolUtil.getAvatarUrl(orderBean.getUserid()), holder.avatar, this.options);
         String timeStr = TimeUtil.getChatTime(orderBean.getCreated());
         holder.time.setText(timeStr);
@@ -202,8 +206,6 @@ public class OrderAdapter extends RecyclerView.Adapter {
         }
         holder.contentLayout.setLayoutParams(contentLayoutParams);
     }
-
-
 
     @Override
     public int getItemCount() {
@@ -229,7 +231,7 @@ public class OrderAdapter extends RecyclerView.Adapter {
         public OrderViewHolder(View itemView) {
             super(itemView);
 
-            upCutLineView = (View)itemView.findViewById(R.id.time_axis_cut_line_up);
+            upCutLineView = itemView.findViewById(R.id.time_axis_cut_line_up);
             leftIcon = (CircleStatusView)itemView.findViewById(R.id.civ_left_icon);
             avatar = (CircleImageView)itemView.findViewById(R.id.civ_avatar);
             name = (TextView )itemView.findViewById(R.id.tv_name);
@@ -242,7 +244,6 @@ public class OrderAdapter extends RecyclerView.Adapter {
             share = (ImageView)itemView.findViewById(R.id.iv_share);
             contentLayout = (LinearLayout)itemView.findViewById(R.id.content_layout);
 
-
             tel.setOnClickListener(this);
             chat.setOnClickListener(this);
             share.setOnClickListener(this);
@@ -252,40 +253,36 @@ public class OrderAdapter extends RecyclerView.Adapter {
         @Override
         public void onClick(View view) {
             OrderBean orderBean = dataList.get(position);
-
             switch (view.getId()){
                 case R.id.content_layout:
                     Intent intent = new Intent(context, OrderDealActivity.class);
-                    intent.putExtra("reservation_no", orderBean.getReservation_no());
+                    intent.putExtra("reservation_no", orderBean.getOrderno());
                     context.startActivity(intent);
-                    ((Activity)context).overridePendingTransition(R.anim.slide_in_right,
-                            R.anim.slide_out_left);
+                    ((Activity)context).overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                     break;
                 case R.id.iv_tel:
-                    if(TextUtils.isEmpty( orderBean.getGuesttel())){
+                    if(TextUtils.isEmpty( orderBean.getTelephone())){
                         DialogUtil.getInstance().showToast(context,"联系号码为空");
                         return;
                     }
-                    IntentUtil.callPhone(context, orderBean.getGuesttel());
+                    IntentUtil.callPhone(context, orderBean.getTelephone());
                     break;
                 case R.id.iv_chat:
-                    if(TextUtils.isEmpty( orderBean.getGuesttel())){
+                    if(TextUtils.isEmpty( orderBean.getTelephone())){
                         DialogUtil.getInstance().showToast(context,"联系号码为空");
                         return;
                     }
-                    IntentUtil.startSendMessage("",orderBean.getGuesttel(),context);
+                    IntentUtil.startSendMessage("",orderBean.getTelephone(),context);
                     break;
                 case R.id.iv_share:
-                    if(TextUtils.isEmpty( orderBean.getGuesttel())){
+                    if(TextUtils.isEmpty( orderBean.getTelephone())){
                         DialogUtil.getInstance().showToast(context,"联系号码为空");
                         return;
                     }
-                    IntentUtil.startSendMessage("",orderBean.getGuesttel(),context);
+                    IntentUtil.startSendMessage("",orderBean.getTelephone(),context);
                     break;
             }
-
         }
-
     }
 
 }

@@ -49,7 +49,7 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
             case SHARED_POS:
                 return MessageFragment.newInstance();
             case FAVORITES_POS:
-                return OrderFragment.newInstance();
+                return new OrderFragment();
             default:
                 return null;
         }

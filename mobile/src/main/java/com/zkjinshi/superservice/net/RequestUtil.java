@@ -5,12 +5,16 @@ import com.zkjinshi.superservice.utils.FileUtil;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.CoreConnectionPNames;
+import org.apache.http.params.HttpProtocolParams;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -44,28 +48,65 @@ public class RequestUtil {
      * @throws Exception
      */
     public static String sendGetRequest(String requestUrl) throws Exception{
-        StringBuffer buffer = new StringBuffer();
-        URL url = new URL(requestUrl);
-        HttpURLConnection httpUrlConn = (HttpURLConnection) url.openConnection();
-        httpUrlConn.setReadTimeout(TIMEOUT);
-        httpUrlConn.setDoOutput(false);
-        httpUrlConn.setDoInput(true);
-        httpUrlConn.setUseCaches(false);
-        httpUrlConn.setRequestMethod("GET");
-        httpUrlConn.connect();
-        InputStream inputStream = httpUrlConn.getInputStream();
-        InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "utf-8");
-        BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-        String str = null;
-        while ((str = bufferedReader.readLine()) != null) {
-            buffer.append(str);
+        String result = null;
+        HttpGet httpRequest = new HttpGet(requestUrl);
+        HttpClient httpclient = new DefaultHttpClient();
+        httpclient.getParams().setParameter(
+                HttpProtocolParams.USER_AGENT,
+                "android");
+        httpclient.getParams().setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, TIMEOUT);
+        httpclient.getParams().setParameter(CoreConnectionPNames.SO_TIMEOUT, TIMEOUT);
+        HttpResponse httpResponse = httpclient.execute(httpRequest);
+        if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_OK)
+        {
+            result = EntityUtils.toString(httpResponse.getEntity());
         }
-        bufferedReader.close();
-        inputStreamReader.close();
-        inputStream.close();
-        inputStream = null;
-        httpUrlConn.disconnect();
-        return buffer.toString();
+        return result;
+    }
+
+    public static String sendPostRequest(String requestUrl,HashMap<String,String> bizParamsMap) throws Exception{
+        String resultInfo = null;
+        JSONObject jsonObject = null;
+        URL url = new URL(requestUrl);
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setConnectTimeout(TIMEOUT);
+        connection.setReadTimeout(TIMEOUT);
+        connection.setDoOutput(true);
+        connection.setDoInput(true);
+        connection.setRequestMethod("POST");
+        connection.setUseCaches(false);
+        connection.setInstanceFollowRedirects(true);
+        connection.setRequestProperty("Content-Type","application/json; charset=UTF-8");
+        connection.connect();
+        DataOutputStream out = new DataOutputStream(connection.getOutputStream());
+        jsonObject = new JSONObject();
+        if (null != bizParamsMap) {
+            Iterator<Map.Entry<String, String>> bizIterator = bizParamsMap.entrySet()
+                    .iterator();
+            while (bizIterator.hasNext()) {
+                HashMap.Entry bizEntry = (HashMap.Entry) bizIterator.next();
+                jsonObject.put(bizEntry.getKey().toString(),bizEntry
+                        .getValue().toString());
+            }
+        }
+        out.write(jsonObject.toString().getBytes("UTF-8"));
+        out.flush();
+        out.close();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(
+                connection.getInputStream()));
+        int responseCode =  connection.getResponseCode();
+        if(responseCode == HttpStatus.SC_OK){
+            String lines;
+            StringBuffer sb = new StringBuffer("");
+            while ((lines = reader.readLine()) != null) {
+                lines = new String(lines.getBytes(), "utf-8");
+                sb.append(lines);
+            }
+            resultInfo = sb.toString();
+            reader.close();
+        }
+        connection.disconnect();
+        return  resultInfo;
     }
 
     /**
@@ -105,6 +146,8 @@ public class RequestUtil {
         }
         HttpPost httpPost = new HttpPost(requestUrl);
         HttpClient httpClient = new DefaultHttpClient();
+        httpClient.getParams().setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, TIMEOUT);
+        httpClient.getParams().setParameter(CoreConnectionPNames.SO_TIMEOUT, TIMEOUT);
         httpPost.setEntity(multipartEntity);
         HttpResponse response = httpClient.execute(httpPost);
         int respCode = 0;
@@ -131,6 +174,7 @@ public class RequestUtil {
         URL uri = new URL(requestUrl);
         HttpURLConnection conn = (HttpURLConnection) uri.openConnection();
         conn.setReadTimeout(TIMEOUT);
+        conn.setConnectTimeout(TIMEOUT);
         conn.setDoInput(true);
         conn.setDoOutput(true);
         conn.setUseCaches(false);

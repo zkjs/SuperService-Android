@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.zkjinshi.base.util.TimeUtil;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -34,6 +35,24 @@ public class OrderUtil {
             Log.e("OrderUtil",e.getMessage());
         }
 
+        return false;
+    }
+
+    /**
+     * 判读订单是否失效
+     * @return
+     */
+    public static boolean isOrderTimeOut(Date arrivedate){
+        Calendar todayC = Calendar.getInstance();
+        Date today = todayC.getTime();
+        try {
+            int offsetDay = TimeUtil.daysBetween(today, arrivedate);
+            if(offsetDay < 0 ){
+                return  true;
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         return false;
     }
 

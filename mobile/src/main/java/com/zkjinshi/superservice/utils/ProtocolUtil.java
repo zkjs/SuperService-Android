@@ -11,7 +11,6 @@ import com.zkjinshi.base.config.ConfigUtil;
  */
 public class ProtocolUtil {
 
-
     /**
      * 管理员登陆
      * @return
@@ -70,30 +69,14 @@ public class ProtocolUtil {
         return ConfigUtil.getInst().getHttpDomain()+"semp/goods?shopid="+shopid;
     }
 
-    /**
-     * TODO:
-     * 获取订单详情
-     * @return
-     */
-    public static String getSempShowUrl(){
-        return ConfigUtil.getInst().getHttpDomain()+"semp/show";
-    }
-
-    /**
-     * 订单处理1,商家锁定/增加订单
-     * @return
-     */
-    public static String getAddOrderUrl(){
-        return ConfigUtil.getInst().getHttpDomain()+"order/add";
-    }
-
-    /**
-     * 订单修改/确认/改变状态
-     * @return
-     */
-    public static String getUpdateOrderUrl(){
-        return ConfigUtil.getInst().getHttpDomain()+"order/update2";
-    }
+//    /**
+//     * TODO:
+//     * 获取订单详情
+//     * @return
+//     */
+//    public static String getSempShowUrl(){
+//        return ConfigUtil.getInst().getHttpDomain()+"semp/show";
+//    }
 
     /**
      * 订单管理 获取订单详情 超级接口
@@ -310,13 +293,13 @@ public class ProtocolUtil {
         return ConfigUtil.getInst().getHttpDomain()+"invitation/makeurl";
     }
 
-    /**
-     * POST 根据订单号显示评论
-     * @return
-     */
-    public static String getCommentShow(){
-        return ConfigUtil.getInst().getHttpDomain()+"comment/show";
-    }
+//    /**
+//     * POST 根据订单号显示评论
+//     * @return
+//     */
+//    public static String getCommentShow(){
+//        return ConfigUtil.getInst().getHttpDomain()+"comment/show";
+//    }
 
     /**
      * POST
@@ -373,7 +356,77 @@ public class ProtocolUtil {
      * @return
      */
     public static String getGroupMemberUrl(){
-
         return ConfigUtil.getInst().getHttpDomain()+"hxim/member";
     }
+
+    /** 订单操作相关 */
+//  旧的api接口
+//    /**
+//     * 订单处理1,商家锁定/增加订单
+//     * @return
+//     */
+//    public static String getAddOrderUrl(){
+//        return ConfigUtil.getInst().getHttpDomain()+"order/add";
+//    }
+//
+//    /**
+//     * 订单修改/确认/改变状态
+//     * @return
+//     */
+//    public static String getUpdateOrderUrl(){
+//        return ConfigUtil.getInst().getHttpDomain()+"order/update2";
+//    }
+
+    /**
+     * 订单处理1,商家锁定/增加订单
+     * Method: POST
+     * Input Params:
+     * {category: (0 酒店 1 KTV 2 其他),
+     * data: OrderDetailForDisplay序列化为JSON(数据格式参照13)}
+     * @return
+     * {"data":"H14513531753485236","result":true}
+     */
+    public static String getAddOrderUrl(){
+        return ConfigUtil.getInst().getApiDomain()+"order/add";
+    }
+
+    /**
+     * 订单修改/确认/改变状态
+     * Method: POST
+     * Input Params:
+     * data: OrderDetailForDisplay序列化为JSON(数据格式参照13)
+     * @return
+     * {"data":"H14513531753485236","result":true}
+     * @return
+     */
+    public static String getUpdateOrderUrl(){
+        return ConfigUtil.getInst().getApiDomain()+"order/update";
+    }
+
+    /**
+     * 订单管理 获取订单列表
+     * @return
+     */
+    public static String getOrderListUrl(String shopID, String userID, int page, int pageSize){
+        return ConfigUtil.getInst().getApiDomain()+"order/list/"+shopID+"/"+userID+"/"+page+"/"+pageSize;
+    }
+
+    /**
+     * 获取订单详情
+     * Method: GET
+     * @return
+     */
+    public static String getOrderDetailUrl(String orderNO){
+        return ConfigUtil.getInst().getApiDomain()+"order/get/"+orderNO;
+    }
+
+    /**
+     *获取订单评论
+     * Method: GET
+     * @return
+     */
+    public static String getCommentShow(String orderNO, int page, int pageSize){
+        return ConfigUtil.getInst().getApiDomain()+"order/evaluation/get/"+orderNO+"/"+page+"/"+pageSize;
+    }
+
 }

@@ -49,7 +49,7 @@ public class ClientSelectActivity extends Activity {
     private TextView        mTvTitle;
     private EditText        mEtClientPhone;
 
-    private ClientBaseBean  mClientBean;
+    private ClientBaseBean mClientBean;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

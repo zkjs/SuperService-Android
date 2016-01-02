@@ -5,14 +5,10 @@ import android.util.Log;
 
 import com.zkjinshi.superservice.bean.BookOrderBean;
 import com.zkjinshi.superservice.bean.OrderDetailBean;
-import com.zkjinshi.superservice.bean.OrderInvoiceBean;
-import com.zkjinshi.superservice.bean.OrderPrivilegeBean;
-import com.zkjinshi.superservice.bean.OrderRoomBean;
-import com.zkjinshi.superservice.bean.OrderRoomTagBean;
-import com.zkjinshi.superservice.bean.OrderUsersBean;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.w3c.dom.Text;
+
+import java.sql.Date;
 
 /**
  * 开发者：dujiande
@@ -39,54 +35,62 @@ public class OrderFactory {
      * @return
      */
     public OrderDetailBean buildOrderDetail(BookOrderBean bookOrderBean){
-        OrderDetailBean orderDetailBean = new OrderDetailBean();
 
-        OrderRoomBean orderRoomBean = new OrderRoomBean();
-        orderRoomBean.setShopid(bookOrderBean.getShopID());
-        orderRoomBean.setGuestid(bookOrderBean.getUserID());
-        orderRoomBean.setGuest(bookOrderBean.getGuest());
-        orderRoomBean.setGuesttel(bookOrderBean.getGuestTel());
-        orderRoomBean.setCreated(bookOrderBean.getCreated());
-        orderRoomBean.setFullname(bookOrderBean.getFullName());
-        orderRoomBean.setRoom_typeid(Integer.parseInt(bookOrderBean.getRoomTypeID()));
-        orderRoomBean.setRoom_type(bookOrderBean.getRoomType());
-        orderRoomBean.setRooms(Integer.parseInt(bookOrderBean.getRooms()));
-        orderRoomBean.setArrival_date(bookOrderBean.getArrivalDate());
-        orderRoomBean.setDeparture_date(bookOrderBean.getDepartureDate());
-        orderRoomBean.setRoom_rate(bookOrderBean.getRoomRate());
-        orderRoomBean.setImgurl(bookOrderBean.getImage());
-        orderRoomBean.setStatus(bookOrderBean.getStatus());
-        orderRoomBean.setRemark(bookOrderBean.getRemark());
+        OrderDetailBean orderDetailBean = new OrderDetailBean();
+        orderDetailBean.setShopid(bookOrderBean.getShopID());
+        orderDetailBean.setUserid(bookOrderBean.getUserID());
+        orderDetailBean.setUsername(bookOrderBean.getGuest());
+        orderDetailBean.setTelephone(bookOrderBean.getGuestTel());
+        String created = bookOrderBean.getCreated();
+        if(!TextUtils.isEmpty(created)){
+            orderDetailBean.setCreated(Date.parse(created));
+        }
+        orderDetailBean.setShopname(bookOrderBean.getFullName());
+        orderDetailBean.setProductid(bookOrderBean.getRoomTypeID());
+        orderDetailBean.setRoomtype(bookOrderBean.getRoomType());
+
+        String rooms = bookOrderBean.getRooms();
+        if (!TextUtils.isEmpty(rooms)){
+            orderDetailBean.setRoomcount(Integer.parseInt(rooms));
+        }
+        orderDetailBean.setArrivaldate(bookOrderBean.getArrivalDate());
+        orderDetailBean.setLeavedate(bookOrderBean.getDepartureDate());
+
+        String roomRate = bookOrderBean.getRoomRate();
+        if (!TextUtils.isEmpty(rooms)){
+            orderDetailBean.setRoomprice(Float.valueOf(rooms));
+        }
+        orderDetailBean.setImgurl(bookOrderBean.getImage());
+        orderDetailBean.setOrderstatus(bookOrderBean.getStatus());
+        orderDetailBean.setRemark(bookOrderBean.getRemark());
 
         if(!TextUtils.isEmpty(bookOrderBean.getPayment())){
             try{
                 int id = Integer.parseInt(bookOrderBean.getPayment());
-                orderRoomBean.setPay_id(id);
+                orderDetailBean.setPaytype(id);
             }catch (Exception e){
                 Log.e("OrderFactory",e.getMessage());
             }
         }
 
-        orderRoomBean.setPay_status(bookOrderBean.getTradeStatus());
-        orderDetailBean.setRoom(orderRoomBean);
-
-        String manInStay   = bookOrderBean.getManInStay();
-
-        //加入非空判断
-        if(!TextUtils.isEmpty(manInStay)){
-            String menInstay[] = manInStay.split(",");
-            ArrayList<OrderUsersBean> orderUsers = new ArrayList<>();
-            for(int i=0; i<menInstay.length; i++){
-                OrderUsersBean user = new OrderUsersBean();
-                user.setRealname(menInstay[i]);
-                orderUsers.add(user);
-            }
-            orderDetailBean.setUsers(orderUsers);
-        }
-        orderDetailBean.setInvoice(new OrderInvoiceBean());
-        orderDetailBean.setRoom_tag(new ArrayList<OrderRoomTagBean>());
-        orderDetailBean.setPrivilege(new ArrayList<OrderPrivilegeBean>());
-        orderDetailBean.setContent(bookOrderBean.getContent());
+//        orderDetailBean.setPay_status(bookOrderBean.getTradeStatus());
+//        orderDetailBean.setRoom(orderDetailBean);
+//        String manInStay = bookOrderBean.getManInStay();
+//        //加入非空判断
+//        if(!TextUtils.isEmpty(manInStay)){
+//            String menInstay[] = manInStay.split(",");
+//            ArrayList<OrderUsersBean> orderUsers = new ArrayList<>();
+//            for(int i=0; i<menInstay.length; i++){
+//                OrderUsersBean user = new OrderUsersBean();
+//                user.setRealname(menInstay[i]);
+//                orderUsers.add(user);
+//            }
+//            orderDetailBean.setUsers(orderUsers);
+//        }
+//        orderDetailBean.setInvoice(new OrderInvoiceBean());
+//        orderDetailBean.setRoom_tag(new ArrayList<OrderRoomTagBean>());
+//        orderDetailBean.setPrivilege(new ArrayList<OrderPrivilegeBean>());
+//        orderDetailBean.setContent(bookOrderBean.getContent());
         return orderDetailBean;
     }
 }
