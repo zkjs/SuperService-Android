@@ -577,7 +577,6 @@ public class OrderDealActivity extends Activity {
 
     //修改订单
     private void updateOrder(){
-
         String url = ProtocolUtil.getUpdateOrderUrl();
         Log.i(TAG,url);
         NetRequest netRequest = new NetRequest(url);
@@ -685,7 +684,7 @@ public class OrderDealActivity extends Activity {
 
         netRequest.setBizParamMap(bizMap);
         NetRequestTask netRequestTask = new NetRequestTask(this,netRequest, NetResponse.class);
-        netRequestTask.methodType = MethodType.PUSH;
+        netRequestTask.methodType = MethodType.JSON;
         netRequestTask.setNetRequestListener(new ExtNetRequestListener(this) {
             @Override
             public void onNetworkRequestError(int errorCode, String errorMessage) {

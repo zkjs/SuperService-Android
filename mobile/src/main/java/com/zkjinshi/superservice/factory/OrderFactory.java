@@ -37,6 +37,11 @@ public class OrderFactory {
     public OrderDetailBean buildOrderDetail(BookOrderBean bookOrderBean){
 
         OrderDetailBean orderDetailBean = new OrderDetailBean();
+        String orderNO = bookOrderBean.getReservationNO();
+        if(!TextUtils.isEmpty(orderNO)){
+            orderDetailBean.setOrderno(orderNO);
+        }
+
         orderDetailBean.setShopid(bookOrderBean.getShopID());
         orderDetailBean.setUserid(bookOrderBean.getUserID());
         orderDetailBean.setUsername(bookOrderBean.getGuest());
@@ -57,9 +62,7 @@ public class OrderFactory {
         orderDetailBean.setLeavedate(bookOrderBean.getDepartureDate());
 
         String roomRate = bookOrderBean.getRoomRate();
-        if (!TextUtils.isEmpty(rooms)){
-            orderDetailBean.setRoomprice(Float.valueOf(rooms));
-        }
+        orderDetailBean.setRoomprice(Float.valueOf(roomRate));
         orderDetailBean.setImgurl(bookOrderBean.getImage());
         orderDetailBean.setOrderstatus(bookOrderBean.getStatus());
         orderDetailBean.setRemark(bookOrderBean.getRemark());
