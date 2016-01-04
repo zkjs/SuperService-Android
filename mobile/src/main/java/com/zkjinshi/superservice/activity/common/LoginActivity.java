@@ -17,6 +17,7 @@ import com.zkjinshi.superservice.activity.set.ClientController;
 import com.zkjinshi.superservice.activity.set.TeamContactsController;
 import com.zkjinshi.superservice.bean.SempLoginBean;
 import com.zkjinshi.superservice.factory.UserFactory;
+import com.zkjinshi.superservice.manager.ZoneManager;
 import com.zkjinshi.superservice.net.ExtNetRequestListener;
 import com.zkjinshi.superservice.net.NetResponse;
 import com.zkjinshi.superservice.sqlite.DBOpenHelper;
@@ -136,7 +137,7 @@ public class LoginActivity extends Activity implements VerifyPhoneControler.Succ
                     LoginController.getInstance().getDeptList(userID, token, shopiD);//获取部门列表
                     ClientController.getInstance().getShopClients(LoginActivity.this, userID, token, shopiD);
                     TeamContactsController.getInstance().getTeamContacts(LoginActivity.this, userID, token, shopiD, null);//获取团队列表
-
+                    ZoneManager.getInstance().requestMyZoneTask();//获取订阅区域
                     UserVo userVo = UserFactory.getInstance().buildUserVo(sempLoginbean);
                     UserDBUtil.getInstance().addUser(userVo);
                     String avatarUrl = Constants.GET_USER_AVATAR+userVo.getUserId()+".jpg";

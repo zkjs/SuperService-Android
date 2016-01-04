@@ -15,6 +15,7 @@ import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.set.TeamContactsController;
 import com.zkjinshi.superservice.bean.AdminLoginBean;
 import com.zkjinshi.superservice.factory.UserFactory;
+import com.zkjinshi.superservice.manager.ZoneManager;
 import com.zkjinshi.superservice.net.ExtNetRequestListener;
 import com.zkjinshi.superservice.net.NetResponse;
 import com.zkjinshi.superservice.sqlite.DBOpenHelper;
@@ -127,6 +128,7 @@ public class ShopLoginActivity extends Activity{
                         DBOpenHelper.DB_NAME = adminLoginBean.getUserid() + ".db";
                         LoginController.getInstance().getDeptList(userID, token, shopiD);//获取部门列表
                         TeamContactsController.getInstance().getTeamContacts(ShopLoginActivity.this, userID, token, shopiD, null);//获取团队列表
+                        ZoneManager.getInstance().requestMyZoneTask();//获取订阅区域
                         UserVo userVo = UserFactory.getInstance().buildUserVo(adminLoginBean);
                         UserDBUtil.getInstance().addUser(userVo);
                         String avatarUrl = ProtocolUtil.getShopLogoUrl(adminLoginBean.getShopid());
