@@ -194,6 +194,7 @@ public class OrderFragment extends BaseFragment{
             public void onNetworkRequestError(int errorCode, String errorMessage) {
                 Log.i(TAG, "errorCode:" + errorCode);
                 Log.i(TAG, "errorMessage:" + errorMessage);
+                swipeRefreshLayout.setRefreshing(false);
             }
 
             @Override
@@ -205,6 +206,7 @@ public class OrderFragment extends BaseFragment{
             public void onNetworkResponseSucceed(NetResponse result) {
                 super.onNetworkResponseSucceed(result);
                 Log.i(TAG, "result.rawResult:" + result.rawResult);
+                swipeRefreshLayout.setRefreshing(false);
                 try{
                     ArrayList<OrderBean> orderList = new Gson().fromJson(result.rawResult,
                             new TypeToken<ArrayList<OrderBean>>(){}.getType());
@@ -218,7 +220,7 @@ public class OrderFragment extends BaseFragment{
                         orderAdapter.setDataList(mOrderList);
                         orderAdapter.notifyDataSetChanged();
                         mPage++;
-                        swipeRefreshLayout.setRefreshing(false);
+
                     }
 
                     if(null != orderList && !orderList.isEmpty()){
