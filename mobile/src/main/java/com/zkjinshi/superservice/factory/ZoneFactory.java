@@ -4,10 +4,15 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.text.TextUtils;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.zkjinshi.superservice.bean.ZoneBean;
+import com.zkjinshi.superservice.utils.CacheUtil;
+import com.zkjinshi.superservice.vo.ContactLocalVo;
 import com.zkjinshi.superservice.vo.ZoneVo;
 
-import org.w3c.dom.Text;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 
 /**
  * 开发者：JimmyZhang
@@ -69,4 +74,38 @@ public class ZoneFactory {
         zoneVo.setRemark(cursor.getString(8));
         return zoneVo;
     }
+
+    /**
+     * 构建订阅数组
+     * @return
+     */
+    public String[] buildZoneArray(){
+        String[] zoneArray = null;
+        ArrayList<ZoneBean> zoneList = getZoneBeanList();
+        if(null != zoneList && !zoneList.isEmpty()){
+            int length = zoneList.size();
+            zoneArray = new String[length];
+            for(int i = 0; i < length ; i++){
+                zoneArray[i] = ""+zoneList.get(i).getLocid();
+            }
+        }
+        return zoneArray;
+    }
+
+    /**
+     * 构建选择区域
+     * @return
+     */
+    public ArrayList<ZoneBean> getZoneBeanList(){
+        ArrayList<ZoneBean> zoneList = new ArrayList<ZoneBean>();
+        String listStr =  CacheUtil.getInstance().getListStrCache("zoneBeanList");
+        if(!TextUtils.isEmpty(listStr)) {
+            Type listType = new TypeToken<ArrayList<ZoneBean>>() {
+            }.getType();
+            Gson gson = new Gson();
+            zoneList = gson.fromJson(listStr, listType);
+        }
+        return zoneList;
+    }
+
 }

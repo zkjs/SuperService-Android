@@ -620,6 +620,29 @@ public class OrderDealActivity extends Activity {
                 JsonObject object = element.getAsJsonObject();
                 Boolean updateResult = object.get("result").getAsBoolean();
                 if(updateResult){
+                    String orderNO = object.get("data").getAsString();
+                    EMConversationHelper.getInstance().sendOrderCmdMessage(
+                            mOrderDetail.getShopid(),
+                            orderNO,
+                            mOrderDetail.getUserid(),
+                            new EMCallBack() {
+
+                                @Override
+                                public void onSuccess() {
+                                    Log.i(TAG, "发送订单确认信息成功");
+                                }
+
+                                @Override
+                                public void onError(int i, String s) {
+                                    Log.i(TAG, "errorMsg:" + s);
+                                    Log.i(TAG, "errorCode" + i);
+                                }
+
+                                @Override
+                                public void onProgress(int i, String s) {
+
+                                }
+                            });
                     DialogUtil.getInstance().showToast(OrderDealActivity.this,"订单修改成功");
                     finish();
                 } else {

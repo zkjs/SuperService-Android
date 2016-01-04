@@ -35,6 +35,7 @@ import com.zkjinshi.superservice.bean.BaseBean;
 import com.zkjinshi.superservice.emchat.EMConversationHelper;
 import com.zkjinshi.superservice.emchat.EasemobIMHelper;
 import com.zkjinshi.superservice.emchat.observer.EMessageListener;
+import com.zkjinshi.superservice.manager.YunBaSubscribeManager;
 import com.zkjinshi.superservice.net.ExtNetRequestListener;
 import com.zkjinshi.superservice.net.MethodType;
 import com.zkjinshi.superservice.net.NetRequest;
@@ -175,6 +176,8 @@ public class MainActivity extends AppCompatActivity{
                 customExtBuilder.setPositiveButton(getString(R.string.confirm), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        //移除云巴订阅推送
+                        YunBaSubscribeManager.getInstance().unSubscribe();
                         //环信接口退出
                         EasemobIMHelper.getInstance().logout();
                         //http接口退出

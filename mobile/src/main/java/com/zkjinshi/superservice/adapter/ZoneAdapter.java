@@ -65,12 +65,7 @@ public class ZoneAdapter extends BaseAdapter{
         return  topics;
     }
 
-    /**
-     * 获取选择订阅区域
-     * @return
-     */
-    public String[] getLocIds(){
-        String[] topics = null;
+    public ArrayList<ZoneBean> getSelectZoneBeanList(){
         ArrayList<ZoneBean> selectZoneList = new ArrayList<ZoneBean>();
         if(null != zoneList && !zoneList.isEmpty()){
             for(int i=0;i<zoneList.size();i++){
@@ -80,6 +75,16 @@ public class ZoneAdapter extends BaseAdapter{
                 }
             }
         }
+        return selectZoneList;
+    }
+
+    /**
+     * 获取选择订阅区域
+     * @return
+     */
+    public String[] getLocIds(){
+        String[] topics = null;
+        ArrayList<ZoneBean> selectZoneList = getSelectZoneBeanList();
         if(null != selectZoneList && !selectZoneList.isEmpty()){
            topics = new String[selectZoneList.size()];
             for(int i = 0; i < selectZoneList.size(); i++){
