@@ -62,7 +62,10 @@ public class OrderFactory {
         orderDetailBean.setLeavedate(bookOrderBean.getDepartureDate());
 
         String roomRate = bookOrderBean.getRoomRate();
-        orderDetailBean.setRoomprice(Float.valueOf(roomRate));
+        if(!TextUtils.isEmpty(roomRate)){
+            orderDetailBean.setRoomprice(Float.valueOf(roomRate));
+        }
+
         orderDetailBean.setImgurl(bookOrderBean.getImage());
         orderDetailBean.setOrderstatus(bookOrderBean.getStatus());
         orderDetailBean.setRemark(bookOrderBean.getRemark());
