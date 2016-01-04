@@ -14,6 +14,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -181,24 +182,32 @@ public class InviteCodeOperater {
                     //获得生成链接地址
                     String url = object.get("url").getAsString();
                     // 初始化一个WXWebpageObject对象
-                    WXWebpageObject webPage= new WXWebpageObject();
-                    webPage.webpageUrl = url;
+                    if(TextUtils.isEmpty(url)){
+                        return ;
+                    }
 
-                    // 用WXWebpageObject对象初始化一个WXMediaMessage对象
-                    WXMediaMessage msg = new WXMediaMessage();
+                    WXWebpageObject webpage = new WXWebpageObject();
+                    webpage.webpageUrl = url;
+                    WXMediaMessage msg = new WXMediaMessage(webpage);
                     msg.title = CacheUtil.getInstance().getUserName() + "邀请您激活超级身份";
                     msg.description = "激活超级身份，把您在某商家的会员保障扩展至全国，超过百家顶级商户和1000+名人工客服将竭诚为您服务。";
-                    Bitmap thumb = BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher);
-                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    thumb.compress(Bitmap.CompressFormat.PNG, 100, baos);
-                    msg.thumbData = baos.toByteArray();
 
-                    // 构造一个Req
+                    int WX_THUMB_SIZE = 120;
+                    Bitmap thumb = BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher);
+                    if(thumb == null){
+                        Toast.makeText(context, "图片不能为空", Toast.LENGTH_SHORT).show();
+                    }else{
+                        Bitmap thumbBmp = Bitmap.createScaledBitmap(thumb, WX_THUMB_SIZE, WX_THUMB_SIZE, true);
+                        thumb.recycle();
+                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        thumbBmp.compress(Bitmap.CompressFormat.PNG, 100, baos);
+                        msg.thumbData = baos.toByteArray();
+                    }
+
                     SendMessageToWX.Req req = new SendMessageToWX.Req();
-                    req.transaction = buildTransaction("webpage"); // transaction字段用于唯一标识一个请求
+                    req.transaction = buildTransaction("webpage");
                     req.message = msg;
                     req.scene   = SendMessageToWX.Req.WXSceneSession;
-                    // 调用api接口发送数据到微信
                     mWxApi.sendReq(req);
                 }else {
                     DialogUtil.getInstance().showCustomToast(context, "微信发送失败，请稍后再试", 0);
@@ -213,5 +222,4 @@ public class InviteCodeOperater {
         netRequestTask.isShowLoadingDialog = true;
         netRequestTask.execute();
     }
-
 }
