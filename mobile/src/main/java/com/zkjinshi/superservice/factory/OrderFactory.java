@@ -65,7 +65,6 @@ public class OrderFactory {
         if(!TextUtils.isEmpty(roomRate)){
             orderDetailBean.setRoomprice(Float.valueOf(roomRate));
         }
-
         orderDetailBean.setImgurl(bookOrderBean.getImage());
         orderDetailBean.setOrderstatus(bookOrderBean.getStatus());
         orderDetailBean.setRemark(bookOrderBean.getRemark());
