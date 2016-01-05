@@ -221,52 +221,63 @@ public class OrderPayActivity  extends Activity implements AdapterView.OnItemCli
      * 加载支付方式
      */
     private void loadPayList(){
-        String url = ProtocolUtil.getSempPayListUrl();
-        Log.i(TAG, url);
-        NetRequest netRequest = new NetRequest(url);
-        HashMap<String,String> bizMap = new HashMap<String,String>();
-        bizMap.put("salesid", CacheUtil.getInstance().getUserId());
-        bizMap.put("token", CacheUtil.getInstance().getToken());
-        bizMap.put("shopid", orderDetailBean.getShopid());
-        netRequest.setBizParamMap(bizMap);
-        NetRequestTask netRequestTask = new NetRequestTask(this, netRequest, NetResponse.class);
-        netRequestTask.methodType = MethodType.PUSH;
-        netRequestTask.setNetRequestListener(new ExtNetRequestListener(this) {
-            @Override
-            public void onNetworkRequestError(int errorCode, String errorMessage) {
-                Log.i(TAG, "errorCode:" + errorCode);
-                Log.i(TAG, "errorMessage:" + errorMessage);
-            }
-
-            @Override
-            public void onNetworkRequestCancelled() {
-
-            }
-
-            @Override
-            public void onNetworkResponseSucceed(NetResponse result) {
-                super.onNetworkResponseSucceed(result);
-
-                Log.i(TAG, "result.rawResult:" + result.rawResult);
-                try {
-                    payBeanList = new Gson().fromJson(result.rawResult, new TypeToken<ArrayList<PayBean>>() {}.getType());
-                    payAdapter = new PayAdapter(OrderPayActivity.this,payBeanList,selelectId);
-                    payListView.setAdapter(payAdapter);
-                    payListView.setOnItemClickListener(OrderPayActivity.this);
-
-                } catch (Exception e) {
-                    Log.e(TAG, e.getMessage());
-                }
-
-            }
-
-            @Override
-            public void beforeNetworkRequestStart() {
-
-            }
-        });
-        netRequestTask.isShowLoadingDialog = true;
-        netRequestTask.execute();
+        payBeanList = new ArrayList<PayBean>();
+        String payTypeArr[] = {"在线支付","到店支付","挂账"};
+        for(int i=0;i<payTypeArr.length;i++){
+            PayBean payBean = new PayBean();
+            payBean.setPay_id(i+1);
+            payBean.setPay_name(payTypeArr[i]);
+            payBeanList.add(payBean);
+        }
+        payAdapter = new PayAdapter(OrderPayActivity.this,payBeanList,selelectId);
+        payListView.setAdapter(payAdapter);
+        payListView.setOnItemClickListener(OrderPayActivity.this);
+//        String url = ProtocolUtil.getSempPayListUrl();
+//        Log.i(TAG, url);
+//        NetRequest netRequest = new NetRequest(url);
+//        HashMap<String,String> bizMap = new HashMap<String,String>();
+//        bizMap.put("salesid", CacheUtil.getInstance().getUserId());
+//        bizMap.put("token", CacheUtil.getInstance().getToken());
+//        bizMap.put("shopid", orderDetailBean.getShopid());
+//        netRequest.setBizParamMap(bizMap);
+//        NetRequestTask netRequestTask = new NetRequestTask(this, netRequest, NetResponse.class);
+//        netRequestTask.methodType = MethodType.PUSH;
+//        netRequestTask.setNetRequestListener(new ExtNetRequestListener(this) {
+//            @Override
+//            public void onNetworkRequestError(int errorCode, String errorMessage) {
+//                Log.i(TAG, "errorCode:" + errorCode);
+//                Log.i(TAG, "errorMessage:" + errorMessage);
+//            }
+//
+//            @Override
+//            public void onNetworkRequestCancelled() {
+//
+//            }
+//
+//            @Override
+//            public void onNetworkResponseSucceed(NetResponse result) {
+//                super.onNetworkResponseSucceed(result);
+//
+//                Log.i(TAG, "result.rawResult:" + result.rawResult);
+//                try {
+//                    payBeanList = new Gson().fromJson(result.rawResult, new TypeToken<ArrayList<PayBean>>() {}.getType());
+//                    payAdapter = new PayAdapter(OrderPayActivity.this,payBeanList,selelectId);
+//                    payListView.setAdapter(payAdapter);
+//                    payListView.setOnItemClickListener(OrderPayActivity.this);
+//
+//                } catch (Exception e) {
+//                    Log.e(TAG, e.getMessage());
+//                }
+//
+//            }
+//
+//            @Override
+//            public void beforeNetworkRequestStart() {
+//
+//            }
+//        });
+//        netRequestTask.isShowLoadingDialog = true;
+//        netRequestTask.execute();
     }
 
     //获取支付方式名字
