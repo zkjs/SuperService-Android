@@ -32,7 +32,7 @@ public class EMessageReceiver extends BroadcastReceiver {
         if(intent != null ){
             String action = intent.getAction();
             if(!TextUtils.isEmpty(action)){
-                if( action.equals("com.zkjinshi.superservice.ACTION_INVITE")){
+                if(action.equals("com.zkjinshi.superservice.ACTION_INVITE")){
 
                     String userID   = intent.getStringExtra("userId");
                     String userName = intent.getStringExtra("userName");

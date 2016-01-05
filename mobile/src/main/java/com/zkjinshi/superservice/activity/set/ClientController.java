@@ -11,6 +11,7 @@ import com.zkjinshi.superservice.factory.ClientFactory;
 import com.zkjinshi.superservice.net.ExtNetRequestListener;
 import com.zkjinshi.superservice.net.MethodType;
 import com.zkjinshi.superservice.net.NetRequest;
+import com.zkjinshi.superservice.net.NetRequestListener;
 import com.zkjinshi.superservice.net.NetRequestTask;
 import com.zkjinshi.superservice.net.NetResponse;
 import com.zkjinshi.superservice.sqlite.ClientDBUtil;
@@ -44,25 +45,49 @@ public class ClientController {
         }
         return instance;
     }
+//
+//    /**
+//     * 获取用户详情
+//     * @param context
+//     * @param userID
+//     * @param token
+//     * @param shopID
+//     * @param phoneNumber
+//     * @param listener
+//     */
+//    public void getClientDetail(final Context context, String userID,
+//                                 String token, String shopID, String phoneNumber,
+//                                NetRequestListener listener) {
+//        NetRequest netRequest = new NetRequest(ProtocolUtil.getClientDetailUrl());
+//        HashMap<String,String> bizMap = new HashMap<>();
+//        bizMap.put("empid", userID);
+//        bizMap.put("token", token);
+//        bizMap.put("shopid", shopID);
+//        bizMap.put("phone", phoneNumber);
+//        netRequest.setBizParamMap(bizMap);
+//        NetRequestTask netRequestTask = new NetRequestTask(context, netRequest, NetResponse.class);
+//        netRequestTask.methodType = MethodType.PUSH;
+//        netRequestTask.setNetRequestListener(listener);
+//        netRequestTask.isShowLoadingDialog = true;
+//        netRequestTask.execute();
+//    }
 
     /**
      * 获取用户详情
      * @param context
      * @param userID
-     * @param token
-     * @param shopID
-     * @param phoneNumber
      * @param listener
      */
-    public void getClientDetail(final Context context, String userID,
-                                 String token, String shopID, String phoneNumber,
-                                 ExtNetRequestListener listener) {
-        NetRequest netRequest = new NetRequest(ProtocolUtil.getClientDetailUrl());
+    public void getClientInfo(final Context context,
+                              String userID,
+                              String token,
+                              String clientID,
+                              ExtNetRequestListener listener) {
+        NetRequest netRequest = new NetRequest(ProtocolUtil.getClientInfoUrl());
         HashMap<String,String> bizMap = new HashMap<>();
-        bizMap.put("empid", userID);
+        bizMap.put("userid", userID);
         bizMap.put("token", token);
-        bizMap.put("shopid", shopID);
-        bizMap.put("phone", phoneNumber);
+        bizMap.put("find_userid", clientID);
         netRequest.setBizParamMap(bizMap);
         NetRequestTask netRequestTask = new NetRequestTask(context, netRequest, NetResponse.class);
         netRequestTask.methodType = MethodType.PUSH;

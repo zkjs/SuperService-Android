@@ -199,6 +199,7 @@ public class RequestUtil {
         DataOutputStream outStream = new DataOutputStream(conn
                 .getOutputStream());
         outStream.write(sb.toString().getBytes());
+
         if (fileMap != null)
             for (Map.Entry<String, File> file : fileMap.entrySet()) {
                 StringBuilder sb1 = new StringBuilder();

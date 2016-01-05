@@ -66,7 +66,7 @@ public class ClientBindController {
         bizMap.put("position", mClientBean.getPosition());
         bizMap.put("company", mClientBean.getCompany());
         bizMap.put("other_desc", "");
-        bizMap.put("is_bill", mClientBean.getIs_bill() + "");
+//        bizMap.put("is_bill", mClientBean.getIs_bill() + "");
         netRequest.setBizParamMap(bizMap);
 
         NetRequestTask netRequestTask = new NetRequestTask(mContext, netRequest, NetResponse.class);

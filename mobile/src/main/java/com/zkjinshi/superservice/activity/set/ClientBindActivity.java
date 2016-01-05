@@ -118,11 +118,11 @@ public class ClientBindActivity extends Activity {
         }
         mTvMemberName.setText(client.getUsername());
         mTvMemberPhone.setText(client.getPhone());
-        if(client.getIs_bill() == 1) {
-            mTvMemberType.setText(getString(R.string.debt_member));
-        } else {
-            mTvMemberType.setText(getString(R.string.not_debt_member));
-        }
+//        if(client.getIs_bill() == 1) {
+//            mTvMemberType.setText(getString(R.string.debt_member));
+//        } else {
+//            mTvMemberType.setText(getString(R.string.not_debt_member));
+//        }
         mTvRecordTimes.setText(client.getOrder_count() + "");
 
         //TODO: 1.客户偏好标签处理
@@ -161,7 +161,7 @@ public class ClientBindActivity extends Activity {
             public void onClick(View v) {
                 if(ClientDBUtil.getInstance().isClientExistByPhone(mClientBean.getPhone())){
                     DialogUtil.getInstance().showCustomToast(ClientBindActivity.this, "此用户本地已存在,请勿重复添加.", Gravity.CENTER);
-                }else if (null != mClientBean) {
+                } else if (null != mClientBean) {
                     //绑定客户
                     ClientBindController.getInstance().bindClient(
                         mClientBean,
@@ -194,12 +194,14 @@ public class ClientBindActivity extends Activity {
                                         //TODO add to local db
                                         showSuccessDialog();
                                     } else {
-                                        //TODO add to local db without salesid
-                                        int errCode = jsonObject.getInt("err");
-                                        //验证没通过
-                                        if (300 == errCode) {
-                                            showFailedDialog();
-                                        }
+                                        showFailedDialog();
+//                                        //  showFailedDialog();TODO add to local db without salesid
+//
+//                                        int errCode = jsonObject.getInt("err");
+//                                        //验证没通过
+//                                        if (300 == errCode) {
+//
+//                                        }
                                     }
                                 } catch (JSONException e) {
                                     e.printStackTrace();

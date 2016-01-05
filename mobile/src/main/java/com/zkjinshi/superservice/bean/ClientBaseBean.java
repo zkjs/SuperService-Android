@@ -11,20 +11,34 @@ import java.util.List;
  */
 public class ClientBaseBean implements Serializable{
 
+//        {"userid":"555feb81654ae",
+//        "username":"winky",
+//        "sex":0,
+//        "phone":18695691235,
+//        "position":"\u592a\u9633\u795e",
+//        "company":"",
+//        "fuid":"5639a18dc1905",
+//        "tags":[],
+//        "order_count":0,
+//        "salesname":"\u6881\u7ba1\u7406\u5458\u5185\u540d\u79f0"}
+
     private String userid;
     private String username;
     private int    sex;
     private String phone;
     private String position;
     private String company;
-    private String card_no;
-    private int    is_bill;
     private List<ClientTag> tags;
-    private int    order_count;
-    private String salesid;//绑定服务员ID
+    private String fuid;//绑定服务员ID
     private String salesname;//绑定服务员姓名
-    private int    user_level;
-    private String level_desc;
+    private int    order_count;
+
+//    private int    is_bill;
+//    private String card_no;
+//    private String salesid;//绑定服务员ID
+//    private int    user_level;
+//    private String level_desc;
+
 
     public String getUserid() {
         return userid;
@@ -74,22 +88,6 @@ public class ClientBaseBean implements Serializable{
         this.company = company;
     }
 
-    public String getCard_no() {
-        return card_no;
-    }
-
-    public void setCard_no(String card_no) {
-        this.card_no = card_no;
-    }
-
-    public int getIs_bill() {
-        return is_bill;
-    }
-
-    public void setIs_bill(int is_bill) {
-        this.is_bill = is_bill;
-    }
-
     public List<ClientTag> getTags() {
         return tags;
     }
@@ -98,20 +96,12 @@ public class ClientBaseBean implements Serializable{
         this.tags = tags;
     }
 
-    public int getOrder_count() {
-        return order_count;
+    public String getFuid() {
+        return fuid;
     }
 
-    public void setOrder_count(int order_count) {
-        this.order_count = order_count;
-    }
-
-    public String getSalesid() {
-        return salesid;
-    }
-
-    public void setSalesid(String salesid) {
-        this.salesid = salesid;
+    public void setFuid(String fuid) {
+        this.fuid = fuid;
     }
 
     public String getSalesname() {
@@ -122,19 +112,11 @@ public class ClientBaseBean implements Serializable{
         this.salesname = salesname;
     }
 
-    public int getUser_level() {
-        return user_level;
+    public int getOrder_count() {
+        return order_count;
     }
 
-    public void setUser_level(int user_level) {
-        this.user_level = user_level;
-    }
-
-    public String getLevel_desc() {
-        return level_desc;
-    }
-
-    public void setLevel_desc(String level_desc) {
-        this.level_desc = level_desc;
+    public void setOrder_count(int order_count) {
+        this.order_count = order_count;
     }
 }
