@@ -159,9 +159,10 @@ public class ClientBindActivity extends Activity {
         mBtnConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(ClientDBUtil.getInstance().isClientExistByPhone(mClientBean.getPhone())){
-                    DialogUtil.getInstance().showCustomToast(ClientBindActivity.this, "此用户本地已存在,请勿重复添加.", Gravity.CENTER);
-                } else if (null != mClientBean) {
+//                if(ClientDBUtil.getInstance().isClientExistByPhone(mClientBean.getPhone())){
+//                    DialogUtil.getInstance().showCustomToast(ClientBindActivity.this, "此用户本地已存在,请勿重复添加.", Gravity.CENTER);
+//                } else
+                if (null != mClientBean) {
                     //绑定客户
                     ClientBindController.getInstance().bindClient(
                         mClientBean,
@@ -194,14 +195,14 @@ public class ClientBindActivity extends Activity {
                                         //TODO add to local db
                                         showSuccessDialog();
                                     } else {
-                                        showFailedDialog();
-//                                        //  showFailedDialog();TODO add to local db without salesid
-//
-//                                        int errCode = jsonObject.getInt("err");
-//                                        //验证没通过
-//                                        if (300 == errCode) {
-//
-//                                        }
+                                        //  showFailedDialog();TODO add to local db without salesid
+                                        String errCode = jsonObject.getString("err");
+                                        //验证没通过
+                                        if (errCode.equals("300")) {
+                                            DialogUtil.getInstance().showCustomToast(ClientBindActivity.this, "用户绑定失败！", Gravity.CENTER);
+                                        } else {
+                                            DialogUtil.getInstance().showCustomToast(ClientBindActivity.this, errCode, Gravity.CENTER);
+                                        }
                                     }
                                 } catch (JSONException e) {
                                     e.printStackTrace();
@@ -249,70 +250,70 @@ public class ClientBindActivity extends Activity {
         builder.create().show();
     }
 
-    /**
-     * 邀请对话框
-     */
-    private void showFailedDialog() {
-        CustomDialog.Builder builder=new CustomDialog.Builder(this);
-        builder.setTitle(getString(R.string.app_name));
-        builder.setMessage("此用户已被绑定，只能添加为本地联系人。确认添加？");
-        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() { //设置确定按钮
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-                String   phone    = mClientBean.getPhone();
-                ClientVo clientVo = ClientFactory.getInstance().convertClientBaseBean2ClientVO(mClientBean);
-                clientVo.setContactType(ContactType.UNNORMAL);
-                if(!ClientDBUtil.getInstance().isClientExistByPhone(phone)){
-                    long addResult = ClientDBUtil.getInstance().addClient(clientVo);
-                    if(addResult > 0){
-                        DialogUtil.getInstance().showToast(ClientBindActivity.this, "添加为本地联系人成功！");
-                    }
-                }else {
-                    long updateResult =ClientDBUtil.getInstance().updateClient(clientVo);
-                    if(updateResult > 0){
-                        DialogUtil.getInstance().showToast(ClientBindActivity.this, "更新本地联系人成功！");
-                    }
-                }
-                ClientBindActivity.this.finish();
-            }
-        });
-        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() { //设置取消按钮
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-                ClientBindActivity.this.finish();
-            }
-        });
-        builder.create().show();
-    }
+//    /**
+//     * 邀请对话框
+//     */
+//    private void showFailedDialog() {
+//        CustomDialog.Builder builder=new CustomDialog.Builder(this);
+//        builder.setTitle(getString(R.string.app_name));
+//        builder.setMessage("此用户已被绑定，只能添加为本地联系人。确认添加？");
+//        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() { //设置确定按钮
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                dialog.dismiss();
+//                String   phone    = mClientBean.getPhone();
+//                ClientVo clientVo = ClientFactory.getInstance().convertClientBaseBean2ClientVO(mClientBean);
+//                clientVo.setContactType(ContactType.UNNORMAL);
+//                if(!ClientDBUtil.getInstance().isClientExistByPhone(phone)){
+//                    long addResult = ClientDBUtil.getInstance().addClient(clientVo);
+//                    if(addResult > 0){
+//                        DialogUtil.getInstance().showToast(ClientBindActivity.this, "添加为本地联系人成功！");
+//                    }
+//                }else {
+//                    long updateResult =ClientDBUtil.getInstance().updateClient(clientVo);
+//                    if(updateResult > 0){
+//                        DialogUtil.getInstance().showToast(ClientBindActivity.this, "更新本地联系人成功！");
+//                    }
+//                }
+//                ClientBindActivity.this.finish();
+//            }
+//        });
+//        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() { //设置取消按钮
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                dialog.dismiss();
+//                ClientBindActivity.this.finish();
+//            }
+//        });
+//        builder.create().show();
+//    }
 
-    /**
-     * 创建新Tag
-     * @param tagstr
-     * @return
-     */
-    private Tag createTag(String tagstr){
-        return createTag(tagstr, null);
-    }
-
-    private Tag createTag(String tagstr, Drawable background){
-        return createTag(0, tagstr, background);
-    }
-
-    private Tag createTag(int id, String tagstr, Drawable background){
-        Tag tag = new Tag(id, tagstr);
-        tag.tagTextColor         = Color.BLACK;
-        tag.layoutColor          = Color.WHITE;
-        tag.layoutColorPress     = Color.parseColor("#DDDDDD");
-        tag.background           = background;
-        tag.radius               = 40f;
-        tag.tagTextSize          = 18f;
-        tag.layoutBorderSize     = 1f;
-        tag.layoutBorderColor    = Color.parseColor("#bbbbbb");
-        tag.deleteIndicatorColor = Color.parseColor("#ff0000");
-        tag.deleteIndicatorSize  = 18f;
-        tag.isDeletable          = false;
-        return tag;
-    }
+//    /**
+//     * 创建新Tag
+//     * @param tagstr
+//     * @return
+//     */
+//    private Tag createTag(String tagstr){
+//        return createTag(tagstr, null);
+//    }
+//
+//    private Tag createTag(String tagstr, Drawable background){
+//        return createTag(0, tagstr, background);
+//    }
+//
+//    private Tag createTag(int id, String tagstr, Drawable background){
+//        Tag tag = new Tag(id, tagstr);
+//        tag.tagTextColor         = Color.BLACK;
+//        tag.layoutColor          = Color.WHITE;
+//        tag.layoutColorPress     = Color.parseColor("#DDDDDD");
+//        tag.background           = background;
+//        tag.radius               = 40f;
+//        tag.tagTextSize          = 18f;
+//        tag.layoutBorderSize     = 1f;
+//        tag.layoutBorderColor    = Color.parseColor("#bbbbbb");
+//        tag.deleteIndicatorColor = Color.parseColor("#ff0000");
+//        tag.deleteIndicatorSize  = 18f;
+//        tag.isDeletable          = false;
+//        return tag;
+//    }
 }

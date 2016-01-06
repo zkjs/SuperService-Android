@@ -152,9 +152,11 @@ public class ClientSelectActivity extends Activity {
 
                         //用户不存在
                         if (407 == errCode) {
-                            Intent addClient = new Intent(ClientSelectActivity.this, ClientAddActivity.class);
-                            addClient.putExtra("phone_number", phoneNumber);
-                            ClientSelectActivity.this.startActivity(addClient);
+                            DialogUtil.getInstance().showToast(ClientSelectActivity.this,
+                                    "此用户不存在，请输入正确手机号！");
+//                            Intent addClient = new Intent(ClientSelectActivity.this, ClientAddActivity.class);
+//                            addClient.putExtra("phone_number", phoneNumber);
+//                            ClientSelectActivity.this.startActivity(addClient);
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();

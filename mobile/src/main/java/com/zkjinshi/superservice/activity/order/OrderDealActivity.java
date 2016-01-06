@@ -22,14 +22,9 @@ import com.google.gson.JsonParser;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.base.util.TimeUtil;
 import com.zkjinshi.superservice.R;
-import com.zkjinshi.superservice.bean.AddOrderBean;
 import com.zkjinshi.superservice.bean.CommentBean;
 import com.zkjinshi.superservice.bean.GoodBean;
 import com.zkjinshi.superservice.bean.OrderDetailBean;
-import com.zkjinshi.superservice.bean.OrderInvoiceBean;
-import com.zkjinshi.superservice.bean.OrderPrivilegeBean;
-import com.zkjinshi.superservice.bean.OrderRoomTagBean;
-import com.zkjinshi.superservice.bean.OrderUsersBean;
 import com.zkjinshi.superservice.bean.PayBean;
 import com.zkjinshi.superservice.emchat.EMConversationHelper;
 import com.zkjinshi.superservice.net.ExtNetRequestListener;
@@ -47,7 +42,6 @@ import com.zkjinshi.superservice.vo.UserVo;
 
 import org.jivesoftware.smack.util.Base64Encoder;
 
-import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -113,13 +107,9 @@ public class OrderDealActivity extends Activity {
         userVo = UserDBUtil.getInstance().queryUserById(CacheUtil.getInstance().getUserId());
 
         initView();
-        mOrderDetail = (OrderDetailBean) getIntent().getSerializableExtra("book_order");
-        if(mOrderDetail == null){
-            isBooking = false;
-            reservationNo = getIntent().getStringExtra("reservation_no");
-            if(!TextUtils.isEmpty(reservationNo)){
-                loadOrder(reservationNo);
-            }
+        reservationNo = getIntent().getStringExtra("reservation_no");
+        if(!TextUtils.isEmpty(reservationNo)){
+            loadOrder(reservationNo);
         }else{
             isBooking = true;
             initData();
@@ -187,13 +177,12 @@ public class OrderDealActivity extends Activity {
         mLltDateContainer = (LinearLayout)findViewById(R.id.llt_date_container);
 
         mIusvOrderNo =  (ItemUserSettingView)findViewById(R.id.order_no);
-
         mIusvRoomNumber = (ItemUserSettingView)findViewById(R.id.aod_room_number);
         addRightIcon(mIusvRoomNumber);
 
         mIusvPayType = (ItemUserSettingView)findViewById(R.id.pay_type);
         addRightIcon(mIusvPayType);
-        customerList = new ArrayList<ItemUserSettingView>();
+        customerList = new ArrayList<>();
         int[] customerIds = {R.id.aod_customer1,R.id.aod_customer2,R.id.aod_customer3};
         for(int i=0;i<customerIds.length;i++){
             ItemUserSettingView item = (ItemUserSettingView) findViewById(customerIds[i]);
