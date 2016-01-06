@@ -402,9 +402,9 @@ public class ChatAdapter extends BaseAdapter {
                     vh.contentLayout.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Intent orderAdd = new Intent(context, OrderDealActivity.class);
-                            orderAdd.putExtra("book_order", OrderFactory.getInstance().buildOrderDetail(bookOrder));
-                            context.startActivity(orderAdd);
+                            Intent intent = new Intent(context, OrderDealActivity.class);
+                            intent.putExtra("reservation_no", bookOrder.getReservationNO());
+                            context.startActivity(intent);
                         }
                     });
                     if (!isDelEnabled) {
