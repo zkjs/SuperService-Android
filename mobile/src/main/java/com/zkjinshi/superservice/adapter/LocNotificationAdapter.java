@@ -18,11 +18,12 @@ import com.zkjinshi.base.util.IntentUtil;
 import com.zkjinshi.base.util.TimeUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.listener.RecyclerItemClickListener;
+import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.utils.OrderUtil;
-import com.zkjinshi.superservice.view.CircleStatusView;
-import com.zkjinshi.superservice.vo.ComingVo;
 import com.zkjinshi.superservice.view.CircleImageView;
+import com.zkjinshi.superservice.vo.NoticeVo;
+import com.zkjinshi.superservice.vo.OrderVo;
 
 import java.util.ArrayList;
 
@@ -36,23 +37,23 @@ public class LocNotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
     private Context context;
 
-    private  ArrayList<ComingVo> comingList;
+    private  ArrayList<NoticeVo> noticeList;
     private DisplayImageOptions     options;
     private RecyclerItemClickListener itemClickListener;
 
-    public void setComingList(ArrayList<ComingVo> comingList) {
-        if(null ==  comingList){
-            this.comingList = new ArrayList<ComingVo>();
+    public void setNoticeList(ArrayList<NoticeVo> noticeList) {
+        if(null == noticeList){
+            this.noticeList = new ArrayList<NoticeVo>();
         }else{
-            this.comingList = comingList;
+            this.noticeList = noticeList;
         }
         notifyDataSetChanged();
     }
 
-    public LocNotificationAdapter(Activity activity, ArrayList<ComingVo> comingList) {
+    public LocNotificationAdapter(Activity activity, ArrayList<NoticeVo> comingList) {
 
         this.context = activity;
-        this.setComingList(comingList);
+        this.setNoticeList(comingList);
         this.options = new DisplayImageOptions.Builder()
                 .showImageOnLoading(R.mipmap.img_hotel_zhanwei)// 设置图片下载期间显示的图片
                 .showImageForEmptyUri(R.mipmap.img_hotel_zhanwei)// 设置图片Uri为空或是错误的时候显示的图片
@@ -71,46 +72,45 @@ public class LocNotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        ComingVo comingVo = comingList.get(position);
-
-        String userId = comingVo.getUserId();
+        NoticeVo noticeVo = noticeList.get(position);
+        String userId = noticeVo.getUserId();
         String imageUrl = Constants.GET_USER_AVATAR + userId + ".jpg";
         if(!TextUtils.isEmpty(imageUrl)){
             ImageLoader.getInstance().displayImage(imageUrl, ((NoticeViewHolder) holder).civClientAvatar, options);
         }
-        String vip = comingVo.getVip();
-        if(!TextUtils.isEmpty(vip)){
-            ((NoticeViewHolder) holder).tvVip.setText("VIP"+vip);
-        }
-        String userName = comingVo.getUserName();
+        int vip = noticeVo.getUserApplevel();
+        ((NoticeViewHolder) holder).tvVip.setText("VIP"+vip);
+        String userName = noticeVo.getUserName();
         if(!TextUtils.isEmpty(userName)){
             ((NoticeViewHolder) holder).tvClientName.setText(userName);
         }
-        String location = comingVo.getLocation();
-        if(!TextUtils.isEmpty(location)){
-            ((NoticeViewHolder) holder).tvClientInfo.setText("到达"+location);
+
+        String shopName = noticeVo.getShopName();
+        if(!TextUtils.isEmpty(shopName)){
+            ((NoticeViewHolder) holder).tvClientInfo.setText(shopName);
         }
-        String roomType = comingVo.getRoomType();
-        int stayDays = comingVo.getStayDays();
-        String checkInDate = comingVo.getCheckInDate();
-        if(!TextUtils.isEmpty(roomType)){
-            ((NoticeViewHolder) holder).tvClientNotice.setText("需要办理入住手续");
-            String orderStr = roomType+"|"+stayDays+"晚|"+checkInDate+"入住";
-//            if(comingVo.getOrderStatus() == 0 || comingVo.getOrderStatus() == 2){
-//                if(OrderUtil.isOrderTimeOut(checkInDate)){
-//                    orderStr = orderStr + " (订单已过期)";
-//                }
-//            }
-            if(OrderUtil.isOrderTimeOut(checkInDate)){
-                orderStr = orderStr + " (订单已过期)";
+        ArrayList<OrderVo> orderList = noticeVo.getOrderForNotice();
+        if(null != orderList && !orderList.isEmpty()){
+            OrderVo orderVo = orderList.get(0);
+            if(null != orderVo){
+                String roomType = orderVo.getOrderRoom();
+                String stayDays = orderVo.getCheckIn();
+                String checkInDate = orderVo.getCheckInDate();
+                if(!TextUtils.isEmpty(roomType)){
+                    ((NoticeViewHolder) holder).tvClientNotice.setText("办理入住");
+                    String orderStr = roomType+"|"+stayDays+"晚|"+checkInDate+"入住";
+                    if(OrderUtil.isOrderTimeOut(checkInDate)){
+                        orderStr = orderStr + " (订单已过期)";
+                    }
+                    ((NoticeViewHolder) holder).tvOrderInfo.setText(orderStr);
+                }else{
+                    ((NoticeViewHolder) holder).tvOrderInfo.setText("无订单信息");
+                }
+                ((NoticeViewHolder) holder).tvTodo.setText("做好迎接");
+                ((NoticeViewHolder) holder).tvTimeInfo.setText(TimeUtil.getChatTime(checkInDate));
             }
-            ((NoticeViewHolder) holder).tvOrderInfo.setText(orderStr);
-        }else{
-            ((NoticeViewHolder) holder).tvOrderInfo.setText("无订单信息");
         }
-        ((NoticeViewHolder) holder).tvTodo.setText("请做好迎接");
-        ((NoticeViewHolder) holder).tvTimeInfo.setText(TimeUtil.getChatTime(comingVo.getArriveTime()));
-        final String phoneNum = comingVo.getPhoneNum();
+        final String phoneNum = noticeVo.getPhone();
         ((NoticeViewHolder) holder).ivDianHua.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -146,7 +146,7 @@ public class LocNotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
     @Override
     public int getItemCount() {
-        return comingList.size();
+        return noticeList.size();
     }
 
     public class NoticeViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{

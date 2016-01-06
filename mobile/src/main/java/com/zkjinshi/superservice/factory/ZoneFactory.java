@@ -108,4 +108,26 @@ public class ZoneFactory {
         return zoneList;
     }
 
+    /**
+     * 构建选择区域
+     * @return
+     */
+    public String getZoneStr(){
+        ArrayList<ZoneBean> zoneList = new ArrayList<ZoneBean>();
+        StringBuffer zoneStr = new StringBuffer();
+        String listStr =  CacheUtil.getInstance().getListStrCache("zoneBeanList");
+        if(!TextUtils.isEmpty(listStr)) {
+            Type listType = new TypeToken<ArrayList<ZoneBean>>() {
+            }.getType();
+            Gson gson = new Gson();
+            zoneList = gson.fromJson(listStr, listType);
+            if(null != zoneList && !zoneList.isEmpty()){
+                for(ZoneBean zoneBean : zoneList){
+                    zoneStr.append(""+zoneBean.getLocid()).append(",");
+                }
+            }
+        }
+        return zoneStr.toString();
+    }
+
 }

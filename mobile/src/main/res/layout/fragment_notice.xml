@@ -7,105 +7,15 @@
         android:id="@+id/empty_layout"
         layout="@layout/empty_layout"
         android:visibility="visible" />
-    <LinearLayout
-        android:layout_alignParentBottom="true"
-        android:layout_width="match_parent"
-        android:gravity="center_vertical"
-        android:visibility="gone"
-        android:layout_height="137dp"
-        android:orientation="horizontal"
-        android:id="@+id/more_layout">
-
-        <FrameLayout
-            android:layout_width="35dp"
-            android:layout_height="137dp"
-            android:layout_gravity="center_vertical">
-
-            <TextView
-                android:layout_gravity="center"
-                android:layout_width="0.5dp"
-                android:background="@color/gray"
-                android:layout_height="match_parent">
-            </TextView>
-
-            <com.zkjinshi.superservice.view.CircleStatusView
-                android:id="@+id/notice_more_cv_status"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_gravity="center"/>
-
-        </FrameLayout>
-
-        <RelativeLayout
-            android:id="@+id/content_layout"
-            android:layout_marginRight="8dp"
-            android:layout_marginTop="6dp"
-            android:layout_marginBottom="6dp"
-            android:background="@drawable/radius_frame_bg"
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="125dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/gray616161"
-                android:layout_marginLeft="15dp"
-                android:layout_marginTop="15dp"
-                android:textSize="16sp"
-                android:text="更多"/>
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/rcv_more"
-                android:layout_width="match_parent"
-                android:layout_centerVertical="true"
-                android:layout_height="50dp"
-                android:cacheColorHint="@android:color/transparent"
-                android:divider="@android:color/transparent"
-                android:fadingEdge="none"
-                android:scrollbars="none"
-                android:scrollingCache="false"
-                android:visibility="visible" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_marginBottom="15dp"
-                android:layout_marginLeft="15dp"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:scaleType="centerInside"
-                    android:layout_gravity="center_vertical"
-                    android:background="@mipmap/ic_clock"/>
-
-                <TextView
-                    android:id="@+id/tv_time_info"
-                    android:layout_marginLeft="10dp"
-                    android:layout_width="wrap_content"
-                    android:textColor="@color/grayB8B8B8"
-                    android:text="刚刚"
-                    android:textSize="14sp"
-                    android:layout_centerVertical="true"
-                    android:layout_height="wrap_content" />
-
-            </LinearLayout>
-
-        </RelativeLayout>
-
-    </LinearLayout>
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/srl_notice"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@id/more_layout">
+        android:layout_height="match_parent">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rcv_notice"
+        android:background="#efefef"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingBottom="60dp"

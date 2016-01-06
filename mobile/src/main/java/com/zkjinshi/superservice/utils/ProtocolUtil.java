@@ -383,4 +383,14 @@ public class ProtocolUtil {
         return ConfigUtil.getInst().getApiDomain()+"goods/get/"+shopId;
     }
 
+    /**
+     * 获得到店通知URL
+     * @param shopId
+     * @param locId
+     * @param token
+     * @return
+     */
+    public static String getNoticeUrl(String shopId,String locId,String token){
+        return  ConfigUtil.getInst().getApiDomain()+"arrive/users/"+shopId+"/"+locId+"/"+token;
+    }
 }

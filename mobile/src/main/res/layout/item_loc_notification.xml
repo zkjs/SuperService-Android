@@ -73,7 +73,7 @@
                 <TextView
                     android:id="@+id/tv_vip"
                     android:textSize="16sp"
-                    android:text="VIP3"
+                    android:text="@null"
                     android:textColor="@color/gray616161"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
@@ -82,7 +82,7 @@
                     android:id="@+id/tv_client_name"
                     android:layout_toRightOf="@+id/tv_vip"
                     android:layout_marginLeft="10dp"
-                    android:text="林先生"
+                    android:text="@null"
                     android:textColor="@color/gray616161"
                     android:textSize="14sp"
                     android:layout_width="wrap_content"
@@ -102,7 +102,7 @@
                     android:id="@+id/tv_client_notice"
                     android:layout_toRightOf="@+id/tv_location_info"
                     android:layout_marginLeft="10dp"
-                    android:text="离酒店200米"
+                    android:text="@null"
                     android:textSize="14sp"
                     android:textColor="@color/grayB8B8B8"
                     android:layout_width="wrap_content"
