@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.zkjinshi.base.config.ConfigUtil;
 import com.zkjinshi.base.util.DeviceUtils;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.adapter.GoodAdapter;
@@ -135,7 +136,7 @@ public class OrderGoodsActivity extends Activity implements AdapterView.OnItemCl
     }
 
     private void getGoodsList(){
-        NetRequest netRequest = new NetRequest(ProtocolUtil.getGoodslistUrl(userVo.getShopId()));
+        NetRequest netRequest = new NetRequest(ProtocolUtil.getGoodListUrl(userVo.getShopId()));
         NetRequestTask netRequestTask = new NetRequestTask(this,netRequest, NetResponse.class);
         netRequestTask.methodType = MethodType.GET;
         netRequestTask.setNetRequestListener(

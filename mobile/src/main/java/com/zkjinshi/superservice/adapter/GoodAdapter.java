@@ -82,7 +82,7 @@ public class GoodAdapter extends BaseAdapter{
         }else{
             holder = (ViewHolder)convertView.getTag();//取出ViewHolder对象
         }
-        holder.name.setText(goodList.get(position).getRoom() + goodList.get(position).getType());
+        holder.name.setText(goodList.get(position).getRoom());
         ImageLoader.getInstance().displayImage(ProtocolUtil.getImgUrl(goodList.get(position).getImgurl()),holder.img);
 
         int id = goodList.get(position).getId();

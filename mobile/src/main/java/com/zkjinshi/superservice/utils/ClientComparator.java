@@ -32,8 +32,8 @@ public class ClientComparator implements Comparator<ClientContactVo> {
 			}
 		}
 
-		String name1 = o1.getFname();
-		String name2 = o2.getFname();
+		String name1 = o1.getUsername();
+		String name2 = o2.getUsername();
 
         if(null != name1 && null != name2){
             if(!name1.equals(name2)){

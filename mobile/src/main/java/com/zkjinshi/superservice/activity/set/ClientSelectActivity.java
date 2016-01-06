@@ -20,6 +20,7 @@ import com.zkjinshi.superservice.bean.ClientBaseBean;
 import com.zkjinshi.superservice.net.ExtNetRequestListener;
 import com.zkjinshi.superservice.net.MethodType;
 import com.zkjinshi.superservice.net.NetRequest;
+
 import com.zkjinshi.superservice.net.NetRequestTask;
 import com.zkjinshi.superservice.net.NetResponse;
 import com.zkjinshi.superservice.utils.CacheUtil;
@@ -93,7 +94,7 @@ public class ClientSelectActivity extends Activity {
                         DialogUtil.getInstance().showCustomToast(ClientSelectActivity.this,
                                 "请确认手机号是否输入正确!", Gravity.CENTER);
                     } else {
-                            getClientDetail(phone);
+                        getClientInfo(phone);
                     }
                     return true;
                 }
@@ -102,15 +103,17 @@ public class ClientSelectActivity extends Activity {
         });
     }
 
-    private void getClientDetail(final String phoneNumber) {
+    private void getClientInfo(final String phoneNumber) {
         NetRequest netRequest = new NetRequest(ProtocolUtil.getClientBasicUrl());
         HashMap<String,String> bizMap = new HashMap<>();
-        bizMap.put("empid", mUserID);
+
+        bizMap.put("salesid", mUserID);
         bizMap.put("token", mToken);
         bizMap.put("shopid", mShopID);
         bizMap.put("phone", phoneNumber);
         bizMap.put("set", "9");
         netRequest.setBizParamMap(bizMap);
+
         NetRequestTask netRequestTask = new NetRequestTask(this, netRequest, NetResponse.class);
         netRequestTask.methodType = MethodType.PUSH;
         netRequestTask.setNetRequestListener(new ExtNetRequestListener(this) {
@@ -118,6 +121,7 @@ public class ClientSelectActivity extends Activity {
             public void onNetworkRequestError(int errorCode, String errorMessage) {
                 Log.i(TAG, "errorCode:" + errorCode);
                 Log.i(TAG, "errorMessage:" + errorMessage);
+
                 //网络请求异常
                 DialogUtil.getInstance().cancelProgressDialog();
                 ClientSelectActivity.this.finish();
@@ -132,15 +136,14 @@ public class ClientSelectActivity extends Activity {
             @Override
             public void onNetworkResponseSucceed(NetResponse result) {
                 super.onNetworkResponseSucceed(result);
-
                 Log.i(TAG, "result.rawResult:" + result.rawResult);
                 DialogUtil.getInstance().cancelProgressDialog();
                 String jsonResult = result.rawResult;
+
                 if (jsonResult.contains("set") && jsonResult.contains("err") && jsonResult.trim().contains("err")) {
                     try {
                         JSONObject jsonObject = new JSONObject(jsonResult);
                         int errCode = jsonObject.getInt("err");
-
                         //验证没通过
                         if (400 == errCode) {
                             DialogUtil.getInstance().showToast(ClientSelectActivity.this,

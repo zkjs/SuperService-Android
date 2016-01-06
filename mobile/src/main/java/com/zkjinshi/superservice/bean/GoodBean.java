@@ -11,7 +11,7 @@ import java.io.Serializable;
  */
 public class GoodBean implements Serializable {
 
-    private int id;
+    private int    id;
     private String room;
     private String type;
     private String imgurl;

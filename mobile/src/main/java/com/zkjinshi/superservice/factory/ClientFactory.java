@@ -282,15 +282,15 @@ public class ClientFactory {
 
     public ClientVo convertClientBaseBean2ClientVO(ClientBaseBean clientBean) {
         ClientVo clientVo = new ClientVo();
-        clientVo.setSalesid(clientBean.getSalesid());
-        clientVo.setUser_level(clientBean.getUser_level());
-        clientVo.setLevel_desc(clientBean.getLevel_desc());
-        clientVo.setCard_no(clientBean.getCard_no());
+        clientVo.setSalesid(clientBean.getFuid());
+//        clientVo.setUser_level(clientBean.getUser_level());
+//        clientVo.setLevel_desc(clientBean.getLevel_desc());
+//        clientVo.setCard_no(clientBean.getCard_no());
         clientVo.setUsername(clientBean.getUsername());
         clientVo.setPhone(clientBean.getPhone());
         clientVo.setCompany(clientBean.getCompany());
         clientVo.setPosition(clientBean.getPosition());
-        clientVo.setIs_bill(clientBean.getIs_bill());
+//        clientVo.setIs_bill(clientBean.getIs_bill());
         clientVo.setSex(getSexType(clientBean.getSex()));
         clientVo.setOrder_count(clientBean.getOrder_count());
         if(null != clientBean.getTags() && clientBean.getTags().size() > 0){
@@ -316,9 +316,9 @@ public class ClientFactory {
     public List<ClientContactVo> buildSortContactList(List<ClientContactVo> contactsList) {
 
         for(ClientContactVo contact : contactsList){
-            String name = contact.getFname();
+            String name = contact.getUsername();
             if(TextUtils.isEmpty(name)){
-                name = contact.getFuid();
+                name = contact.getUserid();
             }
 
             if(!TextUtils.isEmpty(name)){

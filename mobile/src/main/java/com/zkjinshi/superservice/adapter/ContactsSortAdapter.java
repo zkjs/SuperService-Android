@@ -96,7 +96,7 @@ public class ContactsSortAdapter extends ServiceBaseAdapter<ClientContactVo> imp
             holder.tvLetter.setVisibility(View.GONE);
         }
 
-        String clientID = contact.getFuid();
+        String clientID = contact.getUserid();
 //        int bgDrawableRes =  ClientDBUtil.getInstance().queryBgDrawableResByClientID(clientID);
 //        if(bgDrawableRes != 0){
 //            contact.setBgDrawableRes(bgDrawableRes);
@@ -134,7 +134,7 @@ public class ContactsSortAdapter extends ServiceBaseAdapter<ClientContactVo> imp
         });
 
         //显示客户名称
-        String clientName = contact.getFname();
+        String clientName = contact.getUsername();
         if(!TextUtils.isEmpty(clientName)){
             holder.tvContactAvatar.setText(clientName.substring(0, 1));
             //去除问号
@@ -165,10 +165,10 @@ public class ContactsSortAdapter extends ServiceBaseAdapter<ClientContactVo> imp
             @Override
             public void onClick(View v) {
 
-                String phoneNumber  = contact.getPhone();
-                if(!TextUtils.isEmpty(phoneNumber)) {
+                String userID  = contact.getUserid();
+                if(!TextUtils.isEmpty(userID)) {
                     Intent clientDetail = new Intent(mActivity, ClientDetailActivity.class);
-                    clientDetail.putExtra("phone_number", phoneNumber);
+                    clientDetail.putExtra("user_id", userID);
                     mActivity.startActivity(clientDetail);
                 } else {
                     DialogUtil.getInstance().showCustomToast(mActivity, "电话号码为空！", Gravity.CENTER);

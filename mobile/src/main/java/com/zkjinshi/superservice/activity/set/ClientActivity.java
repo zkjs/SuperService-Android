@@ -146,8 +146,8 @@ public class ClientActivity extends AppCompatActivity{
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 ClientContactVo contact = mAllContactsList.get(position);
-                final String clientId = contact.getFuid();
-                final String clientName = contact.getFname();
+                final String clientId = contact.getUserid();
+                final String clientName = contact.getUsername();
                 final String clientPhone = contact.getPhone();
 
                 if (mChooseOrderPerson) {
@@ -172,7 +172,6 @@ public class ClientActivity extends AppCompatActivity{
 
                             dialog.dismiss();
                             ClientActivity.this.setResult(RESULT_OK, data);
-
                             ClientActivity.this.finish();
                             overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                         }

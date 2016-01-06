@@ -59,25 +59,6 @@ public class ProtocolUtil {
         return ConfigUtil.getInst().getHttpDomain()+"semp/semplocation";
     }
 
-
-
-    /**
-     * 获取商品列表
-     * @return
-     */
-    public static String getGoodslistUrl(String shopid){
-        return ConfigUtil.getInst().getHttpDomain()+"semp/goods?shopid="+shopid;
-    }
-
-//    /**
-//     * TODO:
-//     * 获取订单详情
-//     * @return
-//     */
-//    public static String getSempShowUrl(){
-//        return ConfigUtil.getInst().getHttpDomain()+"semp/show";
-//    }
-
     /**
      * 订单管理 获取订单详情 超级接口
      * @return
@@ -91,16 +72,7 @@ public class ProtocolUtil {
      * @return
      */
     public static String getClientBasicUrl(){
-
         return ConfigUtil.getInst().getHttpDomain()+"semp/sempsuforphone";
-    }
-
-    /**
-     * 会员信息 查询客人详细信息 vip+用户信息+偏好
-     * @return
-     */
-    public static String getClientDetailUrl(){
-        return ConfigUtil.getInst().getHttpDomain()+"semp/seevipuser";
     }
 
     /**
@@ -293,14 +265,6 @@ public class ProtocolUtil {
         return ConfigUtil.getInst().getHttpDomain()+"invitation/makeurl";
     }
 
-//    /**
-//     * POST 根据订单号显示评论
-//     * @return
-//     */
-//    public static String getCommentShow(){
-//        return ConfigUtil.getInst().getHttpDomain()+"comment/show";
-//    }
-
     /**
      * POST
      * @return
@@ -323,16 +287,6 @@ public class ProtocolUtil {
      */
     public static String getUserInfoUrl(){
         return  ConfigUtil.getInst().getHttpDomain()+"v10/user";
-    }
-
-    /**
-     * TODO：
-     * 获取商品列表 URL
-     * @param shopId
-     * @return
-     */
-    public static String getGoodListUrl(String shopId){
-        return ConfigUtil.getInst().getHttpDomain()+"order/goods?shopid="+shopId+"&page=1";
     }
 
     /**
@@ -360,23 +314,6 @@ public class ProtocolUtil {
     }
 
     /** 订单操作相关 */
-//  旧的api接口
-//    /**
-//     * 订单处理1,商家锁定/增加订单
-//     * @return
-//     */
-//    public static String getAddOrderUrl(){
-//        return ConfigUtil.getInst().getHttpDomain()+"order/add";
-//    }
-//
-//    /**
-//     * 订单修改/确认/改变状态
-//     * @return
-//     */
-//    public static String getUpdateOrderUrl(){
-//        return ConfigUtil.getInst().getHttpDomain()+"order/update2";
-//    }
-
     /**
      * 订单处理1,商家锁定/增加订单
      * Method: POST
@@ -427,6 +364,23 @@ public class ProtocolUtil {
      */
     public static String getCommentShow(String orderNO, int page, int pageSize){
         return ConfigUtil.getInst().getApiDomain()+"order/evaluation/get/"+orderNO+"/"+page+"/"+pageSize;
+    }
+
+    /**
+     * 查询用户(服务员)简单信息
+     * @return
+     */
+    public static String getClientInfoUrl() {
+        return ConfigUtil.getInst().getHttpDomain()+"v10/user";
+    }
+
+    /**
+     * 获取商品列表 URL
+     * @param shopId
+     * @return
+     */
+    public static String getGoodListUrl(String shopId){
+        return ConfigUtil.getInst().getApiDomain()+"goods/get/"+shopId;
     }
 
 }
