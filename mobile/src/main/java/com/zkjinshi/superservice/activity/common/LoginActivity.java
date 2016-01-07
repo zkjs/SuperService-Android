@@ -70,14 +70,14 @@ public class LoginActivity extends Activity implements VerifyPhoneControler.Succ
         VerifyPhoneControler.getInstance().setSuccessCallBack(this);
 
         //测试跳转用的
-       /* inputEt.setText("");
-        loginBtn.setEnabled(true);
-        loginBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                verrifySuccess();
-            }
-        });*/
+//        inputEt.setText("");
+//        loginBtn.setEnabled(true);
+//        loginBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                verrifySuccess();
+//            }
+//        });
     }
 
     private void initListener() {

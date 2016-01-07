@@ -123,7 +123,7 @@ public class OrderPayActivity  extends Activity implements AdapterView.OnItemCli
 
         userInfoTv.setText("");
         loadPayList();
-        loadUserInfo();
+        //loadUserInfo();
     }
 
     private void initListener() {
