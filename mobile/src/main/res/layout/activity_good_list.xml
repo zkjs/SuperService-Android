@@ -5,66 +5,40 @@
     android:layout_height="match_parent"
     android:background="#EEEEEE">
 
-    <include layout="@layout/title_toolbar" />
-
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/srl_container"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_weight="1"
-        android:layout_height="0dp">
+        android:layout_height="44dp"
+        android:id="@+id/title_layout"
+        android:background="#03a9f4">
+        <ImageView
+            android:id="@+id/header_back_iv"
+            style="@style/backBtn"/>
+        <TextView
+            android:id="@+id/header_title_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="选择房型"
+            android:textSize="16sp"
+            android:textColor="#ffffff"
+            android:layout_centerInParent="true"/>
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rv_room_list"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:cacheColorHint="#000000"
-            android:divider="#e3e3e3"
-            android:dividerHeight="0.0dp"
-            android:fadingEdge="none"
-            android:scrollbars="none"
-            android:scrollingCache="false"
-            android:visibility="visible"
-            />
+    </RelativeLayout>
 
-    </android.support.v4.widget.SwipeRefreshLayout>
+    <ListView
+        android:id="@+id/good_list_list_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="none"
+        android:listSelector="@android:color/transparent"
+        android:divider="@android:color/transparent"
+        android:cacheColorHint="@android:color/transparent"
+        android:background="#EEEEEE"/>
 
     <LinearLayout
+        android:id="@+id/empty_linearlayout"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:orientation="horizontal">
-
-        <RelativeLayout
-            android:id="@+id/rl_cancel"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@drawable/bg_rl_change_department"
-            android:clickable="true"
-            android:gravity="center">
-
-            <ImageView
-                android:background="@mipmap/ic_quxiao_b"
-                android:layout_width="15dp"
-                android:layout_height="15dp"/>
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/rl_confirm"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@drawable/bg_rl_delete"
-            android:clickable="true"
-            android:gravity="center">
-
-            <ImageView
-                android:background="@mipmap/ic_right"
-                android:layout_width="22dp"
-                android:layout_height="15dp"/>
-
-        </RelativeLayout>
-
+        android:layout_height="match_parent">
+        <include layout="@layout/empty_layout" />
     </LinearLayout>
 
 </LinearLayout>

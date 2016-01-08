@@ -21,7 +21,6 @@ import com.zkjinshi.base.util.TimeUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.adapter.PayAdapter;
 import com.zkjinshi.superservice.bean.NoticeBean;
-import com.zkjinshi.superservice.bean.OrderDetailBean;
 import com.zkjinshi.superservice.bean.PayBean;
 import com.zkjinshi.superservice.net.ExtNetRequestListener;
 import com.zkjinshi.superservice.net.MethodType;
@@ -31,6 +30,7 @@ import com.zkjinshi.superservice.net.NetResponse;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.view.CircleImageView;
+import com.zkjinshi.superservice.vo.OrderDetailForDisplay;
 
 import org.w3c.dom.Text;
 
@@ -49,7 +49,7 @@ import java.util.HashMap;
 public class OrderPayActivity  extends Activity implements AdapterView.OnItemClickListener{
     private final static String TAG = OrderPayActivity.class.getSimpleName();
 
-    private OrderDetailBean orderDetailBean;
+    private OrderDetailForDisplay orderDetailForDisplay;
 
     private TextView usernameTv;
     private TextView userInfoTv;
@@ -71,9 +71,9 @@ public class OrderPayActivity  extends Activity implements AdapterView.OnItemCli
        // this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE | WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         setContentView(R.layout.activity_order_pay);
-        orderDetailBean = (OrderDetailBean)getIntent().getSerializableExtra("orderDetailBean");
+        orderDetailForDisplay = (OrderDetailForDisplay)getIntent().getSerializableExtra("orderDetailForDisplay");
 
-        if(orderDetailBean != null){
+        if(orderDetailForDisplay != null){
             initView();
             initData();
             initListener();
@@ -94,24 +94,24 @@ public class OrderPayActivity  extends Activity implements AdapterView.OnItemCli
 
     private void initData() {
 
-        selelectId = orderDetailBean.getPaytype();
-        String userName = orderDetailBean.getUsername();
+        selelectId = orderDetailForDisplay.getPaytype();
+        String userName = orderDetailForDisplay.getUsername();
         if(TextUtils.isEmpty(userName)){
-            userName = orderDetailBean.getUserid();
+            userName = orderDetailForDisplay.getUserid();
         }
         usernameTv.setText(userName);
 
-        ImageLoader.getInstance().displayImage(ProtocolUtil.getAvatarUrl(orderDetailBean.getUserid()), avatarCiv);
+        ImageLoader.getInstance().displayImage(ProtocolUtil.getAvatarUrl(orderDetailForDisplay.getUserid()), avatarCiv);
 
         try{
-            SimpleDateFormat mSimpleFormat  = new SimpleDateFormat("yyyy-MM-dd");
+            SimpleDateFormat mSimpleFormat  = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             SimpleDateFormat mChineseFormat = new SimpleDateFormat("MM/dd");
-            Date arrivalDate =  mSimpleFormat.parse(orderDetailBean.getArrivaldate());
-            Date departureDate =  mSimpleFormat.parse(orderDetailBean.getLeavedate());
+            Date arrivalDate =  mSimpleFormat.parse(orderDetailForDisplay.getArrivaldate());
+            Date departureDate =  mSimpleFormat.parse(orderDetailForDisplay.getLeavedate());
             String arrivalStr = mChineseFormat.format(arrivalDate);
             String departureStr = mChineseFormat.format(departureDate);
-            String roomType = orderDetailBean.getRoomtype();
-            int roomNum = orderDetailBean.getRoomcount();
+            String roomType = orderDetailForDisplay.getRoomtype();
+            int roomNum = orderDetailForDisplay.getRoomcount();
             int dayNum = TimeUtil.daysBetween(arrivalDate, departureDate);
             orderInfoTv.setText(roomType+"×"+roomNum+"|"+dayNum+"晚|"+arrivalStr+"-"+departureStr);
 
@@ -119,7 +119,12 @@ public class OrderPayActivity  extends Activity implements AdapterView.OnItemCli
             Log.e(TAG,e.getMessage());
         }
 
-        priceEt.setText(orderDetailBean.getRoomprice()+"");
+        if(orderDetailForDisplay.getRoomprice() != null){
+            priceEt.setText(orderDetailForDisplay.getRoomprice()+"");
+        }else{
+            priceEt.setText("0.0");
+        }
+
 
         userInfoTv.setText("");
         loadPayList();
@@ -171,8 +176,8 @@ public class OrderPayActivity  extends Activity implements AdapterView.OnItemCli
         HashMap<String,String> bizMap = new HashMap<String,String>();
         bizMap.put("salesid", CacheUtil.getInstance().getUserId());
         bizMap.put("token", CacheUtil.getInstance().getToken());
-        bizMap.put("uid", orderDetailBean.getUserid());
-        bizMap.put("shopid", orderDetailBean.getShopid());
+        bizMap.put("uid", orderDetailForDisplay.getUserid());
+        bizMap.put("shopid", orderDetailForDisplay.getShopid());
         netRequest.setBizParamMap(bizMap);
         NetRequestTask netRequestTask = new NetRequestTask(this,netRequest, NetResponse.class);
         netRequestTask.methodType = MethodType.PUSH;
@@ -238,7 +243,7 @@ public class OrderPayActivity  extends Activity implements AdapterView.OnItemCli
 //        HashMap<String,String> bizMap = new HashMap<String,String>();
 //        bizMap.put("salesid", CacheUtil.getInstance().getUserId());
 //        bizMap.put("token", CacheUtil.getInstance().getToken());
-//        bizMap.put("shopid", orderDetailBean.getShopid());
+//        bizMap.put("shopid", orderDetailForDisplay.getShopid());
 //        netRequest.setBizParamMap(bizMap);
 //        NetRequestTask netRequestTask = new NetRequestTask(this, netRequest, NetResponse.class);
 //        netRequestTask.methodType = MethodType.PUSH;

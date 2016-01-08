@@ -484,11 +484,11 @@ public class OrderDealActivity extends Activity {
                     return;
                 }
 
-                Intent intent = new Intent(OrderDealActivity.this, OrderGoodsActivity.class);
-                intent.putExtra("roomNum", mOrderDetail.getRoomcount());
-                intent.putExtra("selelectId", mOrderDetail.getProductid());
-                startActivityForResult(intent, GOOD_REQUEST_CODE);
-                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+//                Intent intent = new Intent(OrderDealActivity.this, OrderGoodsActivity.class);
+//                intent.putExtra("roomNum", mOrderDetail.getRoomcount());
+//                intent.putExtra("selelectId", mOrderDetail.getProductid());
+//                startActivityForResult(intent, GOOD_REQUEST_CODE);
+//                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
         });
 

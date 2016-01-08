@@ -20,6 +20,7 @@ import com.zkjinshi.base.util.DisplayUtil;
 import com.zkjinshi.base.util.IntentUtil;
 import com.zkjinshi.base.util.TimeUtil;
 import com.zkjinshi.superservice.R;
+import com.zkjinshi.superservice.activity.order.HotelDealActivity;
 import com.zkjinshi.superservice.activity.order.OrderDealActivity;
 import com.zkjinshi.superservice.bean.OrderBean;
 import com.zkjinshi.superservice.utils.OrderUtil;
@@ -255,8 +256,8 @@ public class OrderAdapter extends RecyclerView.Adapter {
             OrderBean orderBean = dataList.get(position);
             switch (view.getId()){
                 case R.id.content_layout:
-                    Intent intent = new Intent(context, OrderDealActivity.class);
-                    intent.putExtra("reservation_no", orderBean.getOrderno());
+                    Intent intent = new Intent(context, HotelDealActivity.class);
+                    intent.putExtra("orderNo", orderBean.getOrderno());
                     context.startActivity(intent);
                     ((Activity)context).overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                     break;

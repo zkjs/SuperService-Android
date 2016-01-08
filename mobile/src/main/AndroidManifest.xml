@@ -200,10 +200,10 @@
         </activity>
 
         <activity
-            android:name=".activity.order.OrderGoodsActivity"
+            android:name=".activity.order.HotelDealActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar">
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         </activity>
 
         <activity
@@ -307,6 +307,12 @@
 
         <activity
             android:name=".activity.set.SettingActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar">
+        </activity>
+        <activity
+            android:name=".activity.order.AddRemarkActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar">
