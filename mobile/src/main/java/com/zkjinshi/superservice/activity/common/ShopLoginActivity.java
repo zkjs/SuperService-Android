@@ -15,6 +15,7 @@ import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.set.TeamContactsController;
 import com.zkjinshi.superservice.bean.AdminLoginBean;
 import com.zkjinshi.superservice.factory.UserFactory;
+import com.zkjinshi.superservice.manager.YunBaSubscribeManager;
 import com.zkjinshi.superservice.manager.ZoneManager;
 import com.zkjinshi.superservice.net.ExtNetRequestListener;
 import com.zkjinshi.superservice.net.NetResponse;
@@ -119,7 +120,12 @@ public class ShopLoginActivity extends Activity{
                         CacheUtil.getInstance().setShopFullName(adminLoginBean.getFullname());
                         CacheUtil.getInstance().setLoginIdentity(IdentityType.BUSINESS);
                         CacheUtil.getInstance().setPassword(password);
-                        CacheUtil.getInstance().setAreaInfo(adminLoginBean.getLocid());
+                        String locIds = adminLoginBean.getLocid();
+                        if(!TextUtils.isEmpty(locIds)){
+                            CacheUtil.getInstance().setAreaInfo(locIds);
+                            String[] zoneArray = locIds.split(",");
+                            YunBaSubscribeManager.getInstance().subscribe(zoneArray);
+                        }
                         CacheUtil.getInstance().setRoleID(adminLoginBean.getRoleid());
                         LoginController.getInstance().loginHxUser();
                         String userID = CacheUtil.getInstance().getUserId();

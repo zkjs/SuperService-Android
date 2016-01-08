@@ -17,6 +17,7 @@ import com.zkjinshi.superservice.activity.set.TeamContactsController;
 import com.zkjinshi.superservice.bean.AdminLoginBean;
 import com.zkjinshi.superservice.bean.SempLoginBean;
 import com.zkjinshi.superservice.factory.UserFactory;
+import com.zkjinshi.superservice.manager.YunBaSubscribeManager;
 import com.zkjinshi.superservice.manager.ZoneManager;
 import com.zkjinshi.superservice.net.ExtNetRequestListener;
 import com.zkjinshi.superservice.net.NetResponse;
@@ -111,7 +112,12 @@ public class SplashActivity extends Activity{
                             CacheUtil.getInstance().setLoginIdentity(IdentityType.BUSINESS);
                             CacheUtil.getInstance().setPassword(CacheUtil.getInstance().getPassword());
                             CacheUtil.getInstance().setLogin(true);
-                            CacheUtil.getInstance().setAreaInfo(adminLoginBean.getLocid());
+                            String locIds = adminLoginBean.getLocid();
+                            if(!TextUtils.isEmpty(locIds)){
+                                CacheUtil.getInstance().setAreaInfo(locIds);
+                                String[] zoneArray = locIds.split(",");
+                                YunBaSubscribeManager.getInstance().subscribe(zoneArray);
+                            }
                             LoginController.getInstance().loginHxUser();
                             String userID = CacheUtil.getInstance().getUserId();
                             String token = CacheUtil.getInstance().getToken();
@@ -164,6 +170,12 @@ public class SplashActivity extends Activity{
                         CacheUtil.getInstance().setShopID(sempLoginbean.getShopid());
                         CacheUtil.getInstance().setShopFullName(sempLoginbean.getFullname());
                         CacheUtil.getInstance().setLoginIdentity(IdentityType.WAITER);
+                        String locIds = sempLoginbean.getLocid();
+                        if(!TextUtils.isEmpty(locIds)){
+                            CacheUtil.getInstance().setAreaInfo(locIds);
+                            String[] zoneArray = locIds.split(",");
+                            YunBaSubscribeManager.getInstance().subscribe(zoneArray);
+                        }
                         LoginController.getInstance().loginHxUser();
                         String userID = CacheUtil.getInstance().getUserId();
                         String token  = CacheUtil.getInstance().getToken();

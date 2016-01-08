@@ -17,7 +17,6 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.adapter.LocNotificationAdapter;
-import com.zkjinshi.superservice.factory.ZoneFactory;
 import com.zkjinshi.superservice.net.ExtNetRequestListener;
 import com.zkjinshi.superservice.net.MethodType;
 import com.zkjinshi.superservice.net.NetRequest;
@@ -119,7 +118,7 @@ public class NoticeFragment extends Fragment{
      * 请求到店通知
      */
     private void requestNoticesTask(){
-        String locIds = ZoneFactory.getInstance().getZoneStr();
+        String locIds = CacheUtil.getInstance().getAreaInfo();
         String token = CacheUtil.getInstance().getToken();
         String shopId = CacheUtil.getInstance().getShopID();
         String noticesUrl = ProtocolUtil.getNoticeUrl(shopId,locIds,token);

@@ -3,7 +3,7 @@ package com.zkjinshi.superservice.manager;
 import android.util.Log;
 
 import com.zkjinshi.base.util.BaseContext;
-import com.zkjinshi.superservice.factory.ZoneFactory;
+import com.zkjinshi.superservice.utils.CacheUtil;
 
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
@@ -32,29 +32,54 @@ public class YunBaSubscribeManager {
         return instance;
     }
 
+    public void subscribe(String[] locIds){
+        YunBaManager.subscribe(BaseContext.getInstance().getContext(),locIds,
+                new IMqttActionListener() {
+                    @Override
+                    public void onSuccess(IMqttToken asyncActionToken) {
+                        Log.i(TAG,"订阅云巴成功");
+                    }
+
+                    @Override
+                    public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
+                        if (exception instanceof MqttException) {
+                            MqttException ex = (MqttException)exception;
+                            String msg =  "Subscribe failed with error code : " + ex.getReasonCode();
+                            Log.i(TAG,"订阅云巴失败:"+msg);
+                        }
+                    }
+                }
+        );
+    }
+
     /**
      * 取消云巴订阅
      */
     public void unSubscribe(){
-        String[] zoneArray = ZoneFactory.getInstance().buildZoneArray();
-        if(null != zoneArray && zoneArray.length > 0){
-            YunBaManager.unsubscribe(BaseContext.getInstance().getContext(),zoneArray,
-                    new IMqttActionListener() {
-                        @Override
-                        public void onSuccess(IMqttToken asyncActionToken) {
-                            Log.i(TAG,"取消订阅云巴成功");
-                        }
+        try {
+            String locIds = CacheUtil.getInstance().getAreaInfo();
+            String[] zoneArray = locIds.split(",");
+            if(null != zoneArray && zoneArray.length > 0){
+                YunBaManager.unsubscribe(BaseContext.getInstance().getContext(),zoneArray,
+                        new IMqttActionListener() {
+                            @Override
+                            public void onSuccess(IMqttToken asyncActionToken) {
+                                Log.i(TAG,"取消订阅云巴成功");
+                            }
 
-                        @Override
-                        public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-                            if (exception instanceof MqttException) {
-                                MqttException ex = (MqttException)exception;
-                                String msg =  "Subscribe failed with error code : " + ex.getReasonCode();
-                                Log.i(TAG,"取消订阅云巴失败:"+msg);
+                            @Override
+                            public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
+                                if (exception instanceof MqttException) {
+                                    MqttException ex = (MqttException)exception;
+                                    String msg =  "Subscribe failed with error code : " + ex.getReasonCode();
+                                    Log.i(TAG,"取消订阅云巴失败:"+msg);
+                                }
                             }
                         }
-                    }
-            );
+                );
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

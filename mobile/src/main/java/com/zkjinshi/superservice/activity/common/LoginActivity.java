@@ -17,6 +17,7 @@ import com.zkjinshi.superservice.activity.set.ClientController;
 import com.zkjinshi.superservice.activity.set.TeamContactsController;
 import com.zkjinshi.superservice.bean.SempLoginBean;
 import com.zkjinshi.superservice.factory.UserFactory;
+import com.zkjinshi.superservice.manager.YunBaSubscribeManager;
 import com.zkjinshi.superservice.manager.ZoneManager;
 import com.zkjinshi.superservice.net.ExtNetRequestListener;
 import com.zkjinshi.superservice.net.NetResponse;
@@ -129,6 +130,12 @@ public class LoginActivity extends Activity implements VerifyPhoneControler.Succ
                     CacheUtil.getInstance().setShopFullName(sempLoginbean.getFullname());
                     CacheUtil.getInstance().setLoginIdentity(IdentityType.WAITER);
                     CacheUtil.getInstance().setRoleID(sempLoginbean.getRoleid());
+                    String locId = sempLoginbean.getLocid();
+                    if(!TextUtils.isEmpty(locId)){
+                        CacheUtil.getInstance().setAreaInfo(locId);
+                        String[] zoneArray = locId.split(",");
+                        YunBaSubscribeManager.getInstance().subscribe(zoneArray);
+                    }
                     LoginController.getInstance().loginHxUser();
                     String userID = CacheUtil.getInstance().getUserId();
                     String token  = CacheUtil.getInstance().getToken();

@@ -19,6 +19,7 @@ import com.zkjinshi.superservice.adapter.ZoneAdapter;
 import com.zkjinshi.superservice.bean.BaseBean;
 import com.zkjinshi.superservice.bean.ZoneBean;
 
+import com.zkjinshi.superservice.manager.YunBaSubscribeManager;
 import com.zkjinshi.superservice.net.ExtNetRequestListener;
 import com.zkjinshi.superservice.net.MethodType;
 import com.zkjinshi.superservice.net.NetRequest;
@@ -244,23 +245,7 @@ public class ZoneActivity extends Activity {
      * 订阅区域
      */
     public void subscribeLocs(){
-        YunBaManager.subscribe(getApplicationContext(),zoneAdapter.getLocIds(),
-                new IMqttActionListener() {
-                    @Override
-                    public void onSuccess(IMqttToken asyncActionToken) {
-                        Log.i(TAG,"订阅云巴成功");
-                    }
-
-                    @Override
-                    public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-                        if (exception instanceof MqttException) {
-                            MqttException ex = (MqttException)exception;
-                            String msg =  "Subscribe failed with error code : " + ex.getReasonCode();
-                            Log.i(TAG,"订阅云巴失败:"+msg);
-                        }
-                    }
-                }
-        );
+        YunBaSubscribeManager.getInstance().subscribe(zoneAdapter.getLocIds());
     }
 
     /*

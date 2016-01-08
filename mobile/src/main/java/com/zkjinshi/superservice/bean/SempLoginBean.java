@@ -8,16 +8,21 @@ package com.zkjinshi.superservice.bean;
  * 版权所有
  */
 public class SempLoginBean extends BaseBean {
-//    "set": true,
-//    "salesid": "5577ecee5acc7",  服务员id,tokenid
-//    "shopid": 120, 商家id
-//    "phone": 19912345678, 手机号
-//    "url":"uploads/user/55.....j", 没有头像时 null 是不是首次登陆的判断依据.
-//    "fullname": "长沙芙蓉国温德姆至尊豪廷大酒店",  商家全称
-//    "token": "kRjaw5EW7WeBHcha",  token
-//    "name": "李大钊",
-//    "roleid": 4  角色id
 
+    /**
+     "set": true,
+     "locid": "1,2,3,6,8,11,14,16,26",
+     "salesid": "55d67f785e6cb",
+     "shopid": 120,
+     "phone": 15919805819,
+     "url": "uploads/users/55d67f785e6cb.jpg",
+     "fullname": "长沙豪廷大酒店",
+     "token": "5XZLU4-3fhk1c9TF",
+     "name": "张仙华",
+     "roleid": 2
+     */
+
+    private String locid;
     private String salesid;
     private String shopid;
     private String phone;
@@ -100,5 +105,11 @@ public class SempLoginBean extends BaseBean {
         this.roleid = roleid;
     }
 
+    public String getLocid() {
+        return locid;
+    }
 
+    public void setLocid(String locid) {
+        this.locid = locid;
+    }
 }
