@@ -218,6 +218,12 @@ public class VideoCallActivity extends CallActivity implements View.OnClickListe
                 }
             });
         }
+
+        // 默认关闭免提
+        handsFreeImage.setImageResource(R.mipmap.ic_speaker_normal);
+        closeSpeakerOn();
+        isHandsfreeState = false;
+
     }
 
     /**
@@ -318,10 +324,8 @@ public class VideoCallActivity extends CallActivity implements View.OnClickListe
                                         soundPool.stop(streamID);
                                 } catch (Exception e) {
                                 }
-                                openSpeakerOn();
                                 ((TextView)findViewById(R.id.tv_is_p2p)).setText(EMChatManager.getInstance().isDirectCall()
                                         ? R.string.direct_call : R.string.relay_call);
-                                handsFreeImage.setImageResource(R.mipmap.ic_speaker_on);
                                 isHandsfreeState = true;
                                 chronometer.setVisibility(View.VISIBLE);
                                 chronometer.setBase(SystemClock.elapsedRealtime());
@@ -446,9 +450,6 @@ public class VideoCallActivity extends CallActivity implements View.OnClickListe
                         callStateTextView.setText("正在接听...");
                         EMChatManager.getInstance().answerCall();
                         cameraHelper.setStartFlag(true);
-
-                        openSpeakerOn();
-                        handsFreeImage.setImageResource(R.mipmap.ic_speaker_on);
                         isAnswered = true;
                         isHandsfreeState = true;
                     } catch (Exception e) {
