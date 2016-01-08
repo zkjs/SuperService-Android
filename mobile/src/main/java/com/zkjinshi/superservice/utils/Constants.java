@@ -38,7 +38,7 @@ public class Constants {
     public final static int PROTOCAL_SUCCESS = 0;
     public final static int PROTOCAL_FAILED  = 1;
 
-    public final static String HTTP_URL = ConfigUtil.getInst().getHttpDomain();
+    public final static String HTTP_URL = ConfigUtil.getInst().getPhpDomain();
 
     //头像前缀
     public final static String GET_USER_AVATAR    = HTTP_URL + "uploads/users/";
