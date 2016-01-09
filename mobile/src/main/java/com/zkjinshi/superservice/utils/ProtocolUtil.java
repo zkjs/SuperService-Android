@@ -340,6 +340,16 @@ public class ProtocolUtil {
         return ConfigUtil.getInst().getJavaDomain()+"order/update";
     }
 
+    /*
+    确认订单
+    RequestMethod: POST
+    INPUT： orderno(string)，status(int)
+    OUTPUT：{"result":true,"orderno":"H14513583275501780"}
+     */
+    public static String getConfirmOrderUrl(){
+        return ConfigUtil.getInst().getJavaDomain()+"order/confirm";
+    }
+
     /**
      * 订单管理 获取订单列表
      * @return

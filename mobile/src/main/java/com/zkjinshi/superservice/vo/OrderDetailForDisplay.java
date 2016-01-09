@@ -2,6 +2,7 @@ package com.zkjinshi.superservice.vo;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * Created by dujiande on 2015/12/29.
@@ -104,6 +105,26 @@ public class OrderDetailForDisplay implements Serializable {
      * 订单状态
      */
     private String orderstatus;
+
+    private Date created;
+
+    private String priviledgename;  //特权名称
+
+    public Date getCreated() {
+        return created;
+    }
+
+    public void setCreated(Date created) {
+        this.created = created;
+    }
+
+    public String getPriviledgename() {
+        return priviledgename;
+    }
+
+    public void setPriviledgename(String priviledgename) {
+        this.priviledgename = priviledgename;
+    }
 
     public String getUsername() {
         return username;
