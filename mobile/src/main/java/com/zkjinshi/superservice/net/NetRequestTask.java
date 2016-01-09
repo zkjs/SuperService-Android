@@ -8,6 +8,8 @@ import android.widget.Toast;
 
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
+import com.zkjinshi.superservice.utils.CacheUtil;
+import com.zkjinshi.superservice.utils.ProtocolUtil;
 
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.conn.ConnectTimeoutException;
@@ -72,7 +74,11 @@ public class NetRequestTask extends AsyncTask<NetRequest, Void, NetResponse> {
 
         try {
             if (isShowLoadingDialog) {
-                DialogUtil.getInstance().showProgressDialog(context);
+                String imageUrl = null;
+                if(CacheUtil.getInstance().isLogin()){
+                    imageUrl = ProtocolUtil.getAvatarUrl(CacheUtil.getInstance().getUserId());
+                }
+                DialogUtil.getInstance().showAvatarProgressDialog(context,imageUrl);
             }
         } catch (Exception e) {
             e.printStackTrace();

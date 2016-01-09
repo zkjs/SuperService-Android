@@ -1,13 +1,15 @@
 package com.zkjinshi.base.util;
 
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Toast;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.zkjinshi.base.R;
+import com.zkjinshi.base.view.CircleImageView;
 
 /**
  * 对话框工具类
@@ -17,8 +19,6 @@ import com.zkjinshi.base.R;
  * 版权所有
  */
 public class DialogUtil {
-
-	private static Dialog loadingDialog;
 
 	public static DialogUtil dialogUtil;
 
@@ -31,8 +31,10 @@ public class DialogUtil {
 	private DialogInterface.OnCancelListener mOnCancelListener;
 
 	public static DialogUtil getInstance() {
-		if (null == dialogUtil)
+		if (null == dialogUtil){
 			dialogUtil = new DialogUtil();
+		}
+
 		return dialogUtil;
 	}
 
@@ -74,6 +76,36 @@ public class DialogUtil {
 	}
 
 	/**
+	 * 根据用户头像图片显示加载进度
+	 * @param context
+	 */
+	public void showAvatarProgressDialog(Context context,String imageUrl) {
+
+		View layoutView = View.inflate(context, R.layout.view_progress_dialog, null);
+		showProgressDialog(context, layoutView, imageUrl);
+	}
+
+	private void showProgressDialog(Context context, View layoutView, String imageUrl) {
+
+		if (TextUtils.isEmpty(imageUrl)) {
+			showProgressDialog(context);
+			return;
+		}
+		CircleImageView userAvatar = (CircleImageView) layoutView.findViewById(R.id.civ_loading_icon);
+		ImageLoader.getInstance().displayImage(imageUrl,userAvatar);
+		cancelProgressDialog();
+		progressDialog = new ProgressDialog(context);
+		progressDialog.setIndeterminate(true);
+		progressDialog.setCancelable(true);
+		progressDialog.setCanceledOnTouchOutside(false);
+		if (mOnCancelListener != null) {
+			progressDialog.setOnCancelListener(mOnCancelListener);
+		}
+		progressDialog.show();
+		progressDialog.setContentView(layoutView);
+	}
+
+	/**
 	 * 根据Context和String提示信息显示加载框
 	 * @param context
 	 * @param message
@@ -83,9 +115,7 @@ public class DialogUtil {
 			showProgressDialog(context);
 			return;
 		}
-
 		cancelProgressDialog();
-
 		progressDialog = new ProgressDialog(context);
 		progressDialog.setMessage(message);
 		progressDialog.setIndeterminate(true);

@@ -9,7 +9,6 @@ import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.WindowManager;
 
-import com.zkjinshi.base.net.core.WebSocketManager;
 import com.zkjinshi.base.view.CustomDialog;
 import com.zkjinshi.superservice.activity.common.LoginActivity;
 import com.zkjinshi.superservice.bean.ClientBaseBean;
@@ -69,7 +68,6 @@ public class EMessageReceiver extends BroadcastReceiver {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
-                WebSocketManager.getInstance().logoutIM(context);
                 CacheUtil.getInstance().setLogin(false);
                 Intent intent = new Intent(context, LoginActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

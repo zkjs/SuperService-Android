@@ -18,13 +18,10 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import com.easemob.EMCallBack;
-import com.easemob.chat.EMChatManager;
-import com.easemob.chat.EMGroupManager;
+
 import com.google.gson.Gson;
 import com.zkjinshi.base.log.LogLevel;
 import com.zkjinshi.base.log.LogUtil;
-import com.zkjinshi.base.net.core.WebSocketManager;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.ServiceApplication;
@@ -32,9 +29,7 @@ import com.zkjinshi.superservice.activity.set.ClientActivity;
 import com.zkjinshi.superservice.activity.set.SettingActivity;
 import com.zkjinshi.superservice.activity.set.TeamContactsActivity;
 import com.zkjinshi.superservice.bean.BaseBean;
-import com.zkjinshi.superservice.emchat.EMConversationHelper;
 import com.zkjinshi.superservice.emchat.EasemobIMHelper;
-import com.zkjinshi.superservice.emchat.observer.EMessageListener;
 import com.zkjinshi.superservice.manager.YunBaSubscribeManager;
 import com.zkjinshi.superservice.net.ExtNetRequestListener;
 import com.zkjinshi.superservice.net.MethodType;
@@ -49,9 +44,11 @@ import com.zkjinshi.superservice.utils.task.ImgAsyncTask;
 import com.zkjinshi.superservice.view.CustomExtDialog;
 import com.zkjinshi.superservice.vo.IdentityType;
 import com.zkjinshi.superservice.vo.UserVo;
+
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;
+
 import me.nereo.multi_image_selector.MultiImageSelectorActivity;
 
 /**
@@ -102,14 +99,6 @@ public class MainActivity extends AppCompatActivity{
         findViewById(R.id.edit_avatar_ibtn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Intent intent = new Intent(MainActivity.this, MultiImageSelectorActivity.class);
-//                // 是否显示调用相机拍照
-//                intent.putExtra(MultiImageSelectorActivity.EXTRA_SHOW_CAMERA, true);
-//                // 最大图片选择数量
-//                intent.putExtra(MultiImageSelectorActivity.EXTRA_SELECT_COUNT, 1);
-//                // 设置模式 (支持 单选/MultiImageSelectorActivity.MODE_SINGLE 或者 多选/MultiImageSelectorActivity.MODE_MULTI)
-//                intent.putExtra(MultiImageSelectorActivity.EXTRA_SELECT_MODE, MultiImageSelectorActivity.MODE_SINGLE);
-//                startActivityForResult(intent, REQUEST_IMAGE);
                 Intent intent = new Intent(MainActivity.this, SettingActivity.class);
                 startActivity(intent);
                 overridePendingTransition(R.anim.activity_new, R.anim.activity_out);
@@ -183,8 +172,6 @@ public class MainActivity extends AppCompatActivity{
                         //http接口退出
                         String userID = CacheUtil.getInstance().getUserId();
                         logoutHttp(userID);
-                        //熊推接口退出
-                        WebSocketManager.getInstance().logoutIM(ServiceApplication.getContext());
                         //修改登录状态
                         CacheUtil.getInstance().setLogin(false);
                         startActivity(new Intent(MainActivity.this, LoginActivity.class));
