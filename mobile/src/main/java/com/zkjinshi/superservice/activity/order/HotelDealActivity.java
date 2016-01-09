@@ -582,7 +582,7 @@ public class HotelDealActivity extends Activity {
         }
         orderDetailForDisplay.setOrderstatus("1");
         Gson gson = new GsonBuilder().serializeNulls().create();
-        String jsonOrder = gson.toJson(orderDetailForDisplay, OrderDetailBean.class);
+        String jsonOrder = gson.toJson(orderDetailForDisplay, OrderDetailForDisplay.class);
         if(TextUtils.isEmpty(jsonOrder)){
             return ;
         }
