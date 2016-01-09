@@ -48,8 +48,10 @@ public class ContactFactory {
             contact.setSortKey(userName);
             String pinyin = PinyinHelper.getInstance().getPinYin(userName);
             //获得首字母
-            String firstLetter = PinyinHelper.getInstance().getFirstLetter(pinyin);
-            contact.setFirstLetter(firstLetter);
+            if(!TextUtils.isEmpty(pinyin)){
+                String firstLetter = PinyinHelper.getInstance().getFirstLetter(pinyin);
+                contact.setFirstLetter(firstLetter);
+            }
         }else {
             contact.setSortKey(clientID);
             String pinyin = PinyinHelper.getInstance().getPinYin(userName);
