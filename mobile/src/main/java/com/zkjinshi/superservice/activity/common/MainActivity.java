@@ -99,14 +99,6 @@ public class MainActivity extends AppCompatActivity{
         findViewById(R.id.edit_avatar_ibtn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Intent intent = new Intent(MainActivity.this, MultiImageSelectorActivity.class);
-//                // 是否显示调用相机拍照
-//                intent.putExtra(MultiImageSelectorActivity.EXTRA_SHOW_CAMERA, true);
-//                // 最大图片选择数量
-//                intent.putExtra(MultiImageSelectorActivity.EXTRA_SELECT_COUNT, 1);
-//                // 设置模式 (支持 单选/MultiImageSelectorActivity.MODE_SINGLE 或者 多选/MultiImageSelectorActivity.MODE_MULTI)
-//                intent.putExtra(MultiImageSelectorActivity.EXTRA_SELECT_MODE, MultiImageSelectorActivity.MODE_SINGLE);
-//                startActivityForResult(intent, REQUEST_IMAGE);
                 Intent intent = new Intent(MainActivity.this, SettingActivity.class);
                 startActivity(intent);
                 overridePendingTransition(R.anim.activity_new, R.anim.activity_out);
