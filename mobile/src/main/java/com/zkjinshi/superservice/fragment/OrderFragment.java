@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.zkjinshi.base.config.ConfigUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.adapter.OrderAdapter;
 import com.zkjinshi.superservice.adapter.OrderMoreAdapter;
@@ -184,7 +185,11 @@ public class OrderFragment extends BaseFragment{
      */
     private void getOrderList(String shopID, String userID, int page, int pageSize) {
 
+
         String url = ProtocolUtil.getOrderListUrl(shopID, userID, page, pageSize);
+        if(IdentityType.BUSINESS ==  CacheUtil.getInstance().getLoginIdentity()){
+            url = ConfigUtil.getInst().getJavaDomain()+"order/list/"+shopID+"/"+page+"/"+pageSize;
+        }
         Log.i(TAG, url);
         NetRequest netRequest = new NetRequest(url);
         NetRequestTask netRequestTask = new NetRequestTask(getActivity(),netRequest, NetResponse.class);
