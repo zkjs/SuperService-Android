@@ -17,21 +17,17 @@ import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
-import com.tencent.mm.sdk.openapi.IWXAPI;
-import com.tencent.mm.sdk.openapi.WXAPIFactory;
 import com.testin.agent.TestinAgent;
 import com.zkjinshi.base.config.ConfigUtil;
 import com.zkjinshi.base.log.LogConfig;
 import com.zkjinshi.base.log.LogSwitch;
 import com.zkjinshi.base.log.LogUtil;
-import com.zkjinshi.base.net.util.ImCacheUtil;
 import com.zkjinshi.base.util.BaseContext;
 import com.zkjinshi.base.util.DeviceUtils;
 import com.zkjinshi.superservice.emchat.EasemobIMHelper;
 import com.zkjinshi.superservice.emchat.observer.EGroupReomveListener;
 import com.zkjinshi.superservice.receiver.ECallReceiver;
 import com.zkjinshi.superservice.utils.CacheUtil;
-import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.utils.EmotionUtil;
 
 import java.io.File;
@@ -65,7 +61,6 @@ public class ServiceApplication extends Application{
         initYunBa();
         initEmchat();
         saveConfig();
-        initImCache();
         initCache();
         initLog();
         initDevice();
@@ -174,13 +169,6 @@ public class ServiceApplication extends Application{
             Log.e(TAG, "找不到assets/目录下的config.xml配置文件", e);
             e.printStackTrace();
         }
-    }
-
-    /**
-     * 初始化IM缓存
-     */
-    private void initImCache(){
-        ImCacheUtil.getInstance().init(this);
     }
 
     /**
