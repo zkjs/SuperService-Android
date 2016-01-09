@@ -19,10 +19,8 @@ import android.widget.Toast;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.tencent.mm.sdk.modelmsg.GetMessageFromWX;
 import com.tencent.mm.sdk.modelmsg.SendMessageToWX;
 import com.tencent.mm.sdk.modelmsg.WXMediaMessage;
-import com.tencent.mm.sdk.modelmsg.WXTextObject;
 import com.tencent.mm.sdk.modelmsg.WXWebpageObject;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
@@ -31,8 +29,6 @@ import com.zkjinshi.base.log.LogLevel;
 import com.zkjinshi.base.log.LogUtil;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
-import com.zkjinshi.superservice.activity.order.OrderNewActivity;
-import com.zkjinshi.superservice.activity.set.TeamContactsActivity;
 import com.zkjinshi.superservice.net.ExtNetRequestListener;
 import com.zkjinshi.superservice.net.MethodType;
 import com.zkjinshi.superservice.net.NetRequest;
@@ -41,8 +37,6 @@ import com.zkjinshi.superservice.net.NetResponse;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
-
-import org.slf4j.helpers.Util;
 
 import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
@@ -152,7 +146,7 @@ public class InviteCodeOperater {
         HashMap<String,String> bizMap = new HashMap<>();
         bizMap.put("code", inviteCode);
         bizMap.put("salesid", CacheUtil.getInstance().getUserId());
-        bizMap.put("host", ConfigUtil.getInst().getHttpDomain());
+        bizMap.put("host", ConfigUtil.getInst().getPhpDomain());
 
         netRequest.setBizParamMap(bizMap);
         NetRequestTask netRequestTask = new NetRequestTask(context, netRequest, NetResponse.class);
