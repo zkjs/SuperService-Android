@@ -20,7 +20,7 @@ package com.zkjinshi.superservice.view.datepicker.wheelview.adapter;
 
 import android.content.Context;
 
-import com.zkjinshi.svip.view.datepicker.wheelview.WheelAdapter;
+import com.zkjinshi.superservice.view.datepicker.wheelview.WheelAdapter;
 
 /**
  * Adapter class for old wheel adapter (deprecated WheelAdapter class).
