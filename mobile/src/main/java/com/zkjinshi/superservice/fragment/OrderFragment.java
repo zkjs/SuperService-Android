@@ -188,7 +188,7 @@ public class OrderFragment extends BaseFragment{
 
         String url = ProtocolUtil.getOrderListUrl(shopID, userID, page, pageSize);
         if(IdentityType.BUSINESS ==  CacheUtil.getInstance().getLoginIdentity()){
-            url = ConfigUtil.getInst().getJavaDomain()+"order/list/"+shopID+"/"+page+"/"+pageSize;
+            url = ConfigUtil.getInst().getJavaDomain()+"order/list/shop/"+shopID+"/"+page+"/"+pageSize;
         }
         Log.i(TAG, url);
         NetRequest netRequest = new NetRequest(url);
