@@ -45,10 +45,11 @@ import com.zkjinshi.base.util.ImageUtil;
 import com.zkjinshi.base.util.TimeUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.chat.single.TranspondActivity;
-import com.zkjinshi.superservice.activity.order.OrderDealActivity;
+import com.zkjinshi.superservice.activity.order.HotelDealActivity;
+import com.zkjinshi.superservice.activity.order.KTVDealActivity;
+import com.zkjinshi.superservice.activity.order.NormalDealActivity;
 import com.zkjinshi.superservice.bean.BookOrderBean;
 import com.zkjinshi.superservice.bean.MemberBean;
-import com.zkjinshi.superservice.factory.OrderFactory;
 import com.zkjinshi.superservice.net.ext.DownloadRequestListener;
 import com.zkjinshi.superservice.net.ext.DownloadTask;
 import com.zkjinshi.superservice.utils.CacheUtil;
@@ -412,9 +413,20 @@ public class GroupChatAdapter extends BaseAdapter {
                     vh.contentLayout.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Intent intent = new Intent(context, OrderDealActivity.class);
-                            intent.putExtra("reservation_no", bookOrder.getReservationNO());
-                            context.startActivity(intent);
+                        String orderNo = bookOrder.getReservationNO();
+                        Intent intent = new Intent();
+                        if(orderNo.startsWith("H")){
+                            intent.setClass(context,HotelDealActivity.class);
+                            intent.putExtra("orderNo",orderNo);
+                        }else if(orderNo.startsWith("K")){
+                            intent.setClass(context,KTVDealActivity.class);
+                            intent.putExtra("orderNo",orderNo);
+                        }
+                        else if(orderNo.startsWith("O")){
+                            intent.setClass(context,NormalDealActivity.class);
+                            intent.putExtra("orderNo",orderNo);
+                        }
+                        context.startActivity(intent);
                         }
                     });
                     if (!isDelEnabled) {

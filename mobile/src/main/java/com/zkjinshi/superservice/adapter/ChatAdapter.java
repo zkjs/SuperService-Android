@@ -38,17 +38,16 @@ import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.FailReason;
-import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.zkjinshi.base.util.ClipboardUtil;
 import com.zkjinshi.base.util.ImageUtil;
 import com.zkjinshi.base.util.TimeUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.chat.single.TranspondActivity;
-import com.zkjinshi.superservice.activity.order.OrderDealActivity;
+import com.zkjinshi.superservice.activity.order.HotelDealActivity;
+import com.zkjinshi.superservice.activity.order.KTVDealActivity;
+import com.zkjinshi.superservice.activity.order.NormalDealActivity;
 import com.zkjinshi.superservice.activity.preview.ScanImagesActivity;
 import com.zkjinshi.superservice.bean.BookOrderBean;
-import com.zkjinshi.superservice.factory.OrderFactory;
 import com.zkjinshi.superservice.net.ext.DownloadRequestListener;
 import com.zkjinshi.superservice.net.ext.DownloadTask;
 import com.zkjinshi.superservice.utils.CacheUtil;
@@ -402,9 +401,20 @@ public class ChatAdapter extends BaseAdapter {
                     vh.contentLayout.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Intent intent = new Intent(context, OrderDealActivity.class);
-                            intent.putExtra("reservation_no", bookOrder.getReservationNO());
-                            context.startActivity(intent);
+                        String orderNo = bookOrder.getReservationNO();
+                        Intent intent = new Intent();
+                        if(orderNo.startsWith("H")){
+                            intent.setClass(context,HotelDealActivity.class);
+                            intent.putExtra("orderNo",orderNo);
+                        }else if(orderNo.startsWith("K")){
+                            intent.setClass(context,KTVDealActivity.class);
+                            intent.putExtra("orderNo",orderNo);
+                        }
+                        else if(orderNo.startsWith("O")){
+                            intent.setClass(context,NormalDealActivity.class);
+                            intent.putExtra("orderNo",orderNo);
+                        }
+                        context.startActivity(intent);
                         }
                     });
                     if (!isDelEnabled) {

@@ -192,14 +192,6 @@
             android:name="me.nereo.multi_image_selector.MultiImageSelectorActivity" />
 
         <activity
-            android:name=".activity.order.OrderDealActivity"
-            android:label="@string/app_name"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-
-        </activity>
-
-        <activity
             android:name=".activity.order.HotelDealActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
