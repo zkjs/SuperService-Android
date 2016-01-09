@@ -219,13 +219,17 @@ public class HotelDealActivity extends Activity {
             unClickItems();
             if(orderStatus.equals("已确认")){
                 confirmBtn.setVisibility(View.VISIBLE);
-                confirmBtn.setText("完成订单");
+                confirmBtn.setText("订单完成");
                 confirmBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         finishOrder();
                     }
                 });
+            }else if(orderStatus.equals("已完成")){
+                confirmBtn.setVisibility(View.VISIBLE);
+                confirmBtn.setText("订单已完成");
+                confirmBtn.setEnabled(false);
             }else{
                 confirmBtn.setVisibility(View.GONE);
             }
