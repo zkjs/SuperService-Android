@@ -6,6 +6,7 @@
     android:layout_gravity="bottom"
     android:background="@drawable/skin_aio_input_bar_bg"
     android:gravity="center_horizontal"
+    android:visibility="gone"
     android:orientation="horizontal"
     android:minHeight="50.0dip" >
 
