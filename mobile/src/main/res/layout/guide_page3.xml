@@ -7,34 +7,30 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@mipmap/paper"
-        android:layout_alignParentLeft="true"
-        android:layout_marginLeft="80dp"
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="109dp"
         android:id="@+id/paper"/>
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_marginLeft="108dp"
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="172dp"
-        android:src="@mipmap/layer_1"
+        android:src="@mipmap/layer_3"
         android:id="@+id/layer1"/>
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_marginLeft="108dp"
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="203dp"
-        android:src="@mipmap/layer_2"
+        android:src="@mipmap/layer_3"
         android:id="@+id/layer2"/>
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_marginLeft="108dp"
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="234dp"
         android:src="@mipmap/layer_3"
         android:id="@+id/layer3"/>
@@ -42,10 +38,18 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_marginLeft="108dp"
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="265dp"
-        android:src="@mipmap/layer_4"
+        android:src="@mipmap/layer_3"
         android:id="@+id/layer4"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/l_3"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/paper"
+        android:layout_marginTop="30dp"
+        android:id="@+id/page2_font"/>
 
 </RelativeLayout>

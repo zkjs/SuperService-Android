@@ -7,16 +7,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@mipmap/phone"
-        android:layout_alignParentLeft="true"
-        android:layout_marginLeft="95dp"
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="71dp"
         android:id="@+id/phone"/>
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_marginLeft="110dp"
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="199dp"
         android:src="@mipmap/layer_5"
         android:id="@+id/line1"/>
@@ -24,18 +22,28 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_marginLeft="110dp"
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="232dp"
         android:src="@mipmap/layer_6"
         android:id="@+id/line2"/>
 
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/l_4"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/phone"
+        android:layout_marginTop="20dp"
+        android:id="@+id/page3_font"/>
+
+
+
     <Button
-        android:layout_alignParentBottom="true"
+        android:layout_below="@id/page3_font"
         android:layout_centerHorizontal="true"
         android:layout_width="150dp"
         android:layout_height="50dp"
-        android:layout_marginBottom="60dp"
+        android:layout_marginTop="20dp"
         android:text="立即体验"
         style="@style/blueButton"
         android:id="@+id/btn_login"

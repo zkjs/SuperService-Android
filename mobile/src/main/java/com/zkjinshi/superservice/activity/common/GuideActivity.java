@@ -84,45 +84,45 @@ public class GuideActivity  extends FragmentActivity {
 
         final Point size = SCViewAnimationUtil.getDisplaySize(this);
         //第一页
-        View font1 = findViewById(R.id.page0_font);
-        SCViewAnimation font1Animation = new SCViewAnimation(font1);
-        font1Animation.addPageAnimation(new SCPositionAnimation(this, 0, 0, size.y/2));
-        mViewPager.addAnimation(font1Animation);
-
+//        View font1 = findViewById(R.id.page0_font);
+//        SCViewAnimation font1Animation = new SCViewAnimation(font1);
+//        font1Animation.addPageAnimation(new SCPositionAnimation(this, 0, 0, size.y/2));
+//        mViewPager.addAnimation(font1Animation);
+//
         View name = findViewById(R.id.page0_name);
         SCViewAnimation nameAnimation = new SCViewAnimation(name);
         nameAnimation.addPageAnimation(new SCPositionAnimation(this,0,0,-size.y/2));
         mViewPager.addAnimation(nameAnimation);
-
-        int distance = 0;
-        //第二页
-        View font2 = findViewById(R.id.page1_font);
-        SCViewAnimationUtil.prepareViewToGetSize(font2);
-        SCViewAnimation font2Animation = new SCViewAnimation(font2);
-        distance= (size.x + font2.getWidth())/2;
-        font2Animation.startToPosition(distance,null);
-        font2Animation.addPageAnimation(new SCPositionAnimation(this, 0,-distance,0));
-        font2Animation.addPageAnimation(new SCPositionAnimation(this, 1,0,size.y/2));
-        mViewPager.addAnimation(font2Animation);
-        //第三页
-        View font3 = findViewById(R.id.page2_font);
-        SCViewAnimationUtil.prepareViewToGetSize(font3);
-        SCViewAnimation font3Animation = new SCViewAnimation(font3);
-        distance= (size.x + font3.getWidth())/2;
-        font3Animation.startToPosition(distance,null);
-        font3Animation.addPageAnimation(new SCPositionAnimation(this, 1,-distance,0));
-        font3Animation.addPageAnimation(new SCPositionAnimation(this, 2,0,size.y/2));
-        mViewPager.addAnimation(font3Animation);
-
-        //第四页
-        View font4 = findViewById(R.id.page3_font);
-        SCViewAnimationUtil.prepareViewToGetSize(font4);
-        SCViewAnimation font4Animation = new SCViewAnimation(font4);
-        distance= (size.x + font4.getWidth())/2;
-        font4Animation.startToPosition(distance,null);
-        font4Animation.addPageAnimation(new SCPositionAnimation(this, 2,-distance,0));
-        font4Animation.addPageAnimation(new SCPositionAnimation(this, 3,0,size.y/2));
-        mViewPager.addAnimation(font4Animation);
+//
+//        int distance = 0;
+//        //第二页
+//        View font2 = findViewById(R.id.page1_font);
+//        SCViewAnimationUtil.prepareViewToGetSize(font2);
+//        SCViewAnimation font2Animation = new SCViewAnimation(font2);
+//        distance= (size.x + font2.getWidth())/2;
+//        font2Animation.startToPosition(distance,null);
+//        font2Animation.addPageAnimation(new SCPositionAnimation(this, 0,-distance,0));
+//        font2Animation.addPageAnimation(new SCPositionAnimation(this, 1,0,size.y/2));
+//        mViewPager.addAnimation(font2Animation);
+//        //第三页
+//        View font3 = findViewById(R.id.page2_font);
+//        SCViewAnimationUtil.prepareViewToGetSize(font3);
+//        SCViewAnimation font3Animation = new SCViewAnimation(font3);
+//        distance= (size.x + font3.getWidth())/2;
+//        font3Animation.startToPosition(distance,null);
+//        font3Animation.addPageAnimation(new SCPositionAnimation(this, 1,-distance,0));
+//        font3Animation.addPageAnimation(new SCPositionAnimation(this, 2,0,size.y/2));
+//        mViewPager.addAnimation(font3Animation);
+//
+//        //第四页
+//        View font4 = findViewById(R.id.page3_font);
+//        SCViewAnimationUtil.prepareViewToGetSize(font4);
+//        SCViewAnimation font4Animation = new SCViewAnimation(font4);
+//        distance= (size.x + font4.getWidth())/2;
+//        font4Animation.startToPosition(distance,null);
+//        font4Animation.addPageAnimation(new SCPositionAnimation(this, 2,-distance,0));
+//        font4Animation.addPageAnimation(new SCPositionAnimation(this, 3,0,size.y/2));
+//        mViewPager.addAnimation(font4Animation);
 
     }
 

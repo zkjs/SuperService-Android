@@ -15,8 +15,8 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_marginLeft="210dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="10dp"
         android:layout_marginTop="149dp"
         android:src="@mipmap/rounded_rectangle_2"
         android:id="@+id/r3"/>
@@ -42,8 +42,8 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_marginLeft="228dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="30dp"
         android:layout_marginTop="216dp"
         android:src="@mipmap/rounded_rectangle_5"
         android:id="@+id/r2"/>
@@ -51,10 +51,19 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_marginLeft="234dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="30dp"
         android:layout_marginTop="275dp"
         android:src="@mipmap/rounded_rectangle_6"
         android:id="@+id/r5"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/l_2"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="80dp"
+        android:id="@+id/page1_font"/>
 
 </RelativeLayout>
