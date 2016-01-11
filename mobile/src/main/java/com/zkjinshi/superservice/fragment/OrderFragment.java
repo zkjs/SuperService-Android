@@ -92,6 +92,13 @@ public class OrderFragment extends BaseFragment{
         return view;
     }
 
+    public void onResume(){
+        super.onResume();
+        swipeRefreshLayout.setRefreshing(true);
+        mPage = 1;
+        getOrderList(mShopID, mUserID, mPage, mPageSize);
+    }
+
     @Override
     protected void initData() {
         super.initData();
@@ -99,10 +106,6 @@ public class OrderFragment extends BaseFragment{
         mShopID = CacheUtil.getInstance().getShopID();
         mUserID = CacheUtil.getInstance().getUserId();
 
-        mPage = 1;
-        swipeRefreshLayout.setRefreshing(true);
-
-        getOrderList(mShopID, mUserID, mPage, mPageSize);
 //        loadOrderList(0);
     }
 

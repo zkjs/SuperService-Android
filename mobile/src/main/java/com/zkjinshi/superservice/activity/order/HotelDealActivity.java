@@ -190,6 +190,7 @@ public class HotelDealActivity extends Activity {
         phoneTsv.setUnClick();
         invoiceTsv.setUnClick();
         privilegeTsv.setUnClick();
+        payTypeTsv.setUnClick();
 
         breakfastTcv.valueCbx.setEnabled(false);
         noSmokeTcv.valueCbx.setEnabled(false);
@@ -291,6 +292,17 @@ public class HotelDealActivity extends Activity {
         }else{
             remarkTv.setText("");
         }
+
+        //支付方式
+        String roomRateStr="";
+        String payTypeStr;
+        if(orderDetailForDisplay.getRoomprice()!= null && orderDetailForDisplay.getRoomprice().doubleValue() > 0.0){
+            roomRateStr = "¥ "+orderDetailForDisplay.getRoomprice();
+        }
+        String payTypes[] = {"未设置","在线支付","到店支付","挂账"};
+        int index = orderDetailForDisplay.getPaytype()%payTypes.length;
+        payTypeStr = payTypes[index];
+        payTypeTsv.setValue(roomRateStr+ "  " + payTypeStr);
 
     }
 
@@ -584,6 +596,8 @@ public class HotelDealActivity extends Activity {
         if(null == orderDetailForDisplay){
             return ;
         }
+        int num = Integer.parseInt(roomNumTnv.getValue());
+        orderDetailForDisplay.setRoomcount(num);
         orderDetailForDisplay.setOrderstatus("1");
         Gson gson = new GsonBuilder().serializeNulls().create();
         String jsonOrder = gson.toJson(orderDetailForDisplay, OrderDetailForDisplay.class);
