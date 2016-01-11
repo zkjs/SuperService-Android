@@ -24,7 +24,6 @@ public class ShopRegisterActivity extends Activity  implements VerifyPhoneContro
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shop_register);
 

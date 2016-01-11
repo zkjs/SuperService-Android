@@ -61,7 +61,6 @@ public class ZoneActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_zone);
         String userid = CacheUtil.getInstance().getUserId();
