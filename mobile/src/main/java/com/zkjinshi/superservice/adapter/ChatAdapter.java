@@ -61,6 +61,7 @@ import com.zkjinshi.superservice.view.ActionItem;
 import com.zkjinshi.superservice.view.CircleImageView;
 import com.zkjinshi.superservice.view.MessageSpanURL;
 import com.zkjinshi.superservice.view.QuickAction;
+import com.zkjinshi.superservice.vo.OrderDetailForDisplay;
 import com.zkjinshi.superservice.vo.TxtExtType;
 
 import java.io.File;
@@ -374,12 +375,12 @@ public class ChatAdapter extends BaseAdapter {
                     vh.time.setVisibility(View.GONE);
                     vh.cardLayout.setVisibility(View.GONE);
                 }else{//卡片类型消息
-                    final BookOrderBean bookOrder = new Gson().fromJson(content, BookOrderBean.class);
+                    final OrderDetailForDisplay bookOrder = new Gson().fromJson(content, OrderDetailForDisplay.class);
                     if (null != bookOrder) {
-                        String roomType = bookOrder.getRoomType();
-                        String arrivaDate = bookOrder.getArrivalDate();
-                        String departureDate = bookOrder.getDepartureDate();
-                        String imageUrl = bookOrder.getImage();
+                        String roomType = bookOrder.getRoomtype();
+                        String arrivaDate = bookOrder.getArrivaldate();
+                        String departureDate = bookOrder.getLeavedate();
+                        String imageUrl = bookOrder.getImgurl();
                         int dayNum = 1;
                         try {
                             dayNum = TimeUtil.daysBetween(arrivaDate, departureDate);
@@ -401,7 +402,7 @@ public class ChatAdapter extends BaseAdapter {
                     vh.contentLayout.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                        String orderNo = bookOrder.getReservationNO();
+                        String orderNo = bookOrder.getOrderno();
                         Intent intent = new Intent();
                         if(orderNo.startsWith("H")){
                             intent.setClass(context,HotelDealActivity.class);
