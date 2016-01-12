@@ -196,6 +196,7 @@ public class HotelDealActivity extends Activity {
     }
 
     private void initData() {
+        confirmBtn.setTag(orderDetailForDisplay.getOrderno());
         titleTv.setText(orderDetailForDisplay.getShopname());
         String orderStatus = orderDetailForDisplay.getOrderstatus();
         //订单状态
@@ -208,11 +209,15 @@ public class HotelDealActivity extends Activity {
                     if(orderDetailForDisplay.getPaytype()== 0){
                         DialogUtil.getInstance().showToast(HotelDealActivity.this,"请设置支付方式");
                         return;
-                    }else if(orderDetailForDisplay.getPaytype()== 1 && orderDetailForDisplay.getRoomprice().doubleValue() <= 0.0 ){
+                    }else if(orderDetailForDisplay.getPaytype()== 1 && orderDetailForDisplay.getRoomprice()!=null && orderDetailForDisplay.getRoomprice().doubleValue() <= 0.0 ){
+                        DialogUtil.getInstance().showToast(HotelDealActivity.this,"请设置价格");
+                        return;
+                    }else if(orderDetailForDisplay.getPaytype()== 1 && orderDetailForDisplay.getRoomprice()==null ){
                         DialogUtil.getInstance().showToast(HotelDealActivity.this,"请设置价格");
                         return;
                     }
-                    confirmOrder();
+                    String orderNo = confirmBtn.getTag().toString();
+                    confirmOrder(orderNo);
                 }
             });
         }else{
@@ -588,17 +593,20 @@ public class HotelDealActivity extends Activity {
     }
 
     //确认订单
-    private void confirmOrder() {
+    private void confirmOrder(final String orderNo) {
         String url = ProtocolUtil.getUpdateOrderUrl();
         Log.i(TAG,url);
         NetRequest netRequest = new NetRequest(url);
         if(null == orderDetailForDisplay){
             return ;
         }
+
         int num = Integer.parseInt(roomNumTnv.getValue());
+        orderDetailForDisplay.setOrderno(orderNo);
         orderDetailForDisplay.setRoomcount(num);
         orderDetailForDisplay.setOrderstatus("1");
         Gson gson = new GsonBuilder().serializeNulls().create();
+
         String jsonOrder = gson.toJson(orderDetailForDisplay, OrderDetailForDisplay.class);
         if(TextUtils.isEmpty(jsonOrder)){
             return ;
@@ -635,10 +643,10 @@ public class HotelDealActivity extends Activity {
                 JsonObject object = element.getAsJsonObject();
                 Boolean updateResult = object.get("result").getAsBoolean();
                 if(updateResult){
-                    String orderNO = object.get("data").getAsString();
+                    //String orderNO = object.get("data").getAsString();
                     EMConversationHelper.getInstance().sendOrderCmdMessage(
                             orderDetailForDisplay.getShopid(),
-                            orderNO,
+                            orderNo,
                             orderDetailForDisplay.getUserid(),
                             new EMCallBack() {
 
