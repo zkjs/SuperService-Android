@@ -1,6 +1,7 @@
 package com.zkjinshi.superservice.adapter;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -102,7 +103,7 @@ public class ZoneAdapter extends BaseAdapter{
         for(int i=0;i<zoneList.size();i++){
             ZoneBean zoneBean = zoneList.get(i);
             if(zoneBean.isHasAdd()){
-                if(i == 0){
+                if(TextUtils.isEmpty(ids)){
                     ids = ids+zoneBean.getLocid();
                 }else{
                     ids = ids+","+zoneBean.getLocid();
