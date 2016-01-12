@@ -151,17 +151,13 @@ public class TeamContactsActivity extends AppCompatActivity{
                             mShopEmployeeVos.add(0, mFirstShopEmployee);
                             mShopEmployeeVos.addAll(shopEmployeeVos);
 
+                            //获取部门首字母进行排序
                             for (ShopEmployeeVo shopEmployeeVo : shopEmployeeVos) {
                                 empids.add(shopEmployeeVo.getEmpid());
-                                String deptID   = shopEmployeeVo.getDept_id() + "";
-                                String deptName = shopEmployeeVo.getDept_name();
-                                String sortLetter = null;
-                                if (!TextUtils.isEmpty(deptName)) {
-                                    sortLetter = deptName.substring(0, 1);
-                                } else {
-                                    sortLetter = deptID.substring(0, 1);
+                                if (TextUtils.isEmpty(shopEmployeeVo.getDept_name())) {
+                                    shopEmployeeVo.setDept_name("#");
                                 }
-
+                                String sortLetter = shopEmployeeVo.getDept_name().substring(0, 1);
                                 //部门分类并消除相同部门
                                 if (!TextUtils.isEmpty(sortLetter) && !strLetters.contains(sortLetter)) {
                                     strLetters.add(sortLetter);
