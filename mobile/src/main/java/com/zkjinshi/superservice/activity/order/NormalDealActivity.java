@@ -178,13 +178,7 @@ public class NormalDealActivity extends Activity {
             confirmBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if(orderDetailForDisplay.getPaytype()== 0){
-                        DialogUtil.getInstance().showToast(NormalDealActivity.this,"请设置支付方式");
-                        return;
-                    }else if(orderDetailForDisplay.getPaytype()== 1 && orderDetailForDisplay.getRoomprice().doubleValue() <= 0.0 ){
-                        DialogUtil.getInstance().showToast(NormalDealActivity.this,"请设置价格");
-                        return;
-                    }
+
                     confirmOrder();
                 }
             });

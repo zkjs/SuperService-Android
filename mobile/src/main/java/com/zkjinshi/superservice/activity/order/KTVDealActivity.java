@@ -189,7 +189,10 @@ public class KTVDealActivity extends Activity {
                     if(orderDetailForDisplay.getPaytype()== 0){
                         DialogUtil.getInstance().showToast(KTVDealActivity.this,"请设置支付方式");
                         return;
-                    }else if(orderDetailForDisplay.getPaytype()== 1 && orderDetailForDisplay.getRoomprice().doubleValue() <= 0.0 ){
+                    }else if(orderDetailForDisplay.getRoomprice()!=null  && orderDetailForDisplay.getRoomprice().doubleValue() <= 0.0 ){
+                        DialogUtil.getInstance().showToast(KTVDealActivity.this,"请设置价格");
+                        return;
+                    }else if(orderDetailForDisplay.getRoomprice()==null ){
                         DialogUtil.getInstance().showToast(KTVDealActivity.this,"请设置价格");
                         return;
                     }
