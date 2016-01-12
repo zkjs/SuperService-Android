@@ -281,6 +281,42 @@ public class ShopEmployeeDBUtil {
     }
 
     /**
+     * query by department id asc
+     * @return
+     */
+    public List<ShopEmployeeVo> queryAllExceptUser(String userID) {
+        List<ShopEmployeeVo> shopEmployeeVos = new ArrayList<>();
+        ShopEmployeeVo shopEmployeeVo = null;
+        SQLiteDatabase db = null;
+        Cursor cursor = null;
+        if (null != helper) {
+            try {
+                db = helper.getReadableDatabase();
+                cursor = db.query(DBOpenHelper.SHOP_EMPLOYEE_TBL, null, null, null, null, null, " dept_id ASC");
+                if (cursor != null && cursor.getCount() > 0) {
+                    while (cursor.moveToNext()) {
+                        shopEmployeeVo = ShopEmployeeFactory.getInstance().buildShopEmployee(cursor);
+                        if(!shopEmployeeVo.getEmpid().equals(userID)){
+                            shopEmployeeVos.add(shopEmployeeVo);
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                LogUtil.getInstance().info(LogLevel.ERROR, TAG+".queryAll->"+e.getMessage());
+                e.printStackTrace();
+            } finally {
+                if (null != cursor) {
+                    cursor.close();
+                }
+                if (null != db) {
+                    db.close();
+                }
+            }
+        }
+        return  shopEmployeeVos;
+    }
+
+    /**
      * 根据员工ID进行本地数据库的删除
      * @param empid
      */

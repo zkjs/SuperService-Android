@@ -95,8 +95,7 @@ public class TeamEditActivity extends Activity {
         mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRcvTeamContacts.setLayoutManager(mLayoutManager);
 
-        mShopEmployeeVos = ShopEmployeeDBUtil.getInstance().queryAllByDeptIDAsc();
-
+        mShopEmployeeVos = ShopEmployeeDBUtil.getInstance().queryAllExceptUser(mUserID);
         mContactsAdapter = new TeamEditContactsAdapter(TeamEditActivity.this, mShopEmployeeVos);
         mRcvTeamContacts.setAdapter(mContactsAdapter);
     }
