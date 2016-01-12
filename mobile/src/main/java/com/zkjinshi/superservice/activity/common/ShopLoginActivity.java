@@ -77,6 +77,15 @@ public class ShopLoginActivity extends Activity{
 
             }
         });
+
+        findViewById(R.id.sales_login_tv).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(ShopLoginActivity.this, LoginActivity.class));
+                finish();
+                overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
+            }
+        });
     }
 
     private void loginRequest(){
