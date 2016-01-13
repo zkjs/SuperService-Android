@@ -46,7 +46,7 @@ public class MoreAdapter extends BaseAdapter {
 		moreInfo.name = "拍照";
 		moreList.add(moreInfo);
 
-		moreInfo = new MoreInfo();
+	/*	moreInfo = new MoreInfo();
 		moreInfo.resId = R.drawable.chat_more_voice_call;
 		moreInfo.name = "语音通话";
 		moreList.add(moreInfo);
@@ -56,7 +56,7 @@ public class MoreAdapter extends BaseAdapter {
 		moreInfo.name = "视频通话";
 		moreList.add(moreInfo);
 
-	/*	moreInfo = new MoreInfo();
+		moreInfo = new MoreInfo();
 		moreInfo.resId = R.drawable.chat_more_ding_dan;
 		moreInfo.name = "订单";
 		moreList.add(moreInfo);*/
