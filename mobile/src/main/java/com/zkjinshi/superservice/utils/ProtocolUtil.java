@@ -1,6 +1,7 @@
 package com.zkjinshi.superservice.utils;
 
 import com.zkjinshi.base.config.ConfigUtil;
+import com.zkjinshi.base.util.*;
 
 /**
  * 协议接口工具类
@@ -162,59 +163,6 @@ public class ProtocolUtil {
      */
     public static String getBatchDeleteEmployeeUrl(){
         return ConfigUtil.getInst().getPhpDomain()+"shop/deletesemp";
-    }
-
-    /**
-     * 获得商品图片
-     * @param imageUrl
-     * @return
-     */
-    public static String getGoodImgUrl(String imageUrl){
-        return ConfigUtil.getInst().getPhpDomain()+imageUrl;
-    }
-
-    /**
-     * 获得图片
-     * @param imageUrl
-     * @return
-     */
-    public static String getImgUrl(String imageUrl){
-        return ConfigUtil.getInst().getPhpDomain()+imageUrl;
-    }
-
-    /**
-     * 获得用户头像
-     * @param userid
-     * @return
-     */
-    public static String getAvatarUrl(String userid){
-        return ConfigUtil.getInst().getPhpDomain()+"uploads/users/"+userid+".jpg";
-    }
-    /**
-     * 获得商家logo
-     * @param shopID
-     * @return
-     */
-    public static String getShopLogoUrl(String shopID){
-        return ConfigUtil.getInst().getPhpDomain()+"uploads/shops/"+ shopID +".png";
-    }
-
-    /**
-     * 获得商家背景
-     * @param shopID
-     * @return
-     */
-    public static String getShopBackUrl(String shopID){
-        return ConfigUtil.getInst().getPhpDomain()+"uploads/shops/"+ shopID +"_bg.png";
-    }
-
-    /**
-     * 获得商家主图
-     * @param shopID
-     * @return
-     */
-    public static String getShopMainUrl(String shopID){
-        return ConfigUtil.getInst().getPhpDomain()+"uploads/shops/"+ shopID +".jpg";
     }
 
     /**
@@ -403,4 +351,23 @@ public class ProtocolUtil {
     public static String getNoticeUrl(String shopId,String locId,String token){
         return  ConfigUtil.getInst().getJavaDomain()+"arrive/users/"+shopId+"/"+locId+"/"+token;
     }
+
+    /**
+     * 拼接图片路径
+     * @param apiUrl
+     * @return
+     */
+    public static String getHostImgUrl(String apiUrl){
+        return com.zkjinshi.base.util.Constants.IMG_HOST+apiUrl;
+    }
+
+    /**
+     * 获得用户头像
+     * @param userid
+     * @return
+     */
+    public static String getAvatarUrl(String userid){
+        return com.zkjinshi.base.util.Constants.IMG_HOST+"uploads/users/"+userid+".jpg";
+    }
+
 }

@@ -53,7 +53,7 @@ public class TeamContactsActivity extends AppCompatActivity{
 
     private TeamContactsAdapter     mTeamContactAdapter;
     private List<ShopEmployeeVo>    mShopEmployeeVos;
-    private ShopEmployeeVo          mFirstShopEmployee;
+
 
     private String mUserID;
     private String mShopID;
@@ -98,13 +98,6 @@ public class TeamContactsActivity extends AppCompatActivity{
         mShopID     = CacheUtil.getInstance().getShopID();
         mUserType   = CacheUtil.getInstance().getLoginIdentity();
 
-        // 创建商店排序对象
-        mFirstShopEmployee = new ShopEmployeeVo();
-        String shopName    = CacheUtil.getInstance().getShopFullName();
-        mFirstShopEmployee.setName(shopName);
-        mFirstShopEmployee.setDept_name(shopName);
-        mFirstShopEmployee.setEmpid(System.currentTimeMillis() + "");
-
         mShopEmployeeVos    = new ArrayList<>();
         mTeamContactAdapter = new TeamContactsAdapter(TeamContactsActivity.this,
                                                                mShopEmployeeVos);
@@ -148,7 +141,6 @@ public class TeamContactsActivity extends AppCompatActivity{
                             if(null != mShopEmployeeVos && !mShopEmployeeVos.isEmpty()){
                                 mShopEmployeeVos.removeAll(mShopEmployeeVos);
                             }
-                            mShopEmployeeVos.add(0, mFirstShopEmployee);
                             mShopEmployeeVos.addAll(shopEmployeeVos);
 
                             //获取部门首字母进行排序
@@ -189,7 +181,6 @@ public class TeamContactsActivity extends AppCompatActivity{
                             if(null != mShopEmployeeVos && !mShopEmployeeVos.isEmpty()){
                                 mShopEmployeeVos.removeAll(mShopEmployeeVos);
                             }
-                            mShopEmployeeVos.add(0, mFirstShopEmployee);
                             mShopEmployeeVos.addAll(shopEmployeeVos);
                         }
                         mTeamContactAdapter.setData(mShopEmployeeVos);

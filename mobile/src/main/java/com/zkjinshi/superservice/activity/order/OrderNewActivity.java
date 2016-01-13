@@ -347,7 +347,7 @@ public class OrderNewActivity extends Activity {
                         }
 
                         if (!TextUtils.isEmpty(imgUrl)) {
-                            ImageLoader.getInstance().displayImage(ProtocolUtil.getGoodImgUrl(imgUrl), mIvRoomImg, mOptions);
+                            ImageLoader.getInstance().displayImage(ProtocolUtil.getHostImgUrl(imgUrl), mIvRoomImg, mOptions);
                         }
                     }
                 }

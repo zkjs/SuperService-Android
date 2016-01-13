@@ -99,7 +99,7 @@ public class GoodInfoAdapter extends RecyclerView.Adapter<GoodInfoAdapter.GoodIn
         GoodInfoVo goodInfoVo = mDatas.get(position);
         //显示房型图片
         String imgUrl = goodInfoVo.getImgurl();
-        ImageLoader.getInstance().displayImage(ProtocolUtil.getGoodImgUrl(imgUrl), holder.ivRoomType, mOptions);
+        ImageLoader.getInstance().displayImage(ProtocolUtil.getHostImgUrl(imgUrl), holder.ivRoomType, mOptions);
 
         //房间类型描述
         String roomType = goodInfoVo.getRoom();

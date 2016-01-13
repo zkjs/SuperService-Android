@@ -81,139 +81,93 @@ public class TeamContactsAdapter extends ServiceBaseAdapter<ShopEmployeeVo>
         final TextView tvContactAvatar = holder.tvContactAvatar;
         final CircleImageView civContactAvatar = holder.civContactAvatar;
 
-        if(position == 0){
-            /** 1:显示商家信息 */
-            holder.tvLetter.setVisibility(View.GONE);
-            String shopLogoUrl = ProtocolUtil.getShopLogoUrl(CacheUtil.getInstance().getShopID());
-            final String shopName = CacheUtil.getInstance().getShopFullName();
-
-            if(!TextUtils.isEmpty(shopName)){
-                holder.tvContactName.setText(shopName);
-                holder.tvContactAvatar.setText(shopName.substring(0, 1));
-            }
-
-            //设置团队成员头像单击事件, 进入员工详情
-            holder.flContactAvatar.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    DialogUtil.getInstance().showCustomToast(mActivity, "TODO:", Gravity.CENTER);
-                }
-            });
-
-            ImageLoader.getInstance().displayImage(shopLogoUrl, holder.civContactAvatar, options, new ImageLoadingListener() {
-                @Override
-                public void onLoadingStarted(String imageUri, View view) {
-                    civContactAvatar.setBackgroundColor(Color.TRANSPARENT);
-                    tvContactAvatar.setBackgroundResource(RandomDrawbleUtil.getRandomDrawable());
-                }
-
-                @Override
-                public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-                    civContactAvatar.setBackgroundColor(Color.TRANSPARENT);
-                    tvContactAvatar.setBackgroundResource(RandomDrawbleUtil.getRandomDrawable());
-                }
-
-                @Override
-                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                }
-
-                @Override
-                public void onLoadingCancelled(String imageUri, View view) {
-                    civContactAvatar.setBackgroundColor(Color.TRANSPARENT);
-                    tvContactAvatar.setBackgroundResource(RandomDrawbleUtil.getRandomDrawable());
-                }
-            });
-            holder.tvContactOnLine.setText("点击消息群发");
-
-        } else {
-            /** 2 显示普通商家成员信息  */
-            String deptName = shopEmployeeVo.getDept_name();
-            if(TextUtils.isEmpty(deptName)){
-                deptName = shopEmployeeVo.getDept_id()+"";
-            }
-            if (position == getPositionForSection(section)) {
-                holder.tvLetter.setVisibility(View.VISIBLE);
-                if(!TextUtils.isEmpty(deptName)){
-                    if("?".equals(deptName.substring(0, 1))){
-                        //最近联系人的处理
-                        holder.tvLetter.setText(mActivity.getString(R.string.latest_contact));
-                    }else {
-                        holder.tvLetter.setText(deptName);
-                    }
-                } else {
-                    holder.tvLetter.setText("#");
+        /**  显示普通商家成员信息  */
+        String deptName = shopEmployeeVo.getDept_name();
+        if(TextUtils.isEmpty(deptName)){
+            deptName = shopEmployeeVo.getDept_id()+"";
+        }
+        if (position == getPositionForSection(section)) {
+            holder.tvLetter.setVisibility(View.VISIBLE);
+            if(!TextUtils.isEmpty(deptName)){
+                if("?".equals(deptName.substring(0, 1))){
+                    //最近联系人的处理
+                    holder.tvLetter.setText(mActivity.getString(R.string.latest_contact));
+                }else {
+                    holder.tvLetter.setText(deptName);
                 }
             } else {
-                /** 不显示首字母 */
-                holder.tvLetter.setVisibility(View.GONE);
+                holder.tvLetter.setText("#");
             }
-
-            final String empID   = shopEmployeeVo.getEmpid();
-            final String empName = shopEmployeeVo.getName();
-            if(!TextUtils.isEmpty(empName)){
-                final String firstName = empName.substring(0, 1);
-                holder.tvContactName.setText(empName);
-                holder.tvContactAvatar.setText(firstName);
-            }
-
-            //获得默认背景颜色值
-            int bgColorRes = ShopEmployeeDBUtil.getInstance().queryBgColorResByEmpID(empID);
-
-            if(bgColorRes != 0){
-                shopEmployeeVo.setBg_color_res(bgColorRes);
-            }else {
-                shopEmployeeVo.setBg_color_res(RandomDrawbleUtil.getRandomDrawable());
-                if(ShopEmployeeDBUtil.getInstance().isEmployeeExistByEmpID(empID)){
-                    ShopEmployeeDBUtil.getInstance().updateShopEmployee(shopEmployeeVo);
-                }
-            }
-
-            //设置团队成员头像单击事件, 进入员工详情
-            holder.flContactAvatar.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent employeeInfo = new Intent(mActivity, EmployeeInfoActivity.class);
-                    employeeInfo.putExtra("shop_employee", shopEmployeeVo);
-                    mActivity.startActivity(employeeInfo);
-                }
-            });
-
-            String empAvatarUrl = ProtocolUtil.getAvatarUrl(empID);
-
-
-            ImageLoader.getInstance().displayImage(empAvatarUrl, holder.civContactAvatar, options, new ImageLoadingListener() {
-                @Override
-                public void onLoadingStarted(String imageUri, View view) {
-                    tvContactAvatar.setBackgroundResource(shopEmployeeVo.getBg_color_res());
-                    civContactAvatar.setBackgroundColor(Color.TRANSPARENT);
-                }
-
-                @Override
-                public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-                    civContactAvatar.setBackgroundColor(Color.TRANSPARENT);
-                    tvContactAvatar.setBackgroundResource(shopEmployeeVo.getBg_color_res());
-                }
-
-                @Override
-                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                }
-
-                @Override
-                public void onLoadingCancelled(String imageUri, View view) {
-                    civContactAvatar.setBackgroundColor(Color.TRANSPARENT);
-                    tvContactAvatar.setBackgroundResource(shopEmployeeVo.getBg_color_res());
-                }
-            });
-
-            if(!TextUtils.isEmpty(empName)){
-                if("?".equals(empName.trim().substring(0, 1))) {
-                    holder.tvContactName.setText(empName.substring(1));
-                }else {
-                    holder.tvContactName.setText(empName);
-                }
-            }
-            holder.tvContactOnLine.setVisibility(View.INVISIBLE);
+        } else {
+            /** 不显示首字母 */
+            holder.tvLetter.setVisibility(View.GONE);
         }
+
+        final String empID   = shopEmployeeVo.getEmpid();
+        final String empName = shopEmployeeVo.getName();
+        if(!TextUtils.isEmpty(empName)){
+            final String firstName = empName.substring(0, 1);
+            holder.tvContactName.setText(empName);
+            holder.tvContactAvatar.setText(firstName);
+        }
+
+        //获得默认背景颜色值
+        int bgColorRes = ShopEmployeeDBUtil.getInstance().queryBgColorResByEmpID(empID);
+
+        if(bgColorRes != 0){
+            shopEmployeeVo.setBg_color_res(bgColorRes);
+        }else {
+            shopEmployeeVo.setBg_color_res(RandomDrawbleUtil.getRandomDrawable());
+            if(ShopEmployeeDBUtil.getInstance().isEmployeeExistByEmpID(empID)){
+                ShopEmployeeDBUtil.getInstance().updateShopEmployee(shopEmployeeVo);
+            }
+        }
+
+        //设置团队成员头像单击事件, 进入员工详情
+        holder.flContactAvatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent employeeInfo = new Intent(mActivity, EmployeeInfoActivity.class);
+                employeeInfo.putExtra("shop_employee", shopEmployeeVo);
+                mActivity.startActivity(employeeInfo);
+            }
+        });
+
+        String empAvatarUrl = ProtocolUtil.getAvatarUrl(empID);
+
+
+        ImageLoader.getInstance().displayImage(empAvatarUrl, holder.civContactAvatar, options, new ImageLoadingListener() {
+            @Override
+            public void onLoadingStarted(String imageUri, View view) {
+                tvContactAvatar.setBackgroundResource(shopEmployeeVo.getBg_color_res());
+                civContactAvatar.setBackgroundColor(Color.TRANSPARENT);
+            }
+
+            @Override
+            public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+                civContactAvatar.setBackgroundColor(Color.TRANSPARENT);
+                tvContactAvatar.setBackgroundResource(shopEmployeeVo.getBg_color_res());
+            }
+
+            @Override
+            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+            }
+
+            @Override
+            public void onLoadingCancelled(String imageUri, View view) {
+                civContactAvatar.setBackgroundColor(Color.TRANSPARENT);
+                tvContactAvatar.setBackgroundResource(shopEmployeeVo.getBg_color_res());
+            }
+        });
+
+        if(!TextUtils.isEmpty(empName)){
+            if("?".equals(empName.trim().substring(0, 1))) {
+                holder.tvContactName.setText(empName.substring(1));
+            }else {
+                holder.tvContactName.setText(empName);
+            }
+        }
+        holder.tvContactOnLine.setVisibility(View.INVISIBLE);
 
         return convertView;
     }

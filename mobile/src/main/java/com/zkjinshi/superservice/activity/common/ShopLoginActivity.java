@@ -145,8 +145,8 @@ public class ShopLoginActivity extends Activity{
                         ZoneManager.getInstance().requestMyZoneTask();//获取订阅区域
                         UserVo userVo = UserFactory.getInstance().buildUserVo(adminLoginBean);
                         UserDBUtil.getInstance().addUser(userVo);
-                        String avatarUrl = ProtocolUtil.getShopLogoUrl(adminLoginBean.getShopid());
-                        CacheUtil.getInstance().saveUserPhotoUrl(avatarUrl);
+                        //String avatarUrl = ProtocolUtil.getShopLogoUrl(adminLoginBean.getShopid());
+                        //CacheUtil.getInstance().saveUserPhotoUrl(avatarUrl);
                        // Intent mainIntent = new Intent(ShopLoginActivity.this, MainActivity.class);
                         Intent mainIntent = new Intent(ShopLoginActivity.this, ZoneActivity.class);
                         startActivity(mainIntent);
