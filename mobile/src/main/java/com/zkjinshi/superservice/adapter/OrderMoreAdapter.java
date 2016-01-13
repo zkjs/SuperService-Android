@@ -15,6 +15,7 @@ import com.zkjinshi.base.util.TimeUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.bean.OrderBean;
 import com.zkjinshi.superservice.utils.Constants;
+import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.view.CircleImageView;
 
 import java.util.ArrayList;
@@ -73,7 +74,7 @@ public class OrderMoreAdapter extends RecyclerView.Adapter {
 
         String userId = orderBean.getUserid();
         if(!TextUtils.isEmpty(userId)){
-            String imageUrl = Constants.GET_USER_AVATAR + userId + ".jpg";
+            String imageUrl =  ProtocolUtil.getAvatarUrl(userId);
             if(!TextUtils.isEmpty(imageUrl)){
                 ImageLoader.getInstance().displayImage(imageUrl, holder.photoImageView,options);
             }

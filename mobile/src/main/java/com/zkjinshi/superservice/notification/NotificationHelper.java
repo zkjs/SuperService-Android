@@ -170,7 +170,7 @@ public class NotificationHelper {
         notificationBuilder.setContentText(welcomeMsg);
         notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
         String contactId = locPushBean.getUserid();
-        String imageUrl = Constants.GET_USER_AVATAR + contactId + ".jpg";
+        String imageUrl =  ProtocolUtil.getAvatarUrl(contactId);
         Bitmap bitmap = ImageLoader.getInstance().loadImageSync(imageUrl);
         notificationBuilder.setLargeIcon(bitmap);
         // 2.设置点击跳转事件

@@ -186,7 +186,7 @@ public class SplashActivity extends Activity{
                         ZoneManager.getInstance().requestMyZoneTask();//获取订阅区域
                         UserVo userVo = UserFactory.getInstance().buildUserVo(sempLoginbean);
                         UserDBUtil.getInstance().addUser(userVo);
-                        String avatarUrl = Constants.GET_USER_AVATAR+userVo.getUserId()+".jpg";
+                        String avatarUrl =  ProtocolUtil.getAvatarUrl(userVo.getUserId());
                         CacheUtil.getInstance().saveUserPhotoUrl(avatarUrl);
                     }
                 }

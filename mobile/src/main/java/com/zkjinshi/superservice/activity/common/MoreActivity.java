@@ -222,7 +222,7 @@ public class MoreActivity extends FragmentActivity implements MultiImageSelector
                 if (baseBean.isSet()) {
                     userVo.setSex(sexCbx.isChecked() ? SexType.MALE : SexType.FEMALE);
                     userVo.setUserName(name);
-                    String avatarUrl = Constants.GET_USER_AVATAR+userVo.getUserId()+".jpg";
+                    String avatarUrl = ProtocolUtil.getAvatarUrl(userVo.getUserId());
                     userVo.setPhotoUrl(avatarUrl);
                     CacheUtil.getInstance().saveUserPhotoUrl(avatarUrl);
                     CacheUtil.getInstance().setUserName(name);

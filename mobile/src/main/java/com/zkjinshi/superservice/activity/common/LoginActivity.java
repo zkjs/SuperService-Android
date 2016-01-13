@@ -25,6 +25,7 @@ import com.zkjinshi.superservice.sqlite.DBOpenHelper;
 import com.zkjinshi.superservice.sqlite.UserDBUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.Constants;
+import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.vo.IdentityType;
 import com.zkjinshi.superservice.vo.UserVo;
 
@@ -146,7 +147,7 @@ public class LoginActivity extends Activity implements VerifyPhoneControler.Succ
                     ZoneManager.getInstance().requestMyZoneTask();//获取订阅区域
                     UserVo userVo = UserFactory.getInstance().buildUserVo(sempLoginbean);
                     UserDBUtil.getInstance().addUser(userVo);
-                    String avatarUrl = Constants.GET_USER_AVATAR+userVo.getUserId()+".jpg";
+                    String avatarUrl =  ProtocolUtil.getAvatarUrl(userVo.getUserId());
                     CacheUtil.getInstance().saveUserPhotoUrl(avatarUrl);
                     Intent intent;
                     if(TextUtils.isEmpty(sempLoginbean.getUrl())){

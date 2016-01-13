@@ -21,6 +21,7 @@ import com.zkjinshi.superservice.listener.RecyclerItemClickListener;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.utils.OrderUtil;
+import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.view.CircleImageView;
 import com.zkjinshi.superservice.vo.NoticeVo;
 import com.zkjinshi.superservice.vo.OrderVo;
@@ -74,7 +75,7 @@ public class LocNotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         NoticeVo noticeVo = noticeList.get(position);
         String userId = noticeVo.getUserId();
-        String imageUrl = Constants.GET_USER_AVATAR + userId + ".jpg";
+        String imageUrl =  ProtocolUtil.getAvatarUrl(userId);
         if(!TextUtils.isEmpty(imageUrl)){
             ImageLoader.getInstance().displayImage(imageUrl, ((NoticeViewHolder) holder).civClientAvatar, options);
         }

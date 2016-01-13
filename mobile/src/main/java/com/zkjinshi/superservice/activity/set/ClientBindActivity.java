@@ -28,6 +28,7 @@ import com.zkjinshi.superservice.net.ExtNetRequestListener;
 import com.zkjinshi.superservice.net.NetResponse;
 import com.zkjinshi.superservice.sqlite.ClientDBUtil;
 import com.zkjinshi.superservice.utils.Constants;
+import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.view.CircleImageView;
 import com.zkjinshi.superservice.vo.ClientVo;
 import com.zkjinshi.superservice.vo.ContactType;
@@ -106,7 +107,7 @@ public class ClientBindActivity extends Activity {
     private void showClient(ClientBaseBean client) {
         String userID = client.getUserid();
         if(!TextUtils.isEmpty(userID)) {
-            String imageUrl = Constants.GET_USER_AVATAR + userID + ".jpg";
+            String imageUrl =  ProtocolUtil.getAvatarUrl(userID);
             DisplayImageOptions options = new DisplayImageOptions.Builder()
                 .showImageOnLoading(R.mipmap.img_hotel_zhanwei)
                 .showImageForEmptyUri(R.mipmap.img_hotel_zhanwei)

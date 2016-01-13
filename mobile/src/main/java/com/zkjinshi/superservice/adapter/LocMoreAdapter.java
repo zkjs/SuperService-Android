@@ -14,6 +14,7 @@ import com.zkjinshi.base.util.DisplayUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.listener.RecyclerItemClickListener;
 import com.zkjinshi.superservice.utils.Constants;
+import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.view.CircleImageView;
 import com.zkjinshi.superservice.vo.ComingVo;
 
@@ -68,7 +69,7 @@ public class LocMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         ComingVo comingVo = comingList.get(position);
         String userId = comingVo.getUserId();
         if(!TextUtils.isEmpty(userId)){
-            String imageUrl = Constants.GET_USER_AVATAR + userId + ".jpg";
+            String imageUrl =  ProtocolUtil.getAvatarUrl(userId);
             if(!TextUtils.isEmpty(imageUrl)){
                 ImageLoader.getInstance().displayImage(imageUrl, ((ViewHolder)holder).photoImageView,options);
             }

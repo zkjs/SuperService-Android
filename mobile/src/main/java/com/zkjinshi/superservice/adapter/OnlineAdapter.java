@@ -14,6 +14,7 @@ import com.zkjinshi.base.util.TimeUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.listener.RecyclerItemClickListener;
 import com.zkjinshi.superservice.utils.Constants;
+import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.view.CircleImageView;
 import com.zkjinshi.superservice.vo.EmpStatusVo;
 
@@ -71,7 +72,7 @@ public class OnlineAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         String empName = empStatusVo.getEmpName();
         String empId = empStatusVo.getEmpId();
         if(!TextUtils.isEmpty(empId)){
-            String imageUrl = Constants.GET_USER_AVATAR + empId + ".jpg";
+            String imageUrl = ProtocolUtil.getAvatarUrl(empId);
             if(!TextUtils.isEmpty(imageUrl)){
                 ImageLoader.getInstance().displayImage(imageUrl, ((ViewHolder)holder).photoImageView,options);
             }
