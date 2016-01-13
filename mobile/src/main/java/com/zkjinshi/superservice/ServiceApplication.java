@@ -3,7 +3,6 @@ package com.zkjinshi.superservice;
 import android.app.ActivityManager;
 import android.app.Application;
 import android.content.Context;
-import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Environment;
 import android.support.multidex.MultiDex;
@@ -26,7 +25,6 @@ import com.zkjinshi.base.util.BaseContext;
 import com.zkjinshi.base.util.DeviceUtils;
 import com.zkjinshi.superservice.emchat.EasemobIMHelper;
 import com.zkjinshi.superservice.emchat.observer.EGroupReomveListener;
-import com.zkjinshi.superservice.receiver.ECallReceiver;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.EmotionUtil;
 
@@ -51,7 +49,6 @@ public class ServiceApplication extends Application{
     public static final String TAG = ServiceApplication.class.getSimpleName();
 
     private static Context mContext;
-    private ECallReceiver callReceiver;
 
     @Override
     public void onCreate() {
@@ -114,12 +111,6 @@ public class ServiceApplication extends Application{
         options.setRequireDeliveryAck(true);
         // 设置从db初始化加载时, 每个conversation需要加载msg的个数
         options.setNumberOfMessagesLoaded(10);
-        IntentFilter callFilter = new IntentFilter(EMChatManager.getInstance().getIncomingCallBroadcastAction());
-        if(callReceiver == null){
-            callReceiver = new ECallReceiver();
-        }
-        //注册通话广播接收者
-        registerReceiver(callReceiver, callFilter);
         EasemobIMHelper.getInstance().initConnectionListener();
         EMGroupManager.getInstance().addGroupChangeListener(new EGroupReomveListener());
     }

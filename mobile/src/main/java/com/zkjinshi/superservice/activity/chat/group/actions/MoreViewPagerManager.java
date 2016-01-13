@@ -48,18 +48,10 @@ public class MoreViewPagerManager extends Handler {
 
 	private static final int CHOOSE_IMAGE = 0;// 图片
 	private static final int TAKE_PHOTO  = 1;// 拍照
-	private static final int VOICE_CALL  = 2;// 语音电话
-	private static final int VIDEO_CALL  = 3;// 视频电话
-	private static final int ORDER_DEAL  = 4;// 订单
-	private static final int CALL_CARD   = 5;// 名片
-	private static final int MY_LOCATION = 6;// 位置
-	private static final int CHOOSE_FILE = 7;// 文件
 
 	private Context context;
 	private JazzyViewPager moreViewPager;
 	private LinearLayout moreLinearLayout;
-	
-	private String picName;
 
 	public MoreViewPagerManager(Context context, LinearLayout moreLinearLayout) {
 		this.context = context;
