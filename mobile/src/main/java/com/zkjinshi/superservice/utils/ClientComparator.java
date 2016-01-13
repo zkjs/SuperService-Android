@@ -1,5 +1,7 @@
 package com.zkjinshi.superservice.utils;
 
+import android.text.TextUtils;
+
 import com.zkjinshi.superservice.vo.ClientContactVo;
 
 import java.util.Comparator;
@@ -18,7 +20,7 @@ public class ClientComparator implements Comparator<ClientContactVo> {
 		String letter1 = o1.getFirstLetter();
 		String letter2 = o2.getFirstLetter();
 
-		if(null != letter1 && null != letter2){
+		if(!TextUtils.isEmpty(letter1) && !TextUtils.isEmpty(letter2)){
 			if(!letter1.equals(letter2)){
 				return letter1.compareTo(letter2);
 			}
@@ -26,7 +28,7 @@ public class ClientComparator implements Comparator<ClientContactVo> {
 
 		String sortKey1 = o1.getSortKey();
 		String sortKey2 = o2.getSortKey();
-		if(null != sortKey1 && null != sortKey2){
+		if(!TextUtils.isEmpty(sortKey1) && !TextUtils.isEmpty(sortKey2)){
 			if(!sortKey1.equals(sortKey2)){
 				return sortKey1.compareTo(sortKey2);
 			}
@@ -35,13 +37,19 @@ public class ClientComparator implements Comparator<ClientContactVo> {
 		String name1 = o1.getUsername();
 		String name2 = o2.getUsername();
 
-        if(null != name1 && null != name2){
+        if(!TextUtils.isEmpty(name1) && !TextUtils.isEmpty(name2)){
             if(!name1.equals(name2)){
                 return name1.compareTo(name2);
             }
         }
 
-		return o1.getPhone().compareTo(o2.getPhone());
+		String phone1 = o1.getPhone();
+		String phone2 = o2.getPhone();
+		if(!TextUtils.isEmpty(phone1) && !TextUtils.isEmpty(phone2)){
+			return  phone1.compareTo(phone2);
+		}
+
+		return 0;
 	}
 
 }

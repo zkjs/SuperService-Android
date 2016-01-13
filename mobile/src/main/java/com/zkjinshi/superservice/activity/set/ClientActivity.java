@@ -15,6 +15,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
@@ -243,38 +244,23 @@ public class ClientActivity extends AppCompatActivity{
             @Override
             public void onNetworkResponseSucceed(NetResponse result) {
                 super.onNetworkResponseSucceed(result);
-
                 DialogUtil.getInstance().cancelProgressDialog();
-                Log.i(TAG, "result.rawResult:" + result.rawResult);
-                String jsonResult = result.rawResult;
-                Gson gson = new Gson();
-                mAllContactsList = gson.fromJson(jsonResult,
-                new TypeToken<ArrayList<ClientContactVo>>() {}.getType());
-
-                if (null != mAllContactsList && !mAllContactsList.isEmpty()) {
-                    mTvDialog.setVisibility(View.GONE);
-                    mAllContactsList = ClientFactory.getInstance().
-                            buildSortContactList(mAllContactsList);
-                    Collections.sort(mAllContactsList, mClientCompatator);
-                    mContactsAdapter.setData(mAllContactsList);
+                try {
+                    Log.i(TAG, "result.rawResult:" + result.rawResult);
+                    String jsonResult = result.rawResult;
+                    Gson gson = new Gson();
+                    mAllContactsList = gson.fromJson(jsonResult,
+                    new TypeToken<ArrayList<ClientContactVo>>() {}.getType());
+                    if (null != mAllContactsList && !mAllContactsList.isEmpty()) {
+                        mTvDialog.setVisibility(View.GONE);
+                        mAllContactsList = ClientFactory.getInstance().
+                                buildSortContactList(mAllContactsList);
+                        Collections.sort(mAllContactsList, mClientCompatator);
+                        mContactsAdapter.setData(mAllContactsList);
+                    }
+                } catch (JsonSyntaxException e) {
+                    e.printStackTrace();
                 }
-//                    List<ClientVo> clientVos = ClientFactory.getInstance().buildClientVosByClientBeans(clientDetailBeans);
-//                    for (ClientContactVo client : clients) {
-//                        clientVo.setContactType(ContactType.NORMAL);
-//                        clientVo.setIsOnline(OnlineStatus.OFFLINE);
-//
-//                        if (!ClientDBUtil.getInstance().isClientExistByUserID(clientVo.getUserid())) {
-//                            ClientDBUtil.getInstance().addClient(clientVo);
-//                        }
-//                        String    userid  = clientVo.getUserid();
-//                        ContactVo contact = ContactFactory.getInstance().buildContactVoByMyClientVo(clientVo);
-//                        if (mLocalClientMap.containsKey(userid)) {
-//                            mAllContactsList.remove(mLocalClientMap.get(userid));
-//                        }
-//                        mLocalClientMap.put(userid, contact);
-//                        mAllContactsList.add(contact);
-//                    }
-//                    ClientActivity.this.updateListView(mAllContactsList);
             }
 
             @Override
