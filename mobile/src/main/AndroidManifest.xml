@@ -343,14 +343,6 @@
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         </activity>
 
-        <!--IM消息服务-->
-        <service android:name="com.zkjinshi.base.net.core.MessageService"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.zkjinshi.superservice.im.Message_SERVICE"/>
-            </intent-filter>
-        </service>
-
         <!--云测appKey-->
         <meta-data android:name="TESTIN_APPKEY" android:value="d709f38c0330e5edfab0e2ae10ff9827"/>
 
@@ -358,6 +350,7 @@
         <meta-data
             android:name="EASEMOB_APPKEY"
             android:value="zkjs#svip" />
+
         <!-- 声明sdk所需的service -->
         <service android:name="com.easemob.chat.EMChatService"
             android:exported="true"
@@ -369,22 +362,6 @@
                 <action android:name="com.zkjinshi.superservice.CONNECTION_CONFLICT"/>
             </intent-filter>
         </receiver>
-
-        <!-- 语音通话 -->
-        <activity
-            android:name=".activity.chat.single.VoiceCallActivity"
-            android:screenOrientation="portrait"
-            android:launchMode="singleTask"
-            android:theme="@android:style/android:Theme.NoTitleBar" >
-        </activity>
-        <!-- 视频通话 -->
-        <activity
-            android:name=".activity.chat.single.VideoCallActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="portrait"
-            android:launchMode="singleTask"
-            android:theme="@style/horizontal_slide" >
-        </activity>
 
         <activity
             android:name=".activity.chat.single.TranspondActivity"
