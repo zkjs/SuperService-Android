@@ -131,21 +131,23 @@ public class VerifyPhoneControler {
             public void afterTextChanged(Editable strPhone) {
                 //1.监听手机输入
                 String phoneNumber = strPhone.toString();
-                if (phoneNumber.length() != 11) {
-                    mBtnConfirm.setEnabled(false);
-                } else {
-                    if (!StringUtil.isPhoneNumber(phoneNumber)) {
-                        mImgPhoneStatus.setVisibility(View.VISIBLE);
-                        mImgPhoneStatus.setImageResource(R.mipmap.img_input_warning);
+                if(!TextUtils.isEmpty(phoneNumber)){
+                    if (phoneNumber.length() != 11) {
                         mBtnConfirm.setEnabled(false);
                     } else {
-                        mImgPhoneStatus.setVisibility(View.VISIBLE);
-                        mImgPhoneStatus.setImageResource(R.mipmap.img_input_right);
-                        //手机号输入正确并且当前没有进入倒计时
-                        if (mSmsCountSeconds >= 60) {
-                            mBtnConfirm.setEnabled(true);
-                        } else {
+                        if (!StringUtil.isPhoneNumber(phoneNumber)) {
+                            mImgPhoneStatus.setVisibility(View.VISIBLE);
+                            mImgPhoneStatus.setImageResource(R.mipmap.img_input_warning);
                             mBtnConfirm.setEnabled(false);
+                        } else {
+                            mImgPhoneStatus.setVisibility(View.VISIBLE);
+                            mImgPhoneStatus.setImageResource(R.mipmap.img_input_right);
+                            //手机号输入正确并且当前没有进入倒计时
+                            if (mSmsCountSeconds >= 60) {
+                                mBtnConfirm.setEnabled(true);
+                            } else {
+                                mBtnConfirm.setEnabled(false);
+                            }
                         }
                     }
                 }

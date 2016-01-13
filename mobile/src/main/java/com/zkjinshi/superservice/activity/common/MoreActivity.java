@@ -120,16 +120,20 @@ public class MoreActivity extends FragmentActivity implements MultiImageSelector
     }
 
     private void initData() {
+
         DBOpenHelper.DB_NAME = CacheUtil.getInstance().getUserId() + ".db";
         userVo = UserDBUtil.getInstance().queryUserById(CacheUtil.getInstance().getUserId());
         if(getIntent().getSerializableExtra("sempLoginbean") != null){
             sempLoginbean = (SempLoginBean)getIntent().getSerializableExtra("sempLoginbean");
         }
-        nameTv.setText(CacheUtil.getInstance().getUserName());
-        if(userVo.getSex() == SexType.FEMALE){
-            sexCbx.setChecked(false);
-        }else{
-            sexCbx.setChecked(true);
+        if(null != userVo){
+            nameTv.setText(CacheUtil.getInstance().getUserName());
+            SexType sexType = userVo.getSex();
+            if(null != sexType && sexType == SexType.FEMALE){
+                sexCbx.setChecked(false);
+            }else{
+                sexCbx.setChecked(true);
+            }
         }
         ImageLoader.getInstance().displayImage(CacheUtil.getInstance().getUserPhotoUrl(), avatarCiv);
     }

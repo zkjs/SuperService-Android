@@ -146,16 +146,17 @@ public class TeamContactsActivity extends AppCompatActivity{
                             //获取部门首字母进行排序
                             for (ShopEmployeeVo shopEmployeeVo : shopEmployeeVos) {
                                 empids.add(shopEmployeeVo.getEmpid());
-                                if (TextUtils.isEmpty(shopEmployeeVo.getDept_name())) {
+                                String deptName = shopEmployeeVo.getDept_name();
+                                if (TextUtils.isEmpty(deptName)) {
                                     shopEmployeeVo.setDept_name("#");
+                                }else {
+                                    String sortLetter = deptName.substring(0, 1);
+                                    //部门分类并消除相同部门
+                                    if (!TextUtils.isEmpty(sortLetter) && !strLetters.contains(sortLetter)) {
+                                        strLetters.add(sortLetter);
+                                    }
                                 }
-                                String sortLetter = shopEmployeeVo.getDept_name().substring(0, 1);
-                                //部门分类并消除相同部门
-                                if (!TextUtils.isEmpty(sortLetter) && !strLetters.contains(sortLetter)) {
-                                    strLetters.add(sortLetter);
-                                } else {
-                                    continue;
-                                }
+
                             }
 
                             String[] sortArray = strLetters.toArray(new String[strLetters.size()]);

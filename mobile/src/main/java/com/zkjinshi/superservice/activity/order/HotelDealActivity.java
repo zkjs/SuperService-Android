@@ -196,103 +196,124 @@ public class HotelDealActivity extends Activity {
     }
 
     private void initData() {
-        confirmBtn.setTag(orderDetailForDisplay.getOrderno());
-        titleTv.setText(orderDetailForDisplay.getShopname());
+        String orderNo = orderDetailForDisplay.getOrderno();
+        if(!TextUtils.isEmpty(orderNo)){
+            confirmBtn.setTag(orderNo);
+        }else {
+            confirmBtn.setTag("");
+        }
+        String shopName = orderDetailForDisplay.getShopname();
+        if(!TextUtils.isEmpty(shopName)){
+            titleTv.setText(shopName);
+        }
         String orderStatus = orderDetailForDisplay.getOrderstatus();
-        //订单状态
-        if(orderStatus.equals("待处理")||orderStatus.equals("待确认")||orderStatus.equals("待支付")){
-            confirmBtn.setVisibility(View.VISIBLE);
-            confirmBtn.setText("确认订单");
-            confirmBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if(orderDetailForDisplay.getPaytype()== 0){
-                        DialogUtil.getInstance().showToast(HotelDealActivity.this,"请设置支付方式");
-                        return;
-                    }else if(orderDetailForDisplay.getRoomprice()!=null && orderDetailForDisplay.getRoomprice().doubleValue() <= 0.0 ){
-                        DialogUtil.getInstance().showToast(HotelDealActivity.this,"请设置价格");
-                        return;
-                    }else if(orderDetailForDisplay.getRoomprice()==null ){
-                        DialogUtil.getInstance().showToast(HotelDealActivity.this,"请设置价格");
-                        return;
-                    }
-                    String orderNo = confirmBtn.getTag().toString();
-                    confirmOrder(orderNo);
-                }
-            });
-        }else{
-            unClickItems();
-            if(orderStatus.equals("已确认")){
+        if(!TextUtils.isEmpty(orderStatus)){
+            //订单状态
+            if(orderStatus.equals("待处理")||orderStatus.equals("待确认")||orderStatus.equals("待支付")){
                 confirmBtn.setVisibility(View.VISIBLE);
-                confirmBtn.setText("订单完成");
+                confirmBtn.setText("确认订单");
                 confirmBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        finishOrder();
+                        if(orderDetailForDisplay.getPaytype()== 0){
+                            DialogUtil.getInstance().showToast(HotelDealActivity.this,"请设置支付方式");
+                            return;
+                        }else if(orderDetailForDisplay.getRoomprice()!=null && orderDetailForDisplay.getRoomprice().doubleValue() <= 0.0 ){
+                            DialogUtil.getInstance().showToast(HotelDealActivity.this,"请设置价格");
+                            return;
+                        }else if(orderDetailForDisplay.getRoomprice()==null ){
+                            DialogUtil.getInstance().showToast(HotelDealActivity.this,"请设置价格");
+                            return;
+                        }
+                        String orderNo = confirmBtn.getTag().toString();
+                        confirmOrder(orderNo);
                     }
                 });
-            }else if(orderStatus.equals("已完成")){
-                confirmBtn.setVisibility(View.VISIBLE);
-                confirmBtn.setText("订单已完成");
-                confirmBtn.setEnabled(false);
             }else{
-                confirmBtn.setVisibility(View.GONE);
+                unClickItems();
+                if(orderStatus.equals("已确认")){
+                    confirmBtn.setVisibility(View.VISIBLE);
+                    confirmBtn.setText("订单完成");
+                    confirmBtn.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            finishOrder();
+                        }
+                    });
+                }else if(orderStatus.equals("已完成")){
+                    confirmBtn.setVisibility(View.VISIBLE);
+                    confirmBtn.setText("订单已完成");
+                    confirmBtn.setEnabled(false);
+                }else{
+                    confirmBtn.setVisibility(View.GONE);
+                }
             }
         }
 
-        if( orderDetailForDisplay.getDoublebreakfeast() == 1){
+        int doublebreakfeast = orderDetailForDisplay.getDoublebreakfeast();
+
+        if( doublebreakfeast == 1){
             breakfastTcv.valueCbx.setChecked(true);
 
         }else{
             breakfastTcv.valueCbx.setChecked(false);
         }
 
-        if(orderDetailForDisplay.getNosmoking() == 1){
+        int nosmoking = orderDetailForDisplay.getNosmoking();
+        if(nosmoking == 1){
             noSmokeTcv.valueCbx.setChecked(true);
         }else{
             noSmokeTcv.valueCbx.setChecked(false);
         }
 
         //订单号
-        if(!TextUtils.isEmpty(orderDetailForDisplay.getOrderno())){
-            orderNoIsv.setValue(orderDetailForDisplay.getOrderno());
+        if(!TextUtils.isEmpty(orderNo)){
+            orderNoIsv.setValue(orderNo);
         }
+
         //房型
-        if(!TextUtils.isEmpty(orderDetailForDisplay.getRoomtype())){
-            roomTypeTsv.setValue(orderDetailForDisplay.getRoomtype());
+        String roomType = orderDetailForDisplay.getRoomtype();
+        if(!TextUtils.isEmpty(roomType)){
+            roomTypeTsv.setValue(roomType);
         }
         //房间数量
-        roomNumTnv.setValue(orderDetailForDisplay.getRoomcount()+"");
+        int roomcount = orderDetailForDisplay.getRoomcount();
+        roomNumTnv.setValue(roomcount+"");
         //初始化时间
         setOrderDate();
         //联系人
-        if(!TextUtils.isEmpty(orderDetailForDisplay.getOrderedby())){
-            contactTsv.setValue(orderDetailForDisplay.getOrderedby());
+        String orderedby = orderDetailForDisplay.getOrderedby();
+        if(!TextUtils.isEmpty(orderedby)){
+            contactTsv.setValue(orderedby);
         }else{
             contactTsv.setValue(" ");
         }
         //联系人号码
-        if(!TextUtils.isEmpty(orderDetailForDisplay.getTelephone())){
-            phoneTsv.setValue(orderDetailForDisplay.getTelephone());
+        String telephone = orderDetailForDisplay.getTelephone();
+        if(!TextUtils.isEmpty(telephone)){
+            phoneTsv.setValue(telephone);
         }else{
             phoneTsv.setValue(" ");
         }
         //发票
-        if(!TextUtils.isEmpty(orderDetailForDisplay.getCompany())){
-            invoiceTsv.setValue(orderDetailForDisplay.getCompany());
+        String company = orderDetailForDisplay.getCompany();
+        if(!TextUtils.isEmpty(company)){
+            invoiceTsv.setValue(company);
         }else{
             invoiceTsv.setValue(" ");
         }
 
         //特权
-        if(!TextUtils.isEmpty(orderDetailForDisplay.getPrivilegeName())){
-            privilegeTsv.setValue(orderDetailForDisplay.getPrivilegeName());
+        String privilegeName = orderDetailForDisplay.getPrivilegeName();
+        if(!TextUtils.isEmpty(privilegeName)){
+            privilegeTsv.setValue(privilegeName);
         }else{
             privilegeTsv.setValue("暂无");
         }
         //备注
-        if(!TextUtils.isEmpty(orderDetailForDisplay.getRemark())){
-            remarkTv.setText(orderDetailForDisplay.getRemark());
+        String remark = orderDetailForDisplay.getRemark();
+        if(!TextUtils.isEmpty(remark)){
+            remarkTv.setText(remark);
         }else{
             remarkTv.setText("");
         }
@@ -300,11 +321,13 @@ public class HotelDealActivity extends Activity {
         //支付方式
         String roomRateStr="";
         String payTypeStr;
-        if(orderDetailForDisplay.getRoomprice()!= null && orderDetailForDisplay.getRoomprice().doubleValue() > 0.0){
+        BigDecimal roomPrice = orderDetailForDisplay.getRoomprice();
+        if(roomPrice!= null && roomPrice.doubleValue() > 0.0){
             roomRateStr = "¥ "+orderDetailForDisplay.getRoomprice();
         }
         String payTypes[] = {"未设置","在线支付","到店支付","挂账"};
-        int index = orderDetailForDisplay.getPaytype()%payTypes.length;
+        int payType = orderDetailForDisplay.getPaytype();
+        int index = payType % payTypes.length;
         payTypeStr = payTypes[index];
         payTypeTsv.setValue(roomRateStr+ "  " + payTypeStr);
 
