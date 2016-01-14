@@ -96,9 +96,6 @@ public class SettingActivity extends Activity  {
         addRightIcon(zoneIusv);
 
         mOptions = new DisplayImageOptions.Builder()
-                .showImageOnLoading(R.drawable.img_morentu)
-                .showImageForEmptyUri(R.drawable.img_morentu)
-                .showImageOnFail(R.drawable.img_morentu)
                 .cacheInMemory(true)
                 .cacheOnDisk(true)
                 .build();

@@ -135,7 +135,8 @@ public class MoreActivity extends FragmentActivity implements MultiImageSelector
                 sexCbx.setChecked(true);
             }
         }
-        ImageLoader.getInstance().displayImage(CacheUtil.getInstance().getUserPhotoUrl(), avatarCiv);
+        String avatarUrl = ProtocolUtil.getAvatarUrl(userVo.getUserId());
+        ImageLoader.getInstance().displayImage(avatarUrl, avatarCiv);
     }
 
     private void initListener() {
@@ -199,7 +200,10 @@ public class MoreActivity extends FragmentActivity implements MultiImageSelector
         if(picPath != null){
             HashMap<String,File> fileMap = new HashMap<String, File>();
             fileMap.put("file", new File(picPath));
-            netRequest.setFileMap(fileMap);         ;
+            netRequest.setFileMap(fileMap);
+
+            ImageLoader.getInstance().clearDiskCache();
+            ImageLoader.getInstance().clearMemoryCache();
         }
         NetRequestTask netRequestTask = new NetRequestTask(this,netRequest, NetResponse.class);
         netRequestTask.methodType = MethodType.PUSH;
@@ -222,16 +226,13 @@ public class MoreActivity extends FragmentActivity implements MultiImageSelector
                 Log.i(TAG, "result.rawResult:" + result.rawResult);
                 BaseBean baseBean = new Gson().fromJson(result.rawResult, BaseBean.class);
                 if (baseBean.isSet()) {
+                    String avatarUrl = ProtocolUtil.getAvatarUrl(userVo.getUserId());
                     userVo.setSex(sexCbx.isChecked() ? SexType.MALE : SexType.FEMALE);
                     userVo.setUserName(name);
-                    String avatarUrl = ProtocolUtil.getAvatarUrl(userVo.getUserId());
                     userVo.setPhotoUrl(avatarUrl);
                     CacheUtil.getInstance().saveUserPhotoUrl(avatarUrl);
                     CacheUtil.getInstance().setUserName(name);
                     UserDBUtil.getInstance().addUser(userVo);
-
-                    ImageLoader.getInstance().getDiskCache().remove(avatarUrl);
-                    ImageLoader.getInstance().getMemoryCache().remove(avatarUrl);
 
                     if(!getIntent().getBooleanExtra("from_setting",false)){
                         startActivity(new Intent(MoreActivity.this, ZoneActivity.class));
