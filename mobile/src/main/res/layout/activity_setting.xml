@@ -80,7 +80,7 @@
                 android:layout_weight="1"
                 android:clickable="true"
                 zkjinshi:itemSettingTitle="认证机构"
-                zkjinshi:itemSettingContent2="湖南旅游管理协会"
+                zkjinshi:itemSettingContent2=""
                 android:background="#ffffff"/>
             <View style="@style/GrayLineBorder"></View>
             <com.zkjinshi.superservice.view.ItemUserSettingView
@@ -99,7 +99,7 @@
                 android:layout_weight="1"
                 android:clickable="true"
                 zkjinshi:itemSettingTitle="业务信息"
-                zkjinshi:itemSettingContent2="酒店接待、旅游订票"
+                zkjinshi:itemSettingContent2=""
                 android:background="#ffffff"/>
             <View style="@style/GrayLineBorder"></View>
             <com.zkjinshi.superservice.view.ItemUserSettingView
@@ -108,7 +108,7 @@
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:clickable="true"
-                zkjinshi:itemSettingTitle="电话号码"
+                zkjinshi:itemSettingTitle="账号"
                 zkjinshi:itemSettingContent2=""
                 android:background="#ffffff"/>
             <View style="@style/GrayLineBorder"></View>
