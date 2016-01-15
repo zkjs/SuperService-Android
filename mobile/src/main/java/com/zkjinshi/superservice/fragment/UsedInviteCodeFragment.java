@@ -180,15 +180,8 @@ public class UsedInviteCodeFragment extends Fragment {
                                 mInviteCodeUsers.addAll(inviteCodeUsers);
                                 mInviteCodeAdapter.notifyDataSetChanged();
                             }
-                        }else {
-                            DialogUtil.getInstance().showCustomToast(mActivity, mActivity.
-                                        getString(R.string.no_more_data), Gravity.CENTER);
                         }
-                    } else {
-                        DialogUtil.getInstance().showCustomToast(mActivity, mActivity.
-                                getString(R.string.no_more_data), Gravity.CENTER);
                     }
-
                     if(null == mInviteCodeUsers || mInviteCodeUsers.isEmpty()){
                         mEmptyLayout.setVisibility(View.VISIBLE);
                     }
