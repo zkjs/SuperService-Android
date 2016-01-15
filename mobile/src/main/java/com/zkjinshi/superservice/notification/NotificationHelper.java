@@ -17,7 +17,9 @@ import com.easemob.chat.EMMessage;
 import com.easemob.chat.TextMessageBody;
 import com.easemob.exceptions.EaseMobException;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.ImageSize;
 import com.zkjinshi.base.util.ActivityManagerHelper;
+import com.zkjinshi.base.util.DisplayUtil;
 import com.zkjinshi.base.util.TimeUtil;
 import com.zkjinshi.base.util.VibratorHelper;
 import com.zkjinshi.superservice.R;
@@ -171,7 +173,8 @@ public class NotificationHelper {
         notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
         String contactId = locPushBean.getUserid();
         String imageUrl =  ProtocolUtil.getAvatarUrl(contactId);
-        Bitmap bitmap = ImageLoader.getInstance().loadImageSync(imageUrl);
+        ImageSize imageSize = new ImageSize(DisplayUtil.dip2px(context,36), DisplayUtil.dip2px(context,36));
+        Bitmap bitmap = ImageLoader.getInstance().loadImageSync(imageUrl,imageSize);
         notificationBuilder.setLargeIcon(bitmap);
         // 2.设置点击跳转事件
         Intent intent = new Intent(context, SplashActivity.class);
