@@ -203,10 +203,6 @@ public class TeamContactsActivity extends AppCompatActivity{
             @Override
             public boolean onMenuItemClick(android.view.MenuItem item) {
                 switch (item.getItemId()) {
-                    case R.id.menu_team_search:
-                        //TODO: search 团队成员检索
-                        break;
-
                     case R.id.menu_team_jia:
                         Intent intent = new Intent(TeamContactsActivity.this, EmployeeAddActivity.class);
                         startActivityForResult(intent, ADD_REQUEST_CODE);
@@ -271,7 +267,7 @@ public class TeamContactsActivity extends AppCompatActivity{
         if(mUserType == IdentityType.BUSINESS){
             getMenuInflater().inflate(R.menu.menu_team_for_business, menu);
         }else {
-            getMenuInflater().inflate(R.menu.menu_team_for_waiter, menu);
+            //getMenuInflater().inflate(R.menu.menu_team_for_waiter, menu);
         }
         return true;
     }
