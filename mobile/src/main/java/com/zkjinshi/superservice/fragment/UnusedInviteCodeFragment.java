@@ -196,7 +196,6 @@ public class UnusedInviteCodeFragment extends Fragment {
                     if(null != inviteCodeData){
                         Head head = inviteCodeData.getHead();
                         if(head.isSet()){
-                            mEmptyLayout.setVisibility(View.GONE);
                             int count = head.getCount();
                             ((InviteCodesActivity)mActivity).udpateUnusedCodeCount(count);
 
@@ -205,11 +204,15 @@ public class UnusedInviteCodeFragment extends Fragment {
                             if(null!=inviteCodes && !inviteCodes.isEmpty()){
                                 mInviteCodes.addAll(inviteCodes);
                                 mInviteCodeAdapter.notifyDataSetChanged();
-                            } else {
-//                                DialogUtil.getInstance().showCustomToast(mActivity, mActivity.getString(
-//                                                                         R.string.no_more_data),
-//                                                                         Gravity.CENTER);
                             }
+
+                            //数据为空时 显示空页面
+                            if(null==mInviteCodes || mInviteCodes.isEmpty()){
+                                if(null != mEmptyLayout && (mEmptyLayout.getVisibility()!= View.GONE)){
+                                    mEmptyLayout.setVisibility(View.GONE);
+                                }
+                            }
+
                         }
                     }
 
