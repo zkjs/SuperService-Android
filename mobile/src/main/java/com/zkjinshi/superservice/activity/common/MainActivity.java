@@ -265,7 +265,7 @@ public class MainActivity extends AppCompatActivity{
         DBOpenHelper.DB_NAME = CacheUtil.getInstance().getUserId() + ".db";
         mainActivityController = new MainActivityController(this);
         mainActivityController.onCreate();
-        userVo = UserDBUtil.getInstance().queryUserById(CacheUtil.getInstance().getUserId());
+
         initView();
         initData();
         initListeners();
@@ -283,7 +283,7 @@ public class MainActivity extends AppCompatActivity{
 
     protected void onResume(){
         super.onResume();
-
+        userVo = UserDBUtil.getInstance().queryUserById(CacheUtil.getInstance().getUserId());
         if(null != userVo){
             String userName = userVo.getUserName();
             if(!TextUtils.isEmpty(userName)){
@@ -303,7 +303,7 @@ public class MainActivity extends AppCompatActivity{
             // String avatarUrl = ProtocolUtil.getShopBackUrl(userVo.getShopId());
             // mainActivityController.setUserPhoto(CacheUtil.getInstance().getUserPhotoUrl(), avatarIv);
         }else{
-            onlineCbx.setVisibility(View.VISIBLE);
+            onlineCbx.setVisibility(View.GONE);
             teamTv.setText("团队联系人");
             mainActivityController.setUserPhoto(CacheUtil.getInstance().getUserPhotoUrl(), avatarIv);
             setIbtn.setVisibility(View.VISIBLE);
