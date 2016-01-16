@@ -174,16 +174,20 @@ public class UsedInviteCodeFragment extends Fragment {
                             if (null != inviteCodeUsers && !inviteCodeUsers.isEmpty()) {
                                 int count = codeUserData.getHead().getCount();
                                 ((InviteCodesActivity)mActivity).updateUsedCodeCount(count);
-                                mEmptyLayout.setVisibility(View.GONE);
-
                                 mPage++;
                                 mInviteCodeUsers.addAll(inviteCodeUsers);
                                 mInviteCodeAdapter.notifyDataSetChanged();
                             }
                         }
                     }
-                    if(null == mInviteCodeUsers || mInviteCodeUsers.isEmpty()){
-                        mEmptyLayout.setVisibility(View.VISIBLE);
+
+                    //控制空白页面提示
+                    if(null != mEmptyLayout){
+                        if(null == mInviteCodeUsers || mInviteCodeUsers.isEmpty()){
+                            mEmptyLayout.setVisibility(View.VISIBLE);
+                        } else {
+                            mEmptyLayout.setVisibility(View.GONE);
+                        }
                     }
 
                     mSrlContainer.setRefreshing(false);

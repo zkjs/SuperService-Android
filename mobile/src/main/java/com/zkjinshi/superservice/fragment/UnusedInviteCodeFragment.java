@@ -205,19 +205,16 @@ public class UnusedInviteCodeFragment extends Fragment {
                                 mInviteCodes.addAll(inviteCodes);
                                 mInviteCodeAdapter.notifyDataSetChanged();
                             }
-
-                            //数据为空时 显示空页面
-                            if(null==mInviteCodes || mInviteCodes.isEmpty()){
-                                if(null != mEmptyLayout && (mEmptyLayout.getVisibility()!= View.GONE)){
-                                    mEmptyLayout.setVisibility(View.GONE);
-                                }
-                            }
-
                         }
                     }
 
-                    if(null==mInviteCodes || mInviteCodes.isEmpty()){
-                        mEmptyLayout.setVisibility(View.VISIBLE);
+                    //控制空白页面提示
+                    if(null != mEmptyLayout){
+                        if(null==mInviteCodes || mInviteCodes.isEmpty()){
+                            mEmptyLayout.setVisibility(View.VISIBLE);
+                        } else {
+                            mEmptyLayout.setVisibility(View.GONE);
+                        }
                     }
                     mSrlContainer.setRefreshing(false);
                 }
