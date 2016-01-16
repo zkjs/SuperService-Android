@@ -41,7 +41,6 @@ public abstract class ExtNetRequestListener implements NetRequestListener{
 
     @Override
     public void onNetworkResponseSucceed(NetResponse result) {
-
         try {
             BaseBean baseBean = new Gson().fromJson(result.rawResult, BaseBean.class);
             if (baseBean != null && !baseBean.isSet() && baseBean.getErr().equals("400")) {

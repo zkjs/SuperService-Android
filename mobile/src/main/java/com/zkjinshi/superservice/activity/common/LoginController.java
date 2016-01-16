@@ -8,6 +8,7 @@ import com.easemob.EMCallBack;
 import com.easemob.chat.EMChatManager;
 import com.easemob.chat.EMGroupManager;
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import com.zkjinshi.base.log.LogLevel;
 import com.zkjinshi.base.log.LogUtil;
@@ -125,12 +126,9 @@ public class LoginController {
             @Override
             public void onNetworkResponseSucceed(NetResponse result) {
                 super.onNetworkResponseSucceed(result);
-
-                Log.i(TAG, "result.rawResult:" + result.rawResult);
-                String jsonResult = result.rawResult;
-                if (result.rawResult.contains("set") || jsonResult.contains("err")) {
-                    return ;
-                } else {
+                try {
+                    Log.i(TAG, "result.rawResult:" + result.rawResult);
+                    String jsonResult = result.rawResult;
                     Gson gson = new Gson();
                     List<DepartmentVo> departmentVos = gson.fromJson(jsonResult,
                             new TypeToken<ArrayList<DepartmentVo>>() {}.getType());
@@ -138,6 +136,8 @@ public class LoginController {
                     if(null != departmentVos && departmentVos.isEmpty()){
                         ShopDepartmentDBUtil.getInstance().batchAddShopDepartments(departmentVos);
                     }
+                } catch (JsonSyntaxException e) {
+                    e.printStackTrace();
                 }
             }
 

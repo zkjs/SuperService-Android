@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.bean.ClientDetailBean;
@@ -150,11 +151,9 @@ public class ClientController {
             public void onNetworkResponseSucceed(NetResponse result) {
                 super.onNetworkResponseSucceed(result);
                 DialogUtil.getInstance().cancelProgressDialog();
-                Log.i(TAG, "result.rawResult:" + result.rawResult);
-                String jsonResult = result.rawResult;
-                if (result.rawResult.contains("set") || jsonResult.contains("err")) {
-//                    DialogUtil.getInstance().showToast(mContext, "用户操作权限不够，请重新登录。");
-                } else {
+                try {
+                    Log.i(TAG, "result.rawResult:" + result.rawResult);
+                    String jsonResult = result.rawResult;
                     Gson gson = new Gson();
                     List<ClientDetailBean> clientDetailBeans = gson.fromJson(jsonResult,
                             new TypeToken<ArrayList<ClientDetailBean>>() {}.getType());
@@ -171,6 +170,8 @@ public class ClientController {
                             }
                         }
                     }
+                } catch (JsonSyntaxException e) {
+                    e.printStackTrace();
                 }
             }
 

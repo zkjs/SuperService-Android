@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.bean.TeamContactBean;
@@ -72,16 +73,12 @@ public class TeamContactsController {
             @Override
             public void onNetworkResponseSucceed(NetResponse result) {
                 super.onNetworkResponseSucceed(result);
-
                 Log.i(TAG, "result.rawResult:" + result.rawResult);
                 String jsonResult = result.rawResult;
-                if (result.rawResult.contains("set") || jsonResult.contains("err")) {
-                    return;
-                } else {
+                try {
                     Gson gson = new Gson();
                     List<TeamContactBean> teamContactBeans = gson.fromJson(jsonResult,
                             new TypeToken<ArrayList<TeamContactBean>>() {}.getType());
-
                     if (null != teamContactBeans) {
                         /** add to local db */
                         List<ShopEmployeeVo> shopEmployeeVos = ShopEmployeeFactory.getInstance().buildShopEmployees(teamContactBeans);
@@ -94,7 +91,8 @@ public class TeamContactsController {
                             listener.getContactsDone(teamContactBeans);
                         }
                     }
-
+                } catch (JsonSyntaxException e) {
+                    e.printStackTrace();
                 }
             }
 
