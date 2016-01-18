@@ -787,7 +787,7 @@ public class GroupChatAdapter extends BaseAdapter {
                                                         int actionId) {
                                     switch (actionId) {
                                         case 0:// 转发
-                                            final BookOrderBean bookOrder = new Gson().fromJson(content, BookOrderBean.class);
+                                            final OrderDetailForDisplay bookOrder = new Gson().fromJson(content, OrderDetailForDisplay.class);
                                             Intent intent = new Intent(context, TranspondActivity.class);
                                             intent.putExtra("bookOrder",bookOrder);
                                             context.startActivity(intent);

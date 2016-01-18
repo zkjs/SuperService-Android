@@ -44,6 +44,7 @@ import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.utils.FileUtil;
 import com.zkjinshi.superservice.utils.MediaPlayerUtil;
 import com.zkjinshi.superservice.vo.ChatRoomVo;
+import com.zkjinshi.superservice.vo.OrderDetailForDisplay;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -65,7 +66,7 @@ public class ChatGroupActivity extends AppCompatActivity implements CompoundButt
     private final static String TAG = ChatGroupActivity.class.getSimpleName();
 
     private String groupId;
-    private BookOrderBean bookOrder;
+    private OrderDetailForDisplay bookOrder;
 
     private Toolbar mToolbar;
     private TextView mTvCenterTitle;
@@ -137,7 +138,7 @@ public class ChatGroupActivity extends AppCompatActivity implements CompoundButt
         if(!TextUtils.isEmpty(getIntent().getStringExtra("groupId"))){
             groupId = getIntent().getStringExtra("groupId");
         }
-        bookOrder  = (BookOrderBean) getIntent().getSerializableExtra("bookOrder");
+        bookOrder  = (OrderDetailForDisplay) getIntent().getSerializableExtra("bookOrder");
         //初始化消息ListView管理器
         messageListViewManager = new MessageListViewManager(this, groupId);
         messageListViewManager.init();

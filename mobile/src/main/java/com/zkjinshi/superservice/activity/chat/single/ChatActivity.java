@@ -44,6 +44,7 @@ import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.utils.FileUtil;
 import com.zkjinshi.superservice.utils.MediaPlayerUtil;
 import com.zkjinshi.superservice.vo.ChatRoomVo;
+import com.zkjinshi.superservice.vo.OrderDetailForDisplay;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -69,7 +70,7 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
     private String toName;// 接收者姓名
     private String shopId;// 商店id
     private String shopName;// 商店名称
-    private BookOrderBean bookOrder;
+    private OrderDetailForDisplay bookOrder;
 
     private Toolbar       mToolbar;
     private TextView      mTvCenterTitle;
@@ -154,7 +155,7 @@ public class ChatActivity extends AppCompatActivity implements CompoundButton.On
         if(!TextUtils.isEmpty(getIntent().getStringExtra(Constants.EXTRA_SHOP_NAME))){
             shopName = getIntent().getStringExtra(Constants.EXTRA_SHOP_NAME);
         }
-        bookOrder  = (BookOrderBean) getIntent().getSerializableExtra("bookOrder");
+        bookOrder  = (OrderDetailForDisplay) getIntent().getSerializableExtra("bookOrder");
         //初始化消息ListView管理器
         messageListViewManager = new MessageListViewManager(this, userId, fromName,toName,shopId,shopName);
         messageListViewManager.init();

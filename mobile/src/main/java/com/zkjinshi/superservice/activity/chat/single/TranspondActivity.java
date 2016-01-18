@@ -29,6 +29,7 @@ import com.zkjinshi.superservice.listener.GetTeamContactsListener;
 import com.zkjinshi.superservice.listener.RecyclerItemClickListener;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.view.AutoSideBar;
+import com.zkjinshi.superservice.vo.OrderDetailForDisplay;
 import com.zkjinshi.superservice.vo.ShopEmployeeVo;
 import java.util.ArrayList;;
 import java.util.Iterator;
@@ -61,7 +62,7 @@ public class TranspondActivity extends AppCompatActivity {
     private String mShopID;
     private String mToken;
 
-    private BookOrderBean bookOrder;
+    private OrderDetailForDisplay bookOrder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,7 +96,7 @@ public class TranspondActivity extends AppCompatActivity {
     private void initData() {
 
         if(null != getIntent() && null != getIntent().getSerializableExtra("bookOrder")){
-            bookOrder =  (BookOrderBean)getIntent().getSerializableExtra("bookOrder");
+            bookOrder =  (OrderDetailForDisplay)getIntent().getSerializableExtra("bookOrder");
         }
 
         mUserID     = CacheUtil.getInstance().getUserId();
