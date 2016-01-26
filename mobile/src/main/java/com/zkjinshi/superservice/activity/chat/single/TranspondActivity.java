@@ -13,6 +13,8 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -21,14 +23,17 @@ import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.base.util.DisplayUtil;
 import com.zkjinshi.base.view.CustomDialog;
 import com.zkjinshi.superservice.R;
+import com.zkjinshi.superservice.activity.set.TeamContactsController;
 import com.zkjinshi.superservice.adapter.TranspondAdapter;
 import com.zkjinshi.superservice.bean.BookOrderBean;
 import com.zkjinshi.superservice.bean.TeamContactBean;
 import com.zkjinshi.superservice.factory.ShopEmployeeFactory;
 import com.zkjinshi.superservice.listener.GetTeamContactsListener;
 import com.zkjinshi.superservice.listener.RecyclerItemClickListener;
+import com.zkjinshi.superservice.sqlite.ShopEmployeeDBUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.view.AutoSideBar;
+import com.zkjinshi.superservice.vo.OnlineStatus;
 import com.zkjinshi.superservice.vo.OrderDetailForDisplay;
 import com.zkjinshi.superservice.vo.ShopEmployeeVo;
 import java.util.ArrayList;;
@@ -46,18 +51,14 @@ public class TranspondActivity extends AppCompatActivity {
 
     private final static String TAG = TranspondActivity.class.getSimpleName();
 
-    private Toolbar mToolbar;
-    private TextView mTvCenterTitle;
-    private RecyclerView mRvTeamContacts;
+    private Toolbar    mToolbar;
+    private TextView   mTvCenterTitle;
+    private ListView   mRvTeamContacts;
     private RelativeLayout mRlSideBar;
-    private TextView        mTvDialog;
-    private AutoSideBar mAutoSideBar;
+    private TextView       mTvDialog;
+    private AutoSideBar    mAutoSideBar;
 
-    private LinearLayoutManager mLayoutManager;
     private TranspondAdapter mTeamContactAdapter;
-
-    private List<ShopEmployeeVo> mShopEmployeeVos;
-
     private String mUserID;
     private String mShopID;
     private String mToken;
@@ -68,6 +69,7 @@ public class TranspondActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_transpond);
+
         initView();
         initData();
         initListener();
@@ -82,7 +84,7 @@ public class TranspondActivity extends AppCompatActivity {
         mTvCenterTitle = (TextView) findViewById(R.id.tv_center_title);
         mTvCenterTitle.setText("发送到");
 
-        mRvTeamContacts = (RecyclerView)     findViewById(R.id.rcv_team_contacts);
+        mRvTeamContacts = (ListView)     findViewById(R.id.rcv_team_contacts);
         mRlSideBar      = (RelativeLayout)   findViewById(R.id.rl_side_bar);
         mTvDialog       = (TextView)         findViewById(R.id.tv_dialog);
         mAutoSideBar    = new AutoSideBar(TranspondActivity.this);
@@ -96,26 +98,21 @@ public class TranspondActivity extends AppCompatActivity {
     private void initData() {
 
         if(null != getIntent() && null != getIntent().getSerializableExtra("bookOrder")){
-            bookOrder =  (OrderDetailForDisplay)getIntent().getSerializableExtra("bookOrder");
+            bookOrder = (OrderDetailForDisplay)getIntent().getSerializableExtra("bookOrder");
         }
 
         mUserID     = CacheUtil.getInstance().getUserId();
         mToken      = CacheUtil.getInstance().getToken();
         mShopID     = CacheUtil.getInstance().getShopID();
 
-        mRvTeamContacts.setHasFixedSize(true);
-        mLayoutManager = new LinearLayoutManager(this);
-        mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        mRvTeamContacts.setLayoutManager(mLayoutManager);
-        mShopEmployeeVos    = new ArrayList<ShopEmployeeVo>();
-        mTeamContactAdapter = new TranspondAdapter(TranspondActivity.this, mShopEmployeeVos);
+        mTeamContactAdapter = new TranspondAdapter(TranspondActivity.this,
+                                         new ArrayList<ShopEmployeeVo>());
         mRvTeamContacts.setAdapter(mTeamContactAdapter);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        //TODO: 1.服务器获得最近 5位联系人列表的客户列表
         showDataList();
     }
 
@@ -123,44 +120,44 @@ public class TranspondActivity extends AppCompatActivity {
      * 初始化待显示数据并展示
      */
     private void showDataList() {
-
         //获取团队列表
         TranspondController.getInstance().getTeamContacts(
                 TranspondActivity.this,
                 mUserID, mToken, mShopID, new GetTeamContactsListener() {
                     @Override
-                    public void getContactsDone(List<TeamContactBean> teamContacts) {
-                        ArrayList<ShopEmployeeVo> shopEmployeeVos = (ArrayList) ShopEmployeeFactory.getInstance().buildShopEmployees(teamContacts);
+                    public void getContactsDone(List<ShopEmployeeVo> shopEmployeeVos) {
+
                         List<String> strLetters = new ArrayList<>();//首字母显示数组
-                        List<String> empids = new ArrayList<>();//员工ID数组
+                        List<String> empids     = new ArrayList<>();//员工ID数组
+
                         if (null != shopEmployeeVos && !shopEmployeeVos.isEmpty()) {
                             Iterator<ShopEmployeeVo> shopEmployeeVoIterator = shopEmployeeVos.iterator();
                             while (shopEmployeeVoIterator.hasNext()) {
-                                String empID = shopEmployeeVoIterator.next().getEmpid();
+                                ShopEmployeeVo shopEmployeeVo = shopEmployeeVoIterator.next();
+                                String empID = shopEmployeeVo.getEmpid();
                                 if (empID.equals(mUserID)) {
                                     shopEmployeeVoIterator.remove();
-                                }
-                            }
-                            if (null != mShopEmployeeVos && !mShopEmployeeVos.isEmpty()) {
-                                mShopEmployeeVos.removeAll(mShopEmployeeVos);
-                            }
-                            for (ShopEmployeeVo shopEmployeeVo : shopEmployeeVos) {
-                                shopEmployeeVo.setShop_id(mShopID);
-                                mShopEmployeeVos.add(shopEmployeeVo);
-                                empids.add(shopEmployeeVo.getEmpid());
-                                String deptID = shopEmployeeVo.getDept_id() + "";
-                                String deptName = shopEmployeeVo.getDept_name();
-                                String sortLetter = null;
-                                if (!TextUtils.isEmpty(deptName)) {
-                                    sortLetter = deptName.substring(0, 1);
                                 } else {
-                                    sortLetter = deptID.substring(0, 1);
-                                }
-                                //部门分类并消除相同部门
-                                if (!TextUtils.isEmpty(sortLetter) && !strLetters.contains(sortLetter)) {
-                                    strLetters.add(sortLetter);
+                                    shopEmployeeVo.setOnline_status(OnlineStatus.OFFLINE);
+                                    continue;
                                 }
                             }
+
+                            //获取部门首字母进行排序
+                            for (ShopEmployeeVo shopEmployeeVo : shopEmployeeVos) {
+                                empids.add(shopEmployeeVo.getEmpid());
+                                String deptName = shopEmployeeVo.getDept_name();
+                                if (TextUtils.isEmpty(deptName)) {
+                                    shopEmployeeVo.setDept_name("#");
+                                }else {
+                                    String sortLetter = deptName.substring(0, 1);
+                                    //部门分类并消除相同部门
+                                    if (!TextUtils.isEmpty(sortLetter) && !strLetters.contains(sortLetter)) {
+                                        strLetters.add(sortLetter);
+                                    }
+                                }
+                            }
+
                             String[] sortArray = strLetters.toArray(new String[strLetters.size()]);
                             if (sortArray.length > 0) {
                                 mAutoSideBar.setSortArray(sortArray);
@@ -168,8 +165,9 @@ public class TranspondActivity extends AppCompatActivity {
                                 mRlSideBar.removeAllViews();
                                 mRlSideBar.addView(mAutoSideBar);
                             }
-                            mTeamContactAdapter.updateListView(mShopEmployeeVos);
-                            DialogUtil.getInstance().cancelProgressDialog();
+
+                            mTeamContactAdapter.setData(shopEmployeeVos);
+                            ShopEmployeeDBUtil.getInstance().batchAddShopEmployees(shopEmployeeVos);
                         }
                     }
 
@@ -194,16 +192,18 @@ public class TranspondActivity extends AppCompatActivity {
             public void onTouchingLetterChanged(String s) {
                 int position = mTeamContactAdapter.getPositionForSection(s.charAt(0));
                 if (position != -1) {
-                    mRvTeamContacts.scrollToPosition(position);
+                    mRvTeamContacts.setSelection(position);
                 }
             }
         });
 
-        mTeamContactAdapter.setOnItemClickListener(new RecyclerItemClickListener() {
+        mRvTeamContacts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(View view, int position) {
-                ShopEmployeeVo shopEmployeeVo = mShopEmployeeVos.get(position);
-                showTranspondDialog(TranspondActivity.this,shopEmployeeVo);
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                ShopEmployeeVo shopEmployeeVo = mTeamContactAdapter.mDatas.get(position);
+                if(null != shopEmployeeVo){
+                    showTranspondDialog(TranspondActivity.this, shopEmployeeVo);
+                }
             }
         });
     }

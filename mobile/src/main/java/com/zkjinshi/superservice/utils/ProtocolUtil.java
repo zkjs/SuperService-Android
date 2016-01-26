@@ -93,6 +93,14 @@ public class ProtocolUtil {
     }
 
     /**
+     * 会员信息 绑定会员
+     * @return
+     */
+    public static String getAddFuserUrl(){
+        return ConfigUtil.getInst().getPhpDomain()+"semp/addfuser";
+    }
+
+    /**
      * 我的客户 获取我的客户列表
      * @return
      */
@@ -368,6 +376,14 @@ public class ProtocolUtil {
      */
     public static String getAvatarUrl(String userid){
         return com.zkjinshi.base.util.Constants.IMG_HOST+"uploads/users/"+userid+".jpg";
+    }
+
+    /**
+     * 查询用户是否是邀请码和指定商家是否绑定销售
+     * @return
+     */
+    public static String getBindUserInfo(){
+        return ConfigUtil.getInst().getPhpDomain()+"semp/aubdts";
     }
 
 }

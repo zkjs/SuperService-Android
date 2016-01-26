@@ -1,5 +1,6 @@
 package com.zkjinshi.superservice.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -43,20 +44,14 @@ import java.util.Locale;
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class TranspondAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
-                                  implements SectionIndexer {
+public class TranspondAdapter extends ServiceBaseAdapter<ShopEmployeeVo> implements SectionIndexer {
 
-    private Context              mContext;
-    private List<ShopEmployeeVo> mList;
     private DisplayImageOptions  options;
 
-    private RecyclerItemClickListener mRecyclerItemClickListener;
+    public TranspondAdapter(Activity activity, List<ShopEmployeeVo> datas) {
+        super(activity, datas);
 
-    public TranspondAdapter(Context mContext, List<ShopEmployeeVo> list) {
-        this.mContext = mContext;
-        this.mList    = list;
-
-        this.options  = new DisplayImageOptions.Builder()
+        this.options   = new DisplayImageOptions.Builder()
                 .showImageOnLoading(null)
                 .showImageForEmptyUri(null)// 设置图片Uri为空或是错误的时候显示的图片
                 .showImageOnFail(null)// 设置图片加载或解码过程中发生错误显示的图片
@@ -65,76 +60,63 @@ public class TranspondAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 .build();
     }
 
-    /**
-     * 当ListView数据发生变化时,调用此方法来更新ListView
-     * @param list
-     */
-    public void updateListView(List<ShopEmployeeVo> list) {
-        if (list == null) {
-            this.mList = new ArrayList<>();
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        ViewHolder holder = null;
+        if(null == convertView){
+            holder      = new ViewHolder();
+            convertView = View.inflate(mActivity, R.layout.item_team_contact, null);
+            holder.tvLetter          = (TextView) convertView.findViewById(R.id.catalog);
+            holder.flContactAvatar   = (FrameLayout) convertView.findViewById(R.id.fl_contact_avatar);
+            holder.civContactAvatar  = (CircleImageView) convertView.findViewById(R.id.civ_contact_avatar);
+            holder.tvContactAvatar   = (TextView) convertView.findViewById(R.id.tv_contact_avatar);
+            holder.tvContactName     = (TextView) convertView.findViewById(R.id.tv_contact_name);
+            holder.rlContactOnStatus = (RelativeLayout) convertView.findViewById(R.id.rl_contact_on_status);
+            holder.tvContactOnLine   = (TextView) convertView.findViewById(R.id.tv_contact_on_line);
+            convertView.setTag(holder);
         } else {
-            this.mList = list;
+            holder = (ViewHolder) convertView.getTag();
         }
-        this.notifyDataSetChanged();
-    }
-
-    @Override
-    public int getItemCount() {
-        return mList.size();
-    }
-
-    public void setOnItemClickListener(RecyclerItemClickListener listener) {
-        this.mRecyclerItemClickListener = listener;
-    }
-
-    @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.item_transpond_list, null);
-        view.setLayoutParams(new LinearLayout.LayoutParams(
-                                LinearLayout.LayoutParams.MATCH_PARENT,
-                                LinearLayout.LayoutParams.WRAP_CONTENT));
-        ContactViewHolder holder = new ContactViewHolder(view, mRecyclerItemClickListener);
-        return holder;
-    }
-
-    @Override
-    public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
         //根据position获取分类的首字母的Char ascii值
-        final ShopEmployeeVo shopEmployeeVo = mList.get(position);
-        int section  = getSectionForPosition(position);
+        final ShopEmployeeVo shopEmployeeVo = mDatas.get(position);
+        int   section = getSectionForPosition(position);
 
-        /** 2 显示普通商家成员信息  */
+        final TextView tvContactAvatar = holder.tvContactAvatar;
+        final CircleImageView civContactAvatar = holder.civContactAvatar;
+
+        /**  显示普通商家成员信息  */
         String deptName = shopEmployeeVo.getDept_name();
         if(TextUtils.isEmpty(deptName)){
             deptName = shopEmployeeVo.getDept_id()+"";
         }
         if (position == getPositionForSection(section)) {
-            ((ContactViewHolder)holder).tvLetter.setVisibility(View.VISIBLE);
+            holder.tvLetter.setVisibility(View.VISIBLE);
             if(!TextUtils.isEmpty(deptName)){
                 if("?".equals(deptName.substring(0, 1))){
                     //最近联系人的处理
-                    ((ContactViewHolder)holder).tvLetter.setText(mContext.getString(R.string.latest_contact));
+                    holder.tvLetter.setText(mActivity.getString(R.string.latest_contact));
                 }else {
-                    ((ContactViewHolder)holder).tvLetter.setText(deptName);
+                    holder.tvLetter.setText(deptName);
                 }
             } else {
-                ((ContactViewHolder)holder).tvLetter.setText("#");
+                holder.tvLetter.setText("#");
             }
         } else {
             /** 不显示首字母 */
-            ((ContactViewHolder)holder).tvLetter.setVisibility(View.GONE);
+            holder.tvLetter.setVisibility(View.GONE);
         }
 
         final String empID   = shopEmployeeVo.getEmpid();
         final String empName = shopEmployeeVo.getName();
         if(!TextUtils.isEmpty(empName)){
             final String firstName = empName.substring(0, 1);
-            ((ContactViewHolder)holder).tvContactName.setText(empName);
-            ((ContactViewHolder)holder).tvContactAvatar.setText(firstName);
+            holder.tvContactName.setText(empName);
+            holder.tvContactAvatar.setText(firstName);
         }
 
         //获得默认背景颜色值
         int bgColorRes = ShopEmployeeDBUtil.getInstance().queryBgColorResByEmpID(empID);
+
         if(bgColorRes != 0){
             shopEmployeeVo.setBg_color_res(bgColorRes);
         }else {
@@ -145,27 +127,29 @@ public class TranspondAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         }
 
         //设置团队成员头像单击事件, 进入员工详情
-        ((ContactViewHolder) holder).flContactAvatar.setOnClickListener(new View.OnClickListener() {
+        holder.flContactAvatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent employeeInfo = new Intent(mContext, EmployeeInfoActivity.class);
+                Intent employeeInfo = new Intent(mActivity, EmployeeInfoActivity.class);
                 employeeInfo.putExtra("shop_employee", shopEmployeeVo);
-                mContext.startActivity(employeeInfo);
+                mActivity.startActivity(employeeInfo);
             }
         });
 
         String empAvatarUrl = ProtocolUtil.getAvatarUrl(empID);
-        ImageLoader.getInstance().displayImage(empAvatarUrl, ((ContactViewHolder) holder).civContactAvatar, options, new ImageLoadingListener() {
+
+
+        ImageLoader.getInstance().displayImage(empAvatarUrl, holder.civContactAvatar, options, new ImageLoadingListener() {
             @Override
             public void onLoadingStarted(String imageUri, View view) {
-                ((ContactViewHolder) holder).tvContactAvatar.setBackgroundResource(shopEmployeeVo.getBg_color_res());
-                ((ContactViewHolder) holder).civContactAvatar.setBackgroundColor(Color.TRANSPARENT);
+                tvContactAvatar.setBackgroundResource(shopEmployeeVo.getBg_color_res());
+                civContactAvatar.setBackgroundColor(Color.TRANSPARENT);
             }
 
             @Override
             public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-                ((ContactViewHolder) holder).civContactAvatar.setBackgroundColor(Color.TRANSPARENT);
-                ((ContactViewHolder) holder).tvContactAvatar.setBackgroundResource(shopEmployeeVo.getBg_color_res());
+                civContactAvatar.setVisibility(View.INVISIBLE);
+                tvContactAvatar.setBackgroundResource(shopEmployeeVo.getBg_color_res());
             }
 
             @Override
@@ -174,22 +158,24 @@ public class TranspondAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
             @Override
             public void onLoadingCancelled(String imageUri, View view) {
-                ((ContactViewHolder) holder).civContactAvatar.setBackgroundColor(Color.TRANSPARENT);
-                ((ContactViewHolder) holder).tvContactAvatar.setBackgroundResource(shopEmployeeVo.getBg_color_res());
+                civContactAvatar.setBackgroundColor(Color.TRANSPARENT);
+                tvContactAvatar.setBackgroundResource(shopEmployeeVo.getBg_color_res());
             }
         });
 
         if(!TextUtils.isEmpty(empName)){
-            //去除wen
             if("?".equals(empName.trim().substring(0, 1))) {
-                ((ContactViewHolder)holder).tvContactName.setText(empName.substring(1));
+                holder.tvContactName.setText(empName.substring(1));
             }else {
-                ((ContactViewHolder)holder).tvContactName.setText(empName);
+                holder.tvContactName.setText(empName);
             }
         }
+        holder.tvContactOnLine.setVisibility(View.INVISIBLE);
+
+        return convertView;
     }
 
-    public static class ContactViewHolder extends RecyclerView.ViewHolder{
+    public static class ViewHolder{
 
         public TextView         tvLetter;
         public FrameLayout      flContactAvatar;
@@ -197,38 +183,17 @@ public class TranspondAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         public TextView         tvContactAvatar;
         public TextView         tvContactName;
         public RelativeLayout   rlContactOnStatus;
-
-        private RecyclerItemClickListener mItemClickListener;
-
-        public ContactViewHolder(View view, RecyclerItemClickListener itemClickListener) {
-            super(view);
-            tvLetter         = (TextView) view.findViewById(R.id.catalog);
-            flContactAvatar  = (FrameLayout) view.findViewById(R.id.fl_contact_avatar);
-            civContactAvatar = (CircleImageView) view.findViewById(R.id.civ_contact_avatar);
-            tvContactAvatar = (TextView) view.findViewById(R.id.tv_contact_avatar);
-            tvContactName    = (TextView) view.findViewById(R.id.tv_contact_name);
-            rlContactOnStatus  = (RelativeLayout) view.findViewById(R.id.rl_contact_on_status);
-            this.mItemClickListener = itemClickListener;
-
-            view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if(mItemClickListener != null){
-                        mItemClickListener.onItemClick(v, getPosition());
-                    }
-                }
-            });
-        }
+        public TextView         tvContactOnLine;
     }
 
     /**
      * 根据ListView的当前位置获取分类的首字母的Char ascii值
      */
     public int getSectionForPosition(int position) {
-        if(!TextUtils.isEmpty(mList.get(position).getDept_name())){
-            return mList.get(position).getDept_name().charAt(0);
+        if(!TextUtils.isEmpty(mDatas.get(position).getDept_name())){
+            return mDatas.get(position).getDept_name().charAt(0);
         }
-        return ( mList.get(position).getDept_id()+"").charAt(0);
+        return -1;
     }
 
     @Override
@@ -240,11 +205,12 @@ public class TranspondAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
      * 根据分类的首字母的Char ascii值获取其第一次出现该首字母的位置
      */
     public int getPositionForSection(int section) {
-        for (int i = 0; i < getItemCount(); i++) {
-            String sortStr = mList.get(i).getDept_name();
-            char firstChar = sortStr.toUpperCase(Locale.CHINESE).charAt(0);
-            if (firstChar == section) {
-                return i;
+        for (int i = 0; i < getCount(); i++) {
+            String deptName = mDatas.get(i).getDept_name();
+            if(!TextUtils.isEmpty(deptName)){
+                if (deptName.charAt(0) == section) {
+                    return i;
+                }
             }
         }
         return -1;

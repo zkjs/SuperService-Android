@@ -1,6 +1,7 @@
 package com.zkjinshi.superservice.activity.set;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -23,10 +24,12 @@ import com.zkjinshi.base.view.CustomDialog;
 import com.zkjinshi.superservice.R;
 //import com.zkjinshi.superservice.factory.UnRegClientFactory;
 import com.zkjinshi.superservice.bean.ClientBaseBean;
+import com.zkjinshi.superservice.bean.ClientBindBean;
 import com.zkjinshi.superservice.factory.ClientFactory;
 import com.zkjinshi.superservice.net.ExtNetRequestListener;
 import com.zkjinshi.superservice.net.NetResponse;
 import com.zkjinshi.superservice.sqlite.ClientDBUtil;
+import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.view.CircleImageView;
@@ -53,19 +56,15 @@ public class ClientBindActivity extends Activity {
     private RelativeLayout mRlBack;
     private TextView    mTvTitle;
     private ImageButton mIbtnDianhua;
-    private ImageButton mIbtnDuiHua;
     private TextView    mTvMemberName;
     private TextView    mTvMemberPhone;
-    private TextView    mTvMemberLevel;
-    private TextView    mTvMemberType;
-    private TextView    mTvRecordTimes;
-    private TagView     mTvTagPreference;
-    private TagView     mTvTagPrivilege;
     private Button      mBtnConfirm;
-    private Button      mBtnCancell;
 
     private CircleImageView  mCivMemberAvatar;
-    private ClientBaseBean   mClientBean;
+    private ClientBindBean   mClientBean;
+
+    private String  mUserID;
+    private String  mToken;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,25 +77,20 @@ public class ClientBindActivity extends Activity {
     }
 
     private void initView() {
-        mRlBack        = (RelativeLayout)  findViewById(R.id.rl_back);
+        mRlBack          = (RelativeLayout)  findViewById(R.id.rl_back);
         mTvTitle         = (TextView)        findViewById(R.id.tv_title);
         mTvTitle.setText(getString(R.string.member_bind));
         mCivMemberAvatar = (CircleImageView) findViewById(R.id.civ_member_avatar);
         mTvMemberName    = (TextView)        findViewById(R.id.tv_member_name);
         mTvMemberPhone   = (TextView)        findViewById(R.id.tv_member_phone);
-        mIbtnDianhua     = (ImageButton)     findViewById(R.id.ibtn_dianhua);
-        mTvMemberLevel   = (TextView)        findViewById(R.id.tv_member_level);
-        mIbtnDuiHua      = (ImageButton)     findViewById(R.id.ibtn_duihua);
-        mTvMemberType    = (TextView)        findViewById(R.id.tv_member_type);
-        mTvRecordTimes   = (TextView)        findViewById(R.id.tv_record_times);
-        mTvTagPreference = (TagView)         findViewById(R.id.tv_preference_tag);
-        mTvTagPrivilege  = (TagView)         findViewById(R.id.tv_privilege_tag);
         mBtnConfirm      = (Button)         findViewById(R.id.btn_confirm);
-        mBtnCancell      = (Button)         findViewById(R.id.btn_cancel);
     }
 
     private void initData() {
-        mClientBean = (ClientBaseBean) getIntent().getSerializableExtra("client_bean");
+        mUserID = CacheUtil.getInstance().getUserId();
+        mToken  = CacheUtil.getInstance().getToken();
+
+        mClientBean = (ClientBindBean) getIntent().getSerializableExtra("client_bean");
         showClient(mClientBean);
     }
 
@@ -104,7 +98,7 @@ public class ClientBindActivity extends Activity {
      * 显示会员信息在界面上
      * @param client
      */
-    private void showClient(ClientBaseBean client) {
+    private void showClient(ClientBindBean client) {
         String userID = client.getUserid();
         if(!TextUtils.isEmpty(userID)) {
             String imageUrl =  ProtocolUtil.getAvatarUrl(userID);
@@ -119,18 +113,10 @@ public class ClientBindActivity extends Activity {
         }
         mTvMemberName.setText(client.getUsername());
         mTvMemberPhone.setText(client.getPhone());
-//        if(client.getIs_bill() == 1) {
-//            mTvMemberType.setText(getString(R.string.debt_member));
-//        } else {
-//            mTvMemberType.setText(getString(R.string.not_debt_member));
-//        }
-        mTvRecordTimes.setText(client.getOrder_count() + "");
-
-        //TODO: 1.客户偏好标签处理
-        //TODO: 2.特权标签处理
     }
 
     private void initListener() {
+
         mRlBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -149,172 +135,46 @@ public class ClientBindActivity extends Activity {
             }
         });
 
-        mIbtnDuiHua.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //TODO: 发起聊天
-                DialogUtil.getInstance().showToast(ClientBindActivity.this, "TODO: 会话聊天");
-            }
-        });
-
         mBtnConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                if(ClientDBUtil.getInstance().isClientExistByPhone(mClientBean.getPhone())){
-//                    DialogUtil.getInstance().showCustomToast(ClientBindActivity.this, "此用户本地已存在,请勿重复添加.", Gravity.CENTER);
-//                } else
-                if (null != mClientBean) {
-                    //绑定客户
-                    ClientBindController.getInstance().bindClient(
-                        mClientBean,
-                        new ExtNetRequestListener(ClientBindActivity.this) {
-                            @Override
-                            public void onNetworkRequestError(int errorCode, String errorMessage) {
-                                Log.i(TAG, "errorCode:" + errorCode);
-                                Log.i(TAG, "errorMessage:" + errorMessage);
-                                //网络请求异常
-                                DialogUtil.getInstance().cancelProgressDialog();
-                                ClientBindActivity.this.finish();
-                                DialogUtil.getInstance().showToast(ClientBindActivity.this, "网络异常");
-                            }
+                if(null != mClientBean){
+                    String fuid = mClientBean.getUserid();
+                    if(TextUtils.isEmpty(fuid)){
+                        return ;
+                    }
 
-                            @Override
-                            public void onNetworkRequestCancelled() {
-                                DialogUtil.getInstance().cancelProgressDialog();
-                            }
+                    //销售绑定用户
+                    ClientController.getInstance().addFuser(
+                            ClientBindActivity.this,
+                            fuid,
+                            mUserID,
+                            mToken,
+                            new ExtNetRequestListener(ClientBindActivity.this) {
+                                @Override
+                                public void onNetworkRequestError(int errorCode, String errorMessage) {
+                                    super.onNetworkRequestError(errorCode, errorMessage);
+                                }
 
-                            @Override
-                            public void onNetworkResponseSucceed(NetResponse result) {
-                                super.onNetworkResponseSucceed(result);
+                                @Override
+                                public void onNetworkRequestCancelled() {
+                                    super.onNetworkRequestCancelled();
+                                }
 
-                                Log.i(TAG, "result.rawResult:" + result.rawResult);
-                                DialogUtil.getInstance().cancelProgressDialog();
-                                String jsonResult = result.rawResult;
-                                try {
-                                    JSONObject jsonObject = new JSONObject(jsonResult);
-                                    if(jsonObject.getBoolean("set")){
-                                        //TODO add to local db
-                                        showSuccessDialog();
-                                    } else {
-                                        //  showFailedDialog();TODO add to local db without salesid
-                                        String errCode = jsonObject.getString("err");
-                                        //验证没通过
-                                        if (errCode.equals("300")) {
-                                            DialogUtil.getInstance().showCustomToast(ClientBindActivity.this, "用户绑定失败！", Gravity.CENTER);
-                                        } else {
-                                            DialogUtil.getInstance().showCustomToast(ClientBindActivity.this, errCode, Gravity.CENTER);
-                                        }
-                                    }
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
+                                @Override
+                                public void onNetworkResponseSucceed(NetResponse result) {
+                                    super.onNetworkResponseSucceed(result);
+                                }
+
+                                @Override
+                                public void beforeNetworkRequestStart() {
+                                    super.beforeNetworkRequestStart();
                                 }
                             }
-
-                            @Override
-                            public void beforeNetworkRequestStart() {
-                                //网络请求前
-                            }
-                        });
+                    );
                 }
             }
         });
-
-        mBtnCancell.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ClientBindActivity.this.finish();
-            }
-        });
     }
 
-    /**
-     * 邀请对话框
-     */
-    private void showSuccessDialog() {
-        CustomDialog.Builder builder=new CustomDialog.Builder(this);
-        builder.setTitle(getString(R.string.app_name));
-        builder.setMessage("绑定当前用户成功！继续绑定？");
-        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() { //设置确定按钮
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-                ClientBindActivity.this.finish();
-            }
-        });
-        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() { //设置取消按钮
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-                ClientBindActivity.this.finish();
-            }
-        });
-        builder.create().show();
-    }
-
-//    /**
-//     * 邀请对话框
-//     */
-//    private void showFailedDialog() {
-//        CustomDialog.Builder builder=new CustomDialog.Builder(this);
-//        builder.setTitle(getString(R.string.app_name));
-//        builder.setMessage("此用户已被绑定，只能添加为本地联系人。确认添加？");
-//        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() { //设置确定按钮
-//            @Override
-//            public void onClick(DialogInterface dialog, int which) {
-//                dialog.dismiss();
-//                String   phone    = mClientBean.getPhone();
-//                ClientVo clientVo = ClientFactory.getInstance().convertClientBaseBean2ClientVO(mClientBean);
-//                clientVo.setContactType(ContactType.UNNORMAL);
-//                if(!ClientDBUtil.getInstance().isClientExistByPhone(phone)){
-//                    long addResult = ClientDBUtil.getInstance().addClient(clientVo);
-//                    if(addResult > 0){
-//                        DialogUtil.getInstance().showToast(ClientBindActivity.this, "添加为本地联系人成功！");
-//                    }
-//                }else {
-//                    long updateResult =ClientDBUtil.getInstance().updateClient(clientVo);
-//                    if(updateResult > 0){
-//                        DialogUtil.getInstance().showToast(ClientBindActivity.this, "更新本地联系人成功！");
-//                    }
-//                }
-//                ClientBindActivity.this.finish();
-//            }
-//        });
-//        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() { //设置取消按钮
-//            @Override
-//            public void onClick(DialogInterface dialog, int which) {
-//                dialog.dismiss();
-//                ClientBindActivity.this.finish();
-//            }
-//        });
-//        builder.create().show();
-//    }
-
-//    /**
-//     * 创建新Tag
-//     * @param tagstr
-//     * @return
-//     */
-//    private Tag createTag(String tagstr){
-//        return createTag(tagstr, null);
-//    }
-//
-//    private Tag createTag(String tagstr, Drawable background){
-//        return createTag(0, tagstr, background);
-//    }
-//
-//    private Tag createTag(int id, String tagstr, Drawable background){
-//        Tag tag = new Tag(id, tagstr);
-//        tag.tagTextColor         = Color.BLACK;
-//        tag.layoutColor          = Color.WHITE;
-//        tag.layoutColorPress     = Color.parseColor("#DDDDDD");
-//        tag.background           = background;
-//        tag.radius               = 40f;
-//        tag.tagTextSize          = 18f;
-//        tag.layoutBorderSize     = 1f;
-//        tag.layoutBorderColor    = Color.parseColor("#bbbbbb");
-//        tag.deleteIndicatorColor = Color.parseColor("#ff0000");
-//        tag.deleteIndicatorSize  = 18f;
-//        tag.isDeletable          = false;
-//        return tag;
-//    }
 }

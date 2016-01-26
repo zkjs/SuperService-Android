@@ -21,7 +21,7 @@ import com.zkjinshi.superservice.view.scviewpager.SCViewPagerAdapter;
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class GuideActivity  extends FragmentActivity {
+public class GuideActivity extends FragmentActivity {
 
     private static String TAG = GuideActivity.class.getSimpleName();
 

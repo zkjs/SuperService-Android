@@ -441,7 +441,7 @@
     <color name="navy">#000080</color>
     <!-- 海军色 -->
 
-    <color name="black">#000000</color>
+    <color name="black">#101010</color>
     <!-- 黑色 -->
 
     <color name="background_snackbar">#323232</color>

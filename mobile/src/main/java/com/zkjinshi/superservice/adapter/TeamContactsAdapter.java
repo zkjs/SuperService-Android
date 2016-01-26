@@ -36,18 +36,12 @@ import java.util.List;
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class TeamContactsAdapter extends ServiceBaseAdapter<ShopEmployeeVo>
-                                  implements SectionIndexer {
+public class TeamContactsAdapter extends ServiceBaseAdapter<ShopEmployeeVo> implements SectionIndexer {
 
-    private Activity             mActivity;
-    private List<ShopEmployeeVo> mList;
     private DisplayImageOptions  options;
 
     public TeamContactsAdapter(Activity activity, List<ShopEmployeeVo> datas) {
         super(activity, datas);
-
-        this.mActivity = activity;
-        this.mList     = datas;
         this.options   = new DisplayImageOptions.Builder()
                 .showImageOnLoading(null)
                 .showImageForEmptyUri(null)// 设置图片Uri为空或是错误的时候显示的图片
@@ -75,7 +69,7 @@ public class TeamContactsAdapter extends ServiceBaseAdapter<ShopEmployeeVo>
             holder = (ViewHolder) convertView.getTag();
         }
         //根据position获取分类的首字母的Char ascii值
-        final ShopEmployeeVo shopEmployeeVo = mList.get(position);
+        final ShopEmployeeVo shopEmployeeVo = mDatas.get(position);
         int   section = getSectionForPosition(position);
 
         final TextView tvContactAvatar = holder.tvContactAvatar;
@@ -134,31 +128,34 @@ public class TeamContactsAdapter extends ServiceBaseAdapter<ShopEmployeeVo>
         });
 
         String empAvatarUrl = ProtocolUtil.getAvatarUrl(empID);
+        ImageLoader.getInstance().displayImage(
+            empAvatarUrl,
+            holder.civContactAvatar,
+            options,
+            new ImageLoadingListener() {
+                @Override
+                public void onLoadingStarted(String imageUri, View view) {
+                    tvContactAvatar.setBackgroundResource(shopEmployeeVo.getBg_color_res());
+                    civContactAvatar.setBackgroundColor(Color.TRANSPARENT);
+                }
 
+                @Override
+                public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+                    civContactAvatar.setVisibility(View.INVISIBLE);
+                    tvContactAvatar.setBackgroundResource(shopEmployeeVo.getBg_color_res());
+                }
 
-        ImageLoader.getInstance().displayImage(empAvatarUrl, holder.civContactAvatar, options, new ImageLoadingListener() {
-            @Override
-            public void onLoadingStarted(String imageUri, View view) {
-                tvContactAvatar.setBackgroundResource(shopEmployeeVo.getBg_color_res());
-                civContactAvatar.setBackgroundColor(Color.TRANSPARENT);
+                @Override
+                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                }
+
+                @Override
+                public void onLoadingCancelled(String imageUri, View view) {
+                    civContactAvatar.setBackgroundColor(Color.TRANSPARENT);
+                    tvContactAvatar.setBackgroundResource(shopEmployeeVo.getBg_color_res());
+                }
             }
-
-            @Override
-            public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-                civContactAvatar.setBackgroundColor(Color.TRANSPARENT);
-                tvContactAvatar.setBackgroundResource(shopEmployeeVo.getBg_color_res());
-            }
-
-            @Override
-            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-            }
-
-            @Override
-            public void onLoadingCancelled(String imageUri, View view) {
-                civContactAvatar.setBackgroundColor(Color.TRANSPARENT);
-                tvContactAvatar.setBackgroundResource(shopEmployeeVo.getBg_color_res());
-            }
-        });
+        );
 
         if(!TextUtils.isEmpty(empName)){
             if("?".equals(empName.trim().substring(0, 1))) {
@@ -168,7 +165,6 @@ public class TeamContactsAdapter extends ServiceBaseAdapter<ShopEmployeeVo>
             }
         }
         holder.tvContactOnLine.setVisibility(View.INVISIBLE);
-
         return convertView;
     }
 
@@ -187,8 +183,8 @@ public class TeamContactsAdapter extends ServiceBaseAdapter<ShopEmployeeVo>
      * 根据ListView的当前位置获取分类的首字母的Char ascii值
      */
     public int getSectionForPosition(int position) {
-        if(!TextUtils.isEmpty(mList.get(position).getDept_name())){
-            return mList.get(position).getDept_name().charAt(0);
+        if(!TextUtils.isEmpty(mDatas.get(position).getDept_name())){
+            return mDatas.get(position).getDept_name().charAt(0);
         }
         return -1;
     }
@@ -203,7 +199,7 @@ public class TeamContactsAdapter extends ServiceBaseAdapter<ShopEmployeeVo>
      */
     public int getPositionForSection(int section) {
         for (int i = 0; i < getCount(); i++) {
-            String deptName = mList.get(i).getDept_name();
+            String deptName = mDatas.get(i).getDept_name();
             if(!TextUtils.isEmpty(deptName)){
                 if (deptName.charAt(0) == section) {
                     return i;

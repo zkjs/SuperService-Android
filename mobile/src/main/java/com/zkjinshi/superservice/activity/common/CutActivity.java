@@ -147,8 +147,8 @@ public class CutActivity extends Activity {
         mImageView.setImageBitmapResetBase(b, true);
         mCrop = new CropImage(this, mImageView, mHandler);
         mCrop.crop(b);
-    }
 
+    }
     protected void addProgressbar() {
         mProgressBar = new ProgressBar(this);
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(

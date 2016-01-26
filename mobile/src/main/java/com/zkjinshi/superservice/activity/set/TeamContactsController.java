@@ -73,22 +73,22 @@ public class TeamContactsController {
             @Override
             public void onNetworkResponseSucceed(NetResponse result) {
                 super.onNetworkResponseSucceed(result);
+                DialogUtil.getInstance().cancelProgressDialog();
+
                 Log.i(TAG, "result.rawResult:" + result.rawResult);
                 String jsonResult = result.rawResult;
                 try {
                     Gson gson = new Gson();
                     List<TeamContactBean> teamContactBeans = gson.fromJson(jsonResult,
                             new TypeToken<ArrayList<TeamContactBean>>() {}.getType());
+
                     if (null != teamContactBeans) {
                         /** add to local db */
                         List<ShopEmployeeVo> shopEmployeeVos = ShopEmployeeFactory.getInstance().buildShopEmployees(teamContactBeans);
-                        for (ShopEmployeeVo shopEmployeeVo : shopEmployeeVos) {
-                            shopEmployeeVo.setShop_id(shopID);
-                            ShopEmployeeDBUtil.getInstance().addShopEmployee(shopEmployeeVo);
-                        }
-
-                        if (null != listener) {
-                            listener.getContactsDone(teamContactBeans);
+                        if(null != shopEmployeeVos && !shopEmployeeVos.isEmpty()){
+                            if (null != listener) {
+                                listener.getContactsDone(shopEmployeeVos);
+                            }
                         }
                     }
                 } catch (JsonSyntaxException e) {

@@ -14,8 +14,8 @@ public class LocPushBean implements Serializable {
     private String  userid;//客人的userid
     private String  username;//username
     private String  locid;   //客人所在区域
-    private String locdesc;//客人区域描述
-    private int sex;
+    private String  locdesc; //客人区域描述
+    private int     sex;
 
     public String getShopid() {
         return shopid;

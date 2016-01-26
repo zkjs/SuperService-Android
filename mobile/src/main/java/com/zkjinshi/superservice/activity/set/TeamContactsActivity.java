@@ -18,7 +18,6 @@ import com.zkjinshi.base.util.DisplayUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.chat.single.ChatActivity;
 import com.zkjinshi.superservice.adapter.TeamContactsAdapter;
-import com.zkjinshi.superservice.bean.TeamContactBean;
 import com.zkjinshi.superservice.listener.GetTeamContactsListener;
 import com.zkjinshi.superservice.sqlite.ShopEmployeeDBUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
@@ -40,8 +39,6 @@ import java.util.List;
  */
 public class TeamContactsActivity extends AppCompatActivity{
 
-    private final static String TAG = TeamContactsActivity.class.getSimpleName();
-
     public static final int ADD_REQUEST_CODE = 1;
 
     private Toolbar         mToolbar;
@@ -51,10 +48,7 @@ public class TeamContactsActivity extends AppCompatActivity{
     private TextView        mTvDialog;
     private AutoSideBar     mAutoSideBar;
 
-    private TeamContactsAdapter     mTeamContactAdapter;
-    private List<ShopEmployeeVo>    mShopEmployeeVos;
-
-
+    private TeamContactsAdapter mTeamContactAdapter;
     private String mUserID;
     private String mShopID;
     private String mToken;
@@ -98,9 +92,8 @@ public class TeamContactsActivity extends AppCompatActivity{
         mShopID     = CacheUtil.getInstance().getShopID();
         mUserType   = CacheUtil.getInstance().getLoginIdentity();
 
-        mShopEmployeeVos    = new ArrayList<>();
         mTeamContactAdapter = new TeamContactsAdapter(TeamContactsActivity.this,
-                                                               mShopEmployeeVos);
+                                               new ArrayList<ShopEmployeeVo>());
         mRvTeamContacts.setAdapter(mTeamContactAdapter);
     }
 
@@ -114,14 +107,12 @@ public class TeamContactsActivity extends AppCompatActivity{
      * 初始化待显示数据并展示
      */
     private void showDataList() {
-        //获取团队列表
-        DialogUtil.getInstance().showProgressDialog(TeamContactsActivity.this);
         TeamContactsController.getInstance().getTeamContacts(
                 TeamContactsActivity.this,
                 mUserID, mToken, mShopID, new GetTeamContactsListener() {
                     @Override
-                    public void getContactsDone(List<TeamContactBean> teamContacts) {
-                        List<ShopEmployeeVo> shopEmployeeVos = ShopEmployeeDBUtil.getInstance().queryTeamByShopID(mShopID);
+                    public void getContactsDone(List<ShopEmployeeVo> shopEmployeeVos) {
+
                         List<String> strLetters = new ArrayList<>();//首字母显示数组
                         List<String> empids     = new ArrayList<>();//员工ID数组
 
@@ -138,11 +129,6 @@ public class TeamContactsActivity extends AppCompatActivity{
                                 }
                             }
 
-                            if(null != mShopEmployeeVos && !mShopEmployeeVos.isEmpty()){
-                                mShopEmployeeVos.removeAll(mShopEmployeeVos);
-                            }
-                            mShopEmployeeVos.addAll(shopEmployeeVos);
-
                             //获取部门首字母进行排序
                             for (ShopEmployeeVo shopEmployeeVo : shopEmployeeVos) {
                                 empids.add(shopEmployeeVo.getEmpid());
@@ -156,7 +142,6 @@ public class TeamContactsActivity extends AppCompatActivity{
                                         strLetters.add(sortLetter);
                                     }
                                 }
-
                             }
 
                             String[] sortArray = strLetters.toArray(new String[strLetters.size()]);
@@ -166,25 +151,14 @@ public class TeamContactsActivity extends AppCompatActivity{
                                 mRlSideBar.removeAllViews();
                                 mRlSideBar.addView(mAutoSideBar);
                             }
-
-                            DialogUtil.getInstance().cancelProgressDialog();
-                            mTeamContactAdapter.setData(mShopEmployeeVos);
+                            mTeamContactAdapter.setData(shopEmployeeVos);
+                            ShopEmployeeDBUtil.getInstance().batchAddShopEmployees(shopEmployeeVos);
                         }
-                        //更新数据库数据
-                        ShopEmployeeDBUtil.getInstance().batchAddShopEmployees(shopEmployeeVos);
                     }
 
                     @Override
                     public void getContactsFailed() {
                         //获取在线数据失败更新
-                        List<ShopEmployeeVo> shopEmployeeVos = ShopEmployeeDBUtil.getInstance().queryTeamByShopID(mShopID);
-                        if(shopEmployeeVos != null && !shopEmployeeVos.isEmpty()){
-                            if(null != mShopEmployeeVos && !mShopEmployeeVos.isEmpty()){
-                                mShopEmployeeVos.removeAll(mShopEmployeeVos);
-                            }
-                            mShopEmployeeVos.addAll(shopEmployeeVos);
-                        }
-                        mTeamContactAdapter.setData(mShopEmployeeVos);
                         DialogUtil.getInstance().cancelProgressDialog();
                     }
                 }
@@ -232,7 +206,7 @@ public class TeamContactsActivity extends AppCompatActivity{
         mRvTeamContacts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ShopEmployeeVo shopEmployeeVo = mShopEmployeeVos.get(position);
+                ShopEmployeeVo shopEmployeeVo = mTeamContactAdapter.mDatas.get(position);
                 String userId = shopEmployeeVo.getEmpid();
                 String toName = shopEmployeeVo.getName();
                 String shopName = CacheUtil.getInstance().getShopFullName();

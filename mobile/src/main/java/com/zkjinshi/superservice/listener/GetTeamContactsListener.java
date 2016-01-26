@@ -1,6 +1,6 @@
 package com.zkjinshi.superservice.listener;
 
-import com.zkjinshi.superservice.bean.TeamContactBean;
+import com.zkjinshi.superservice.vo.ShopEmployeeVo;
 
 import java.util.List;
 
@@ -13,7 +13,7 @@ import java.util.List;
  */
 public interface GetTeamContactsListener {
 
-   public void getContactsDone(List<TeamContactBean> teamContacts);
+   public void getContactsDone(List<ShopEmployeeVo> teamContacts);
 
    public void getContactsFailed();
 

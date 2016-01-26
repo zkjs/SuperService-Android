@@ -8,7 +8,6 @@ public class InsertResponse extends BaseResponse {
         return id;
     }
 
-
     public void setId(int id) {
         this.id = id;
     }

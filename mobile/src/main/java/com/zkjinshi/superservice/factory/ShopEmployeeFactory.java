@@ -59,7 +59,7 @@ public class ShopEmployeeFactory {
         }
 
         WorkStatus workStatus = shopEmployeeVo.getWork_status();
-        if(null != onlineStatus ){
+        if(null != workStatus ){
             values.put("work_status", workStatus.getValue());
         }
 

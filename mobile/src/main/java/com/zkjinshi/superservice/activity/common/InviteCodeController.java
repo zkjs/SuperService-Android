@@ -1,6 +1,5 @@
 package com.zkjinshi.superservice.activity.common;
 
-import android.app.Activity;
 import android.content.Context;
 import android.text.TextUtils;
 

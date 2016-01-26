@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".activity.set.TeamContactsActivity">
 
-
     <item
         android:id="@+id/menu_team_jia"
         android:icon="@drawable/bg_ic_tianjia"

@@ -34,18 +34,16 @@ import java.util.HashMap;
  * 版权所有
  */
 public class ContactsAdapter extends BaseAdapter{
+
     private final static String TAG = ContactsAdapter.class.getSimpleName();
 
     private LayoutInflater mInflater;//得到一个LayoutInfalter对象用来导入布局
     private ArrayList<ContactLocalVo> contactLocalList;
-    private HashMap<Integer,Integer> checkedHashmap = new HashMap<Integer,Integer>();
-    private Context context;
     private ContentResolver resolver;
 
     public ContactsAdapter(Context context,ArrayList<ContactLocalVo> dataList) {
         this.mInflater = LayoutInflater.from(context);
         this.contactLocalList = dataList;
-        this.context = context;
         resolver = context.getContentResolver();
     }
 

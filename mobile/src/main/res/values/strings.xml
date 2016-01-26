@@ -29,7 +29,7 @@
     <string name="opendrawer">Open drawer</string>
     <string name="closedrawer">Close drawer</string>
     <string name="sheet_item_pressed">Item pressed</string>
-    <string name="search">Search</string>
+    <string name="search">搜索</string>
 
     <!--到店通知-->
     <string name="talk_with_team">与团队对话</string>
@@ -157,5 +157,9 @@
     <string name="share_invite_code" > 全国有超过百家顶级商户和1000+名人工客服将竭诚为您服务。</string>
     <string name="your_invite_code" >您的邀请码为:</string>
     <string name="download_link">下载链接：</string>
+    <string name="add_to_my_client">添加到我的客户</string>
+    <string name="client_already_be_added">客人已被其他销售添加</string>
+    <string name="select_client_failed_try_it_later">查询客户失败，请稍后再试！</string>
+    <string name="please_use_invite_code_to_add_the_client">请通过激活码方式进行添加!</string>
 
 </resources>

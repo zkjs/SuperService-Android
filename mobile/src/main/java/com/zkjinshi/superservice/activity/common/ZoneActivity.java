@@ -42,7 +42,6 @@ import java.util.HashMap;
 
 import io.yunba.android.manager.YunBaManager;
 
-
 /**
  * 开发者：dujiande
  * 日期：2015/9/21
@@ -53,7 +52,6 @@ public class ZoneActivity extends Activity {
 
     private final static String TAG = ZoneActivity.class.getSimpleName();
 
-
     private ListView zoneLv;
     private ZoneAdapter zoneAdapter;
     private View header;
@@ -63,6 +61,7 @@ public class ZoneActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_zone);
+
         String userid = CacheUtil.getInstance().getUserId();
         userVo = UserDBUtil.getInstance().queryUserById(userid);
         initView();

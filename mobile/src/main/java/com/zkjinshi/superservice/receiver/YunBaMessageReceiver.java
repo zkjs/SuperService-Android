@@ -24,20 +24,25 @@ public class YunBaMessageReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(final Context context, final Intent intent) {
+
+        //云巴推送处理
         if (YunBaManager.MESSAGE_RECEIVED_ACTION.equals(intent.getAction())) {
+
             String topic = intent.getStringExtra(YunBaManager.MQTT_TOPIC);
-            String msg = intent.getStringExtra(YunBaManager.MQTT_MSG);
+            String msg   = intent.getStringExtra(YunBaManager.MQTT_MSG);
             Log.i(TAG,"YunBaMessageReceiver-msg:"+msg);
             Log.i(TAG,"YunBaMessageReceiver-topic:"+topic);
             LocPushBean locPushBean = null;
+
             try {
-                locPushBean = new Gson().fromJson(msg,
-                        LocPushBean.class);
+                locPushBean = new Gson().fromJson(msg, LocPushBean.class);
             } catch (JsonSyntaxException e) {
                 e.printStackTrace();
             }
+
             if(null != locPushBean){
-                NotificationHelper.getInstance().showNotification(context,locPushBean);
+                //弹出当前位置到达提示
+                NotificationHelper.getInstance().showNotification(context, locPushBean);
             }
 
         } else if(YunBaManager.PRESENCE_RECEIVED_ACTION.equals(intent.getAction())) {

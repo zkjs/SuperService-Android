@@ -52,5 +52,14 @@ public abstract class ServiceBaseAdapter <T> extends BaseAdapter {
         notifyDataSetChanged();
     }
 
+    /**
+     * 清空数据
+     */
+    public void clear(){
+        if(null != mDatas && !mDatas.isEmpty()){
+            mDatas.remove(mDatas);
+            this.notifyDataSetChanged();
+        }
+    }
 }
 

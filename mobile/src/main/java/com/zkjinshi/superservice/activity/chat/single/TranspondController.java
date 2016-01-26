@@ -77,6 +77,8 @@ public class TranspondController extends AppCompatActivity {
             @Override
             public void onNetworkResponseSucceed(NetResponse result) {
                 super.onNetworkResponseSucceed(result);
+                DialogUtil.getInstance().cancelProgressDialog();
+
                 Log.i(TAG, "result.rawResult:" + result.rawResult);
                 try {
                     String jsonResult = result.rawResult;
@@ -86,13 +88,10 @@ public class TranspondController extends AppCompatActivity {
                     if (null != teamContactBeans) {
                         /** add to local db */
                         List<ShopEmployeeVo> shopEmployeeVos = ShopEmployeeFactory.getInstance().buildShopEmployees(teamContactBeans);
-                        for (ShopEmployeeVo shopEmployeeVo : shopEmployeeVos) {
-                            shopEmployeeVo.setShop_id(shopID);
-                            ShopEmployeeDBUtil.getInstance().addShopEmployee(shopEmployeeVo);
-                        }
-
-                        if (null != listener) {
-                            listener.getContactsDone(teamContactBeans);
+                        if(null != shopEmployeeVos && !shopEmployeeVos.isEmpty()){
+                            if (null != listener) {
+                                listener.getContactsDone(shopEmployeeVos);
+                            }
                         }
                     }
                 } catch (JsonSyntaxException e) {

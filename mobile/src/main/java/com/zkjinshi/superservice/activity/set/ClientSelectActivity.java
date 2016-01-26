@@ -1,14 +1,17 @@
 package com.zkjinshi.superservice.activity.set;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -17,6 +20,7 @@ import com.google.gson.Gson;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.bean.ClientBaseBean;
+import com.zkjinshi.superservice.bean.ClientBindBean;
 import com.zkjinshi.superservice.net.ExtNetRequestListener;
 import com.zkjinshi.superservice.net.MethodType;
 import com.zkjinshi.superservice.net.NetRequest;
@@ -43,14 +47,11 @@ public class ClientSelectActivity extends Activity {
 
     private final static String TAG = ClientSelectActivity.class.getSimpleName();
 
-    private String          mUserID;
-    private String          mToken;
     private String          mShopID;
     private RelativeLayout  mRlBack;
     private TextView        mTvTitle;
     private EditText        mEtClientPhone;
-
-    private ClientBaseBean mClientBean;
+    private Button          mBtnSearch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,18 +65,18 @@ public class ClientSelectActivity extends Activity {
 
     private void initView() {
         mRlBack = (RelativeLayout) findViewById(R.id.rl_back);
-        mTvTitle  = (TextView) findViewById(R.id.tv_title);
+        mTvTitle = (TextView) findViewById(R.id.tv_title);
         mTvTitle.setText(getString(R.string.add_clients));
         mEtClientPhone = (EditText) findViewById(R.id.et_client_phone);
+        mBtnSearch = (Button) findViewById(R.id.btn_search_client);
     }
 
     private void initData() {
-        mUserID = CacheUtil.getInstance().getUserId();
-        mToken  = CacheUtil.getInstance().getToken();
         mShopID = CacheUtil.getInstance().getShopID();
     }
 
     private void initListener() {
+
         mRlBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -83,101 +84,103 @@ public class ClientSelectActivity extends Activity {
             }
         });
 
-        mEtClientPhone.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                    String phone = mEtClientPhone.getText().toString().trim();
-                    if(TextUtils.isEmpty(phone)){
-                        DialogUtil.getInstance().showCustomToast(ClientSelectActivity.this,
-                                "手机号不能为空!", Gravity.CENTER);
-                    }else if(!StringUtil.isPhoneNumber(phone)){
-                        DialogUtil.getInstance().showCustomToast(ClientSelectActivity.this,
-                                "请确认手机号是否输入正确!", Gravity.CENTER);
-                    } else {
-                        getClientInfo(phone);
+        /**
+         * 执行客户查询
+         */
+        mBtnSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String phone = mEtClientPhone.getText().toString().trim();
+                checkPhone(phone);
+
+                //查询客户信息，判断是否存在专属客服
+                ClientController.getInstance().getBindUserInfo(
+                    ClientSelectActivity.this,
+                    mShopID,
+                    phone,
+                    new ExtNetRequestListener(ClientSelectActivity.this) {
+                        @Override
+                        public void onNetworkRequestError(int errorCode, String errorMessage) {
+                            super.onNetworkRequestError(errorCode, errorMessage);
+                        }
+
+                        @Override
+                        public void onNetworkRequestCancelled() {
+                            super.onNetworkRequestCancelled();
+                        }
+
+                        @Override
+                        public void onNetworkResponseSucceed(NetResponse result) {
+                            super.onNetworkResponseSucceed(result);
+
+                            Log.i(TAG, "result.rawResult:" + result.rawResult);
+                            DialogUtil.getInstance().cancelProgressDialog();
+                            String jsonResult = result.rawResult;
+
+                            if(!TextUtils.isEmpty(jsonResult)) {
+                                Gson gson = new Gson();
+                                ClientBindBean clientBean = gson.fromJson(jsonResult, ClientBindBean.class);
+                                if(clientBean != null && clientBean.isSet()){
+                                    //是否使用过邀请码
+                                    boolean isBind = clientBean.is_bd();
+                                   if(isBind){
+                                       //专属客户ID
+                                       String salesID = clientBean.getSalesid();
+                                       if(TextUtils.isEmpty(salesID)){
+                                           //本店尚未绑定专属客服 进入绑定界面
+                                           Intent clienBind = new Intent(ClientSelectActivity.this,
+                                                                         ClientBindActivity.class);
+                                           clienBind.putExtra("client_bean", clientBean);
+                                           ClientSelectActivity.this.startActivity(clienBind);
+                                           ClientSelectActivity.this.finish();
+                                       } else {
+                                           //本店已存在专属客服，不可以绑定
+                                           ClientSelectOperator.getInstance().showOperationDialog(
+                                           ClientSelectActivity.this,
+                                           getString(R.string.client_already_be_added));
+                                       }
+
+                                   } else {
+                                       //客户尚未使用邀请码
+                                       ClientSelectOperator.getInstance().showOperationDialog(
+                                       ClientSelectActivity.this,
+                                       getString(R.string.please_use_invite_code_to_add_the_client));
+                                   }
+                                } else {
+                                    //查询客户失败失败
+                                    ClientSelectOperator.getInstance().showOperationDialog(
+                                    ClientSelectActivity.this,
+                                    getString(R.string.select_client_failed_try_it_later));
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void beforeNetworkRequestStart() {
+                            super.beforeNetworkRequestStart();
+                        }
                     }
-                    return true;
-                }
-                return false;
+                );
             }
         });
     }
 
-    private void getClientInfo(final String phoneNumber) {
-        NetRequest netRequest = new NetRequest(ProtocolUtil.getClientBasicUrl());
-        HashMap<String,String> bizMap = new HashMap<>();
-
-        bizMap.put("salesid", mUserID);
-        bizMap.put("token", mToken);
-        bizMap.put("shopid", mShopID);
-        bizMap.put("phone", phoneNumber);
-        bizMap.put("set", "9");
-        netRequest.setBizParamMap(bizMap);
-
-        NetRequestTask netRequestTask = new NetRequestTask(this, netRequest, NetResponse.class);
-        netRequestTask.methodType = MethodType.PUSH;
-        netRequestTask.setNetRequestListener(new ExtNetRequestListener(this) {
-            @Override
-            public void onNetworkRequestError(int errorCode, String errorMessage) {
-                Log.i(TAG, "errorCode:" + errorCode);
-                Log.i(TAG, "errorMessage:" + errorMessage);
-
-                //网络请求异常
-                DialogUtil.getInstance().cancelProgressDialog();
-                ClientSelectActivity.this.finish();
-                DialogUtil.getInstance().showToast(ClientSelectActivity.this, "网络异常");
-            }
-
-            @Override
-            public void onNetworkRequestCancelled() {
-                DialogUtil.getInstance().cancelProgressDialog();
-            }
-
-            @Override
-            public void onNetworkResponseSucceed(NetResponse result) {
-                super.onNetworkResponseSucceed(result);
-                Log.i(TAG, "result.rawResult:" + result.rawResult);
-                DialogUtil.getInstance().cancelProgressDialog();
-                String jsonResult = result.rawResult;
-
-                if (jsonResult.contains("set") && jsonResult.contains("err") && jsonResult.trim().contains("err")) {
-                    try {
-                        JSONObject jsonObject = new JSONObject(jsonResult);
-                        int errCode = jsonObject.getInt("err");
-                        //验证没通过
-                        if (400 == errCode) {
-                            DialogUtil.getInstance().showToast(ClientSelectActivity.this,
-                                    "验证不通过，请退出后重新查询。");
-                        }
-
-                        //用户不存在
-                        if (407 == errCode) {
-                            DialogUtil.getInstance().showToast(ClientSelectActivity.this,
-                                    "此用户不存在，请输入正确手机号！");
-//                            Intent addClient = new Intent(ClientSelectActivity.this, ClientAddActivity.class);
-//                            addClient.putExtra("phone_number", phoneNumber);
-//                            ClientSelectActivity.this.startActivity(addClient);
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                } else {
-                    Gson gson = new Gson();
-                    mClientBean = gson.fromJson(jsonResult, ClientBaseBean.class);
-                    Intent clienBind = new Intent(ClientSelectActivity.this, ClientBindActivity.class);
-                    clienBind.putExtra("client_bean", mClientBean);
-                    ClientSelectActivity.this.startActivity(clienBind);
-                    ClientSelectActivity.this.finish();
-                }
-            }
-
-            @Override
-            public void beforeNetworkRequestStart() {
-                //网络请求前
-            }
-        });
-        netRequestTask.isShowLoadingDialog = true;
-        netRequestTask.execute();
+    /**
+     * 手机号码检查格式
+     * @param phone
+     */
+    private void checkPhone(String phone) {
+        if(TextUtils.isEmpty(phone)){
+            DialogUtil.getInstance().showCustomToast(
+                    ClientSelectActivity.this,
+                    "手机号不能为空!", Gravity.CENTER);
+            return ;
+        }else if(!StringUtil.isPhoneNumber(phone)){
+            DialogUtil.getInstance().showCustomToast(
+                    ClientSelectActivity.this,
+                    "手机号格式不正确!", Gravity.CENTER);
+            return ;
+        }
     }
 
 }

@@ -1,96 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/tools"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:background="@color/white"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white">
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
 
-      <include layout="@layout/activity_title"></include>
+        <include layout="@layout/activity_title"></include>
 
         <LinearLayout
-            android:orientation="horizontal"
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:background="@color/blue03a9f4"
-            android:layout_height="wrap_content">
+            android:orientation="horizontal">
 
             <RelativeLayout
-                android:padding="20dp"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:padding="20dp">
 
                 <com.zkjinshi.superservice.view.CircleImageView
                     android:id="@+id/civ_member_avatar"
-                    android:layout_centerVertical="true"
                     android:layout_width="72dp"
                     android:layout_height="72dp"
-                    android:background="@drawable/ic_launcher"/>
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/ic_launcher" />
 
             </RelativeLayout>
 
             <LinearLayout
-                android:orientation="vertical"
-                android:gravity="center_vertical"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:orientation="vertical">
 
                 <TextView
-                    android:padding="5dp"
                     android:id="@+id/tv_member_name"
                     android:layout_width="wrap_content"
-                    android:textSize="16sp"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
                     android:textColor="@color/white"
-                    android:layout_height="wrap_content" />
+                    android:textSize="16sp" />
 
                 <RelativeLayout
-                    android:padding="5dp"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:padding="5dp">
 
                     <TextView
-                        android:paddingRight="10dp"
                         android:id="@+id/tv_member_phone"
                         android:layout_width="wrap_content"
-                        android:textSize="16sp"
+                        android:layout_height="wrap_content"
+                        android:paddingRight="10dp"
                         android:textColor="@color/white"
-                        android:layout_height="wrap_content" />
+                        android:textSize="16sp" />
 
                     <ImageButton
+                        android:id="@+id/ibtn_dianhua"
+                        android:layout_width="14dp"
+                        android:layout_height="20dp"
                         android:layout_centerVertical="true"
                         android:layout_toRightOf="@id/tv_member_phone"
-                        android:id="@+id/ibtn_dianhua"
-                        android:background="@drawable/bg_ic_dianhua"
-                        android:layout_width="14dp"
-                        android:layout_height="20dp" />
+                        android:background="@drawable/bg_ic_dianhua" />
 
                 </RelativeLayout>
 
                 <RelativeLayout
-                    android:padding="5dp"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:padding="5dp">
 
                     <TextView
-                        android:paddingRight="10dp"
                         android:id="@+id/tv_member_level"
-                        android:text="VIP009"
                         android:layout_width="wrap_content"
-                        android:textSize="16sp"
+                        android:layout_height="wrap_content"
+                        android:paddingRight="10dp"
+                        android:text="VIP009"
                         android:textColor="@color/white"
-                        android:layout_height="wrap_content" />
+                        android:textSize="16sp" />
 
                     <ImageButton
+                        android:id="@+id/ibtn_duihua"
+                        android:layout_width="21dp"
+                        android:layout_height="20dp"
                         android:layout_centerVertical="true"
                         android:layout_toRightOf="@id/tv_member_level"
-                        android:id="@+id/ibtn_duihua"
-                        android:background="@drawable/bg_ic_duihua"
-                        android:layout_width="21dp"
-                        android:layout_height="20dp" />
+                        android:background="@drawable/bg_ic_duihua" />
 
                 </RelativeLayout>
 
@@ -102,158 +103,42 @@
             android:layout_height="50dp">
 
             <TextView
-                android:paddingLeft="10dp"
-                android:layout_centerVertical="true"
                 android:layout_width="wrap_content"
-                android:text="@string/account_type"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:paddingLeft="10dp"
+                android:text="@string/exclusive_customer_service"
                 android:textColor="@color/grayB8B8B8"
-                android:textSize="16sp"
-                android:layout_height="wrap_content" />
+                android:textSize="16sp" />
 
             <TextView
-                android:paddingRight="10dp"
                 android:id="@+id/tv_member_type"
-                android:layout_centerVertical="true"
                 android:layout_width="wrap_content"
-                android:textColor="@color/black"
+                android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:textSize="16sp"
-                android:layout_height="wrap_content" />
+                android:layout_centerVertical="true"
+                android:paddingRight="10dp"
+                android:textColor="@color/black"
+                android:textSize="16sp" />
 
         </RelativeLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="50dp">
+            android:layout_height="wrap_content"
+            android:padding="40dp">
 
-            <TextView
-                android:paddingLeft="10dp"
-                android:layout_centerVertical="true"
-                android:layout_width="wrap_content"
-                android:text="@string/visit_history_record"
-                android:textColor="@color/grayB8B8B8"
-                android:textSize="16sp"
-                android:layout_height="wrap_content" />
-
-            <TextView
-                android:id="@+id/tv_times_chinese"
-                android:layout_centerVertical="true"
-                android:paddingRight="10dp"
-                android:layout_width="wrap_content"
-                android:textColor="@color/black"
-                android:layout_alignParentRight="true"
-                android:textSize="16sp"
-                android:text="次"
-                android:layout_height="wrap_content" />
-
-            <TextView
-                android:id="@+id/tv_record_times"
-                android:layout_centerVertical="true"
-                android:layout_width="wrap_content"
-                android:textColor="@color/black"
-                android:textSize="16sp"
-                android:layout_toLeftOf="@+id/tv_times_chinese"
-                android:inputType="number"
-                android:layout_height="wrap_content" />
+            <Button
+                android:id="@+id/btn_confirm"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/bg_holo_bule_to_gray"
+                android:gravity="center"
+                android:text="@string/add_to_my_client"
+                android:textColor="@color/white" />
 
         </RelativeLayout>
 
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:padding="10dp"
-                android:layout_centerVertical="true"
-                android:layout_width="wrap_content"
-                android:text="@string/prefrence_info"
-                android:textColor="@color/grayB8B8B8"
-                android:textSize="16sp"
-                android:layout_height="wrap_content" />
-
-            <me.kaede.tagview.TagView
-                android:id="@+id/tv_preference_tag"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="10dp"
-                app:lineMargin="5dp"
-                app:tagMargin="3dp"
-                app:textPaddingBottom="3dp"
-                app:textPaddingLeft="10dp"
-                app:textPaddingRight="10dp"
-                app:textPaddingTop="3dp">
-            </me.kaede.tagview.TagView>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:padding="10dp"
-                android:layout_centerVertical="true"
-                android:layout_width="wrap_content"
-                android:text="@string/privilege_info"
-                android:textColor="@color/grayB8B8B8"
-                android:textSize="16sp"
-                android:layout_height="wrap_content" />
-
-            <me.kaede.tagview.TagView
-                android:padding="10dp"
-                android:id="@+id/tv_privilege_tag"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:lineMargin="5dp"
-                app:tagMargin="3dp"
-                app:textPaddingBottom="3dp"
-                app:textPaddingLeft="10dp"
-                app:textPaddingRight="10dp"
-                app:textPaddingTop="3dp">
-            </me.kaede.tagview.TagView>
-
-        </LinearLayout>
     </LinearLayout>
-
-    <RelativeLayout
-        android:paddingLeft="40dp"
-        android:paddingRight="40dp"
-        android:id="@+id/rl_cancell"
-        android:layout_width="match_parent"
-        android:layout_alignParentBottom="true"
-        android:layout_height="wrap_content">
-
-        <Button
-            android:layout_marginBottom="20dp"
-            android:id="@+id/btn_cancel"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:gravity="center"
-            android:textColor="@color/white"
-            android:background="@drawable/bg_holo_bule_to_gray"
-            android:text="取消" />
-
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:paddingLeft="40dp"
-        android:paddingRight="40dp"
-        android:layout_above="@+id/rl_cancell"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <Button
-            android:layout_marginBottom="20dp"
-            android:id="@+id/btn_confirm"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:gravity="center"
-            android:textColor="@color/white"
-            android:background="@drawable/bg_holo_bule_to_gray"
-            android:text="确认" />
-
-    </RelativeLayout>
 
 </RelativeLayout>

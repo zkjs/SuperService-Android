@@ -97,15 +97,12 @@ public class ShopEmployeeDBUtil {
         long addResult    = -1;
         SQLiteDatabase db = null;
         try {
-            db        = helper.getWritableDatabase();
+            db = helper.getWritableDatabase();
             db.beginTransaction();
             for(ShopEmployeeVo shopEmployeeVo : shopEmployeeVos){
                 ContentValues values = ShopEmployeeFactory.getInstance().buildAddContentValues(shopEmployeeVo);
-                try {
-                    addResult = db.insert(DBOpenHelper.SHOP_EMPLOYEE_TBL, null, values);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+
+                addResult = db.insert(DBOpenHelper.SHOP_EMPLOYEE_TBL, null, values);
                 if(addResult == -1){
                     String empID = shopEmployeeVo.getEmpid();
                     addResult = db.update(DBOpenHelper.SHOP_EMPLOYEE_TBL, values, " empid = ? ", new String[]{ empID });
@@ -157,36 +154,6 @@ public class ShopEmployeeDBUtil {
             }
         }
         return  shopEmployeeVos;
-    }
-
-    /**
-     * 获取员工总个数
-     * @param shopId
-     * @return
-     */
-    public int queryTotalEmpCount(String shopId) {
-        int totalEmpCount = 0;
-        SQLiteDatabase db = null;
-        Cursor cursor = null;
-        if (null != helper) {
-            try {
-                db = helper.getReadableDatabase();
-                cursor = db.query(DBOpenHelper.SHOP_EMPLOYEE_TBL, null,
-                        " shop_id = ? ",
-                        new String[]{shopId}, null, null, null);
-                totalEmpCount = cursor.getCount();
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                if (null != cursor) {
-                    cursor.close();
-                }
-                if (null != db) {
-                    db.close();
-                }
-            }
-        }
-        return totalEmpCount;
     }
 
     /**

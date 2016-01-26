@@ -315,8 +315,7 @@ public class TeamEditActivity extends Activity {
                                 mShopID,
                                 new GetTeamContactsListener() {
                                     @Override
-                                    public void getContactsDone(List<TeamContactBean> teamContacts) {
-                                        List<ShopEmployeeVo> shopEmployeeVos =  ShopEmployeeFactory.getInstance().buildShopEmployees(teamContacts);
+                                    public void getContactsDone(List<ShopEmployeeVo> shopEmployeeVos) {
                                         mShopEmployeeVos.removeAll(mShopEmployeeVos);
                                         mShopEmployeeVos.addAll(shopEmployeeVos);
 

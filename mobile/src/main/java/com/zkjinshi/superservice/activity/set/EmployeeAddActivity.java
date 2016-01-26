@@ -155,7 +155,6 @@ public class EmployeeAddActivity extends Activity {
         }
         LoadPhoneContactTask loadPhoneContactTask = new LoadPhoneContactTask();
         loadPhoneContactTask.execute();
-
     }
 
     private boolean isExsitInEmployeeVoList(String phone){

@@ -21,6 +21,9 @@ public class ClientBaseBean implements Serializable{
 //        "tags":[],
 //        "order_count":0,
 //        "salesname":"\u6881\u7ba1\u7406\u5458\u5185\u540d\u79f0"}
+//        "card_no": 'A00087', 会员卡号
+//        "is_bill": 1, 是否挂账 1是,0不是
+//        "salesid": "绑定的服务员id"
 
     private String userid;
     private String username;
@@ -32,13 +35,15 @@ public class ClientBaseBean implements Serializable{
     private String fuid;//绑定服务员ID
     private String salesname;//绑定服务员姓名
     private int    order_count;
+    private int    is_bill;
+    private String card_no;
+    private String salesid;//绑定服务员ID
 
-//    private int    is_bill;
-//    private String card_no;
-//    private String salesid;//绑定服务员ID
+    private boolean set;
+    private int     err;
+
 //    private int    user_level;
 //    private String level_desc;
-
 
     public String getUserid() {
         return userid;
@@ -118,5 +123,45 @@ public class ClientBaseBean implements Serializable{
 
     public void setOrder_count(int order_count) {
         this.order_count = order_count;
+    }
+
+    public int getIs_bill() {
+        return is_bill;
+    }
+
+    public void setIs_bill(int is_bill) {
+        this.is_bill = is_bill;
+    }
+
+    public String getCard_no() {
+        return card_no;
+    }
+
+    public void setCard_no(String card_no) {
+        this.card_no = card_no;
+    }
+
+    public String getSalesid() {
+        return salesid;
+    }
+
+    public void setSalesid(String salesid) {
+        this.salesid = salesid;
+    }
+
+    public boolean isSet() {
+        return set;
+    }
+
+    public void setSet(boolean set) {
+        this.set = set;
+    }
+
+    public int getErr() {
+        return err;
+    }
+
+    public void setErr(int err) {
+        this.err = err;
     }
 }
