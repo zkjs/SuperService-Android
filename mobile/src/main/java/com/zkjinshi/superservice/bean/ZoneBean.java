@@ -38,7 +38,6 @@ public class ZoneBean {
         this.hasAdd = hasAdd;
     }
 
-
     public int getLocid() {
         return locid;
     }

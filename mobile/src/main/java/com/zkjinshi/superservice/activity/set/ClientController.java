@@ -7,13 +7,11 @@ import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import com.zkjinshi.base.util.DialogUtil;
-import com.zkjinshi.superservice.bean.ClientBaseBean;
 import com.zkjinshi.superservice.bean.ClientDetailBean;
 import com.zkjinshi.superservice.factory.ClientFactory;
 import com.zkjinshi.superservice.net.ExtNetRequestListener;
 import com.zkjinshi.superservice.net.MethodType;
 import com.zkjinshi.superservice.net.NetRequest;
-import com.zkjinshi.superservice.net.NetRequestListener;
 import com.zkjinshi.superservice.net.NetRequestTask;
 import com.zkjinshi.superservice.net.NetResponse;
 import com.zkjinshi.superservice.sqlite.ClientDBUtil;
@@ -159,32 +157,6 @@ public class ClientController {
     }
 
     /**
-     * 获取客户基本信息
-     * @param phoneNumber
-     */
-    public void getBaseClientInfo(Context context,
-                                   String userID, String token,
-                                   String shopID, String phoneNumber,
-                                   ExtNetRequestListener requestListener) {
-
-        NetRequest netRequest = new NetRequest(ProtocolUtil.getClientBasicUrl());
-        HashMap<String,String> bizMap = new HashMap<>();
-
-        bizMap.put("salesid", userID);
-        bizMap.put("token", token);
-        bizMap.put("shopid", shopID);
-        bizMap.put("phone", phoneNumber);
-        bizMap.put("set", "9");
-        netRequest.setBizParamMap(bizMap);
-
-        NetRequestTask netRequestTask = new NetRequestTask(context, netRequest, NetResponse.class);
-        netRequestTask.methodType = MethodType.PUSH;
-        netRequestTask.setNetRequestListener(requestListener);
-        netRequestTask.isShowLoadingDialog = true;
-        netRequestTask.execute();
-    }
-
-    /**
      * 查询用户是否是邀请码和指定商家是否绑定销售
      * @param phoneNumber
      */
@@ -213,15 +185,15 @@ public class ClientController {
      * @param token
      * @param requestListener
      */
-    public void addFuser(Context context, String fuid,
-                         String userID, String token,
-                         ExtNetRequestListener requestListener) {
+    public void addFuser(Context context, String shopID, String fuid, String userID,
+                         String token, ExtNetRequestListener requestListener) {
 
         NetRequest netRequest = new NetRequest(ProtocolUtil.getAddFuserUrl());
         HashMap<String,String> bizMap = new HashMap<>();
         bizMap.put("fuid", fuid);
         bizMap.put("salesid", userID);
         bizMap.put("token", token);
+        bizMap.put("shopid", shopID);
         netRequest.setBizParamMap(bizMap);
 
         NetRequestTask netRequestTask = new NetRequestTask(context, netRequest, NetResponse.class);

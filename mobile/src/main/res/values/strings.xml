@@ -56,6 +56,7 @@
     <string name="client_select">客户查询</string>
     <string name="please_input_the_phone_number">请输入手机号</string>
     <string name="member_bind">会员绑定</string>
+    <string name="member_info">会员信息</string>
     <string name="member_type">客户类型</string>
     <string name="not_check_yet">尚未选择</string>
     <string name="exclusive_customer_service">专属客服</string>
@@ -161,5 +162,7 @@
     <string name="client_already_be_added">客人已被其他销售添加</string>
     <string name="select_client_failed_try_it_later">查询客户失败，请稍后再试！</string>
     <string name="please_use_invite_code_to_add_the_client">请通过激活码方式进行添加!</string>
+    <string name="location">区域</string>
+    <string name="arrive">到达</string>
 
 </resources>

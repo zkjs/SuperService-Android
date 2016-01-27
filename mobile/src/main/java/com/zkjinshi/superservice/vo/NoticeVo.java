@@ -13,12 +13,13 @@ public class NoticeVo {
 
     private String created;
     private String locId;
+    private String locname;
     private ArrayList<OrderVo> orderForNotice;
     private String phone;
     private String sex;
     private String shopId;
     private String shopName;
-    private int userApplevel;
+    private int    userApplevel;
     private String userId;
     private String userName;
 
@@ -36,6 +37,14 @@ public class NoticeVo {
 
     public void setLocId(String locId) {
         this.locId = locId;
+    }
+
+    public String getLocname() {
+        return locname;
+    }
+
+    public void setLocname(String locname) {
+        this.locname = locname;
     }
 
     public ArrayList<OrderVo> getOrderForNotice() {
@@ -101,5 +110,4 @@ public class NoticeVo {
     public void setUserName(String userName) {
         this.userName = userName;
     }
-
 }

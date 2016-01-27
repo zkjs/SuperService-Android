@@ -17,7 +17,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/blue03a9f4"
+            android:background="@color/theme_primary"
             android:orientation="horizontal">
 
             <RelativeLayout
@@ -81,7 +81,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingRight="10dp"
-                        android:text="VIP009"
+                        android:text="VIP001"
                         android:textColor="@color/white"
                         android:textSize="16sp" />
 
@@ -108,17 +108,18 @@
                 android:layout_centerVertical="true"
                 android:paddingLeft="10dp"
                 android:text="@string/exclusive_customer_service"
-                android:textColor="@color/grayB8B8B8"
+                android:textColor="@color/gray525252"
                 android:textSize="16sp" />
 
             <TextView
-                android:id="@+id/tv_member_type"
+                android:id="@+id/tv_saler_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:paddingRight="10dp"
-                android:textColor="@color/black"
+                android:paddingRight="20dp"
+                android:text="@string/not_choose_yet"
+                android:textColor="@color/grayB8B8B8"
                 android:textSize="16sp" />
 
         </RelativeLayout>
@@ -126,14 +127,15 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="40dp">
+            android:padding="20dp">
 
             <Button
                 android:id="@+id/btn_confirm"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:background="@drawable/bg_holo_bule_to_gray"
+                android:background="@drawable/bg_holo_bule_to_ligth_blue"
                 android:gravity="center"
+                android:textSize="14sp"
                 android:text="@string/add_to_my_client"
                 android:textColor="@color/white" />
 

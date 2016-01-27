@@ -50,7 +50,6 @@ public class GoodListActivity extends Activity {
     private GoodInfoVo goodInfoVo = null;
     private String shopid;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -99,10 +98,6 @@ public class GoodListActivity extends Activity {
                 finish();
             }
         });
-
-
-
-
     }
 
     /**
