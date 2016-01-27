@@ -19,10 +19,12 @@
             android:layout_weight="1.0"
             android:background="@color/gray"></View>
 
-        <com.zkjinshi.superservice.view.CircleStatusView
+        <com.zkjinshi.superservice.view.CircleImageView
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:layout_gravity="center" />
+            android:layout_gravity="center"
+            android:background="@drawable/bg_circle_blue"
+            />
 
         <View
             android:id="@+id/time_axis_cut_line_down"
@@ -58,8 +60,7 @@
                     android:id="@+id/civ_client_avatar"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:layout_marginTop="10dp"
-                    android:src="@mipmap/ic_launcher" />
+                    android:layout_marginTop="10dp" />
 
             </RelativeLayout>
 
