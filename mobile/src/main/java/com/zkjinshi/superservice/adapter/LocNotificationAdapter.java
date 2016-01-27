@@ -29,7 +29,7 @@ import com.zkjinshi.superservice.vo.OrderVo;
 import java.util.ArrayList;
 
 /**
- * 开发者：vincent
+ * 开发者：WinkyQin
  * 日期：2015/9/25
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
