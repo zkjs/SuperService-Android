@@ -105,16 +105,19 @@ public class ChatAdapter extends BaseAdapter {
         this.context = context;
         inflater = LayoutInflater.from(context);
         this.setMessageList(messageList);
+
         options = new DisplayImageOptions.Builder()
                 .showImageOnLoading(R.mipmap.ic_launcher)
                 .cacheInMemory(true)
                 .cacheOnDisk(true)
                 .build();
+
         imageOptions = new DisplayImageOptions.Builder()
                 .showImageOnLoading(R.mipmap.url_image_loading)
                 .cacheInMemory(true)
                 .cacheOnDisk(true)
                 .build();
+
         cardOptions = new DisplayImageOptions.Builder()
                 .showImageOnLoading(R.mipmap.img_photo)
                 .cacheInMemory(true)
