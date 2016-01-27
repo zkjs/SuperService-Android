@@ -210,9 +210,9 @@ public class ClientBindActivity extends Activity {
         if(!TextUtils.isEmpty(userID)) {
             String imageUrl =  ProtocolUtil.getAvatarUrl(userID);
             DisplayImageOptions options = new DisplayImageOptions.Builder()
-                    .showImageOnLoading(R.mipmap.img_hotel_zhanwei)
-                    .showImageForEmptyUri(R.mipmap.img_hotel_zhanwei)
-                    .showImageOnFail(R.mipmap.img_hotel_zhanwei)
+                    .showImageOnLoading(R.mipmap.ic_launcher)
+                    .showImageForEmptyUri(R.mipmap.ic_launcher)
+                    .showImageOnFail(R.mipmap.ic_launcher)
                     .cacheInMemory(true)
                     .cacheOnDisk(true)
                     .build();

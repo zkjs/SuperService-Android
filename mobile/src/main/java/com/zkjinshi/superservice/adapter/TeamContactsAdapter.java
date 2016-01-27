@@ -42,7 +42,7 @@ public class TeamContactsAdapter extends ServiceBaseAdapter<ShopEmployeeVo> impl
 
     public TeamContactsAdapter(Activity activity, List<ShopEmployeeVo> datas) {
         super(activity, datas);
-        this.options   = new DisplayImageOptions.Builder()
+        this.options = new DisplayImageOptions.Builder()
                 .showImageOnLoading(null)
                 .showImageForEmptyUri(null)// 设置图片Uri为空或是错误的时候显示的图片
                 .showImageOnFail(null)// 设置图片加载或解码过程中发生错误显示的图片

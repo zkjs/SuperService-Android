@@ -15,6 +15,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
@@ -136,7 +137,14 @@ public class MoreActivity extends FragmentActivity implements MultiImageSelector
             }
         }
         String avatarUrl = ProtocolUtil.getAvatarUrl(userVo.getUserId());
-        ImageLoader.getInstance().displayImage(avatarUrl, avatarCiv);
+        DisplayImageOptions options = new DisplayImageOptions.Builder()
+            .showImageOnLoading(R.mipmap.ic_launcher)
+            .showImageForEmptyUri(R.mipmap.ic_launcher)
+            .showImageOnFail(R.mipmap.ic_launcher)
+            .cacheInMemory(true)
+            .cacheOnDisk(true)
+            .build();
+        ImageLoader.getInstance().displayImage(avatarUrl, avatarCiv, options);
     }
 
     private void initListener() {

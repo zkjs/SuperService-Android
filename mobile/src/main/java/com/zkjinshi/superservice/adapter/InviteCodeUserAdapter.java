@@ -41,9 +41,9 @@ public class InviteCodeUserAdapter extends RecyclerView.Adapter<InviteCodeUserAd
             this.mDatas = inviteCodes;
         }
         this.mOptions  = new DisplayImageOptions.Builder()
-                .showImageOnLoading(R.mipmap.img_hotel_zhanwei)
-                .showImageForEmptyUri(R.mipmap.img_hotel_zhanwei)
-                .showImageOnFail(R.mipmap.img_hotel_zhanwei)
+                .showImageOnLoading(R.mipmap.ic_launcher)
+                .showImageForEmptyUri(R.mipmap.ic_launcher)
+                .showImageOnFail(R.mipmap.ic_launcher)
                 .cacheInMemory(true)
                 .cacheOnDisk(true)
                 .build();
