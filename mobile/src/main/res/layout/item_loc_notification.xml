@@ -159,8 +159,8 @@
 
                 <ImageView
                     android:id="@+id/iv_dianhua"
-                    android:layout_width="10.50dp"
-                    android:layout_height="15dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:background="@drawable/bg_ic_dianhua_blue" />
 
                 <TextView
@@ -192,8 +192,8 @@
 
                 <ImageView
                     android:id="@+id/iv_duihua"
-                    android:layout_width="15.75dp"
-                    android:layout_height="15dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:background="@drawable/bg_ic_duihua_blue" />
 
                 <TextView

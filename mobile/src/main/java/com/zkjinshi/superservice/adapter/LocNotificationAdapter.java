@@ -42,8 +42,8 @@ public class LocNotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
     private Context context;
 
-    private  ArrayList<NoticeVo> noticeList;
-    private DisplayImageOptions  options;
+    private ArrayList<NoticeVo> noticeList;
+    private DisplayImageOptions options;
     private RecyclerItemClickListener itemClickListener;
 
     public void setNoticeList(ArrayList<NoticeVo> noticeList) {
