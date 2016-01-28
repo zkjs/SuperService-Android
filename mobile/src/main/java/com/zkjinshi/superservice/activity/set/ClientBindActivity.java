@@ -9,6 +9,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -26,6 +27,7 @@ import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.view.CircleImageView;
+import com.zkjinshi.superservice.vo.SexType;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -42,13 +44,12 @@ public class ClientBindActivity extends Activity {
     private final static String TAG = ClientBindActivity.class.getSimpleName();
 
     private RelativeLayout mRlBack;
+    private LinearLayout   mLlPhoneCall;
     private TextView    mTvTitle;
-    private TextView    mTvSalerName;//专属客服姓名
-    private TextView    mTvMemberName;
+    private TextView    mTvEmail;
+    private TextView    mTvUserLevel;
+    private TextView    mTvPoints;
     private TextView    mTvMemberPhone;
-    private TextView    mTvMemberLevel;
-    private ImageButton mIbtnDianhua;
-    private ImageButton mIbtnDuihua;
     private Button      mBtnConfirm;
 
     private CircleImageView  mCivMemberAvatar;
@@ -71,15 +72,13 @@ public class ClientBindActivity extends Activity {
     private void initView() {
         mRlBack          = (RelativeLayout)  findViewById(R.id.rl_back);
         mTvTitle         = (TextView)        findViewById(R.id.tv_title);
-        mTvTitle.setText(getString(R.string.member_bind));
-        mTvTitle.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
         mCivMemberAvatar = (CircleImageView) findViewById(R.id.civ_member_avatar);
-        mTvSalerName     = (TextView)        findViewById(R.id.tv_saler_name);
-        mTvMemberName    = (TextView)        findViewById(R.id.tv_member_name);
         mTvMemberPhone   = (TextView)        findViewById(R.id.tv_member_phone);
-        mTvMemberLevel   = (TextView)        findViewById(R.id.tv_member_level);
-        mIbtnDianhua     = (ImageButton)     findViewById(R.id.ibtn_dianhua);
-        mIbtnDuihua      = (ImageButton)     findViewById(R.id.ibtn_duihua);
+        mTvEmail         = (TextView)        findViewById(R.id.tv_email);
+        mTvUserLevel     = (TextView)        findViewById(R.id.tv_user_level);
+        mTvPoints        = (TextView)        findViewById(R.id.tv_accumulate_points);
+        mLlPhoneCall     = (LinearLayout)    findViewById(R.id.ll_phone_call);
+        mTvMemberPhone   = (TextView)        findViewById(R.id.tv_member_phone);
         mBtnConfirm      = (Button)          findViewById(R.id.btn_confirm);
     }
 
@@ -102,7 +101,7 @@ public class ClientBindActivity extends Activity {
             }
         });
 
-        mIbtnDianhua.setOnClickListener(new View.OnClickListener() {
+        mLlPhoneCall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (!TextUtils.isEmpty(mClientBean.getPhone())) {
@@ -113,30 +112,30 @@ public class ClientBindActivity extends Activity {
             }
         });
 
-        mIbtnDuihua.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(ClientBindActivity.this, ChatActivity.class);
-                String clientID = mClientBean.getUserid();
-                if(!TextUtils.isEmpty(clientID)){
-                    intent.putExtra(Constants.EXTRA_USER_ID, clientID);
-                }
-
-                if (!TextUtils.isEmpty(mShopID)) {
-                    intent.putExtra(Constants.EXTRA_SHOP_ID, mShopID);
-                }
-
-                intent.putExtra(Constants.EXTRA_SHOP_NAME, CacheUtil.getInstance().getShopFullName());
-
-                String clientName = mClientBean.getUsername();
-                if (!TextUtils.isEmpty(clientName)) {
-                    intent.putExtra(Constants.EXTRA_TO_NAME, clientName);
-                }
-
-                intent.putExtra(Constants.EXTRA_FROM_NAME, CacheUtil.getInstance().getUserName());
-                startActivity(intent);
-            }
-        });
+//        mIbtnDuihua.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(ClientBindActivity.this, ChatActivity.class);
+//                String clientID = mClientBean.getUserid();
+//                if(!TextUtils.isEmpty(clientID)){
+//                    intent.putExtra(Constants.EXTRA_USER_ID, clientID);
+//                }
+//
+//                if (!TextUtils.isEmpty(mShopID)) {
+//                    intent.putExtra(Constants.EXTRA_SHOP_ID, mShopID);
+//                }
+//
+//                intent.putExtra(Constants.EXTRA_SHOP_NAME, CacheUtil.getInstance().getShopFullName());
+//
+//                String clientName = mClientBean.getUsername();
+//                if (!TextUtils.isEmpty(clientName)) {
+//                    intent.putExtra(Constants.EXTRA_TO_NAME, clientName);
+//                }
+//
+//                intent.putExtra(Constants.EXTRA_FROM_NAME, CacheUtil.getInstance().getUserName());
+//                startActivity(intent);
+//            }
+//        });
 
         mBtnConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -218,21 +217,17 @@ public class ClientBindActivity extends Activity {
                     .build();
             ImageLoader.getInstance().displayImage(imageUrl, mCivMemberAvatar, options);
         }
-        String salerID = client.getSalesid();
-        if(!TextUtils.isEmpty(salerID)){
-            String salerName = client.getSalesname();
-            if (!TextUtils.isEmpty(salerName)) {
-                mTvSalerName.setText(salerName);
-            } else {
-                mTvSalerName.setText(salerID);
-            }
-        } else {
-            mTvSalerName.setText(getString(R.string.not_choose_yet));
-        }
 
         String username = client.getUsername();
+        String sex = client.getSex();
+
         if(!TextUtils.isEmpty(username)){
-            mTvMemberName.setText(username);
+            //男性
+            if(Integer.parseInt(sex) == SexType.MALE.getVlaue()){
+                mTvTitle.setText(username.substring(0, 1) + this.getString(R.string.sir));
+            } else {
+                mTvTitle.setText(username.substring(0, 1) + this.getString(R.string.miss));
+            }
         }
 
         String phone = client.getPhone();
@@ -240,6 +235,9 @@ public class ClientBindActivity extends Activity {
             mTvMemberPhone.setText(phone);
         }
 
+        mTvEmail.setText(getString(R.string.current_none));
+        mTvUserLevel.setText(getString(R.string.current_none));
+        mTvPoints.setText(getString(R.string.current_none));
     }
 
 }
