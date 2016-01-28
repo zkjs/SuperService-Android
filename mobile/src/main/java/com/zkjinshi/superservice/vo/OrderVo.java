@@ -9,6 +9,7 @@ package com.zkjinshi.superservice.vo;
  */
 public class OrderVo {
 
+    private String orderNo;
     private String checkIn;
     private String checkInDate;
     private String orderRoom;
@@ -37,4 +38,11 @@ public class OrderVo {
         this.orderRoom = orderRoom;
     }
 
+    public String getOrderNo() {
+        return orderNo;
+    }
+
+    public void setOrderNo(String orderNo) {
+        this.orderNo = orderNo;
+    }
 }

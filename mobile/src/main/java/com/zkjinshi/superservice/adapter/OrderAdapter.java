@@ -21,6 +21,8 @@ import com.zkjinshi.base.util.IntentUtil;
 import com.zkjinshi.base.util.TimeUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.order.HotelDealActivity;
+import com.zkjinshi.superservice.activity.order.KTVDealActivity;
+import com.zkjinshi.superservice.activity.order.NormalDealActivity;
 import com.zkjinshi.superservice.bean.OrderBean;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.view.CircleImageView;
@@ -254,11 +256,23 @@ public class OrderAdapter extends RecyclerView.Adapter {
             OrderBean orderBean = dataList.get(position);
             switch (view.getId()){
                 case R.id.content_layout:
-                    Intent intent = new Intent(context, HotelDealActivity.class);
-                    intent.putExtra("orderNo", orderBean.getOrderno());
+                    String orderNo = orderBean.getOrderno();
+                    Intent intent = new Intent();
+                    if(orderNo.startsWith("H")){
+                        intent.setClass(context,HotelDealActivity.class);
+                        intent.putExtra("orderNo",orderNo);
+                    }else if(orderNo.startsWith("K")){
+                        intent.setClass(context,KTVDealActivity.class);
+                        intent.putExtra("orderNo",orderNo);
+                    }
+                    else if(orderNo.startsWith("O")){
+                        intent.setClass(context,NormalDealActivity.class);
+                        intent.putExtra("orderNo",orderNo);
+                    }
                     context.startActivity(intent);
                     ((Activity)context).overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                     break;
+
                 case R.id.iv_tel:
                     if(TextUtils.isEmpty( orderBean.getTelephone())){
                         DialogUtil.getInstance().showToast(context,"联系号码为空");
@@ -266,6 +280,7 @@ public class OrderAdapter extends RecyclerView.Adapter {
                     }
                     IntentUtil.callPhone(context, orderBean.getTelephone());
                     break;
+
                 case R.id.iv_chat:
                     if(TextUtils.isEmpty( orderBean.getTelephone())){
                         DialogUtil.getInstance().showToast(context,"联系号码为空");
@@ -273,6 +288,7 @@ public class OrderAdapter extends RecyclerView.Adapter {
                     }
                     IntentUtil.startSendMessage("",orderBean.getTelephone(),context);
                     break;
+
                 case R.id.iv_share:
                     if(TextUtils.isEmpty( orderBean.getTelephone())){
                         DialogUtil.getInstance().showToast(context,"联系号码为空");

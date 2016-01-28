@@ -113,14 +113,6 @@ public class LocNotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                 if(!TextUtils.isEmpty(roomType)){
                     String orderStr = roomType+" | "+stayDays;
                     ((NoticeViewHolder) holder).tvOrderInfo.setText(orderStr);
-
-                    ((NoticeViewHolder) holder).rlOrderInfo.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            //获得订单号
-                            DialogUtil.getInstance().showCustomToast(context, "暂未传递订单号", Gravity.CENTER);
-                        }
-                    });
                 }else{
                     ((NoticeViewHolder) holder).tvOrderInfo.setVisibility(View.GONE);
                     ((NoticeViewHolder) holder).ivOrderInfo.setVisibility(View.GONE);
@@ -196,7 +188,6 @@ public class LocNotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         CircleImageView civClientAvatar;
         TextView        tvClientName;
         TextView        tvLocationInfo;
-        RelativeLayout  rlOrderInfo;
         TextView        tvOrderInfo;
         ImageView       ivOrderInfo;
         TextView        tvTimeInfo;
@@ -210,7 +201,6 @@ public class LocNotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             civClientAvatar = (CircleImageView) view.findViewById(R.id.civ_client_avatar);
             tvClientName    = (TextView)  view.findViewById(R.id.tv_client_name);
             tvLocationInfo  = (TextView)  view.findViewById(R.id.tv_location_info);
-            rlOrderInfo     = (RelativeLayout)  view.findViewById(R.id.rl_order_info);
             tvOrderInfo     = (TextView)  view.findViewById(R.id.tv_order_info);
             ivOrderInfo     = (ImageView) view.findViewById(R.id.iv_order_info);
             tvTimeInfo      = (TextView)  view.findViewById(R.id.tv_time_info);

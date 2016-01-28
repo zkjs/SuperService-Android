@@ -41,7 +41,7 @@
         android:layout_marginBottom="6dp"
         android:layout_marginRight="8dp"
         android:layout_marginTop="6dp"
-        android:background="@drawable/radius_frame_bg"
+        android:background="@drawable/bg_radius_white_light_gray"
         android:orientation="vertical">
 
         <LinearLayout
@@ -110,12 +110,11 @@
                     android:textSize="14sp" />
 
                 <RelativeLayout
-                    android:id="@+id/rl_order_info"
                     android:clickable="true"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1"
-                    android:background="@drawable/bg_white_light_gray"
+
                     android:gravity="center_vertical">
 
                     <TextView
@@ -155,8 +154,6 @@
                 android:layout_weight="1"
                 android:background="@drawable/bg_white_light_gray"
                 android:clickable="true"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
                 android:gravity="center"
                 android:orientation="horizontal">
 
@@ -190,8 +187,6 @@
                 android:layout_weight="1"
                 android:background="@drawable/bg_white_light_gray"
                 android:clickable="true"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
                 android:gravity="center"
                 android:orientation="horizontal">
 

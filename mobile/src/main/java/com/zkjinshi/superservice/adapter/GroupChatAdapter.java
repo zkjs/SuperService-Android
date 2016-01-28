@@ -421,14 +421,14 @@ public class GroupChatAdapter extends BaseAdapter {
                         String orderNo = bookOrder.getOrderno();
                         Intent intent = new Intent();
                         if(orderNo.startsWith("H")){
-                            intent.setClass(context,HotelDealActivity.class);
+                            intent.setClass(context, HotelDealActivity.class);
                             intent.putExtra("orderNo",orderNo);
                         }else if(orderNo.startsWith("K")){
-                            intent.setClass(context,KTVDealActivity.class);
+                            intent.setClass(context, KTVDealActivity.class);
                             intent.putExtra("orderNo",orderNo);
                         }
                         else if(orderNo.startsWith("O")){
-                            intent.setClass(context,NormalDealActivity.class);
+                            intent.setClass(context, NormalDealActivity.class);
                             intent.putExtra("orderNo",orderNo);
                         }
                         context.startActivity(intent);

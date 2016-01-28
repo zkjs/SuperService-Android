@@ -1,6 +1,7 @@
 package com.zkjinshi.superservice.fragment;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -9,6 +10,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,8 +19,13 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.zkjinshi.base.config.ConfigUtil;
+import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
+import com.zkjinshi.superservice.activity.order.HotelDealActivity;
+import com.zkjinshi.superservice.activity.order.KTVDealActivity;
+import com.zkjinshi.superservice.activity.order.NormalDealActivity;
 import com.zkjinshi.superservice.adapter.LocNotificationAdapter;
+import com.zkjinshi.superservice.listener.RecyclerItemClickListener;
 import com.zkjinshi.superservice.net.ExtNetRequestListener;
 import com.zkjinshi.superservice.net.MethodType;
 import com.zkjinshi.superservice.net.NetRequest;
@@ -27,6 +34,7 @@ import com.zkjinshi.superservice.net.NetResponse;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.vo.NoticeVo;
+import com.zkjinshi.superservice.vo.OrderVo;
 
 import org.jivesoftware.smack.util.Base64Encoder;
 
@@ -43,12 +51,12 @@ import java.util.HashMap;
 public class NoticeFragment extends Fragment {
 
     public static final String TAG = "NoticeFragment";
-    private Activity activity;
+    private Activity     activity;
     private RecyclerView notityRecyclerView;
-    private LinearLayoutManager notifyLayoutManager;
+    private LinearLayoutManager    notifyLayoutManager;
     private LocNotificationAdapter notificationAdapter;
-    private SwipeRefreshLayout swipeRefreshLayout;
-    private ArrayList<NoticeVo> noticeList = new ArrayList<NoticeVo>();
+    private SwipeRefreshLayout     swipeRefreshLayout;
+    private ArrayList<NoticeVo>    noticeList = new ArrayList<NoticeVo>();
     private TextView emptyTips;
 
     public static NoticeFragment newInstance() {
@@ -73,7 +81,6 @@ public class NoticeFragment extends Fragment {
     private void initData() {
 
         activity = this.getActivity();
-
         notificationAdapter = new LocNotificationAdapter(activity, noticeList);
         notityRecyclerView.setAdapter(notificationAdapter);
         notityRecyclerView.setHasFixedSize(true);
@@ -92,6 +99,36 @@ public class NoticeFragment extends Fragment {
             public void onRefresh() {
                 noticeList = new ArrayList<NoticeVo>();
                 requestNoticesTask();
+            }
+        });
+
+        notificationAdapter.setOnItemClickListener(new RecyclerItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                //获取订单信息并显示基本信息
+                NoticeVo noticeVo = noticeList.get(position);
+                ArrayList<OrderVo> orderList = noticeVo.getOrderForNotice();
+                if(null != orderList && !orderList.isEmpty()){
+                    final OrderVo orderVo = orderList.get(0);
+                    if(null != orderVo){
+                        String orderNO = orderVo.getOrderNo();
+                        if(!TextUtils.isEmpty(orderNO)){
+                            Intent intent = new Intent();
+                            if(orderNO.startsWith("H")){
+                                intent.setClass(activity, HotelDealActivity.class);
+                                intent.putExtra("orderNo",orderNO);
+                            }else if(orderNO.startsWith("K")){
+                                intent.setClass(activity, KTVDealActivity.class);
+                                intent.putExtra("orderNo",orderNO);
+                            }
+                            else if(orderNO.startsWith("O")){
+                                intent.setClass(activity, NormalDealActivity.class);
+                                intent.putExtra("orderNo",orderNO);
+                            }
+                            activity.startActivity(intent);
+                        }
+                    }
+                }
             }
         });
     }
