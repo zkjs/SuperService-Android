@@ -5,6 +5,7 @@ import android.database.Cursor;
 
 import com.zkjinshi.superservice.bean.TeamContactBean;
 import com.zkjinshi.superservice.sqlite.ShopDepartmentDBUtil;
+import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.RandomDrawbleUtil;
 import com.zkjinshi.superservice.vo.OnlineStatus;
 import com.zkjinshi.superservice.vo.ShopEmployeeVo;
@@ -119,6 +120,7 @@ public class ShopEmployeeFactory {
         shopEmployeeVo.setRole_name(teamContactBean.getRole_name());
         shopEmployeeVo.setDept_id(teamContactBean.getDeptid());
         shopEmployeeVo.setDept_name(teamContactBean.getDept_name());
+        shopEmployeeVo.setShop_id(CacheUtil.getInstance().getShopID());
         return  shopEmployeeVo;
     }
 

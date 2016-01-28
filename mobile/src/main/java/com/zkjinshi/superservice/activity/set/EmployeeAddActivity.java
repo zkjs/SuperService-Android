@@ -87,6 +87,7 @@ public class EmployeeAddActivity extends Activity {
     private  List<ShopEmployeeVo> allList = new ArrayList<ShopEmployeeVo>(); // 汇总的要提交的新成员。
 
     private boolean hasGetDept = false;
+    private String mShopID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -141,6 +142,9 @@ public class EmployeeAddActivity extends Activity {
     }
 
     private void initData() {
+
+        mShopID = CacheUtil.getInstance().getShopID();
+
         contactsAdapter = new ContactsAdapter(this,contactLocalList);
         listView.setAdapter(contactsAdapter);
         listView.setEmptyView(findViewById(R.id.empty_tv));
@@ -457,7 +461,7 @@ public class EmployeeAddActivity extends Activity {
         @Override
         protected Void doInBackground(Void... voids) {
             //获取团队联系人列表
-            employeeVoList = ShopEmployeeDBUtil.getInstance().queryAll();
+            employeeVoList = ShopEmployeeDBUtil.getInstance().queryAll(mShopID);
             //得到手机通讯录联系人信息
             getPhoneContacts();
             return null;

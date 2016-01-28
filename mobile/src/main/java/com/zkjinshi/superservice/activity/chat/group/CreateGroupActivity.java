@@ -64,6 +64,8 @@ public class CreateGroupActivity extends Activity {
     private Map<Integer, Boolean> enabledMap = new HashMap<Integer, Boolean>();
     private boolean addSucc;
 
+    private String mShopID;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,10 +83,12 @@ public class CreateGroupActivity extends Activity {
     }
 
     private void initData() {
+        mShopID = CacheUtil.getInstance().getShopID();
+
         selectList = new ArrayList<String>();
         if(null != getIntent() && null != getIntent().getStringExtra("userId")){
             contactId = getIntent().getStringExtra("userId");
-            shopEmployeeVo = ShopEmployeeDBUtil.getInstance().queryEmployeeById(contactId);
+            shopEmployeeVo = ShopEmployeeDBUtil.getInstance().queryEmployeeById(mShopID, contactId);
             if(null != shopEmployeeVo){
                 if(!selectList.contains(contactId)){
                     addSucc = selectList.add(contactId);
@@ -108,7 +112,7 @@ public class CreateGroupActivity extends Activity {
         mLayoutManager = new LinearLayoutManager(this);
         mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRcvTeamContacts.setLayoutManager(mLayoutManager);
-        mShopEmployeeVos = ShopEmployeeDBUtil.getInstance().queryAllByDeptIDAsc();
+        mShopEmployeeVos = ShopEmployeeDBUtil.getInstance().queryAllByDeptIDAsc(mShopID);
         if(null != mShopEmployeeVos && !mShopEmployeeVos.isEmpty()){
             for(int i= 0 ; i< mShopEmployeeVos.size(); i++){
                 shopEmployeeVo = mShopEmployeeVos.get(i);
@@ -226,7 +230,7 @@ public class CreateGroupActivity extends Activity {
     private String convertList2String(List<String> selectList){
         StringBuilder teamTitle = new StringBuilder();
         for(String contactId : selectList){
-            shopEmployeeVo = ShopEmployeeDBUtil.getInstance().queryEmployeeById(contactId);
+            shopEmployeeVo = ShopEmployeeDBUtil.getInstance().queryEmployeeById(mShopID, contactId);
             if(null != shopEmployeeVo){
                 contactVo = EContactFactory.getInstance().buildEContactVo(shopEmployeeVo);
             }

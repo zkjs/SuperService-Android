@@ -57,6 +57,7 @@ public class InviteMembersActivity extends Activity {
     private EMGroup group;
     private List<String> memberList;
     private String empid;
+    private String mShopID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,13 +76,16 @@ public class InviteMembersActivity extends Activity {
     }
 
     private void initData() {
+
+        mShopID = CacheUtil.getInstance().getShopID();
+
         selectList = new ArrayList<String>();
         mTvTitle.setText("邀请好友");
         mRcvTeamContacts.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(this);
         mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRcvTeamContacts.setLayoutManager(mLayoutManager);
-        shopEmployeeList = ShopEmployeeDBUtil.getInstance().queryAllByDeptIDAsc();
+        shopEmployeeList = ShopEmployeeDBUtil.getInstance().queryAllByDeptIDAsc(mShopID);
         mContactsAdapter = new InviteTeamAdapter(InviteMembersActivity.this, shopEmployeeList);
         mRcvTeamContacts.setAdapter(mContactsAdapter);
         mContactsAdapter.setSelectMap(selectMap);

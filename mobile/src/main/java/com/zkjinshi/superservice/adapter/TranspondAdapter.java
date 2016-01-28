@@ -190,8 +190,9 @@ public class TranspondAdapter extends ServiceBaseAdapter<ShopEmployeeVo> impleme
      * 根据ListView的当前位置获取分类的首字母的Char ascii值
      */
     public int getSectionForPosition(int position) {
-        if(!TextUtils.isEmpty(mDatas.get(position).getDept_name())){
-            return mDatas.get(position).getDept_name().charAt(0);
+        String deptName = mDatas.get(position).getDept_name();
+        if(!TextUtils.isEmpty(deptName)){
+            return deptName.charAt(0);
         }
         return -1;
     }

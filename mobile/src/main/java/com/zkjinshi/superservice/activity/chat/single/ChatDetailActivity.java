@@ -53,6 +53,7 @@ public class ChatDetailActivity extends Activity{
     private GridView shopEmpGv;
     private boolean addSucc;
     private RelativeLayout clearHistoryLayout;
+    private String mShopID;
 
     private void initView(){
         titleTv = (TextView)findViewById(R.id.header_bar_tv_title);
@@ -62,11 +63,14 @@ public class ChatDetailActivity extends Activity{
     }
 
     private void initData(){
+
+        mShopID = CacheUtil.getInstance().getShopID();
+
         titleTv.setText("聊天详情");
         backIBtn.setVisibility(View.VISIBLE);
         if(null != getIntent() && null != getIntent().getStringExtra("userId")){
             userId = getIntent().getStringExtra("userId");
-            shopEmployeeVo = ShopEmployeeDBUtil.getInstance().queryEmployeeById(userId);
+            shopEmployeeVo = ShopEmployeeDBUtil.getInstance().queryEmployeeById(mShopID, userId);
             if(null != shopEmployeeVo){
                 contactVo = EContactFactory.getInstance().buildEContactVo(shopEmployeeVo);
                 if(!contactList.contains(contactVo)){

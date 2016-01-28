@@ -35,15 +35,16 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
         switch (resp.errCode) {
             case BaseResp.ErrCode.ERR_OK:
                 //分享成功
-                DialogUtil.getInstance().showCustomToast(WXEntryActivity.this, TAG+"微信分享成功", Gravity.CENTER);
+//                DialogUtil.getInstance().showCustomToast(WXEntryActivity.this, TAG+"微信分享成功", Gravity.CENTER);
+                DialogUtil.getInstance().showCustomToast(WXEntryActivity.this, "微信分享成功", Gravity.CENTER);
                 break;
             case BaseResp.ErrCode.ERR_USER_CANCEL:
                 //分享取消
-                DialogUtil.getInstance().showCustomToast(WXEntryActivity.this, TAG+"微信发送被取消", Gravity.CENTER);
+                DialogUtil.getInstance().showCustomToast(WXEntryActivity.this, "微信发送被取消", Gravity.CENTER);
                 break;
             case BaseResp.ErrCode.ERR_AUTH_DENIED:
                 //分享拒绝
-                DialogUtil.getInstance().showCustomToast(WXEntryActivity.this, TAG+"微信分享被拒绝", Gravity.CENTER);
+                DialogUtil.getInstance().showCustomToast(WXEntryActivity.this, "微信分享被拒绝", Gravity.CENTER);
                 break;
         }
         this.finish();

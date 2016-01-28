@@ -95,7 +95,7 @@ public class TeamEditActivity extends Activity {
         mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRcvTeamContacts.setLayoutManager(mLayoutManager);
 
-        mShopEmployeeVos = ShopEmployeeDBUtil.getInstance().queryAllExceptUser(mUserID);
+        mShopEmployeeVos = ShopEmployeeDBUtil.getInstance().queryAllExceptUser(mShopID, mUserID);
         mContactsAdapter = new TeamEditContactsAdapter(TeamEditActivity.this, mShopEmployeeVos);
         mRcvTeamContacts.setAdapter(mContactsAdapter);
     }
@@ -208,7 +208,7 @@ public class TeamEditActivity extends Activity {
                            if(delResult > 0){
                                DialogUtil.getInstance().showToast(TeamEditActivity.this, "删除成功");
                        }
-                        mShopEmployeeVos = ShopEmployeeDBUtil.getInstance().queryAllByDeptIDAsc();
+                        mShopEmployeeVos = ShopEmployeeDBUtil.getInstance().queryAllByDeptIDAsc(mShopID);
                         mContactsAdapter.updateListView(mShopEmployeeVos);
                     } else {
                         DialogUtil.getInstance().showToast(TeamEditActivity.this, "删除失败，请稍后再试。");

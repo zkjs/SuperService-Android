@@ -126,7 +126,7 @@ public class ShopEmployeeDBUtil {
      * 查询所有团队联系人
      * @return
      */
-    public List<ShopEmployeeVo> queryAll() {
+    public List<ShopEmployeeVo> queryAll(String shopID) {
         List<ShopEmployeeVo> shopEmployeeVos = new ArrayList<>();
         ShopEmployeeVo shopEmployeeVo = null;
         SQLiteDatabase db = null;
@@ -134,7 +134,7 @@ public class ShopEmployeeDBUtil {
         if (null != helper) {
             try {
                 db = helper.getReadableDatabase();
-                cursor = db.query(DBOpenHelper.SHOP_EMPLOYEE_TBL, null, null, null, null, null, null);
+                cursor = db.query(DBOpenHelper.SHOP_EMPLOYEE_TBL, null, " shop_id = ?", new String[] {shopID}, null, null, null);
                 if (cursor != null && cursor.getCount() > 0) {
                     while (cursor.moveToNext()) {
                         shopEmployeeVo = ShopEmployeeFactory.getInstance().buildShopEmployee(cursor);
@@ -217,7 +217,7 @@ public class ShopEmployeeDBUtil {
      * query by department id asc
      * @return
      */
-    public List<ShopEmployeeVo> queryAllByDeptIDAsc() {
+    public List<ShopEmployeeVo> queryAllByDeptIDAsc(String shopID) {
         List<ShopEmployeeVo> shopEmployeeVos = new ArrayList<>();
         ShopEmployeeVo shopEmployeeVo = null;
         SQLiteDatabase db = null;
@@ -225,7 +225,7 @@ public class ShopEmployeeDBUtil {
         if (null != helper) {
             try {
                 db = helper.getReadableDatabase();
-                cursor = db.query(DBOpenHelper.SHOP_EMPLOYEE_TBL, null, null, null, null, null, " dept_id ASC");
+                cursor = db.query(DBOpenHelper.SHOP_EMPLOYEE_TBL, null, " shop_id = ?", new String[] {shopID}, null, null, " dept_id ASC");
                 if (cursor != null && cursor.getCount() > 0) {
                     while (cursor.moveToNext()) {
                         shopEmployeeVo = ShopEmployeeFactory.getInstance().buildShopEmployee(cursor);
@@ -251,7 +251,7 @@ public class ShopEmployeeDBUtil {
      * query by department id asc
      * @return
      */
-    public List<ShopEmployeeVo> queryAllExceptUser(String userID) {
+    public List<ShopEmployeeVo> queryAllExceptUser(String shopID, String userID) {
         List<ShopEmployeeVo> shopEmployeeVos = new ArrayList<>();
         ShopEmployeeVo shopEmployeeVo = null;
         SQLiteDatabase db = null;
@@ -259,7 +259,7 @@ public class ShopEmployeeDBUtil {
         if (null != helper) {
             try {
                 db = helper.getReadableDatabase();
-                cursor = db.query(DBOpenHelper.SHOP_EMPLOYEE_TBL, null, null, null, null, null, " dept_id ASC");
+                cursor = db.query(DBOpenHelper.SHOP_EMPLOYEE_TBL, null, " shop_id = ?", new String[] {shopID}, null, null, " dept_id ASC");
                 if (cursor != null && cursor.getCount() > 0) {
                     while (cursor.moveToNext()) {
                         shopEmployeeVo = ShopEmployeeFactory.getInstance().buildShopEmployee(cursor);
@@ -330,7 +330,7 @@ public class ShopEmployeeDBUtil {
         return delResult;
     }
 
-    public ShopEmployeeVo queryEmployeeById(String empId) {
+    public ShopEmployeeVo queryEmployeeById(String shopID, String empId) {
         ShopEmployeeVo shopEmployeeVo = null;
         SQLiteDatabase db = null;
         Cursor cursor = null;
@@ -338,7 +338,7 @@ public class ShopEmployeeDBUtil {
             try {
                 db = helper.getReadableDatabase();
                 cursor = db.query(DBOpenHelper.SHOP_EMPLOYEE_TBL, null,
-                        " empid = ? ", new String[] { empId}, null, null, null);
+                        " shop_id = ? and empid = ? ", new String[] { shopID, empId}, null, null, null);
                 if (cursor != null && cursor.getCount() > 0) {
                     while (cursor.moveToNext()) {
                         shopEmployeeVo = new ShopEmployeeVo();
@@ -347,7 +347,6 @@ public class ShopEmployeeDBUtil {
                 }
 
             } catch (Exception e) {
-                // TODO: handle exception
                 e.printStackTrace();
             } finally {
 

@@ -58,6 +58,7 @@ public class TranspondController extends AppCompatActivity {
     public void getTeamContacts(final Context context, String userID,
                                 String token, final String shopID,
                                 final GetTeamContactsListener listener){
+
         NetRequest netRequest = new NetRequest(ProtocolUtil.getTeamListUrl());
         HashMap<String,String> bizMap = new HashMap<>();
         bizMap.put("salesid", userID);
@@ -85,6 +86,7 @@ public class TranspondController extends AppCompatActivity {
                     Gson gson = new Gson();
                     List<TeamContactBean> teamContactBeans = gson.fromJson(jsonResult,
                             new TypeToken<ArrayList<TeamContactBean>>() {}.getType());
+                    
                     if (null != teamContactBeans) {
                         /** add to local db */
                         List<ShopEmployeeVo> shopEmployeeVos = ShopEmployeeFactory.getInstance().buildShopEmployees(teamContactBeans);
