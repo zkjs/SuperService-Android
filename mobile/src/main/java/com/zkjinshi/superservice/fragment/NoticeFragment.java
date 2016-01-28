@@ -40,7 +40,7 @@ import java.util.HashMap;
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class NoticeFragment extends Fragment{
+public class NoticeFragment extends Fragment {
 
     public static final String TAG = "NoticeFragment";
     private Activity activity;
@@ -63,11 +63,11 @@ public class NoticeFragment extends Fragment{
         return view;
     }
 
-    private void initView(View view){
+    private void initView(View view) {
         emptyTips = (TextView) view.findViewById(R.id.empty_tips);
         emptyTips.setText("暂无到店通知");
         notityRecyclerView = (RecyclerView) view.findViewById(R.id.rcv_notice);
-        swipeRefreshLayout = (SwipeRefreshLayout)view.findViewById(R.id.srl_notice);
+        swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.srl_notice);
     }
 
     private void initData() {
@@ -84,7 +84,7 @@ public class NoticeFragment extends Fragment{
         requestNoticesTask();
     }
 
-    private void initListeners(){
+    private void initListeners() {
 
         //下拉刷新
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -122,11 +122,11 @@ public class NoticeFragment extends Fragment{
     /**
      * 请求到店通知
      */
-    private void requestNoticesTask(){
+    private void requestNoticesTask() {
         String locIds = CacheUtil.getInstance().getAreaInfo();
-        if(TextUtils.isEmpty(locIds)){
+        if (TextUtils.isEmpty(locIds)) {
             try {
-                if(null != swipeRefreshLayout){
+                if (null != swipeRefreshLayout) {
                     swipeRefreshLayout.setRefreshing(false);
                 }
                 noticeList = new ArrayList<NoticeVo>();
@@ -136,9 +136,9 @@ public class NoticeFragment extends Fragment{
             }
             return;
         }
-        if(locIds.contains(",")){
-             mutileZoneNotice();
-        }else{
+        if (locIds.contains(",")) {
+            mutileZoneNotice();
+        } else {
             singleZoneNotice();
         }
 
@@ -147,11 +147,11 @@ public class NoticeFragment extends Fragment{
     /**
      * 获取单个到店区域通知
      */
-    public void singleZoneNotice(){
+    public void singleZoneNotice() {
         String locIds = CacheUtil.getInstance().getAreaInfo();
         String token = CacheUtil.getInstance().getToken();
         String shopId = CacheUtil.getInstance().getShopID();
-        String noticesUrl = ProtocolUtil.getNoticeUrl(shopId,locIds,token);
+        String noticesUrl = ProtocolUtil.getNoticeUrl(shopId, locIds, token);
         NetRequest netRequest = new NetRequest(noticesUrl);
         NetRequestTask netRequestTask = new NetRequestTask(getActivity(), netRequest, NetResponse.class);
         netRequestTask.methodType = MethodType.GET;
@@ -161,7 +161,7 @@ public class NoticeFragment extends Fragment{
             public void onNetworkRequestError(int errorCode, String errorMessage) {
                 Log.i(TAG, "errorCode:" + errorCode);
                 Log.i(TAG, "errorMessage:" + errorMessage);
-                if(null != swipeRefreshLayout){
+                if (null != swipeRefreshLayout) {
                     swipeRefreshLayout.setRefreshing(false);
                 }
             }
@@ -174,11 +174,12 @@ public class NoticeFragment extends Fragment{
             public void onNetworkResponseSucceed(NetResponse result) {
                 super.onNetworkResponseSucceed(result);
                 try {
-                    if(null != swipeRefreshLayout){
+                    if (null != swipeRefreshLayout) {
                         swipeRefreshLayout.setRefreshing(false);
                     }
                     Log.i(TAG, "result.rawResult:" + result.rawResult);
-                    noticeList = new Gson().fromJson(result.rawResult, new TypeToken< ArrayList<NoticeVo>>(){}.getType());
+                    noticeList = new Gson().fromJson(result.rawResult, new TypeToken<ArrayList<NoticeVo>>() {
+                    }.getType());
                     notificationAdapter.setNoticeList(noticeList);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -197,15 +198,15 @@ public class NoticeFragment extends Fragment{
     /**
      * 获取多个到店区域通知
      */
-    public void mutileZoneNotice(){
+    public void mutileZoneNotice() {
         String locIds = CacheUtil.getInstance().getAreaInfo();
         String shopId = CacheUtil.getInstance().getShopID();
-        String noticesUrl =  ConfigUtil.getInst().getJavaDomain()+"arrive/users";
+        String noticesUrl = ConfigUtil.getInst().getJavaDomain() + "arrive/users";
 
         NetRequest netRequest = new NetRequest(noticesUrl);
         HashMap<String, String> bigMap = new HashMap<>();
-        bigMap.put("shopid",shopId);
-        bigMap.put("locid",locIds);
+        bigMap.put("shopid", shopId);
+        bigMap.put("locid", locIds);
         netRequest.setBizParamMap(bigMap);
         NetRequestTask netRequestTask = new NetRequestTask(getActivity(), netRequest, NetResponse.class);
         netRequestTask.methodType = MethodType.JSON;
@@ -215,7 +216,7 @@ public class NoticeFragment extends Fragment{
             public void onNetworkRequestError(int errorCode, String errorMessage) {
                 Log.i(TAG, "errorCode:" + errorCode);
                 Log.i(TAG, "errorMessage:" + errorMessage);
-                if(null != swipeRefreshLayout){
+                if (null != swipeRefreshLayout) {
                     swipeRefreshLayout.setRefreshing(false);
                 }
             }
@@ -228,11 +229,12 @@ public class NoticeFragment extends Fragment{
             public void onNetworkResponseSucceed(NetResponse result) {
                 super.onNetworkResponseSucceed(result);
                 try {
-                    if(null != swipeRefreshLayout){
+                    if (null != swipeRefreshLayout) {
                         swipeRefreshLayout.setRefreshing(false);
                     }
                     Log.i(TAG, "result.rawResult:" + result.rawResult);
-                    noticeList = new Gson().fromJson(result.rawResult, new TypeToken< ArrayList<NoticeVo>>(){}.getType());
+                    noticeList = new Gson().fromJson(result.rawResult, new TypeToken<ArrayList<NoticeVo>>() {
+                    }.getType());
                     notificationAdapter.setNoticeList(noticeList);
                 } catch (Exception e) {
                     e.printStackTrace();

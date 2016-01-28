@@ -5,14 +5,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.base.util.DisplayUtil;
 import com.zkjinshi.base.util.IntentUtil;
 import com.zkjinshi.base.util.TimeUtil;
@@ -102,19 +106,29 @@ public class LocNotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         //获取订单信息并显示基本信息
         ArrayList<OrderVo> orderList = noticeVo.getOrderForNotice();
         if(null != orderList && !orderList.isEmpty()){
-            OrderVo orderVo = orderList.get(0);
+            final OrderVo orderVo = orderList.get(0);
             if(null != orderVo){
                 String roomType = orderVo.getOrderRoom();
                 String stayDays = orderVo.getCheckIn();
                 if(!TextUtils.isEmpty(roomType)){
                     String orderStr = roomType+" | "+stayDays;
                     ((NoticeViewHolder) holder).tvOrderInfo.setText(orderStr);
+
+                    ((NoticeViewHolder) holder).rlOrderInfo.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            //获得订单号
+                            DialogUtil.getInstance().showCustomToast(context, "暂未传递订单号", Gravity.CENTER);
+                        }
+                    });
                 }else{
                     ((NoticeViewHolder) holder).tvOrderInfo.setVisibility(View.GONE);
+                    ((NoticeViewHolder) holder).ivOrderInfo.setVisibility(View.GONE);
                 }
             }
         } else {
             ((NoticeViewHolder) holder).tvOrderInfo.setVisibility(View.GONE);
+            ((NoticeViewHolder) holder).ivOrderInfo.setVisibility(View.GONE);
         }
 
         String timeCreated = noticeVo.getCreated();
@@ -182,7 +196,9 @@ public class LocNotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         CircleImageView civClientAvatar;
         TextView        tvClientName;
         TextView        tvLocationInfo;
+        RelativeLayout  rlOrderInfo;
         TextView        tvOrderInfo;
+        ImageView       ivOrderInfo;
         TextView        tvTimeInfo;
         LinearLayout    llChat;
         LinearLayout    llPhoneCall;
@@ -194,7 +210,9 @@ public class LocNotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             civClientAvatar = (CircleImageView) view.findViewById(R.id.civ_client_avatar);
             tvClientName    = (TextView)  view.findViewById(R.id.tv_client_name);
             tvLocationInfo  = (TextView)  view.findViewById(R.id.tv_location_info);
+            rlOrderInfo     = (RelativeLayout)  view.findViewById(R.id.rl_order_info);
             tvOrderInfo     = (TextView)  view.findViewById(R.id.tv_order_info);
+            ivOrderInfo     = (ImageView) view.findViewById(R.id.iv_order_info);
             tvTimeInfo      = (TextView)  view.findViewById(R.id.tv_time_info);
             llPhoneCall     = (LinearLayout)view.findViewById(R.id.ll_phone_call);
             llChat          = (LinearLayout)view.findViewById(R.id.ll_chat);
