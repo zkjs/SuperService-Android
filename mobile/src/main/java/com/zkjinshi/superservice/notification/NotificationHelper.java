@@ -324,6 +324,7 @@ public class NotificationHelper {
      * @param context
      */
     public void showSalerBindedMessage(Context context, String userID, String userName) {
+
         NotificationCompat.Builder notificationBuilder = null;
         // 1.设置显示信息
         notificationBuilder = new NotificationCompat.Builder(context);
