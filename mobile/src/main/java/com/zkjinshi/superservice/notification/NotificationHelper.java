@@ -327,8 +327,8 @@ public class NotificationHelper {
         NotificationCompat.Builder notificationBuilder = null;
         // 1.设置显示信息
         notificationBuilder = new NotificationCompat.Builder(context);
-        String content = "客户：" + userName + "已经添加您为联系人";
-        notificationBuilder.setContentTitle("客户添加通知");
+        String content = "客户" + userName + "已经添加您为联系人";
+        notificationBuilder.setContentTitle(userName);
         notificationBuilder.setContentText(content);
         notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
         String avatarUrl = ProtocolUtil.getAvatarUrl(userID);

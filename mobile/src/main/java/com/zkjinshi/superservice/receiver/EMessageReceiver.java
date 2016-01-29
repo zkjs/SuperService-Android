@@ -46,7 +46,7 @@ public class EMessageReceiver extends BroadcastReceiver {
                     showOfflineDialog(context);
                     //提示用户邀请码被绑定
                     NotificationHelper.getInstance().showExitAccountNotification(context);
-                } else if(action.equals("addSales")){
+                } else if(action.equals("com.zkjinshi.superservice.AddSales")){
                     //提示用户已被专属客服绑定
                     final String userID   = intent.getStringExtra("userId");
                     final String userName = intent.getStringExtra("userName");

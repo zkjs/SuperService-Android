@@ -354,12 +354,12 @@
 
         <!-- 声明sdk所需的service -->
         <service android:name="com.easemob.chat.EMChatService"
-            android:exported="true"
-            />
+            android:exported="true" />
 
         <receiver android:name=".receiver.EMessageReceiver">
             <intent-filter>
                 <action android:name="com.zkjinshi.superservice.ACTION_INVITE"/>
+                <action android:name="com.zkjinshi.superservice.AddSales" />
                 <action android:name="com.zkjinshi.superservice.CONNECTION_CONFLICT"/>
             </intent-filter>
         </receiver>
