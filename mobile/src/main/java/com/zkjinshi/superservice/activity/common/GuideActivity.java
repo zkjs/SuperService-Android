@@ -49,7 +49,6 @@ public class GuideActivity extends FragmentActivity {
         mPageAdapter.setFragmentBackgroundColor(R.color.theme_100);
         mViewPager.setAdapter(mPageAdapter);
 
-
         mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {

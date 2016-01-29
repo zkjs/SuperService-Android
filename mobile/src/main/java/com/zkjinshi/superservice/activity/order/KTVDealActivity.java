@@ -67,11 +67,8 @@ public class KTVDealActivity extends Activity {
     private ItemShowView payTypeTsv;
     private ItemShowView invoiceTsv;
     private ItemShowView privilegeTsv;
-
-
-    private String orderNo;
-
-    private Button confirmBtn;
+    private String       orderNo;
+    private Button       confirmBtn;
     private OrderDetailForDisplay orderDetailForDisplay = null;
     private GoodInfoVo lastGoodInfoVo = null;
 

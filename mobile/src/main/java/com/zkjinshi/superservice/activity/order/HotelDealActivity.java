@@ -99,8 +99,8 @@ public class HotelDealActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_hotel_deal);
-
         orderNo = getIntent().getStringExtra("orderNo");
+
         initView();
         initListener();
         loadOrderInfoByOrderNo();

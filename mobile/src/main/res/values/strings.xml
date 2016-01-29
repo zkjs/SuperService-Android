@@ -159,7 +159,7 @@
     <string name="your_invite_code" >您的邀请码为:</string>
     <string name="download_link">下载链接：</string>
     <string name="add_to_my_client">添加到我的客户</string>
-    <string name="client_already_be_added">客人已被其他销售添加</string>
+    <string name="client_already_be_added">客人已被添加</string>
     <string name="select_client_failed_try_it_later">查询客户失败，请稍后再试！</string>
     <string name="please_use_invite_code_to_add_the_client">请通过激活码方式进行添加!</string>
     <string name="location">区域</string>

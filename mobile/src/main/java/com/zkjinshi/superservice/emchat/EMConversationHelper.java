@@ -1,7 +1,7 @@
 package com.zkjinshi.superservice.emchat;
 
-import android.app.Activity;
 import android.os.AsyncTask;
+import android.os.Parcelable;
 import android.support.v4.util.Pair;
 import android.text.TextUtils;
 import android.util.Log;
@@ -73,7 +73,6 @@ public class EMConversationHelper {
                 super.onPostExecute(aVoid);
             }
         }.execute();
-
     }
 
     /**
@@ -96,11 +95,67 @@ public class EMConversationHelper {
     }
 
     /**
+     * 发送绑定客户消息
+     * @param userId
+     * @param emCallBack
+     */
+    public void sendClientBindedNotification(String userId, EMCallBack emCallBack){
+        EMMessage cmdMsg = EMMessage.createSendMessage(EMMessage.Type.CMD);
+        cmdMsg.setChatType(EMMessage.ChatType.Chat);
+        cmdMsg.setAttribute("salesId", CacheUtil.getInstance().getUserId());
+        cmdMsg.setAttribute("salesName", CacheUtil.getInstance().getUserName());
+        String action="addGuest";
+        CmdMessageBody cmdBody = new CmdMessageBody(action);
+        cmdMsg.addBody(cmdBody);
+        cmdMsg.setReceipt(userId);
+        EMChatManager.getInstance().sendMessage(cmdMsg, emCallBack);
+    }
+
+    /**
+     * 发送绑定客户消息
+     * @param clientID
+     * @param toName
+     * @param fromName
+     * @param shopId
+     * @param shopName
+     * @param emCallBack
+     */
+    public void sendClientBindedTextMsg(String clientID, String toName,
+                                        String fromName, String shopId,
+                                        String shopName, EMCallBack emCallBack){
+        String content = CacheUtil.getInstance().getUserName() + "已添加您为专属客人";
+        EMConversation conversation = EMChatManager.getInstance().getConversation(clientID);
+        EMMessage message = EMMessage.createTxtSendMessage(content, clientID);
+        message.setAttribute(Constants.MSG_TXT_EXT_TYPE, TxtExtType.DEFAULT.getVlaue());
+        message.setAttribute("toName", "");
+
+        if(!TextUtils.isEmpty(toName)){
+            message.setAttribute("toName", toName);
+        }
+        message.setAttribute("fromName", "");
+        if(!TextUtils.isEmpty(fromName)){
+            message.setAttribute("fromName", fromName);
+        }
+        if(!TextUtils.isEmpty(shopId)){
+            message.setAttribute("shopId", shopId);
+        }
+
+        if(!TextUtils.isEmpty(shopName)){
+            message.setAttribute("shopName", shopName);
+        }
+        message.setChatType(EMMessage.ChatType.Chat);
+        message.status = EMMessage.Status.INPROGRESS;
+        //把消息加入到此会话对象中
+        conversation.addMessage(message);
+        EMChatManager.getInstance().sendMessage(message,emCallBack);
+    }
+
+    /**
      * 发送文本消息
      * @param content
      * @param username
      */
-    public void sendTxtMessage(String content,String username,EMCallBack emCallBack){
+    public void sendTxtMessage(String content, String username, EMCallBack emCallBack){
         //获取到与聊天人的会话对象。参数username为聊天人的userid或者groupid，后文中的username皆是如此
         EMConversation conversation = EMChatManager.getInstance().getConversation(username);
         //创建一条文本消息

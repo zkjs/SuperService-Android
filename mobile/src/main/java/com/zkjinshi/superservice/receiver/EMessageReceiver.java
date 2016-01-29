@@ -32,7 +32,6 @@ public class EMessageReceiver extends BroadcastReceiver {
             String action = intent.getAction();
             if(!TextUtils.isEmpty(action)){
                 if(action.equals("com.zkjinshi.superservice.ACTION_INVITE")){
-
                     String userID   = intent.getStringExtra("userId");
                     String userName = intent.getStringExtra("userName");
                     String mobileNo = intent.getStringExtra("mobileNo");
@@ -43,10 +42,15 @@ public class EMessageReceiver extends BroadcastReceiver {
                     clientBase.setPhone(mobileNo);
                     //提示用户邀请码被绑定
                     NotificationHelper.getInstance().showNotification(context, clientBase, datetime);
-                }else if(action.equals("com.zkjinshi.superservice.CONNECTION_CONFLICT")){
+                } else if(action.equals("com.zkjinshi.superservice.CONNECTION_CONFLICT")){
                     showOfflineDialog(context);
                     //提示用户邀请码被绑定
                     NotificationHelper.getInstance().showExitAccountNotification(context);
+                } else if(action.equals("addSales")){
+                    //提示用户已被专属客服绑定
+                    final String userID   = intent.getStringExtra("userId");
+                    final String userName = intent.getStringExtra("userName");
+                    NotificationHelper.getInstance().showSalerBindedMessage(context, userID, userName);
                 }
             }
         }

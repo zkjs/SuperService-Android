@@ -175,6 +175,7 @@ public class MessageListViewManager extends Handler implements MsgListView.IXLis
         message.status = EMMessage.Status.INPROGRESS;
         currentMessageList.add(message);
         chatAdapter.setMessageList(currentMessageList);
+
         EMChatManager.getInstance().sendMessage(message, new EMCallBack() {
             @Override
             public void onSuccess() {

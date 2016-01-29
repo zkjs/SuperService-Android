@@ -28,6 +28,7 @@ import com.zkjinshi.superservice.activity.chat.single.ChatActivity;
 import com.zkjinshi.superservice.activity.common.LoginActivity;
 import com.zkjinshi.superservice.activity.common.MainActivity;
 import com.zkjinshi.superservice.activity.common.SplashActivity;
+import com.zkjinshi.superservice.activity.set.ClientActivity;
 import com.zkjinshi.superservice.bean.ClientBaseBean;
 import com.zkjinshi.superservice.bean.LocPushBean;
 import com.zkjinshi.superservice.emchat.EMConversationHelper;
@@ -318,4 +319,32 @@ public class NotificationHelper {
         return wearableExtender;
     }
 
+    /**
+     * 展示销售已绑定提示
+     * @param context
+     */
+    public void showSalerBindedMessage(Context context, String userID, String userName) {
+        NotificationCompat.Builder notificationBuilder = null;
+        // 1.设置显示信息
+        notificationBuilder = new NotificationCompat.Builder(context);
+        String content = "客户：" + userName + "已经添加您为联系人";
+        notificationBuilder.setContentTitle("客户添加通知");
+        notificationBuilder.setContentText(content);
+        notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
+        String avatarUrl = ProtocolUtil.getAvatarUrl(userID);
+        Bitmap bitmap    = ImageLoader.getInstance().loadImageSync(avatarUrl);
+        notificationBuilder.setLargeIcon(bitmap);
+
+        // 2.设置点击跳转事件
+        Intent intent = new Intent(context, ClientActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+        notificationBuilder.setContentIntent(pendingIntent);
+
+        // 3.设置通知栏其他属性
+        notificationBuilder.setAutoCancel(true);
+        notificationBuilder.setDefaults(Notification.DEFAULT_ALL);
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+        notificationManager.notify(++NOTIFY_ID, notificationBuilder.build());
+    }
 }

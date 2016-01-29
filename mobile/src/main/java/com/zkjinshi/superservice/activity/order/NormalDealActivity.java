@@ -63,10 +63,7 @@ public class NormalDealActivity extends Activity {
     private ItemShowView invoiceTsv;
     private ItemShowView privilegeTsv;
 
-
-
     private String orderNo;
-
     private Button confirmBtn;
 
     private OrderDetailForDisplay orderDetailForDisplay = null;
@@ -76,7 +73,6 @@ public class NormalDealActivity extends Activity {
     public static final int TICKET_REQUEST_CODE = 8;
     public static final int REMARK_REQUEST_CODE = 9;
     public static final int PHONE_REQUEST_CODE = 10;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

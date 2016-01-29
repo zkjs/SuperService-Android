@@ -65,19 +65,19 @@ public class MainActivity extends AppCompatActivity{
     private final static String TAG = MainActivity.class.getSimpleName();
     public static int REQUEST_IMAGE = 1;
 
-    private ImageView avatarIv;
-    private TextView usernameTv;
-    private TextView shopnameTv;
-    private CheckBox onlineCbx;
+    private ImageView       avatarIv;
+    private TextView        usernameTv;
+    private TextView        shopnameTv;
+    private CheckBox        onlineCbx;
     private RelativeLayout  avatarLayout;
-    private UserVo userVo;
-    private ImageButton setIbtn;
+    private UserVo          userVo;
+    private ImageButton     setIbtn;
 
     private void initView(){
-        avatarIv = (ImageView)findViewById(R.id.avatar_iv);
+        avatarIv   = (ImageView)findViewById(R.id.avatar_iv);
         usernameTv = (TextView)findViewById(R.id.username_tv);
         shopnameTv = (TextView)findViewById(R.id.shop_name_tv);
-        onlineCbx = (CheckBox)findViewById(R.id.online_cbx);
+        onlineCbx  = (CheckBox)findViewById(R.id.online_cbx);
         avatarLayout = (RelativeLayout)findViewById(R.id.avatar_rlt);
         setIbtn = (ImageButton)findViewById(R.id.edit_avatar_ibtn);
     }
@@ -261,7 +261,8 @@ public class MainActivity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTitle(R.string.app_name);
-         setContentView(R.layout.activity_main);
+
+        setContentView(R.layout.activity_main);
         DBOpenHelper.DB_NAME = CacheUtil.getInstance().getUserId() + ".db";
         mainActivityController = new MainActivityController(this);
         mainActivityController.onCreate();
@@ -269,7 +270,6 @@ public class MainActivity extends AppCompatActivity{
         initView();
         initData();
         initListeners();
-
     }
 
     /**

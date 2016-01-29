@@ -13,14 +13,18 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.easemob.EMCallBack;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.zkjinshi.base.log.LogLevel;
+import com.zkjinshi.base.log.LogUtil;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.chat.single.ChatActivity;
 import com.zkjinshi.superservice.bean.ClientBindBean;
+import com.zkjinshi.superservice.emchat.EMConversationHelper;
 import com.zkjinshi.superservice.net.ExtNetRequestListener;
 import com.zkjinshi.superservice.net.NetResponse;
 import com.zkjinshi.superservice.utils.CacheUtil;
@@ -141,58 +145,104 @@ public class ClientBindActivity extends Activity {
             @Override
             public void onClick(View v) {
                 if(null != mClientBean){
-                    String fuid = mClientBean.getUserid();
+
+                    //带绑定客户ID
+                    final String fuid = mClientBean.getUserid();
+                    final String clientName = mClientBean.getUsername();
+
                     if(TextUtils.isEmpty(fuid)){
                         return ;
                     }
-
                     //销售绑定用户
                     ClientController.getInstance().addFuser(
-                            ClientBindActivity.this,
-                            mShopID,
-                            fuid,
-                            mUserID,
-                            mToken,
-                            new ExtNetRequestListener(ClientBindActivity.this) {
-                                @Override
-                                public void onNetworkRequestError(int errorCode, String errorMessage) {
-                                    super.onNetworkRequestError(errorCode, errorMessage);
-                                }
+                        ClientBindActivity.this,
+                        mShopID,
+                        fuid,
+                        mUserID,
+                        mToken,
+                        new ExtNetRequestListener(ClientBindActivity.this) {
+                            @Override
+                            public void onNetworkRequestError(int errorCode, String errorMessage) {
+                                super.onNetworkRequestError(errorCode, errorMessage);
+                            }
 
-                                @Override
-                                public void onNetworkRequestCancelled() {
-                                    super.onNetworkRequestCancelled();
-                                }
+                            @Override
+                            public void onNetworkRequestCancelled() {
+                                super.onNetworkRequestCancelled();
+                            }
 
-                                @Override
-                                public void onNetworkResponseSucceed(NetResponse result) {
-                                    super.onNetworkResponseSucceed(result);
-                                    String jsonResult = result.rawResult;
+                            @Override
+                            public void onNetworkResponseSucceed(NetResponse result) {
+                                super.onNetworkResponseSucceed(result);
+                                String jsonResult = result.rawResult;
 
-                                    try {
-                                        if(!TextUtils.isEmpty(jsonResult)){
-                                            JSONObject objResult = new JSONObject(jsonResult) ;
-                                            boolean isSet = objResult.getBoolean("set");
+                                try {
+                                    if(!TextUtils.isEmpty(jsonResult)){
+                                        JSONObject objResult = new JSONObject(jsonResult) ;
+                                        boolean isSet = objResult.getBoolean("set");
 
-                                            if(isSet){
-                                                Intent intent = new Intent(ClientBindActivity.this, ClientActivity.class);
-                                                startActivity(intent);
-                                                ClientBindActivity.this.finish();
-                                            } else {
-                                                DialogUtil.getInstance().showCustomToast(ClientBindActivity.this,
-                                                                                     "添加失败", Gravity.CENTER);
-                                            }
+                                        if(isSet){
+                                            Intent intent = new Intent(ClientBindActivity.this, ClientActivity.class);
+                                            startActivity(intent);
+                                            ClientBindActivity.this.finish();
+                                            EMConversationHelper.getInstance().sendClientBindedTextMsg(
+                                                fuid,
+                                                clientName,
+                                                CacheUtil.getInstance().getUserName(),
+                                                CacheUtil.getInstance().getShopID(),
+                                                CacheUtil.getInstance().getShopFullName(),
+                                                new EMCallBack() {
+                                                    @Override
+                                                    public void onSuccess() {
+                                                        LogUtil.getInstance().info(LogLevel.INFO, TAG + "文本信息发送成功");
+                                                    }
+
+                                                    @Override
+                                                    public void onError(int i, String s) {
+                                                        LogUtil.getInstance().info(LogLevel.INFO, TAG + "文本信息发送错误");
+                                                    }
+
+                                                    @Override
+                                                    public void onProgress(int i, String s) {
+                                                    }
+                                                });
+
+                                            //客人添加成功，发送透传消息
+                                            EMConversationHelper.getInstance().sendClientBindedNotification(
+                                                fuid,
+                                                new EMCallBack() {
+                                                    @Override
+                                                    public void onSuccess() {
+                                                        LogUtil.getInstance().info(LogLevel.INFO, TAG + "信息发送成功");
+                                                    }
+
+                                                    @Override
+                                                    public void onError(int i, String s) {
+                                                        LogUtil.getInstance().info(LogLevel.INFO, TAG + "信息发送失败");
+                                                    }
+
+                                                    @Override
+                                                    public void onProgress(int i, String s) {
+
+                                                    }
+                                                }
+                                            );
+
+                                        } else {
+                                            DialogUtil.getInstance().showCustomToast(ClientBindActivity.this,
+                                                                                 "添加失败", Gravity.CENTER);
                                         }
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
                                     }
-                                }
-
-                                @Override
-                                public void beforeNetworkRequestStart() {
-                                    super.beforeNetworkRequestStart();
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
                                 }
                             }
+
+                            @Override
+                            public void beforeNetworkRequestStart() {
+                                super.beforeNetworkRequestStart();
+                            }
+                        }
                     );
                 }
             }
@@ -234,7 +284,6 @@ public class ClientBindActivity extends Activity {
         if(!TextUtils.isEmpty(phone)){
             mTvMemberPhone.setText(phone);
         }
-
         mTvEmail.setText(getString(R.string.current_none));
         mTvUserLevel.setText(getString(R.string.current_none));
         mTvPoints.setText(getString(R.string.current_none));
