@@ -8,10 +8,11 @@ android {
         applicationId "com.zkjinshi.superservice"
         minSdkVersion 15
         targetSdkVersion 22
-        versionCode 69
-        versionName "1.6.8"
+        versionCode 70
+        versionName "1.10"
         multiDexEnabled true
     }
+
     buildTypes {
         release {
             minifyEnabled true
