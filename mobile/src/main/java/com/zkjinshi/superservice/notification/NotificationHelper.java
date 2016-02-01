@@ -80,9 +80,13 @@ public class NotificationHelper {
                     if(!username.equals(CacheUtil.getInstance().getUserId())){
                         EMMessage.Type msgType = message.getType();
                         if (ActivityManagerHelper.isRunningBackground(context)) {
+                            //是否发送绑定客户消息
+                            boolean bindClient = false;
                             NotificationCompat.Builder notificationBuilder = null;
                             notificationBuilder = new NotificationCompat.Builder(context);
-                            if (message.getChatType() == EMMessage.ChatType.GroupChat || message.getChatType() == EMMessage.ChatType.ChatRoom) {
+                            if (message.getChatType() == EMMessage.ChatType.GroupChat ||
+                                message.getChatType() == EMMessage.ChatType.ChatRoom) {
+
                                 EMConversationHelper.getInstance().requestGroupListTask();
                                 String groupId = message.getTo();
                                 EMGroup group = EMGroupManager.getInstance().getGroup(groupId);
@@ -90,11 +94,12 @@ public class NotificationHelper {
                                     titleName = group.getGroupName();
                                 }
                             } else {
-                                titleName = message.getFrom();
                                 try {
+                                    bindClient = message.getBooleanAttribute("bindClient");
                                     String fromName = message.getStringAttribute("fromName");
-                                    String toName = message.getStringAttribute("toName");
-                                    if(!TextUtils.isEmpty(fromName) && !fromName.equals(CacheUtil.getInstance().getUserName())){
+                                    String toName   = message.getStringAttribute("toName");
+                                    if(!TextUtils.isEmpty(fromName) && !fromName.equals(
+                                        CacheUtil.getInstance().getUserName())){
                                         titleName = fromName;
                                     }else{
                                         if(!TextUtils.isEmpty(toName)){
@@ -106,6 +111,7 @@ public class NotificationHelper {
                                 }
                             }
                             notificationBuilder.setContentTitle("" + titleName);
+
                             if (msgType == EMMessage.Type.TXT) {
                                 try {
                                     int extType = message.getIntAttribute(Constants.MSG_TXT_EXT_TYPE);
@@ -125,12 +131,18 @@ public class NotificationHelper {
                             } else if(msgType ==  EMMessage.Type.VOICE){
                                 notificationBuilder.setContentText("[语音]");
                             }
+
+                            //TODO：用户绑定消息进入我的联系人
                             notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
                             // 2.设置点击跳转事件
-                            CacheUtil.getInstance().setCurrentItem(1);
-                            Intent intent = new Intent(context, MainActivity.class);
-                            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0,
-                                    intent, 0);
+                            Intent intent = null;
+                            if(bindClient){
+                                intent = new Intent(context, ClientActivity.class);
+                            } else {
+                                CacheUtil.getInstance().setCurrentItem(1);
+                                intent = new Intent(context, MainActivity.class);
+                            }
+                            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
                             notificationBuilder.setContentIntent(pendingIntent);
                             // 3.设置通知栏其他属性
                             notificationBuilder.setAutoCancel(true);
@@ -146,7 +158,7 @@ public class NotificationHelper {
                         }
                     }
                 }
-                break;
+            break;
         }
     }
 

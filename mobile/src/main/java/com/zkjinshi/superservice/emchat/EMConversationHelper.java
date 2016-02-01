@@ -122,7 +122,8 @@ public class EMConversationHelper {
      */
     public void sendClientBindedTextMsg(String clientID, String toName,
                                         String fromName, String shopId,
-                                        String shopName, EMCallBack emCallBack){
+                                        String shopName, boolean clientBind,
+                                        EMCallBack emCallBack){
         String content = CacheUtil.getInstance().getUserName() + "已添加您为专属客人";
         EMConversation conversation = EMChatManager.getInstance().getConversation(clientID);
         EMMessage message = EMMessage.createTxtSendMessage(content, clientID);
@@ -132,6 +133,7 @@ public class EMConversationHelper {
         if(!TextUtils.isEmpty(toName)){
             message.setAttribute("toName", toName);
         }
+
         message.setAttribute("fromName", "");
         if(!TextUtils.isEmpty(fromName)){
             message.setAttribute("fromName", fromName);
@@ -143,6 +145,8 @@ public class EMConversationHelper {
         if(!TextUtils.isEmpty(shopName)){
             message.setAttribute("shopName", shopName);
         }
+
+        message.setAttribute("bindClient", clientBind);
         message.setChatType(EMMessage.ChatType.Chat);
         message.status = EMMessage.Status.INPROGRESS;
         //把消息加入到此会话对象中

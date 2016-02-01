@@ -50,7 +50,8 @@ public class EMessageReceiver extends BroadcastReceiver {
                     //提示用户已被专属客服绑定
                     final String userID   = intent.getStringExtra("userId");
                     final String userName = intent.getStringExtra("userName");
-                    NotificationHelper.getInstance().showSalerBindedMessage(context, userID, userName);
+                    //TODO: 隐藏通知
+                    //NotificationHelper.getInstance().showSalerBindedMessage(context, userID, userName);
                 }
             }
         }

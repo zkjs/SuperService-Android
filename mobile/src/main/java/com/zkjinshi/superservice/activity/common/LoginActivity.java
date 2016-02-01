@@ -39,9 +39,8 @@ public class LoginActivity extends Activity implements VerifyPhoneControler.Succ
 
     private final static String TAG = LoginActivity.class.getSimpleName();
 
-    private Button loginBtn;
+    private Button   loginBtn;
     private EditText inputEt;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -148,7 +147,7 @@ public class LoginActivity extends Activity implements VerifyPhoneControler.Succ
                     ZoneManager.getInstance().requestMyZoneTask();//获取订阅区域
                     UserVo userVo = UserFactory.getInstance().buildUserVo(sempLoginbean);
                     UserDBUtil.getInstance().addUser(userVo);
-                    String avatarUrl =  ProtocolUtil.getAvatarUrl(userVo.getUserId());
+                    String avatarUrl = ProtocolUtil.getAvatarUrl(userVo.getUserId());
                     CacheUtil.getInstance().saveUserPhotoUrl(avatarUrl);
                     Intent intent;
                     if(TextUtils.isEmpty(sempLoginbean.getUrl())){
@@ -157,7 +156,7 @@ public class LoginActivity extends Activity implements VerifyPhoneControler.Succ
                         CacheUtil.getInstance().setLogin(true);
                         intent = new Intent(LoginActivity.this, MainActivity.class);
                     }
-                    intent.putExtra("sempLoginbean",sempLoginbean);
+                    intent.putExtra("sempLoginbean", sempLoginbean);
                     startActivity(intent);
                     finish();
                     overridePendingTransition(R.anim.activity_new, R.anim.activity_out);

@@ -47,8 +47,8 @@ public class InviteCodesActivity extends AppCompatActivity {
     private TextView    mTvCenterTitle;
     private ImageView   mIvTabLine;
 
-    private TextView    mTvUnusedCount;
-    private TextView    mTvUsedCount;
+    private TextView     mTvUnusedCount;
+    private TextView     mTvUsedCount;
     private LinearLayout mLlUnusedCodes;
     private LinearLayout mLlUsedCodes;
 

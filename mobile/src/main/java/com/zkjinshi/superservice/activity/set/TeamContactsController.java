@@ -31,6 +31,7 @@ import java.util.List;
  * 版权所有
  */
 public class TeamContactsController {
+
     private static final String TAG = TeamContactsController.class.getSimpleName();
 
     private TeamContactsController(){}
@@ -45,8 +46,8 @@ public class TeamContactsController {
     }
 
     public void getTeamContacts(final Activity activity, String userID,
-                                  String token, final String shopID,
-                                  final GetTeamContactsListener listener){
+                                String token, final String shopID,
+                                final GetTeamContactsListener listener){
         NetRequest netRequest = new NetRequest(ProtocolUtil.getTeamListUrl());
         HashMap<String,String> bizMap = new HashMap<>();
         bizMap.put("salesid", userID);

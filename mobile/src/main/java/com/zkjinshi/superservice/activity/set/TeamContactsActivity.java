@@ -87,10 +87,10 @@ public class TeamContactsActivity extends AppCompatActivity{
 
     private void initData() {
 
-        mUserID     = CacheUtil.getInstance().getUserId();
-        mToken      = CacheUtil.getInstance().getToken();
-        mShopID     = CacheUtil.getInstance().getShopID();
-        mUserType   = CacheUtil.getInstance().getLoginIdentity();
+        mUserID   = CacheUtil.getInstance().getUserId();
+        mToken    = CacheUtil.getInstance().getToken();
+        mShopID   = CacheUtil.getInstance().getShopID();
+        mUserType = CacheUtil.getInstance().getLoginIdentity();
 
         mTeamContactAdapter = new TeamContactsAdapter(TeamContactsActivity.this,
                                                new ArrayList<ShopEmployeeVo>());

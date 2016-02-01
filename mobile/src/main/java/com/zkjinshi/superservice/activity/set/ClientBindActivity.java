@@ -153,6 +153,7 @@ public class ClientBindActivity extends Activity {
                     if(TextUtils.isEmpty(fuid)){
                         return ;
                     }
+
                     //销售绑定用户
                     ClientController.getInstance().addFuser(
                         ClientBindActivity.this,
@@ -191,6 +192,7 @@ public class ClientBindActivity extends Activity {
                                                 CacheUtil.getInstance().getUserName(),
                                                 CacheUtil.getInstance().getShopID(),
                                                 CacheUtil.getInstance().getShopFullName(),
+                                                true,
                                                 new EMCallBack() {
                                                     @Override
                                                     public void onSuccess() {

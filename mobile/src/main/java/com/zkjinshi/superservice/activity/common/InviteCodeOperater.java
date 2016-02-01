@@ -50,7 +50,7 @@ import java.util.HashMap;
 public class InviteCodeOperater {
 
     private static InviteCodeOperater instance;
-    private IWXAPI  mWxApi;
+    private IWXAPI mWxApi;
     private InviteCodeOperater(){}
 
     public static synchronized InviteCodeOperater getInstance(){
