@@ -135,6 +135,7 @@ public class LoginActivity extends Activity implements VerifyPhoneControler.Succ
                         String[] zoneArray = locId.split(",");
                         YunBaSubscribeManager.getInstance().subscribe(zoneArray);
                     }
+
                     LoginController.getInstance().loginHxUser();
                     String userID = CacheUtil.getInstance().getUserId();
                     String token  = CacheUtil.getInstance().getToken();

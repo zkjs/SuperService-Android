@@ -30,8 +30,8 @@ public class YunBaMessageReceiver extends BroadcastReceiver {
 
             String topic = intent.getStringExtra(YunBaManager.MQTT_TOPIC);
             String msg   = intent.getStringExtra(YunBaManager.MQTT_MSG);
-            Log.i(TAG,"YunBaMessageReceiver-msg:"+msg);
-            Log.i(TAG,"YunBaMessageReceiver-topic:"+topic);
+            Log.i(TAG, "YunBaMessageReceiver-msg:"+msg);
+            Log.i(TAG, "YunBaMessageReceiver-topic:"+topic);
             LocPushBean locPushBean = null;
 
             try {
@@ -46,7 +46,7 @@ public class YunBaMessageReceiver extends BroadcastReceiver {
             }
 
         } else if(YunBaManager.PRESENCE_RECEIVED_ACTION.equals(intent.getAction())) {
-            String topic = intent.getStringExtra(YunBaManager.MQTT_TOPIC);
+            String topic   = intent.getStringExtra(YunBaManager.MQTT_TOPIC);
             String payload = intent.getStringExtra(YunBaManager.MQTT_MSG);
             StringBuilder showMsg = new StringBuilder();
             showMsg.append("Received message presence: ").append(YunBaManager.MQTT_TOPIC)

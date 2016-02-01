@@ -33,7 +33,9 @@ public class YunBaSubscribeManager {
     }
 
     public void subscribe(String[] locIds){
-        YunBaManager.subscribe(BaseContext.getInstance().getContext(),locIds,
+        YunBaManager.subscribe(
+                BaseContext.getInstance().getContext(),
+                locIds,
                 new IMqttActionListener() {
                     @Override
                     public void onSuccess(IMqttToken asyncActionToken) {
@@ -60,7 +62,9 @@ public class YunBaSubscribeManager {
             String locIds = CacheUtil.getInstance().getAreaInfo();
             String[] zoneArray = locIds.split(",");
             if(null != zoneArray && zoneArray.length > 0){
-                YunBaManager.unsubscribe(BaseContext.getInstance().getContext(),zoneArray,
+                YunBaManager.unsubscribe(
+                        BaseContext.getInstance().getContext(),
+                        zoneArray,
                         new IMqttActionListener() {
                             @Override
                             public void onSuccess(IMqttToken asyncActionToken) {

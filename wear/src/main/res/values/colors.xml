@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="transparent">#00000000</color>
+
+    <!-- 白色 -->
+    <color name="white">#FFFFFF</color>
+
+    <!-- 黑色 -->
+    <color name="black">#101010</color>
+
+    <color name="theme_primary">#03a9f4</color>
+    <color name="theme_primary_dark">#0097A7</color>
+    <color name="theme_primary_dark2">#006064</color>
+
+    <color name="divider_line_color">#e3e3e3</color>
+
+    <color name="TransparentGray">#7F000000</color>
+    <color name="TransparentLightGray">#22000000</color>
+
+    <color name="light_gray">#fafafa</color>
+
+    <color name="TextColorBlack">#101010</color>
+    <color name="TextColorGray">#666666</color>
+
+</resources>

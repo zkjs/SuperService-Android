@@ -177,7 +177,6 @@ public class MainActivity extends AppCompatActivity{
                         startActivity(new Intent(MainActivity.this, LoginActivity.class));
                         finish();
                         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-
                     }
                 });
                 customExtBuilder.create().show();
@@ -211,16 +210,16 @@ public class MainActivity extends AppCompatActivity{
 
     private void submitAvatar(final String path){
         NetRequest netRequest = new NetRequest(ProtocolUtil.getSempupdateUrl());
-        HashMap<String,String> bizMap = new HashMap<String,String>();
+        HashMap<String,String> bizMap = new HashMap<String, String>();
         bizMap.put("salesid", CacheUtil.getInstance().getUserId());
-        bizMap.put("token",CacheUtil.getInstance().getToken());
+        bizMap.put("token", CacheUtil.getInstance().getToken());
         netRequest.setBizParamMap(bizMap);
 
-        HashMap<String,File> fileMap = new HashMap<String, File>();
+        HashMap<String, File> fileMap = new HashMap<String, File>();
         fileMap.put("file", new File(path));
         netRequest.setFileMap(fileMap);
 
-        NetRequestTask netRequestTask = new NetRequestTask(this,netRequest, NetResponse.class);
+        NetRequestTask netRequestTask = new NetRequestTask(this, netRequest, NetResponse.class);
         netRequestTask.methodType = MethodType.PUSH;
         netRequestTask.setNetRequestListener(new ExtNetRequestListener(this) {
             @Override
@@ -277,8 +276,8 @@ public class MainActivity extends AppCompatActivity{
      * @param postion
      * @param num
      */
-    public void setMessageNum(int postion,int num){
-        mainActivityController.setMessageNum(postion,num);
+    public void setMessageNum(int postion, int num){
+        mainActivityController.setMessageNum(postion, num);
     }
 
     protected void onResume(){
