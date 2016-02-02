@@ -82,8 +82,7 @@ public class NotificationHelper {
                         if (ActivityManagerHelper.isRunningBackground(context)) {
                             //是否发送绑定客户消息
                             boolean bindClient = false;
-                            NotificationCompat.Builder notificationBuilder = null;
-                            notificationBuilder = new NotificationCompat.Builder(context);
+                            NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context);
                             if (message.getChatType() == EMMessage.ChatType.GroupChat ||
                                 message.getChatType() == EMMessage.ChatType.ChatRoom) {
 
