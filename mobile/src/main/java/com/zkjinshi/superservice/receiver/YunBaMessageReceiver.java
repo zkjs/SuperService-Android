@@ -7,7 +7,9 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
+import com.zkjinshi.base.util.ActivityManagerHelper;
 import com.zkjinshi.superservice.bean.LocPushBean;
+import com.zkjinshi.superservice.manager.YunBaSubscribeManager;
 import com.zkjinshi.superservice.notification.NotificationHelper;
 
 import io.yunba.android.manager.YunBaManager;
@@ -40,9 +42,12 @@ public class YunBaMessageReceiver extends BroadcastReceiver {
                 e.printStackTrace();
             }
 
-            if(null != locPushBean){
-                //弹出当前位置到达提示
-                NotificationHelper.getInstance().showNotification(context, locPushBean);
+            //是否注册接受到店通知
+            if(YunBaSubscribeManager.getInstance().isSubscribed()){
+                if(null != locPushBean){
+                    //弹出当前位置到达提示
+                    NotificationHelper.getInstance().showNotification(context, locPushBean);
+                }
             }
 
         } else if(YunBaManager.PRESENCE_RECEIVED_ACTION.equals(intent.getAction())) {

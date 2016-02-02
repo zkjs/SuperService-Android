@@ -155,30 +155,36 @@ public class MainActivity extends AppCompatActivity{
                 customExtBuilder.setTitle(getString(R.string.exit));
                 customExtBuilder.setMessage(getString(R.string.confirm_exit_the_current_account));
                 customExtBuilder.setGravity(Gravity.CENTER);
-                customExtBuilder.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
+                customExtBuilder.setNegativeButton(
+                    getString(R.string.cancel),
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
                     }
-                });
+                );
 
-                customExtBuilder.setPositiveButton(getString(R.string.confirm), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        //移除云巴订阅推送
-                        YunBaSubscribeManager.getInstance().unSubscribe();
-                        //环信接口退出
-                        EasemobIMHelper.getInstance().logout();
-                        //http接口退出
-                        String userID = CacheUtil.getInstance().getUserId();
-                        logoutHttp(userID);
-                        //修改登录状态
-                        CacheUtil.getInstance().setLogin(false);
-                        startActivity(new Intent(MainActivity.this, LoginActivity.class));
-                        finish();
-                        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                customExtBuilder.setPositiveButton(
+                    getString(R.string.confirm),
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            //移除云巴订阅推送
+                            YunBaSubscribeManager.getInstance().unSubscribe(MainActivity.this);
+                            //环信接口退出
+                            EasemobIMHelper.getInstance().logout();
+                            //http接口退出
+                            String userID = CacheUtil.getInstance().getUserId();
+                            logoutHttp(userID);
+                            //修改登录状态
+                            CacheUtil.getInstance().setLogin(false);
+                            startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                            finish();
+                            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                        }
                     }
-                });
+                );
                 customExtBuilder.create().show();
             }
         });

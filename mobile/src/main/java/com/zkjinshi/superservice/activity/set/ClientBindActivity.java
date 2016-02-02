@@ -271,15 +271,10 @@ public class ClientBindActivity extends Activity {
         }
 
         String username = client.getUsername();
-        String sex = client.getSex();
-
         if(!TextUtils.isEmpty(username)){
-            //男性
-            if(Integer.parseInt(sex) == SexType.MALE.getVlaue()){
-                mTvTitle.setText(username.substring(0, 1) + this.getString(R.string.sir));
-            } else {
-                mTvTitle.setText(username.substring(0, 1) + this.getString(R.string.miss));
-            }
+            mTvTitle.setText(username);
+        } else {
+            mTvTitle.setText(userID);
         }
 
         String phone = client.getPhone();

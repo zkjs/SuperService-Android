@@ -130,6 +130,7 @@ public class LoginActivity extends Activity implements VerifyPhoneControler.Succ
                     CacheUtil.getInstance().setLoginIdentity(IdentityType.WAITER);
                     CacheUtil.getInstance().setRoleID(sempLoginbean.getRoleid());
                     String locId = sempLoginbean.getLocid();
+
                     if(!TextUtils.isEmpty(locId)){
                         CacheUtil.getInstance().setAreaInfo(locId);
                         String[] zoneArray = locId.split(",");

@@ -548,8 +548,7 @@ public class CacheUtil {
 			try {
 				String encryptedData = Base64Encoder.encode(json);// base
 				// 64加密
-				SharedPreferences sp = context.getSharedPreferences(SVIP_CACHE,
-						Context.MODE_PRIVATE);
+				SharedPreferences sp = context.getSharedPreferences(SVIP_CACHE, Context.MODE_PRIVATE);
 				sp.edit().putString(key, encryptedData).commit();
 			} catch (Exception e) {
 				e.printStackTrace();
