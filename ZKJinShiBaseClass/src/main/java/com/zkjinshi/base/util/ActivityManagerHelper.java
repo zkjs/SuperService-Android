@@ -33,4 +33,22 @@ public class ActivityManagerHelper {
         }
         return true;
     }
+
+    /**
+     * 是否在后台
+     *
+     * @param context
+     * @return
+     */
+    public static boolean isRunning(Context context) {
+        ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningTaskInfo> tasks = activityManager.getRunningTasks(1);
+        if (!tasks.isEmpty()) {
+            for(ActivityManager.RunningTaskInfo runningTaskInfo : tasks){
+                runningTaskInfo.topActivity.getPackageName().equals(context.getPackageName());
+                return true;
+            }
+        }
+        return false;
+    }
 }

@@ -8,6 +8,7 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.zkjinshi.base.util.ActivityManagerHelper;
+import com.zkjinshi.superservice.ServiceApplication;
 import com.zkjinshi.superservice.bean.LocPushBean;
 import com.zkjinshi.superservice.manager.YunBaSubscribeManager;
 import com.zkjinshi.superservice.notification.NotificationHelper;
@@ -26,6 +27,11 @@ public class YunBaMessageReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(final Context context, final Intent intent) {
+
+        //判断当前应用是否正在运行
+        if(!ActivityManagerHelper.isRunning(ServiceApplication.getContext())){
+            return ;
+        }
 
         //云巴推送处理
         if (YunBaManager.MESSAGE_RECEIVED_ACTION.equals(intent.getAction())) {

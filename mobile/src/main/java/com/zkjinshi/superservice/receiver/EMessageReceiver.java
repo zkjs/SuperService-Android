@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.WindowManager;
 
+import com.zkjinshi.base.util.ActivityManagerHelper;
 import com.zkjinshi.base.view.CustomDialog;
 import com.zkjinshi.superservice.activity.common.LoginActivity;
 import com.zkjinshi.superservice.bean.ClientBaseBean;
@@ -43,9 +44,11 @@ public class EMessageReceiver extends BroadcastReceiver {
                     //提示用户邀请码被绑定
                     NotificationHelper.getInstance().showNotification(context, clientBase, datetime);
                 } else if(action.equals("com.zkjinshi.superservice.CONNECTION_CONFLICT")){
-                    showOfflineDialog(context);
-                    //提示用户邀请码被绑定
-                    NotificationHelper.getInstance().showExitAccountNotification(context);
+                    //应用运行中: 提示用户帐户其他地方登录
+                    if(ActivityManagerHelper.isRunning(context)){
+                        showOfflineDialog(context);
+                        NotificationHelper.getInstance().showExitAccountNotification(context);
+                    }
                 } else if(action.equals("com.zkjinshi.superservice.AddSales")){
                     //提示用户已被专属客服绑定
                     final String userID   = intent.getStringExtra("userId");
