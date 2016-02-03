@@ -8,32 +8,40 @@
     tools:context=".activity.MainActivity"
     tools:deviceIds="wear_square">
 
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="32dp"
-        android:layout_gravity="center"
-        android:gravity="center_vertical">
+    <!--<RelativeLayout-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="32dp"-->
+    <!--android:layout_gravity="center"-->
+    <!--android:gravity="center_vertical">-->
 
-        <com.zkjinshi.superservice.view.CircleImageView
-            android:id="@+id/civ_avata"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_centerVertical="true"
-            android:background="@mipmap/ic_launcher" />
+    <!--<com.zkjinshi.superservice.view.CircleImageView-->
+    <!--android:id="@+id/civ_avata"-->
+    <!--android:layout_width="24dp"-->
+    <!--android:layout_height="24dp"-->
+    <!--android:visibility="invisible"-->
+    <!--android:layout_centerVertical="true"-->
+    <!--android:background="@mipmap/ic_launcher" />-->
 
-        <TextView
-            android:id="@+id/tv_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:layout_toRightOf="@+id/civ_avata"
-            android:gravity="center"
-            android:padding="5dp"
-            android:text="@string/app_name"
-            android:textColor="@color/black"
-            android:textSize="16sp" />
+    <!--<TextView-->
+    <!--android:id="@+id/tv_title"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_centerHorizontal="true"-->
+    <!--android:layout_centerVertical="true"-->
+    <!--android:layout_toRightOf="@+id/civ_avata"-->
+    <!--android:gravity="center"-->
+    <!--android:padding="5dp"-->
+    <!--android:text="@string/app_name"-->
+    <!--android:textColor="@color/black"-->
+    <!--android:textSize="16sp" />-->
 
-    </RelativeLayout>
+    <!--</RelativeLayout>-->
+
+    <com.zkjinshi.superservice.view.CircleImageView
+        android:id="@+id/civ_avata"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_centerInParent="true"
+        android:background="@mipmap/ic_launcher" />
 
 </RelativeLayout>

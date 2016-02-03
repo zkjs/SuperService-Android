@@ -319,6 +319,8 @@ public class MainActivity extends AppCompatActivity{
         super.onDestroy();
         Log.i(TAG, "protected void onDestroy");
         mainActivityController.clearImageChache();
+        //退出环信
+        EasemobIMHelper.getInstance().logout();
     }
 
     @Override
