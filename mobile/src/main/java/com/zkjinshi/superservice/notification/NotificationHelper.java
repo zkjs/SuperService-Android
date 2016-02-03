@@ -77,7 +77,7 @@ public class NotificationHelper {
                 break;
 
             case EventNewMessage:
-                shopMessageNotification(context, event, nofifyFlag);
+
             break;
         }
     }
@@ -243,10 +243,11 @@ public class NotificationHelper {
         String welcomeMsg = "已到达"+locDesc;
 
         notificationBuilder.setContentText(welcomeMsg);
-        notificationBuilder.setSmallIcon(R.mipmap.logo_round);
+        notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
         String contactId = locPushBean.getUserid();
         String imageUrl  = ProtocolUtil.getAvatarUrl(contactId);
-        ImageSize imageSize = new ImageSize(DisplayUtil.dip2px(context,36), DisplayUtil.dip2px(context,36));
+        ImageSize imageSize = new ImageSize(DisplayUtil.dip2px(context, 36),
+                                            DisplayUtil.dip2px(context, 36));
         Bitmap bitmap = ImageLoader.getInstance().loadImageSync(imageUrl,imageSize);
         notificationBuilder.setLargeIcon(bitmap);
 
