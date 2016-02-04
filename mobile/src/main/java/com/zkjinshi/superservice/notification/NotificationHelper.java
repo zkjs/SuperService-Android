@@ -77,7 +77,7 @@ public class NotificationHelper {
                 break;
 
             case EventNewMessage:
-
+                shopMessageNotification(context, event, nofifyFlag);
             break;
         }
     }
@@ -86,146 +86,255 @@ public class NotificationHelper {
      * 展示消息通知
      */
     private void shopMessageNotification(Context context,  EMNotifierEvent event, int nofifyFlag) {
-        EMMessage newMessage = (EMMessage) event.getData();
-        if(null != newMessage){
-            String username  = newMessage.getFrom();
+        EMMessage message = (EMMessage) event.getData();
+        if(null != message){
+            String username = message.getFrom();
             String titleName = null;
-
             if(!username.equals(CacheUtil.getInstance().getUserId())){
-                EMMessage.Type msgType = newMessage.getType();
-                try {
-                    //是否发送绑定客户消息
-                    boolean bindClient = newMessage.getBooleanAttribute("bindClient");
-                    //绑定通知消息
-                    if(bindClient){
-                        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context);
-                        if (newMessage.getChatType() != EMMessage.ChatType.GroupChat
-                                && newMessage.getChatType() != EMMessage.ChatType.ChatRoom) {
-                            try {
-                                String fromName = newMessage.getStringAttribute("fromName");
-                                String toName   = newMessage.getStringAttribute("toName");
-                                if(!TextUtils.isEmpty(fromName) && !fromName.equals(
-                                        CacheUtil.getInstance().getUserName())){
-                                    titleName = fromName;
-                                }else{
-                                    if(!TextUtils.isEmpty(toName)){
-                                        titleName = toName;
-                                    }
-                                }
-                            } catch (EaseMobException e) {
-                                e.printStackTrace();
+                EMMessage.Type msgType = message.getType();
+
+                //是否发送绑定客户消息
+                boolean bindClient = false;
+                NotificationCompat.Builder notificationBuilder = null;
+                notificationBuilder = new NotificationCompat.Builder(context);
+                if (message.getChatType() == EMMessage.ChatType.GroupChat ||
+                        message.getChatType() == EMMessage.ChatType.ChatRoom) {
+
+                    EMConversationHelper.getInstance().requestGroupListTask();
+                    String groupId = message.getTo();
+                    EMGroup group = EMGroupManager.getInstance().getGroup(groupId);
+                    if (group != null){
+                        titleName = group.getGroupName();
+                    }
+                } else {
+                    try {
+                        String fromName = message.getStringAttribute("fromName");
+                        String toName   = message.getStringAttribute("toName");
+                        if(!TextUtils.isEmpty(fromName) && !fromName.equals(
+                                CacheUtil.getInstance().getUserName())){
+                            titleName = fromName;
+                        }else{
+                            if(!TextUtils.isEmpty(toName)){
+                                titleName = toName;
                             }
                         }
-                        notificationBuilder.setContentTitle("" + titleName);
+                    } catch (EaseMobException e) {
+                        e.printStackTrace();
+                    }
+                }
+                notificationBuilder.setContentTitle("" + titleName);
 
-                        if (msgType == EMMessage.Type.TXT) {
-                            try {
-                                int extType = newMessage.getIntAttribute(Constants.MSG_TXT_EXT_TYPE);
-                                if(TxtExtType.DEFAULT.getVlaue() == extType){
-                                    TextMessageBody txtBody = (TextMessageBody) newMessage.getBody();
-                                    String content = txtBody.getMessage();
-                                    notificationBuilder.setContentText("" + content);
-                                }else{
-                                    notificationBuilder.setContentText("[订单]");
-                                }
-                            } catch (EaseMobException e) {
-                                e.printStackTrace();
-                            }
+                if (msgType == EMMessage.Type.TXT) {
+                    try {
+                        int extType = message.getIntAttribute(Constants.MSG_TXT_EXT_TYPE);
+                        if(TxtExtType.DEFAULT.getVlaue() == extType){
+                            TextMessageBody txtBody = (TextMessageBody) message.getBody();
+                            String content = txtBody.getMessage();
+                            notificationBuilder.setContentText("" + content);
+
+                            bindClient = message.getBooleanAttribute("bindClient");
+                        }else{
+                            notificationBuilder.setContentText("[订单]");
                         }
+                    } catch (EaseMobException e) {
+                        e.printStackTrace();
+                    }
 
-                        //TODO：用户绑定消息进入我的联系人
-                        notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
-                        // 2.设置点击跳转事件
-                        Intent intent = new Intent(context, ClientActivity.class);
+                } else if (msgType == EMMessage.Type.IMAGE) {
+                    notificationBuilder.setContentText("[图片]");
+                } else if(msgType ==  EMMessage.Type.VOICE){
+                    notificationBuilder.setContentText("[语音]");
+                }
+
+                //TODO：用户绑定消息进入我的联系人
+                notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
+                // 2.设置点击跳转事件
+                Intent intent = null;
+                if(bindClient){
+                    intent = new Intent(context, ClientActivity.class);
+                    PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+                    notificationBuilder.setContentIntent(pendingIntent);
+                    // 3.设置通知栏其他属性
+                    notificationBuilder.setAutoCancel(true);
+                    notificationBuilder.setDefaults(Notification.DEFAULT_ALL);
+                    //4、设置手表特有属性
+                    notificationBuilder.extend(extendWear(context, notificationBuilder,message));
+                    NotificationManagerCompat notificationManager =
+                            NotificationManagerCompat.from(context);
+                    notificationManager.notify(nofifyFlag, notificationBuilder.build());
+                } else {
+
+                    //后台运行
+                    if (ActivityManagerHelper.isRunningBackground(context)) {
+                        CacheUtil.getInstance().setCurrentItem(1);
+                        intent = new Intent(context, MainActivity.class);
+
                         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
                         notificationBuilder.setContentIntent(pendingIntent);
                         // 3.设置通知栏其他属性
                         notificationBuilder.setAutoCancel(true);
                         notificationBuilder.setDefaults(Notification.DEFAULT_ALL);
                         //4、设置手表特有属性
-                        notificationBuilder.extend(extendWear(context, notificationBuilder, newMessage));
-                        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+                        notificationBuilder.extend(extendWear(context, notificationBuilder,message));
+                        NotificationManagerCompat notificationManager =
+                                NotificationManagerCompat.from(context);
                         notificationManager.notify(nofifyFlag, notificationBuilder.build());
+
                     } else {
-                        if (ActivityManagerHelper.isRunningBackground(context)) {
-                            NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context);
-                            if (newMessage.getChatType() == EMMessage.ChatType.GroupChat ||
-                                    newMessage.getChatType() == EMMessage.ChatType.ChatRoom) {
-
-                                EMConversationHelper.getInstance().requestGroupListTask();
-                                String groupId = newMessage.getTo();
-                                EMGroup group = EMGroupManager.getInstance().getGroup(groupId);
-                                if (group != null){
-                                    titleName = group.getGroupName();
-                                }
-                            } else {
-                                try {
-                                    String fromName = newMessage.getStringAttribute("fromName");
-                                    String toName   = newMessage.getStringAttribute("toName");
-                                    if(!TextUtils.isEmpty(fromName) && !fromName.equals(
-                                            CacheUtil.getInstance().getUserName())){
-                                        titleName = fromName;
-                                    } else {
-                                        if(!TextUtils.isEmpty(toName)){
-                                            titleName = toName;
-                                        }
-                                    }
-                                } catch (EaseMobException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                            notificationBuilder.setContentTitle("" + titleName);
-
-                            if (msgType == EMMessage.Type.TXT) {
-                                try {
-                                    int extType = newMessage.getIntAttribute(Constants.MSG_TXT_EXT_TYPE);
-                                    if(TxtExtType.DEFAULT.getVlaue() == extType){
-                                        TextMessageBody txtBody = (TextMessageBody) newMessage.getBody();
-                                        String content = txtBody.getMessage();
-                                        notificationBuilder.setContentText("" + content);
-                                    }else{
-                                        notificationBuilder.setContentText("[订单]");
-                                    }
-                                } catch (EaseMobException e) {
-                                    e.printStackTrace();
-                                }
-
-                            } else if (msgType == EMMessage.Type.IMAGE) {
-                                notificationBuilder.setContentText("[图片]");
-                            } else if(msgType ==  EMMessage.Type.VOICE){
-                                notificationBuilder.setContentText("[语音]");
-                            }
-
-                            //TODO：用户绑定消息进入我的联系人
-                            notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
-                            // 2.设置点击跳转事件
-                            Intent intent = null;
-                            if(bindClient){
-                                intent = new Intent(context, ClientActivity.class);
-                            } else {
-                                CacheUtil.getInstance().setCurrentItem(1);
-                                intent = new Intent(context, MainActivity.class);
-                            }
-                            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
-                            notificationBuilder.setContentIntent(pendingIntent);
-                            // 3.设置通知栏其他属性
-                            notificationBuilder.setAutoCancel(true);
-                            notificationBuilder.setDefaults(Notification.DEFAULT_ALL);
-                            //4、设置手表特有属性
-                            notificationBuilder.extend(extendWear(context, notificationBuilder, newMessage));
-                            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-                            notificationManager.notify(nofifyFlag, notificationBuilder.build());
-                        } else {
-                            MediaPlayerUtil.playNotifyVoice(context);
-                            VibratorHelper.vibratorShark(context);
-                        }
+                        MediaPlayerUtil.playNotifyVoice(context);
+                        VibratorHelper.vibratorShark(context);
                     }
-                } catch (EaseMobException e) {
-                    e.printStackTrace();
                 }
+
             }
         }
     }
+
+
+    /**
+     * 展示消息通知
+     */
+//    private void shopMessageNotification(Context context,  EMNotifierEvent event, int nofifyFlag) {
+//        EMMessage newMessage = (EMMessage) event.getData();
+//        if(null != newMessage){
+//            String username  = newMessage.getFrom();
+//            String titleName = null;
+//
+//            if(!username.equals(CacheUtil.getInstance().getUserId())){
+//                EMMessage.Type msgType = newMessage.getType();
+//                try {
+//                    //是否发送绑定客户消息
+//                    boolean bindClient = newMessage.getBooleanAttribute("bindClient");
+//                    //绑定通知消息
+//                    if(bindClient){
+//                        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context);
+//                        if (newMessage.getChatType() != EMMessage.ChatType.GroupChat
+//                                && newMessage.getChatType() != EMMessage.ChatType.ChatRoom) {
+//                            try {
+//                                String fromName = newMessage.getStringAttribute("fromName");
+//                                String toName   = newMessage.getStringAttribute("toName");
+//                                if(!TextUtils.isEmpty(fromName) && !fromName.equals(
+//                                        CacheUtil.getInstance().getUserName())){
+//                                    titleName = fromName;
+//                                }else{
+//                                    if(!TextUtils.isEmpty(toName)){
+//                                        titleName = toName;
+//                                    }
+//                                }
+//                            } catch (EaseMobException e) {
+//                                e.printStackTrace();
+//                            }
+//                        }
+//                        notificationBuilder.setContentTitle("" + titleName);
+//
+//                        if (msgType == EMMessage.Type.TXT) {
+//                            try {
+//                                int extType = newMessage.getIntAttribute(Constants.MSG_TXT_EXT_TYPE);
+//                                if(TxtExtType.DEFAULT.getVlaue() == extType){
+//                                    TextMessageBody txtBody = (TextMessageBody) newMessage.getBody();
+//                                    String content = txtBody.getMessage();
+//                                    notificationBuilder.setContentText("" + content);
+//                                }else{
+//                                    notificationBuilder.setContentText("[订单]");
+//                                }
+//                            } catch (EaseMobException e) {
+//                                e.printStackTrace();
+//                            }
+//                        }
+//
+//                        //TODO：用户绑定消息进入我的联系人
+//                        notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
+//                        // 2.设置点击跳转事件
+//                        Intent intent = new Intent(context, ClientActivity.class);
+//                        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+//                        notificationBuilder.setContentIntent(pendingIntent);
+//                        // 3.设置通知栏其他属性
+//                        notificationBuilder.setAutoCancel(true);
+//                        notificationBuilder.setDefaults(Notification.DEFAULT_ALL);
+//                        //4、设置手表特有属性
+//                        notificationBuilder.extend(extendWear(context, notificationBuilder, newMessage));
+//                        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+//                        notificationManager.notify(nofifyFlag, notificationBuilder.build());
+//                    } else {
+//                        if (ActivityManagerHelper.isRunningBackground(context)) {
+//                            NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context);
+//                            if (newMessage.getChatType() == EMMessage.ChatType.GroupChat ||
+//                                    newMessage.getChatType() == EMMessage.ChatType.ChatRoom) {
+//
+//                                EMConversationHelper.getInstance().requestGroupListTask();
+//                                String groupId = newMessage.getTo();
+//                                EMGroup group = EMGroupManager.getInstance().getGroup(groupId);
+//                                if (group != null){
+//                                    titleName = group.getGroupName();
+//                                }
+//                            } else {
+//                                try {
+//                                    String fromName = newMessage.getStringAttribute("fromName");
+//                                    String toName   = newMessage.getStringAttribute("toName");
+//                                    if(!TextUtils.isEmpty(fromName) && !fromName.equals(
+//                                            CacheUtil.getInstance().getUserName())){
+//                                        titleName = fromName;
+//                                    } else {
+//                                        if(!TextUtils.isEmpty(toName)){
+//                                            titleName = toName;
+//                                        }
+//                                    }
+//                                } catch (EaseMobException e) {
+//                                    e.printStackTrace();
+//                                }
+//                            }
+//                            notificationBuilder.setContentTitle("" + titleName);
+//
+//                            if (msgType == EMMessage.Type.TXT) {
+//                                try {
+//                                    int extType = newMessage.getIntAttribute(Constants.MSG_TXT_EXT_TYPE);
+//                                    if(TxtExtType.DEFAULT.getVlaue() == extType){
+//                                        TextMessageBody txtBody = (TextMessageBody) newMessage.getBody();
+//                                        String content = txtBody.getMessage();
+//                                        notificationBuilder.setContentText("" + content);
+//                                    }else{
+//                                        notificationBuilder.setContentText("[订单]");
+//                                    }
+//                                } catch (EaseMobException e) {
+//                                    e.printStackTrace();
+//                                }
+//
+//                            } else if (msgType == EMMessage.Type.IMAGE) {
+//                                notificationBuilder.setContentText("[图片]");
+//                            } else if(msgType ==  EMMessage.Type.VOICE){
+//                                notificationBuilder.setContentText("[语音]");
+//                            }
+//
+//                            //TODO：用户绑定消息进入我的联系人
+//                            notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
+//                            // 2.设置点击跳转事件
+//                            Intent intent = null;
+//                            if(bindClient){
+//                                intent = new Intent(context, ClientActivity.class);
+//                            } else {
+//                                CacheUtil.getInstance().setCurrentItem(1);
+//                                intent = new Intent(context, MainActivity.class);
+//                            }
+//                            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+//                            notificationBuilder.setContentIntent(pendingIntent);
+//                            // 3.设置通知栏其他属性
+//                            notificationBuilder.setAutoCancel(true);
+//                            notificationBuilder.setDefaults(Notification.DEFAULT_ALL);
+//                            //4、设置手表特有属性
+//                            notificationBuilder.extend(extendWear(context, notificationBuilder, newMessage));
+//                            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+//                            notificationManager.notify(nofifyFlag, notificationBuilder.build());
+//                        } else {
+//                            MediaPlayerUtil.playNotifyVoice(context);
+//                            VibratorHelper.vibratorShark(context);
+//                        }
+//                    }
+//                } catch (EaseMobException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }
+//    }
 
     /**
      * 接收到店通知
