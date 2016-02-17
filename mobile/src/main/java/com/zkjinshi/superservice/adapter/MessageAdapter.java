@@ -23,6 +23,8 @@ import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.listener.RecyclerItemClickListener;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.Constants;
+import com.zkjinshi.superservice.utils.EmotionType;
+import com.zkjinshi.superservice.utils.EmotionUtil;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.view.CircleImageView;
 import com.zkjinshi.superservice.vo.TxtExtType;
@@ -92,7 +94,11 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     if(TxtExtType.DEFAULT.getVlaue() == extType){
                         TextMessageBody txtBody = (TextMessageBody) message.getBody();
                         String content = txtBody.getMessage();
-                        ((ViewHolder)holder).contentTv.setText(content);
+                        CharSequence txt = EmotionUtil.getInstance()
+                                .convertStringToSpannable(context,
+                                        content,
+                                        EmotionType.CHAT_LIST);
+                        ((ViewHolder)holder).contentTv.setText(txt);
                     }else{
                         ((ViewHolder)holder).contentTv.setText("[订单]");
                     }

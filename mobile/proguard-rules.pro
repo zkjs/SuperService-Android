@@ -153,7 +153,7 @@
  -dontwarn  com.easemob.**
 
  # 微信sdk不混淆
- -keep class com.tencent.mm.sdk.** {*;}
+ -keep class com.tencent.** {*;}
 
  -dontwarn org.apache.commons.**
  -keep class org.apache.http.impl.client.**
