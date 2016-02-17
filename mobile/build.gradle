@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'oneapm'
 
 android {
     compileSdkVersion 22
@@ -36,8 +37,6 @@ dependencies {
     compile project(':Cloud_TagView')
     compile project(':CalendarListview')
     compile project(':library.FileChoser')
-    compile 'com.android.support:recyclerview-v7:22.0.0'
     compile 'com.google.android.gms:play-services-appindexing:8.1.0'
-    compile files('libs/libammsdk.jar')
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
 }

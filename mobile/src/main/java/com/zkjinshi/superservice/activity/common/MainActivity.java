@@ -19,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.blueware.agent.android.BlueWare;
 import com.google.gson.Gson;
 import com.zkjinshi.base.log.LogLevel;
 import com.zkjinshi.base.log.LogUtil;
@@ -265,6 +266,7 @@ public class MainActivity extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        BlueWare.withApplicationToken("55C9EB081F38564DB9672705D06EF07955").start(this.getApplication());
         setTitle(R.string.app_name);
 
         setContentView(R.layout.activity_main);

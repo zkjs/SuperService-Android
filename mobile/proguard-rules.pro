@@ -155,6 +155,14 @@
  # 微信sdk不混淆
  -keep class com.tencent.mm.sdk.** {*;}
 
+ -dontwarn org.apache.commons.**
+ -keep class org.apache.http.impl.client.**
+ -dontwarn org.apache.commons.**
+ -keep class com.blueware.** { *; }
+ -dontwarn com.blueware.**
+ -keepattributes Exceptions, Signature, InnerClasses
+ -keepattributes SourceFile ,LineNumberTable
+
 #---配置lib jar包over---#
 
 
