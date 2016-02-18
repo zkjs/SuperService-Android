@@ -78,6 +78,8 @@ public class LocNotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
 
+        holder.setIsRecyclable(false);
+
         NoticeVo noticeVo = noticeList.get(position);
         final String userId   = noticeVo.getUserId();
         final String userName = noticeVo.getUserName();

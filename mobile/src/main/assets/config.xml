@@ -6,7 +6,7 @@
     <!--预生产-->
     <!--<php-host>rap.zkjinshi.com</php-host>-->
     <!--<java-host>p.zkjinshi.com/japi</java-host>-->
-    <!--&lt;!&ndash;生产&ndash;&gt;-->
-    <!--<php-host>api.zkjinshi.com</php-host>-->
-    <!--<java-host>mmm.zkjinshi.com</java-host>-->
+    <!--生产-->
+    <!--<php-host>api.zkjinshi.com</php-host>
+    <java-host>mmm.zkjinshi.com</java-host>-->
 </config>

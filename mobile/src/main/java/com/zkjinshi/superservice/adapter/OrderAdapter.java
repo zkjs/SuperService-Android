@@ -117,6 +117,9 @@ public class OrderAdapter extends RecyclerView.Adapter {
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
+
+        viewHolder.setIsRecyclable(false);
+        
         OrderViewHolder holder = (OrderViewHolder)viewHolder;
         holder.position = position;
         OrderBean orderBean = dataList.get(position);

@@ -77,6 +77,9 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+
+        holder.setIsRecyclable(false);
+
         EMConversation conversation = conversationList.get(position);
         EMConversation.EMConversationType chatType = conversation.getType();
         String username = conversation.getUserName();

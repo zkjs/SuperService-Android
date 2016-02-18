@@ -68,6 +68,9 @@ public class OrderMoreAdapter extends RecyclerView.Adapter {
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
+
+        viewHolder.setIsRecyclable(false);
+
         OrderMoreViewHolder holder = (OrderMoreViewHolder)viewHolder;
         holder.position = position;
         OrderBean orderBean = dataList.get(position);
