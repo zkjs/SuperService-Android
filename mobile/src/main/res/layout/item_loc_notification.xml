@@ -59,7 +59,8 @@
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:layout_marginLeft="10dp"
-                    android:layout_marginTop="20dp" />
+                    android:layout_marginTop="20dp"
+                    android:background="@mipmap/logo_round" />
 
             </RelativeLayout>
 
@@ -82,7 +83,6 @@
                         android:id="@+id/tv_client_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="姓名"
                         android:textColor="@color/black"
                         android:textSize="14sp" />
 
@@ -93,7 +93,6 @@
                         android:layout_alignParentRight="true"
                         android:layout_marginRight="25dp"
                         android:gravity="center_vertical|right"
-                        android:text="时间"
                         android:textColor="#888888"
                         android:textSize="14sp" />
 
@@ -105,15 +104,14 @@
                     android:layout_height="0dp"
                     android:layout_weight="1"
                     android:gravity="center_vertical|left"
-                    android:text="区域"
                     android:textColor="@color/TextColorGray"
                     android:textSize="14sp" />
 
                 <RelativeLayout
-                    android:clickable="true"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1"
+                    android:clickable="true"
 
                     android:gravity="center_vertical">
 
@@ -122,7 +120,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical|left"
-                        android:text="订单信息"
                         android:textColor="@color/black"
                         android:textSize="16sp" />
 

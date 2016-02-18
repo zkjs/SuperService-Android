@@ -58,7 +58,7 @@
                 android:layout_height="40dp"
                 android:layout_centerInParent="true"
                 android:scaleType="centerInside"
-                android:background="@mipmap/img_hotel_zhanwei"
+                android:background="@mipmap/logo_round"
                 android:id="@+id/civ_avatar">
             </com.zkjinshi.superservice.view.CircleImageView>
 
