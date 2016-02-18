@@ -116,8 +116,6 @@ public class MoreActivity extends FragmentActivity implements MultiImageSelector
         nameTv = (TextView)findViewById(R.id.org_username_tv);
         inputNameEt = (EditText)findViewById(R.id.new_username_et);
         sexCbx = (CheckBox)findViewById(R.id.sex_cbx);
-
-        findViewById(R.id.back_btn).setVisibility(View.GONE);
     }
 
     private void initData() {
@@ -148,17 +146,6 @@ public class MoreActivity extends FragmentActivity implements MultiImageSelector
     }
 
     private void initListener() {
-        findViewById(R.id.back_btn).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(!getIntent().getBooleanExtra("from_setting",false)){
-                    startActivity(new Intent(MoreActivity.this, LoginActivity.class));
-                }
-                finish();
-                overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
-            }
-        });
-
         findViewById(R.id.go_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -289,6 +276,4 @@ public class MoreActivity extends FragmentActivity implements MultiImageSelector
         });
        imgAsyncTask.execute();
     }
-
-
 }

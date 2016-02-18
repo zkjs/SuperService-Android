@@ -84,5 +84,18 @@
             android:orientation="vertical"></LinearLayout>
     </LinearLayout>
 
-    <include layout="@layout/register_bottom" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_alignParentBottom="true">
+
+        <ImageButton
+            android:id="@+id/go_btn"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/selector_go"
+            android:src="@mipmap/ic_wancheng" />
+
+    </RelativeLayout>
+
 </RelativeLayout>

@@ -72,8 +72,6 @@ public class ZoneActivity extends Activity {
     private void initView() {
         header = getLayoutInflater().inflate(R.layout.header, null);
         zoneLv = (ListView)findViewById(R.id.zone_listview);
-
-        findViewById(R.id.back_btn).setVisibility(View.GONE);
     }
 
     private void initData() {
@@ -173,27 +171,26 @@ public class ZoneActivity extends Activity {
 
 
     private void initListener() {
-
-
-        findViewById(R.id.back_btn).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(CacheUtil.getInstance().getLoginIdentity() == IdentityType.BUSINESS){
-                    if(!getIntent().getBooleanExtra("from_setting",false)){
-                        startActivity(new Intent(ZoneActivity.this,ShopLoginActivity.class));
-                    }
-                    finish();
-                    overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
-                }else{
-                    if(!getIntent().getBooleanExtra("from_setting",false)){
-                        startActivity(new Intent(ZoneActivity.this,MoreActivity.class));
-                    }
-                    finish();
-                    overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
-                }
-
-            }
-        });
+        //界面后退操作
+//        findViewById(R.id.back_btn).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                if(CacheUtil.getInstance().getLoginIdentity() == IdentityType.BUSINESS){
+//                    if(!getIntent().getBooleanExtra("from_setting",false)){
+//                        startActivity(new Intent(ZoneActivity.this,ShopLoginActivity.class));
+//                    }
+//                    finish();
+//                    overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
+//                }else{
+//                    if(!getIntent().getBooleanExtra("from_setting",false)){
+//                        startActivity(new Intent(ZoneActivity.this,MoreActivity.class));
+//                    }
+//                    finish();
+//                    overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
+//                }
+//
+//            }
+//        });
 
         findViewById(R.id.go_btn).setOnClickListener(new View.OnClickListener() {
             @Override

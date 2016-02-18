@@ -1,52 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
     <RelativeLayout
+        android:id="@+id/title_layout"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="@android:color/holo_blue_light"
-        android:id="@+id/title_layout">
+        android:background="@android:color/holo_blue_light">
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
             android:text="选择通知区域"
             android:textColor="@android:color/white"
-            android:textSize="18sp"
-            android:layout_centerInParent="true"/>
+            android:textSize="18sp" />
 
     </RelativeLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         android:layout_below="@+id/title_layout"
-        android:background="#f5f5f5">
+        android:background="#f5f5f5"
+        android:orientation="vertical">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="100dp"
             android:background="#20101010"
             android:padding="30dp">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="选择您的通知区域，客人到达该区域时，您将会收到通知，且要做出处理"
                 android:textColor="#4f4f4f"
-                android:textSize="16sp"
-                android:text="选择您的通知区域，客人到达该区域时，您将会收到通知，且要做出处理"/>
+                android:textSize="16sp" />
         </LinearLayout>
 
         <ListView
-            android:layout_marginBottom="50dp"
+            android:id="@+id/zone_listview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:fadingEdge="none"
+            android:layout_marginBottom="50dp"
             android:divider="#f0edf0"
             android:dividerHeight="1dp"
             android:fadeScrollbars="true"
-            android:id="@+id/zone_listview">
-        </ListView>
+            android:fadingEdge="none"></ListView>
 
     </LinearLayout>
 
-    <include layout="@layout/register_bottom" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_alignParentBottom="true">
+
+        <ImageButton
+            android:id="@+id/go_btn"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/selector_go"
+            android:src="@mipmap/ic_wancheng" />
+
+    </RelativeLayout>
 
 </RelativeLayout>
