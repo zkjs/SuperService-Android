@@ -44,39 +44,31 @@
             android:layout_height="wrap_content" />
     </RelativeLayout>
 
-    <RelativeLayout
+    <TextView
+        android:id="@+id/message_notice_send_time"
+        android:layout_width="wrap_content"
+        android:textColor="#666666"
+        android:textSize="12sp"
+        android:text="周一"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_alignParentRight="true"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/message_notice_notice_count"
+        android:layout_below="@id/message_notice_send_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/message_notice_center_layout"
-        android:layout_centerVertical="true"
-        android:layout_alignParentRight="true"
+        android:text="99"
         android:layout_marginRight="10dp"
-        >
-
-        <TextView
-            android:id="@+id/message_notice_send_time"
-            android:layout_width="wrap_content"
-            android:textColor="#666666"
-            android:textSize="14sp"
-            android:text="周一"
-            android:layout_alignParentRight="true"
-            android:layout_height="wrap_content" />
-
-        <TextView
-            android:id="@+id/message_notice_notice_count"
-            android:layout_below="@id/message_notice_send_time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="99"
-            android:layout_marginTop="5dp"
-            android:gravity="center"
-            android:textColor="#FFFFFF"
-            android:layout_alignParentRight="true"
-            android:background="@drawable/blue_round_select"
-            android:textSize="16sp"
-            android:visibility="visible"
-            />
-    </RelativeLayout>
+        android:gravity="center"
+        android:textColor="#FFFFFF"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/blue_round_select"
+        android:textSize="16sp"
+        android:visibility="visible"
+        />
 
     <TextView
         android:layout_width="match_parent"
