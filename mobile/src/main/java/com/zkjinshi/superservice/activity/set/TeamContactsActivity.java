@@ -78,6 +78,7 @@ public class TeamContactsActivity extends AppCompatActivity{
         mRlSideBar      = (RelativeLayout)   findViewById(R.id.rl_side_bar);
         mTvDialog       = (TextView)         findViewById(R.id.tv_dialog);
         mAutoSideBar    = new AutoSideBar(TeamContactsActivity.this);
+
         ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(
                 DisplayUtil.dip2px(TeamContactsActivity.this, 30),
                 ViewGroup.LayoutParams.MATCH_PARENT);
@@ -133,14 +134,18 @@ public class TeamContactsActivity extends AppCompatActivity{
                             for (ShopEmployeeVo shopEmployeeVo : shopEmployeeVos) {
                                 empids.add(shopEmployeeVo.getEmpid());
                                 String deptName = shopEmployeeVo.getDept_name();
+                                String sortLetter = null;
+
                                 if (TextUtils.isEmpty(deptName)) {
-                                    shopEmployeeVo.setDept_name("#");
-                                }else {
-                                    String sortLetter = deptName.substring(0, 1);
-                                    //部门分类并消除相同部门
-                                    if (!TextUtils.isEmpty(sortLetter) && !strLetters.contains(sortLetter)) {
-                                        strLetters.add(sortLetter);
-                                    }
+                                    sortLetter = "#";
+                                    shopEmployeeVo.setDept_name(sortLetter);
+                                } else {
+                                    sortLetter = deptName.substring(0, 1);
+                                }
+
+                                //部门分类并消除相同部门
+                                if (!TextUtils.isEmpty(sortLetter) && !strLetters.contains(sortLetter)) {
+                                    strLetters.add(sortLetter);
                                 }
                             }
 

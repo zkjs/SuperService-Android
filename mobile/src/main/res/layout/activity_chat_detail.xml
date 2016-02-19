@@ -1,14 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#f2f2f5">
+    android:background="#f2f2f5"
+    android:orientation="vertical">
 
     <include layout="@layout/header_bar" />
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="false"
         android:scrollbars="none">
 
         <LinearLayout
@@ -21,36 +24,49 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
                 android:background="@android:color/white"
+                android:gravity="center"
                 android:listSelector="@android:color/transparent"
                 android:numColumns="4"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
                 android:scrollbars="none"
-                android:gravity="center"
-                android:visibility="visible"/>
+                android:visibility="visible" />
 
             <RelativeLayout
                 android:id="@+id/chat_detail_layout_clear_history"
                 android:layout_width="match_parent"
-                android:background="@drawable/bg_layout_item_selector"
+                android:layout_height="45dp"
                 android:layout_marginTop="10dp"
-                android:layout_height="45dp">
+                android:background="@drawable/bg_layout_item_selector">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="清空聊天记录"
                     android:layout_centerVertical="true"
-                    android:textSize="14sp"
                     android:layout_marginLeft="16dp"
+                    android:gravity="center"
+                    android:text="清空聊天记录"
                     android:textColor="#101010"
-                    android:gravity="center"/>
+                    android:textSize="14sp" />
 
             </RelativeLayout>
 
         </LinearLayout>
 
     </ScrollView>
+
+    <Button
+        android:id="@+id/btn_chat"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:background="@drawable/bg_holo_bule_to_ligth_blue"
+        android:text="@string/chat"
+        android:textColor="@color/white"
+        android:textSize="14sp"></Button>
 
 </LinearLayout>

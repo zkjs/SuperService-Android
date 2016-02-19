@@ -84,7 +84,7 @@ public class ChatDetailAdapter extends BaseAdapter {
         }
 
         if (position == getCount() - 1) {
-            vh.iconIv.setImageResource(R.mipmap.ic_jiatouxiang);
+            vh.iconIv.setImageResource(R.mipmap.ic_tianjia_blue_nor);
             vh.nameTv.setText("添加");
         } else {
             EContactVo shopEmployeeVo = contactList.get(position);

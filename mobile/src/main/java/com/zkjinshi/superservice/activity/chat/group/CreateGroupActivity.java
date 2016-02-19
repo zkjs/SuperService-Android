@@ -1,7 +1,6 @@
 package com.zkjinshi.superservice.activity.chat.group;
 
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -10,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -17,7 +17,6 @@ import com.easemob.chat.EMGroup;
 import com.easemob.chat.EMGroupManager;
 import com.easemob.exceptions.EaseMobException;
 import com.zkjinshi.base.util.DialogUtil;
-import com.zkjinshi.base.view.CustomDialog;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.adapter.CreateGroupAdapter;
 import com.zkjinshi.superservice.factory.EContactFactory;
@@ -45,7 +44,7 @@ public class CreateGroupActivity extends Activity {
 
     public static final String TAG = CreateGroupActivity.class.getSimpleName();
 
-    private List<String> selectList;;
+    private List<String> selectList;
     private RelativeLayout mRlBack;
     private TextView mTvTitle;
     private RecyclerView mRcvTeamContacts;
@@ -53,7 +52,8 @@ public class CreateGroupActivity extends Activity {
     private LinearLayoutManager mLayoutManager;
     private CreateGroupAdapter mContactsAdapter;
     private List<ShopEmployeeVo>    mShopEmployeeVos;
-    private RelativeLayout createGroupLayout;
+//    private RelativeLayout createGroupLayout;
+    private ImageButton goIbtn;
     private ShopEmployeeVo shopEmployeeVo;
     private ClientVo clientVo;
     private EContactVo contactVo;
@@ -70,6 +70,7 @@ public class CreateGroupActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_invite_team);
+
         initView();
         initData();
         initListener();
@@ -79,7 +80,8 @@ public class CreateGroupActivity extends Activity {
         mRlBack   = (RelativeLayout) findViewById(R.id.rl_back);
         mTvTitle  = (TextView)    findViewById(R.id.tv_title);
         mRcvTeamContacts     = (RecyclerView) findViewById(R.id.rcv_team_contacts);
-        createGroupLayout = (RelativeLayout)findViewById(R.id.invite_create_group_layout);
+        goIbtn = (ImageButton)findViewById(R.id.go_ibtn);
+//        createGroupLayout = (RelativeLayout)findViewById(R.id.invite_create_group_layout);
     }
 
     private void initData() {
@@ -158,7 +160,7 @@ public class CreateGroupActivity extends Activity {
         });
 
         //创建群
-        createGroupLayout.setOnClickListener(new View.OnClickListener() {
+        goIbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
                 requestCreateGroupTask();

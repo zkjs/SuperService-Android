@@ -38,8 +38,8 @@
         <RelativeLayout
             android:id="@+id/rl_side_bar"
             android:layout_width="30.0dip"
-            android:layout_height="match_parent"
-            android:layout_gravity="right|center" />
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|bottom" />
 
     </FrameLayout>
 
