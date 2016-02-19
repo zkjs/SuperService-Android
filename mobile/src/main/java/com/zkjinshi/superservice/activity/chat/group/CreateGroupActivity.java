@@ -109,7 +109,7 @@ public class CreateGroupActivity extends Activity {
                 }
             }
         }
-        mTvTitle.setText("创建团队");
+        mTvTitle.setText("添加群聊对象");
         mRcvTeamContacts.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(this);
         mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
