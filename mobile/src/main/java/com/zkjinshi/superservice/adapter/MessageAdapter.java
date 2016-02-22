@@ -94,7 +94,9 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             }else if(msgType == EMMessage.Type.TXT){
                 try {
                     int extType = message.getIntAttribute(Constants.MSG_TXT_EXT_TYPE);
-                    if(TxtExtType.DEFAULT.getVlaue() == extType){
+                    if(TxtExtType.CARD.getVlaue() == extType){
+                        ((ViewHolder)holder).contentTv.setText("[订单]");
+                    }else{
                         TextMessageBody txtBody = (TextMessageBody) message.getBody();
                         String content = txtBody.getMessage();
                         CharSequence txt = EmotionUtil.getInstance()
@@ -102,8 +104,6 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                                         content,
                                         EmotionType.CHAT_LIST);
                         ((ViewHolder)holder).contentTv.setText(txt);
-                    }else{
-                        ((ViewHolder)holder).contentTv.setText("[订单]");
                     }
                 } catch (EaseMobException e) {
                     e.printStackTrace();

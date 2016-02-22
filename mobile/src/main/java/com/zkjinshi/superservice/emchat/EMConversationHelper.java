@@ -191,30 +191,34 @@ public class EMConversationHelper {
                         String fromId = receiveMsg.getFrom();
                         if(!TextUtils.isEmpty(fromId) && !fromId.equals(CacheUtil.getInstance().getUserId())){
                             int extType = receiveMsg.getIntAttribute(Constants.MSG_TXT_EXT_TYPE);
-                            if(TxtExtType.CARD.getVlaue() == extType){
-                                String toName = receiveMsg.getStringAttribute("fromName");
-                                String fromName = receiveMsg.getStringAttribute("toName");
-                                String shopId = receiveMsg.getStringAttribute("shopId");
-                                String shopName = receiveMsg.getStringAttribute("shopName");
-                                EMMessage sendMsg = EMMessage.createTxtSendMessage("您好,客服["+ CacheUtil.getInstance().getUserName()+"]为您服务", fromId);
-                                sendMsg.status = EMMessage.Status.SUCCESS;
-                                sendMsg.setAttribute(Constants.MSG_TXT_EXT_TYPE, TxtExtType.DEFAULT.getVlaue());
-                                sendMsg.setChatType(EMMessage.ChatType.Chat);
-                                sendMsg.setAttribute("toName", "");
-                                if(!TextUtils.isEmpty(toName)){
-                                    sendMsg.setAttribute("toName",toName);
+                            if(TxtExtType.DEFAULT.getVlaue() == extType){
+                                TextMessageBody txtBody = (TextMessageBody) receiveMsg.getBody();
+                                String content = txtBody.getMessage();
+                                if(content.equals("您好，帮我预定这间房")){//增加特殊内容的过滤器
+                                    String toName = receiveMsg.getStringAttribute("fromName");
+                                    String fromName = receiveMsg.getStringAttribute("toName");
+                                    String shopId = receiveMsg.getStringAttribute("shopId");
+                                    String shopName = receiveMsg.getStringAttribute("shopName");
+                                    EMMessage sendMsg = EMMessage.createTxtSendMessage("您好,客服["+ CacheUtil.getInstance().getUserName()+"]为您服务", fromId);
+                                    sendMsg.status = EMMessage.Status.SUCCESS;
+                                    sendMsg.setAttribute(Constants.MSG_TXT_EXT_TYPE, TxtExtType.DEFAULT.getVlaue());
+                                    sendMsg.setChatType(EMMessage.ChatType.Chat);
+                                    sendMsg.setAttribute("toName", "");
+                                    if(!TextUtils.isEmpty(toName)){
+                                        sendMsg.setAttribute("toName",toName);
+                                    }
+                                    sendMsg.setAttribute("fromName","");
+                                    if(!TextUtils.isEmpty(fromName)){
+                                        sendMsg.setAttribute("fromName",fromName);
+                                    }
+                                    if(!TextUtils.isEmpty(shopId)){
+                                        sendMsg.setAttribute("shopId",shopId);
+                                    }
+                                    if(!TextUtils.isEmpty(shopName)){
+                                        sendMsg.setAttribute("shopName",shopName);
+                                    }
+                                    EMChatManager.getInstance().sendMessage(sendMsg);
                                 }
-                                sendMsg.setAttribute("fromName","");
-                                if(!TextUtils.isEmpty(fromName)){
-                                    sendMsg.setAttribute("fromName",fromName);
-                                }
-                                if(!TextUtils.isEmpty(shopId)){
-                                    sendMsg.setAttribute("shopId",shopId);
-                                }
-                                if(!TextUtils.isEmpty(shopName)){
-                                    sendMsg.setAttribute("shopName",shopName);
-                                }
-                                EMChatManager.getInstance().sendMessage(sendMsg);
                             }
                         }
                     }
