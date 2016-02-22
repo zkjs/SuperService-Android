@@ -318,7 +318,63 @@ public class GroupChatAdapter extends BaseAdapter {
                 int extType = message.getIntAttribute(Constants.MSG_TXT_EXT_TYPE);
                 TextMessageBody txtBody = (TextMessageBody) message.getBody();
                 String content = txtBody.getMessage();
-                if(TxtExtType.DEFAULT.getVlaue() == extType){//普通文本消息
+                if(TxtExtType.CARD.getVlaue() == extType){//卡片类型消息
+                    final OrderDetailForDisplay bookOrder = new Gson().fromJson(content, OrderDetailForDisplay.class);
+                    if (null != bookOrder) {
+                        String roomType = bookOrder.getRoomtype();
+                        String arrivaDate = bookOrder.getArrivaldate();
+                        String departureDate = bookOrder.getLeavedate();
+                        String imageUrl = bookOrder.getImgurl();
+                        SimpleDateFormat descFormat = new SimpleDateFormat("MM月dd日");
+                        SimpleDateFormat sourceFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                        Date arrivalDate = sourceFormat.parse(arrivaDate);
+                        Date leaveDate = sourceFormat.parse(departureDate);
+                        String arriveStr = descFormat.format(arrivalDate);
+                        String leaveStr = descFormat.format(leaveDate);
+                        int dayNum = TimeUtil.daysBetween(arrivalDate, leaveDate);
+                        vh.orderContent.setText(roomType + " | " + arriveStr+"到"+leaveStr + " | " + dayNum + "晚");
+                        if (!TextUtils.isEmpty(imageUrl)) {
+                            String logoUrl = ProtocolUtil.getHostImgUrl(imageUrl);
+                            ImageLoader.getInstance().displayImage(logoUrl, vh.hotelImage, cardOptions);
+                        }
+                    }
+                    vh.msg.setVisibility(View.GONE);
+                    vh.img.setVisibility(View.GONE);
+                    vh.voice.setVisibility(View.GONE);
+                    vh.time.setVisibility(View.GONE);
+                    vh.cardLayout.setVisibility(View.VISIBLE);
+                    vh.contentLayout.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            String orderNo = bookOrder.getOrderno();
+                            Intent intent = new Intent();
+                            if(orderNo.startsWith("H")){
+                                intent.setClass(context, HotelDealActivity.class);
+                                intent.putExtra("orderNo",orderNo);
+                            }else if(orderNo.startsWith("K")){
+                                intent.setClass(context, KTVDealActivity.class);
+                                intent.putExtra("orderNo",orderNo);
+                            }
+                            else if(orderNo.startsWith("O")){
+                                intent.setClass(context, NormalDealActivity.class);
+                                intent.putExtra("orderNo",orderNo);
+                            }
+                            context.startActivity(intent);
+                        }
+                    });
+                    if (!isDelEnabled) {
+                        vh.contentLayout
+                                .setOnLongClickListener(new View.OnLongClickListener() {
+
+                                    @Override
+                                    public boolean onLongClick(View v) {
+                                        showChildQuickActionBar(v, isComMsg, position);
+                                        return true;
+                                    }
+                                });
+                    }
+                }else{//普通文本消息
+
                     if (!TextUtils.isEmpty(content)) {
                         String key = message.getMsgId();
                         CharSequence charSequence = (CharSequence) msgCacheMap
@@ -388,61 +444,6 @@ public class GroupChatAdapter extends BaseAdapter {
                     vh.voice.setVisibility(View.GONE);
                     vh.time.setVisibility(View.GONE);
                     vh.cardLayout.setVisibility(View.GONE);
-                }else{//卡片类型消息
-                    final OrderDetailForDisplay bookOrder = new Gson().fromJson(content, OrderDetailForDisplay.class);
-                    if (null != bookOrder) {
-                        String roomType = bookOrder.getRoomtype();
-                        String arrivaDate = bookOrder.getArrivaldate();
-                        String departureDate = bookOrder.getLeavedate();
-                        String imageUrl = bookOrder.getImgurl();
-                        SimpleDateFormat descFormat = new SimpleDateFormat("MM月dd日");
-                        SimpleDateFormat sourceFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                        Date arrivalDate = sourceFormat.parse(arrivaDate);
-                        Date leaveDate = sourceFormat.parse(departureDate);
-                        String arriveStr = descFormat.format(arrivalDate);
-                        String leaveStr = descFormat.format(leaveDate);
-                        int dayNum = TimeUtil.daysBetween(arrivalDate, leaveDate);
-                        vh.orderContent.setText(roomType + " | " + arriveStr+"到"+leaveStr + " | " + dayNum + "晚");
-                        if (!TextUtils.isEmpty(imageUrl)) {
-                            String logoUrl = ProtocolUtil.getHostImgUrl(imageUrl);
-                            ImageLoader.getInstance().displayImage(logoUrl, vh.hotelImage, cardOptions);
-                        }
-                    }
-                    vh.msg.setVisibility(View.GONE);
-                    vh.img.setVisibility(View.GONE);
-                    vh.voice.setVisibility(View.GONE);
-                    vh.time.setVisibility(View.GONE);
-                    vh.cardLayout.setVisibility(View.VISIBLE);
-                    vh.contentLayout.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                        String orderNo = bookOrder.getOrderno();
-                        Intent intent = new Intent();
-                        if(orderNo.startsWith("H")){
-                            intent.setClass(context, HotelDealActivity.class);
-                            intent.putExtra("orderNo",orderNo);
-                        }else if(orderNo.startsWith("K")){
-                            intent.setClass(context, KTVDealActivity.class);
-                            intent.putExtra("orderNo",orderNo);
-                        }
-                        else if(orderNo.startsWith("O")){
-                            intent.setClass(context, NormalDealActivity.class);
-                            intent.putExtra("orderNo",orderNo);
-                        }
-                        context.startActivity(intent);
-                        }
-                    });
-                    if (!isDelEnabled) {
-                        vh.contentLayout
-                                .setOnLongClickListener(new View.OnLongClickListener() {
-
-                                    @Override
-                                    public boolean onLongClick(View v) {
-                                        showChildQuickActionBar(v, isComMsg, position);
-                                        return true;
-                                    }
-                                });
-                    }
                 }
             } catch (EaseMobException e) {
                 e.printStackTrace();
