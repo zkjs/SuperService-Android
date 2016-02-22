@@ -3,6 +3,7 @@ package com.zkjinshi.superservice.activity.common;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -15,21 +16,22 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
-import android.widget.ImageView;
+
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.blueware.agent.android.BlueWare;
-import com.google.gson.Gson;
+import com.facebook.drawee.view.SimpleDraweeView;
+
 import com.zkjinshi.base.log.LogLevel;
 import com.zkjinshi.base.log.LogUtil;
-import com.zkjinshi.base.util.DialogUtil;
+
 import com.zkjinshi.superservice.R;
-import com.zkjinshi.superservice.ServiceApplication;
+
 import com.zkjinshi.superservice.activity.set.ClientActivity;
 import com.zkjinshi.superservice.activity.set.SettingActivity;
 import com.zkjinshi.superservice.activity.set.TeamContactsActivity;
-import com.zkjinshi.superservice.bean.BaseBean;
+
 import com.zkjinshi.superservice.emchat.EasemobIMHelper;
 import com.zkjinshi.superservice.manager.YunBaSubscribeManager;
 import com.zkjinshi.superservice.net.ExtNetRequestListener;
@@ -41,16 +43,11 @@ import com.zkjinshi.superservice.sqlite.DBOpenHelper;
 import com.zkjinshi.superservice.sqlite.UserDBUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
-import com.zkjinshi.superservice.utils.task.ImgAsyncTask;
+
 import com.zkjinshi.superservice.view.CustomExtDialog;
 import com.zkjinshi.superservice.vo.IdentityType;
 import com.zkjinshi.superservice.vo.UserVo;
 
-import java.io.File;
-import java.util.HashMap;
-import java.util.List;
-
-import me.nereo.multi_image_selector.MultiImageSelectorActivity;
 
 /**
  * 主页面
@@ -64,9 +61,8 @@ public class MainActivity extends AppCompatActivity{
     private MainActivityController mainActivityController;
 
     private final static String TAG = MainActivity.class.getSimpleName();
-    public static int REQUEST_IMAGE = 1;
 
-    private ImageView       avatarIv;
+    private SimpleDraweeView avatarIv;
     private TextView        usernameTv;
     private TextView        shopnameTv;
     private CheckBox        onlineCbx;
@@ -75,7 +71,7 @@ public class MainActivity extends AppCompatActivity{
     private ImageButton     setIbtn;
 
     private void initView(){
-        avatarIv   = (ImageView)findViewById(R.id.avatar_iv);
+        avatarIv   = (SimpleDraweeView)findViewById(R.id.avatar_iv);
         usernameTv = (TextView)findViewById(R.id.username_tv);
         shopnameTv = (TextView)findViewById(R.id.shop_name_tv);
         onlineCbx  = (CheckBox)findViewById(R.id.online_cbx);
@@ -191,78 +187,6 @@ public class MainActivity extends AppCompatActivity{
         });
     }
 
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == REQUEST_IMAGE){
-            if(resultCode == Activity.RESULT_OK){
-                // 获取返回的图片列表
-                List<String> path = data.getStringArrayListExtra(MultiImageSelectorActivity.EXTRA_RESULT);
-                Log.e(TAG, path.toString());
-                String photoFilePath = path.get(0);
-                setAvatar(photoFilePath);
-            }
-        }
-    }
-
-    private void setAvatar(String photoFilePath){
-        ImgAsyncTask imgAsyncTask = new ImgAsyncTask(this,photoFilePath,avatarIv,
-                new ImgAsyncTask.CallBack() {
-                    @Override
-                    public void getNewPath(String path) {
-                        submitAvatar(path);
-                    }
-                });
-        imgAsyncTask.execute();
-    }
-
-    private void submitAvatar(final String path){
-        NetRequest netRequest = new NetRequest(ProtocolUtil.getSempupdateUrl());
-        HashMap<String,String> bizMap = new HashMap<String, String>();
-        bizMap.put("salesid", CacheUtil.getInstance().getUserId());
-        bizMap.put("token", CacheUtil.getInstance().getToken());
-        netRequest.setBizParamMap(bizMap);
-
-        HashMap<String, File> fileMap = new HashMap<String, File>();
-        fileMap.put("file", new File(path));
-        netRequest.setFileMap(fileMap);
-
-        NetRequestTask netRequestTask = new NetRequestTask(this, netRequest, NetResponse.class);
-        netRequestTask.methodType = MethodType.PUSH;
-        netRequestTask.setNetRequestListener(new ExtNetRequestListener(this) {
-            @Override
-            public void onNetworkRequestError(int errorCode, String errorMessage) {
-                Log.i(TAG, "errorCode:" + errorCode);
-                Log.i(TAG, "errorMessage:" + errorMessage);
-            }
-
-            @Override
-            public void onNetworkRequestCancelled() {
-
-            }
-
-            @Override
-            public void onNetworkResponseSucceed(NetResponse result) {
-                super.onNetworkResponseSucceed(result);
-
-                Log.i(TAG, "result.rawResult:" + result.rawResult);
-                BaseBean baseBean = new Gson().fromJson(result.rawResult, BaseBean.class);
-                if (baseBean.isSet()) {
-                    DialogUtil.getInstance().showToast(MainActivity.this, "头像上传成功");
-                } else {
-                    DialogUtil.getInstance().showToast(MainActivity.this, baseBean.getErr());
-                }
-
-            }
-
-            @Override
-            public void beforeNetworkRequestStart() {
-
-            }
-        });
-        netRequestTask.isShowLoadingDialog = true;
-        netRequestTask.execute();
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -307,12 +231,10 @@ public class MainActivity extends AppCompatActivity{
             onlineCbx.setVisibility(View.GONE);
             teamTv.setText("团队管理");
             setIbtn.setVisibility(View.GONE);
-            // String avatarUrl = ProtocolUtil.getShopBackUrl(userVo.getShopId());
-            // mainActivityController.setUserPhoto(CacheUtil.getInstance().getUserPhotoUrl(), avatarIv);
         }else{
             onlineCbx.setVisibility(View.GONE);
             teamTv.setText("团队联系人");
-            mainActivityController.setUserPhoto(CacheUtil.getInstance().getUserPhotoUrl(), avatarIv);
+            avatarIv.setImageURI(Uri.parse(CacheUtil.getInstance().getUserPhotoUrl()));
             setIbtn.setVisibility(View.VISIBLE);
         }
     }

@@ -2,6 +2,7 @@ package com.zkjinshi.superservice.activity.common;
 
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -14,6 +15,9 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.imagepipeline.core.ImagePipeline;
 import com.google.gson.Gson;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -54,7 +58,7 @@ public class MoreActivity extends FragmentActivity implements MultiImageSelector
 
     private final static String TAG = MoreActivity.class.getSimpleName();
 
-    private CircleImageView avatarCiv;
+    private SimpleDraweeView avatarCiv;
     private TextView nameTv;
     private EditText inputNameEt;
     private CheckBox sexCbx;
@@ -112,7 +116,7 @@ public class MoreActivity extends FragmentActivity implements MultiImageSelector
     }
 
     private void initView() {
-        avatarCiv = (CircleImageView)findViewById(R.id.avatar);
+        avatarCiv = (SimpleDraweeView)findViewById(R.id.avatar);
         nameTv = (TextView)findViewById(R.id.org_username_tv);
         inputNameEt = (EditText)findViewById(R.id.new_username_et);
         sexCbx = (CheckBox)findViewById(R.id.sex_cbx);
@@ -135,14 +139,7 @@ public class MoreActivity extends FragmentActivity implements MultiImageSelector
             }
         }
         String avatarUrl = ProtocolUtil.getAvatarUrl(userVo.getUserId());
-        DisplayImageOptions options = new DisplayImageOptions.Builder()
-            .showImageOnLoading(R.mipmap.ic_launcher)
-            .showImageForEmptyUri(R.mipmap.ic_launcher)
-            .showImageOnFail(R.mipmap.ic_launcher)
-            .cacheInMemory(true)
-            .cacheOnDisk(true)
-            .build();
-        ImageLoader.getInstance().displayImage(avatarUrl, avatarCiv, options);
+        avatarCiv.setImageURI(Uri.parse(avatarUrl));
     }
 
     private void initListener() {
@@ -229,6 +226,11 @@ public class MoreActivity extends FragmentActivity implements MultiImageSelector
                     CacheUtil.getInstance().setUserName(name);
                     UserDBUtil.getInstance().addUser(userVo);
 
+                    ImagePipeline imagePipeline = Fresco.getImagePipeline();
+                    Uri uri = Uri.parse(avatarUrl);
+                    imagePipeline.evictFromMemoryCache(uri);
+                    imagePipeline.evictFromDiskCache(uri);
+
                     if(!getIntent().getBooleanExtra("from_setting",false)){
                         startActivity(new Intent(MoreActivity.this, ZoneActivity.class));
                     }
@@ -272,6 +274,7 @@ public class MoreActivity extends FragmentActivity implements MultiImageSelector
             @Override
             public void getNewPath(String path) {
                 picPath = path;
+                avatarCiv.setImageURI(Uri.parse("file:///"+picPath));
             }
         });
        imgAsyncTask.execute();
