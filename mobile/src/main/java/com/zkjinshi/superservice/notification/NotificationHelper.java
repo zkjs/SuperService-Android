@@ -9,6 +9,7 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.app.RemoteInput;
 import android.text.TextUtils;
+import android.view.View;
 
 import com.easemob.EMNotifierEvent;
 import com.easemob.chat.EMGroup;
@@ -17,7 +18,9 @@ import com.easemob.chat.EMMessage;
 import com.easemob.chat.TextMessageBody;
 import com.easemob.exceptions.EaseMobException;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.assist.ImageSize;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.zkjinshi.base.util.ActivityManagerHelper;
 import com.zkjinshi.base.util.DisplayUtil;
 import com.zkjinshi.base.util.TimeUtil;
@@ -73,9 +76,6 @@ public class NotificationHelper {
         int nofifyFlag = 0;
         switch (event.getEvent()) {
             case EventOfflineMessage:
-                shopMessageNotification(context, event, nofifyFlag);
-                break;
-
             case EventNewMessage:
                 shopMessageNotification(context, event, nofifyFlag);
             break;
@@ -92,7 +92,6 @@ public class NotificationHelper {
             String titleName = null;
             if(!username.equals(CacheUtil.getInstance().getUserId())){
                 EMMessage.Type msgType = message.getType();
-
                 //是否发送绑定客户消息
                 boolean bindClient = false;
                 NotificationCompat.Builder notificationBuilder = null;
@@ -123,7 +122,6 @@ public class NotificationHelper {
                     }
                 }
                 notificationBuilder.setContentTitle("" + titleName);
-
                 if (msgType == EMMessage.Type.TXT) {
                     try {
                         int extType = message.getIntAttribute(Constants.MSG_TXT_EXT_TYPE);
@@ -145,7 +143,6 @@ public class NotificationHelper {
                 } else if(msgType ==  EMMessage.Type.VOICE){
                     notificationBuilder.setContentText("[语音]");
                 }
-
                 //TODO：用户绑定消息进入我的联系人
                 notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
                 // 2.设置点击跳转事件
@@ -163,12 +160,10 @@ public class NotificationHelper {
                             NotificationManagerCompat.from(context);
                     notificationManager.notify(nofifyFlag, notificationBuilder.build());
                 } else {
-
                     //后台运行
                     if (ActivityManagerHelper.isRunningBackground(context)) {
                         CacheUtil.getInstance().setCurrentItem(1);
                         intent = new Intent(context, MainActivity.class);
-
                         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
                         notificationBuilder.setContentIntent(pendingIntent);
                         // 3.设置通知栏其他属性
@@ -190,187 +185,58 @@ public class NotificationHelper {
         }
     }
 
-
-    /**
-     * 展示消息通知
-     */
-//    private void shopMessageNotification(Context context,  EMNotifierEvent event, int nofifyFlag) {
-//        EMMessage newMessage = (EMMessage) event.getData();
-//        if(null != newMessage){
-//            String username  = newMessage.getFrom();
-//            String titleName = null;
-//
-//            if(!username.equals(CacheUtil.getInstance().getUserId())){
-//                EMMessage.Type msgType = newMessage.getType();
-//                try {
-//                    //是否发送绑定客户消息
-//                    boolean bindClient = newMessage.getBooleanAttribute("bindClient");
-//                    //绑定通知消息
-//                    if(bindClient){
-//                        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context);
-//                        if (newMessage.getChatType() != EMMessage.ChatType.GroupChat
-//                                && newMessage.getChatType() != EMMessage.ChatType.ChatRoom) {
-//                            try {
-//                                String fromName = newMessage.getStringAttribute("fromName");
-//                                String toName   = newMessage.getStringAttribute("toName");
-//                                if(!TextUtils.isEmpty(fromName) && !fromName.equals(
-//                                        CacheUtil.getInstance().getUserName())){
-//                                    titleName = fromName;
-//                                }else{
-//                                    if(!TextUtils.isEmpty(toName)){
-//                                        titleName = toName;
-//                                    }
-//                                }
-//                            } catch (EaseMobException e) {
-//                                e.printStackTrace();
-//                            }
-//                        }
-//                        notificationBuilder.setContentTitle("" + titleName);
-//
-//                        if (msgType == EMMessage.Type.TXT) {
-//                            try {
-//                                int extType = newMessage.getIntAttribute(Constants.MSG_TXT_EXT_TYPE);
-//                                if(TxtExtType.DEFAULT.getVlaue() == extType){
-//                                    TextMessageBody txtBody = (TextMessageBody) newMessage.getBody();
-//                                    String content = txtBody.getMessage();
-//                                    notificationBuilder.setContentText("" + content);
-//                                }else{
-//                                    notificationBuilder.setContentText("[订单]");
-//                                }
-//                            } catch (EaseMobException e) {
-//                                e.printStackTrace();
-//                            }
-//                        }
-//
-//                        //TODO：用户绑定消息进入我的联系人
-//                        notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
-//                        // 2.设置点击跳转事件
-//                        Intent intent = new Intent(context, ClientActivity.class);
-//                        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
-//                        notificationBuilder.setContentIntent(pendingIntent);
-//                        // 3.设置通知栏其他属性
-//                        notificationBuilder.setAutoCancel(true);
-//                        notificationBuilder.setDefaults(Notification.DEFAULT_ALL);
-//                        //4、设置手表特有属性
-//                        notificationBuilder.extend(extendWear(context, notificationBuilder, newMessage));
-//                        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-//                        notificationManager.notify(nofifyFlag, notificationBuilder.build());
-//                    } else {
-//                        if (ActivityManagerHelper.isRunningBackground(context)) {
-//                            NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context);
-//                            if (newMessage.getChatType() == EMMessage.ChatType.GroupChat ||
-//                                    newMessage.getChatType() == EMMessage.ChatType.ChatRoom) {
-//
-//                                EMConversationHelper.getInstance().requestGroupListTask();
-//                                String groupId = newMessage.getTo();
-//                                EMGroup group = EMGroupManager.getInstance().getGroup(groupId);
-//                                if (group != null){
-//                                    titleName = group.getGroupName();
-//                                }
-//                            } else {
-//                                try {
-//                                    String fromName = newMessage.getStringAttribute("fromName");
-//                                    String toName   = newMessage.getStringAttribute("toName");
-//                                    if(!TextUtils.isEmpty(fromName) && !fromName.equals(
-//                                            CacheUtil.getInstance().getUserName())){
-//                                        titleName = fromName;
-//                                    } else {
-//                                        if(!TextUtils.isEmpty(toName)){
-//                                            titleName = toName;
-//                                        }
-//                                    }
-//                                } catch (EaseMobException e) {
-//                                    e.printStackTrace();
-//                                }
-//                            }
-//                            notificationBuilder.setContentTitle("" + titleName);
-//
-//                            if (msgType == EMMessage.Type.TXT) {
-//                                try {
-//                                    int extType = newMessage.getIntAttribute(Constants.MSG_TXT_EXT_TYPE);
-//                                    if(TxtExtType.DEFAULT.getVlaue() == extType){
-//                                        TextMessageBody txtBody = (TextMessageBody) newMessage.getBody();
-//                                        String content = txtBody.getMessage();
-//                                        notificationBuilder.setContentText("" + content);
-//                                    }else{
-//                                        notificationBuilder.setContentText("[订单]");
-//                                    }
-//                                } catch (EaseMobException e) {
-//                                    e.printStackTrace();
-//                                }
-//
-//                            } else if (msgType == EMMessage.Type.IMAGE) {
-//                                notificationBuilder.setContentText("[图片]");
-//                            } else if(msgType ==  EMMessage.Type.VOICE){
-//                                notificationBuilder.setContentText("[语音]");
-//                            }
-//
-//                            //TODO：用户绑定消息进入我的联系人
-//                            notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
-//                            // 2.设置点击跳转事件
-//                            Intent intent = null;
-//                            if(bindClient){
-//                                intent = new Intent(context, ClientActivity.class);
-//                            } else {
-//                                CacheUtil.getInstance().setCurrentItem(1);
-//                                intent = new Intent(context, MainActivity.class);
-//                            }
-//                            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
-//                            notificationBuilder.setContentIntent(pendingIntent);
-//                            // 3.设置通知栏其他属性
-//                            notificationBuilder.setAutoCancel(true);
-//                            notificationBuilder.setDefaults(Notification.DEFAULT_ALL);
-//                            //4、设置手表特有属性
-//                            notificationBuilder.extend(extendWear(context, notificationBuilder, newMessage));
-//                            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-//                            notificationManager.notify(nofifyFlag, notificationBuilder.build());
-//                        } else {
-//                            MediaPlayerUtil.playNotifyVoice(context);
-//                            VibratorHelper.vibratorShark(context);
-//                        }
-//                    }
-//                } catch (EaseMobException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }
-//    }
-
     /**
      * 接收到店通知
      *
      * @param context
      * @param locPushBean
      */
-    public void showNotification(Context context, LocPushBean locPushBean) {
-        NotificationCompat.Builder notificationBuilder = null;
-        // 1.设置显示信息
-        notificationBuilder = new NotificationCompat.Builder(context);
-        String contactName = locPushBean.getUsername();
-        String locDesc = locPushBean.getLocdesc();
-        notificationBuilder.setContentTitle(contactName);
-        String welcomeMsg = "已到达"+locDesc;
+    public void showNotification(final Context context,final LocPushBean locPushBean) {
 
-        notificationBuilder.setContentText(welcomeMsg);
-        notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
+        ImageSize imageSize = new ImageSize(DisplayUtil.dip2px(context, 36),
+                DisplayUtil.dip2px(context, 36));
         String contactId = locPushBean.getUserid();
         String imageUrl  = ProtocolUtil.getAvatarUrl(contactId);
-        ImageSize imageSize = new ImageSize(DisplayUtil.dip2px(context, 36),
-                                            DisplayUtil.dip2px(context, 36));
-        Bitmap bitmap = ImageLoader.getInstance().loadImageSync(imageUrl,imageSize);
-        notificationBuilder.setLargeIcon(bitmap);
+        ImageLoader.getInstance().loadImage(imageUrl,imageSize, new ImageLoadingListener() {
+            @Override
+            public void onLoadingStarted(String imageUri, View view) {
 
-        // 2.设置点击跳转事件
-        Intent intent = new Intent(context, SplashActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
-        notificationBuilder.setContentIntent(pendingIntent);
+            }
 
-        // 3.设置通知栏其他属性
-        notificationBuilder.setAutoCancel(true);
-        notificationBuilder.setDefaults(Notification.DEFAULT_ALL);
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-        notificationManager.notify(++NOTIFY_ID, notificationBuilder.build());
+            @Override
+            public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+
+            }
+
+            @Override
+            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                NotificationCompat.Builder notificationBuilder = null;
+                // 1.设置显示信息
+                notificationBuilder = new NotificationCompat.Builder(context);
+                String contactName = locPushBean.getUsername();
+                String locDesc = locPushBean.getLocdesc();
+                notificationBuilder.setContentTitle(contactName);
+                String welcomeMsg = "已到达"+locDesc;
+                notificationBuilder.setContentText(welcomeMsg);
+                notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
+                notificationBuilder.setLargeIcon(loadedImage);
+                // 2.设置点击跳转事件
+                Intent intent = new Intent(context, SplashActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+                notificationBuilder.setContentIntent(pendingIntent);
+                // 3.设置通知栏其他属性
+                notificationBuilder.setAutoCancel(true);
+                notificationBuilder.setDefaults(Notification.DEFAULT_ALL);
+                NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+                notificationManager.notify(++NOTIFY_ID, notificationBuilder.build());
+            }
+
+            @Override
+            public void onLoadingCancelled(String imageUri, View view) {
+
+            }
+        });
     }
 
     /**
@@ -379,71 +245,108 @@ public class NotificationHelper {
      * @param clientBase
      * @param dateTime
      */
-    public void showNotification(Context context, ClientBaseBean clientBase, long dateTime) {
-
-        Intent receiver = new Intent();
-        receiver.setAction("com.zkjinshi.invite_code");
-        context.sendBroadcast(receiver);
-
-        String time = TimeUtil.getChatTime(dateTime);
-        String userName = clientBase.getUsername();
-        NotificationCompat.Builder notificationBuilder = null;
-        // 1.设置显示信息
-        notificationBuilder = new NotificationCompat.Builder(context);
-        String content = context.getString(R.string.user) + " " + userName + " 于 "+ time +
-                         context.getString(R.string.use_your_invite_code);
-        notificationBuilder.setContentTitle("邀请码通知");
-        notificationBuilder.setContentText(content);
-        notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
+    public void showNotification(final Context context, final ClientBaseBean clientBase,final long dateTime) {
 
         String fromID    = clientBase.getUserid();
         String avatarUrl = ProtocolUtil.getAvatarUrl(fromID);
-        Bitmap bitmap    = ImageLoader.getInstance().loadImageSync(avatarUrl);
-        notificationBuilder.setLargeIcon(bitmap);
+        ImageSize imageSize = new ImageSize(DisplayUtil.dip2px(context, 36),
+                DisplayUtil.dip2px(context, 36));
+        ImageLoader.getInstance().loadImage(avatarUrl, imageSize, new ImageLoadingListener() {
+            @Override
+            public void onLoadingStarted(String imageUri, View view) {
 
-        // 2.设置点击跳转事件
-        Intent intent = new Intent(context, SplashActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
-        notificationBuilder.setContentIntent(pendingIntent);
+            }
 
-        // 3.设置通知栏其他属性
-        notificationBuilder.setAutoCancel(true);
-        notificationBuilder.setDefaults(Notification.DEFAULT_ALL);
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-        notificationManager.notify(++NOTIFY_ID, notificationBuilder.build());
+            @Override
+            public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+
+            }
+
+            @Override
+            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                Intent receiver = new Intent();
+                receiver.setAction("com.zkjinshi.invite_code");
+                context.sendBroadcast(receiver);
+                String time = TimeUtil.getChatTime(dateTime);
+                String userName = clientBase.getUsername();
+                NotificationCompat.Builder notificationBuilder = null;
+                // 1.设置显示信息
+                notificationBuilder = new NotificationCompat.Builder(context);
+                String content = context.getString(R.string.user) + " " + userName + " 于 "+ time +
+                        context.getString(R.string.use_your_invite_code);
+                notificationBuilder.setContentTitle("邀请码通知");
+                notificationBuilder.setContentText(content);
+                notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
+                notificationBuilder.setLargeIcon(loadedImage);
+                // 2.设置点击跳转事件
+                Intent intent = new Intent(context, SplashActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+                notificationBuilder.setContentIntent(pendingIntent);
+                // 3.设置通知栏其他属性
+                notificationBuilder.setAutoCancel(true);
+                notificationBuilder.setDefaults(Notification.DEFAULT_ALL);
+                NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+                notificationManager.notify(++NOTIFY_ID, notificationBuilder.build());
+            }
+
+            @Override
+            public void onLoadingCancelled(String imageUri, View view) {
+
+            }
+        });
     }
 
     /**
      * 通知提示:客户退出当前账户
      * @param context
      */
-    public void showExitAccountNotification(Context context) {
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-        NotificationCompat.Builder notificationBuilder = null;
-        // 1.设置显示信息
-        notificationBuilder = new NotificationCompat.Builder(context);
-        String content = "您的账号于" + sdf.format(new Date()) + "在另一台设备登录";
-        notificationBuilder.setContentTitle("下线通知");
-        notificationBuilder.setContentText(content);
-        notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
+    public void showExitAccountNotification(final Context context) {
 
+        ImageSize imageSize = new ImageSize(DisplayUtil.dip2px(context, 36),
+                DisplayUtil.dip2px(context, 36));
         String userID    = CacheUtil.getInstance().getUserId();
         String avatarUrl = ProtocolUtil.getAvatarUrl(userID);
-        Bitmap bitmap    = ImageLoader.getInstance().loadImageSync(avatarUrl);
-        notificationBuilder.setLargeIcon(bitmap);
+        ImageLoader.getInstance().loadImage(avatarUrl, imageSize, new ImageLoadingListener() {
+            @Override
+            public void onLoadingStarted(String imageUri, View view) {
 
-        // 2.设置点击跳转事件
-        Intent intent = new Intent(context, LoginActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
-        notificationBuilder.setContentIntent(pendingIntent);
+            }
 
-        // 3.设置通知栏其他属性
-        notificationBuilder.setAutoCancel(true);
-        notificationBuilder.setDefaults(Notification.DEFAULT_ALL);
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-        notificationManager.notify(++NOTIFY_ID, notificationBuilder.build());
+            @Override
+            public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+
+            }
+
+            @Override
+            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+                NotificationCompat.Builder notificationBuilder = null;
+                // 1.设置显示信息
+                notificationBuilder = new NotificationCompat.Builder(context);
+                String content = "您的账号于" + sdf.format(new Date()) + "在另一台设备登录";
+                notificationBuilder.setContentTitle("下线通知");
+                notificationBuilder.setContentText(content);
+                notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
+                notificationBuilder.setLargeIcon(loadedImage);
+                // 2.设置点击跳转事件
+                Intent intent = new Intent(context, LoginActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+                notificationBuilder.setContentIntent(pendingIntent);
+                // 3.设置通知栏其他属性
+                notificationBuilder.setAutoCancel(true);
+                notificationBuilder.setDefaults(Notification.DEFAULT_ALL);
+                NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+                notificationManager.notify(++NOTIFY_ID, notificationBuilder.build());
+            }
+
+            @Override
+            public void onLoadingCancelled(String imageUri, View view) {
+
+            }
+        });
+
     }
 
     private NotificationCompat.WearableExtender extendWear(Context context, NotificationCompat.Builder builder, EMMessage message) {
@@ -496,35 +399,5 @@ public class NotificationHelper {
                 .build();
         wearableExtender.addAction(replyAction);
         return wearableExtender;
-    }
-
-    /**
-     * 展示销售已绑定提示
-     * @param context
-     */
-    public void showSalerBindedMessage(Context context, String userID, String userName) {
-
-        NotificationCompat.Builder notificationBuilder = null;
-        // 1.设置显示信息
-        notificationBuilder = new NotificationCompat.Builder(context);
-        String content = "客户" + userName + "已经添加您为联系人";
-        notificationBuilder.setContentTitle(userName);
-        notificationBuilder.setContentText(content);
-        notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
-        String avatarUrl = ProtocolUtil.getAvatarUrl(userID);
-        Bitmap bitmap    = ImageLoader.getInstance().loadImageSync(avatarUrl);
-        notificationBuilder.setLargeIcon(bitmap);
-
-        // 2.设置点击跳转事件
-        Intent intent = new Intent(context, ClientActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
-        notificationBuilder.setContentIntent(pendingIntent);
-
-        // 3.设置通知栏其他属性
-        notificationBuilder.setAutoCancel(true);
-        notificationBuilder.setDefaults(Notification.DEFAULT_ALL);
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-        notificationManager.notify(++NOTIFY_ID, notificationBuilder.build());
     }
 }
