@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.app.RemoteInput;
@@ -220,6 +221,9 @@ public class NotificationHelper {
                 notificationBuilder.setContentText(welcomeMsg);
                 notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
                 notificationBuilder.setLargeIcon(loadedImage);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    notificationBuilder.setStyle(new NotificationCompat.BigPictureStyle().bigPicture(loadedImage));
+                }
                 // 2.设置点击跳转事件
                 Intent intent = new Intent(context, SplashActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
