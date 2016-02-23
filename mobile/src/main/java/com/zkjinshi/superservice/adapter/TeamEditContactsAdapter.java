@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -17,6 +18,7 @@ import android.widget.RelativeLayout;
 import android.widget.SectionIndexer;
 import android.widget.TextView;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
@@ -50,7 +52,6 @@ public class TeamEditContactsAdapter extends RecyclerView.Adapter<RecyclerView.V
 
     private List<ShopEmployeeVo>  mList;
     private Context               mContext;
-    private DisplayImageOptions   options;
     private Map<Integer, Boolean> mCheckedMap;
     private RecyclerItemClickListener mRecyclerItemClickListener;
 
@@ -59,13 +60,7 @@ public class TeamEditContactsAdapter extends RecyclerView.Adapter<RecyclerView.V
         this.mContext = mContext;
         this.mList    = list;
         this.mCheckedMap = new HashMap<>();
-        this.options  = new DisplayImageOptions.Builder()
-                .showImageOnLoading(null)
-                .showImageForEmptyUri(null)// 设置图片Uri为空或是错误的时候显示的图片
-                .showImageOnFail(null)// 设置图片加载或解码过程中发生错误显示的图片
-                .cacheInMemory(true) // 设置下载的图片是否缓存在内存中
-                .cacheOnDisk(true) // 设置下载的图片是否缓存在SD卡中
-                .build();
+
     }
 
     /**
@@ -120,31 +115,10 @@ public class TeamEditContactsAdapter extends RecyclerView.Adapter<RecyclerView.V
 
         //根据url显示图片
         String avatarUrl = ProtocolUtil.getAvatarUrl(employeeVo.getEmpid());
-        ImageLoader.getInstance().displayImage(avatarUrl, ((ContactViewHolder) holder).civContactAvatar, options, new ImageLoadingListener() {
-            @Override
-            public void onLoadingStarted(String imageUri, View view) {
-                ((ContactViewHolder) holder).civContactAvatar.setBackgroundColor(Color.TRANSPARENT);
-                ((ContactViewHolder) holder).tvContactAvatar.setBackgroundResource(RandomDrawbleUtil.getRandomDrawable());
-            }
+        ((ContactViewHolder) holder).civContactAvatar.setImageURI( Uri.parse(avatarUrl));
+        ((ContactViewHolder) holder).tvContactAvatar.setBackgroundResource(employeeVo.getBg_color_res());
+        ((ContactViewHolder) holder).tvContactAvatar.setVisibility(View.VISIBLE);
 
-            @Override
-            public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-                ((ContactViewHolder) holder).civContactAvatar.setBackgroundColor(Color.TRANSPARENT);
-                ((ContactViewHolder) holder).tvContactAvatar.setBackgroundResource(RandomDrawbleUtil.getRandomDrawable());
-            }
-
-            @Override
-            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-            }
-
-            @Override
-            public void onLoadingCancelled(String imageUri, View view) {
-                ((ContactViewHolder) holder).civContactAvatar.setBackgroundColor(Color.TRANSPARENT);
-                ((ContactViewHolder) holder).tvContactAvatar.setBackgroundResource(RandomDrawbleUtil.getRandomDrawable());
-            }
-        });
-
-//        ((ContactViewHolder)holder).tvContactOnLine.setVisibility(View.INVISIBLE);
 
         //set the checkbox
         ((ContactViewHolder) holder).cbCheck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -204,7 +178,7 @@ public class TeamEditContactsAdapter extends RecyclerView.Adapter<RecyclerView.V
     static class ContactViewHolder extends RecyclerView.ViewHolder{
 
         public TextView         tvLetter;
-        public CircleImageView  civContactAvatar;
+        public SimpleDraweeView civContactAvatar;
         public TextView         tvContactAvatar;
         public TextView         tvContactName;
 //        public RelativeLayout   rlContactStatus;
@@ -218,7 +192,7 @@ public class TeamEditContactsAdapter extends RecyclerView.Adapter<RecyclerView.V
         public ContactViewHolder(View view, RecyclerItemClickListener itemClickListener) {
             super(view);
             tvLetter         = (TextView) view.findViewById(R.id.catalog);
-            civContactAvatar = (CircleImageView) view.findViewById(R.id.civ_contact_avatar);
+            civContactAvatar = (SimpleDraweeView) view.findViewById(R.id.civ_contact_avatar);
             tvContactAvatar  = (TextView) view.findViewById(R.id.tv_contact_avatar);
             tvContactName    = (TextView) view.findViewById(R.id.tv_contact_name);
 //            rlContactStatus  = (RelativeLayout) view.findViewById(R.id.rl_contact_status);

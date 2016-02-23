@@ -3,6 +3,7 @@ package com.zkjinshi.superservice.adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -14,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.zkjinshi.base.util.DialogUtil;
@@ -43,7 +45,6 @@ public class LocNotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     private Context context;
 
     private ArrayList<NoticeVo> noticeList;
-    private DisplayImageOptions options;
     private RecyclerItemClickListener itemClickListener;
 
     public void setNoticeList(ArrayList<NoticeVo> noticeList) {
@@ -59,13 +60,7 @@ public class LocNotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
         this.context = activity;
         this.setNoticeList(comingList);
-        this.options = new DisplayImageOptions.Builder()
-                .showImageOnLoading(R.mipmap.ic_launcher)// 设置图片下载期间显示的图片
-                .showImageForEmptyUri(R.mipmap.ic_launcher)// 设置图片Uri为空或是错误的时候显示的图片
-                .showImageOnFail(R.mipmap.ic_launcher)// 设置图片加载或解码过程中发生错误显示的图片
-                .cacheInMemory(true) // 设置下载的图片是否缓存在内存中
-                .cacheOnDisk(true) // 设置下载的图片是否缓存在SD卡中
-                .build();
+
     }
 
     @Override
@@ -78,7 +73,7 @@ public class LocNotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
 
-        holder.setIsRecyclable(false);
+       // holder.setIsRecyclable(false);
 
         NoticeVo noticeVo = noticeList.get(position);
         final String userId   = noticeVo.getUserId();
@@ -87,8 +82,7 @@ public class LocNotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         //用户头像 和 姓名
         String imageUrl =  ProtocolUtil.getAvatarUrl(userId);
         if(!TextUtils.isEmpty(imageUrl)){
-            ImageLoader.getInstance().displayImage(imageUrl, ((NoticeViewHolder) holder).civClientAvatar, options);
-
+            ((NoticeViewHolder) holder).civClientAvatar.setImageURI(Uri.parse(imageUrl));
             if(!TextUtils.isEmpty(userName)){
                 ((NoticeViewHolder) holder).tvClientName.setText(userName);
             } else {
@@ -187,7 +181,7 @@ public class LocNotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     public class NoticeViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         View            upCutLineView;
-        CircleImageView civClientAvatar;
+        SimpleDraweeView civClientAvatar;
         TextView        tvClientName;
         TextView        tvLocationInfo;
         TextView        tvOrderInfo;
@@ -200,7 +194,7 @@ public class LocNotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         public NoticeViewHolder(View view) {
             super(view);
             upCutLineView   = view.findViewById(R.id.time_axis_cut_line_up);
-            civClientAvatar = (CircleImageView) view.findViewById(R.id.civ_client_avatar);
+            civClientAvatar = (SimpleDraweeView) view.findViewById(R.id.civ_client_avatar);
             tvClientName    = (TextView)  view.findViewById(R.id.tv_client_name);
             tvLocationInfo  = (TextView)  view.findViewById(R.id.tv_location_info);
             tvOrderInfo     = (TextView)  view.findViewById(R.id.tv_order_info);

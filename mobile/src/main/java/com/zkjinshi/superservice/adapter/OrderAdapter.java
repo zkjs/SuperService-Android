@@ -3,6 +3,7 @@ package com.zkjinshi.superservice.adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
@@ -13,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.zkjinshi.base.util.DialogUtil;
@@ -42,7 +44,6 @@ public class OrderAdapter extends RecyclerView.Adapter {
 
     private static final String TAG = OrderAdapter.class.getSimpleName();
 
-    private DisplayImageOptions options;
 
     private long lastTimeStamp = 0; //最后一条的时间戳
     private int pagedata = 5;     //每页多少条 默认10条
@@ -68,13 +69,6 @@ public class OrderAdapter extends RecyclerView.Adapter {
 
     public OrderAdapter(ArrayList<OrderBean> dataList) {
         this.dataList = dataList;
-        this.options = new DisplayImageOptions.Builder()
-                .showImageOnLoading(R.mipmap.ic_launcher)// 设置图片下载期间显示的图片
-                .showImageForEmptyUri(R.mipmap.ic_launcher)// 设置图片Uri为空或是错误的时候显示的图片
-                .showImageOnFail(R.mipmap.ic_launcher)// 设置图片加载或解码过程中发生错误显示的图片
-                .cacheInMemory(true) // 设置下载的图片是否缓存在内存中
-                .cacheOnDisk(true) // 设置下载的图片是否缓存在SD卡中
-                .build();
     }
 
     public ArrayList<OrderBean> getDataList() {
@@ -118,7 +112,7 @@ public class OrderAdapter extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
 
-        viewHolder.setIsRecyclable(false);
+        //viewHolder.setIsRecyclable(false);
         
         OrderViewHolder holder = (OrderViewHolder)viewHolder;
         holder.position = position;
@@ -192,8 +186,8 @@ public class OrderAdapter extends RecyclerView.Adapter {
 //            payStatusStr = "已挂账";
 //        }
 //        holder.payStatus.setText(payStatusStr);
-
-        ImageLoader.getInstance().displayImage(ProtocolUtil.getAvatarUrl(orderBean.getUserid()), holder.avatar, this.options);
+        String path = ProtocolUtil.getAvatarUrl(orderBean.getUserid());
+        holder.avatar.setImageURI(Uri.parse(path));
         String timeStr = TimeUtil.getChatTime(orderBean.getCreated());
         holder.time.setText(timeStr);
 
@@ -221,7 +215,7 @@ public class OrderAdapter extends RecyclerView.Adapter {
         public int position;
         public View upCutLineView;
         public CircleStatusView leftIcon;
-        public CircleImageView avatar;
+        public SimpleDraweeView avatar;
         public TextView  name;
         public TextView  order;
         public TextView  price;
@@ -237,7 +231,7 @@ public class OrderAdapter extends RecyclerView.Adapter {
 
             upCutLineView = itemView.findViewById(R.id.time_axis_cut_line_up);
             leftIcon = (CircleStatusView)itemView.findViewById(R.id.civ_left_icon);
-            avatar = (CircleImageView)itemView.findViewById(R.id.civ_avatar);
+            avatar = (SimpleDraweeView)itemView.findViewById(R.id.civ_avatar);
             name = (TextView )itemView.findViewById(R.id.tv_name);
             order = (TextView )itemView.findViewById(R.id.tv_order);
             price = (TextView )itemView.findViewById(R.id.tv_price);

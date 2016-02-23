@@ -1,6 +1,7 @@
 package com.zkjinshi.superservice.adapter;
 
 import android.app.Activity;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -8,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.zkjinshi.superservice.R;
@@ -29,7 +31,7 @@ public class InviteCodeUserAdapter extends RecyclerView.Adapter<InviteCodeUserAd
 
     private Activity             mActivity;
     private List<InviteCodeUser> mDatas;
-    private DisplayImageOptions  mOptions;
+
     private RecyclerItemClickListener itemClickListener;
 
     public InviteCodeUserAdapter(Activity activity, List<InviteCodeUser> inviteCodes){
@@ -40,13 +42,7 @@ public class InviteCodeUserAdapter extends RecyclerView.Adapter<InviteCodeUserAd
         }else {
             this.mDatas = inviteCodes;
         }
-        this.mOptions  = new DisplayImageOptions.Builder()
-                .showImageOnLoading(R.mipmap.ic_launcher)
-                .showImageForEmptyUri(R.mipmap.ic_launcher)
-                .showImageOnFail(R.mipmap.ic_launcher)
-                .cacheInMemory(true)
-                .cacheOnDisk(true)
-                .build();
+
     }
 
     @Override
@@ -64,8 +60,7 @@ public class InviteCodeUserAdapter extends RecyclerView.Adapter<InviteCodeUserAd
         String userName   = inviteCodeUser.getUsername();
         String userPhone  = inviteCodeUser.getPhone();
 
-        ImageLoader.getInstance().displayImage(ProtocolUtil.getAvatarUrl(userID),
-                                               holder.civContactAvatar, mOptions);
+        holder.civContactAvatar.setImageURI(Uri.parse(ProtocolUtil.getAvatarUrl(userID)));
 
         if (!TextUtils.isEmpty(inviteCode)) {
             holder.tvInviteCode.setText(inviteCode);
@@ -93,16 +88,14 @@ public class InviteCodeUserAdapter extends RecyclerView.Adapter<InviteCodeUserAd
         TextView tvInviteCode;
         TextView tvContactName;
         TextView tvContactPhone;
-        TextView tvContactAvatar;
-        CircleImageView civContactAvatar;
+        SimpleDraweeView civContactAvatar;
 
         public ViewHolder(View itemView) {
             super(itemView);
             tvInviteCode     = (TextView) itemView.findViewById(R.id.tv_invite_code);
             tvContactName    = (TextView) itemView.findViewById(R.id.tv_contact_name);
             tvContactPhone   = (TextView) itemView.findViewById(R.id.tv_contact_phone);
-            tvContactAvatar  = (TextView) itemView.findViewById(R.id.tv_contact_avatar);
-            civContactAvatar = (CircleImageView) itemView.findViewById(R.id.civ_contact_avatar);
+            civContactAvatar = (SimpleDraweeView) itemView.findViewById(R.id.civ_contact_avatar);
             itemView.setOnClickListener(this);
         }
 

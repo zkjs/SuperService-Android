@@ -4,6 +4,9 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.Animatable;
+import android.net.Uri;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
@@ -13,6 +16,13 @@ import android.widget.RelativeLayout;
 import android.widget.SectionIndexer;
 import android.widget.TextView;
 
+import com.facebook.common.logging.FLog;
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.controller.BaseControllerListener;
+import com.facebook.drawee.controller.ControllerListener;
+import com.facebook.drawee.interfaces.DraweeController;
+import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.imagepipeline.image.ImageInfo;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
@@ -38,17 +48,11 @@ import java.util.List;
  */
 public class TeamContactsAdapter extends ServiceBaseAdapter<ShopEmployeeVo> implements SectionIndexer {
 
-    private DisplayImageOptions  options;
+
 
     public TeamContactsAdapter(Activity activity, List<ShopEmployeeVo> datas) {
         super(activity, datas);
-        this.options = new DisplayImageOptions.Builder()
-                .showImageOnLoading(null)
-                .showImageForEmptyUri(null)// 设置图片Uri为空或是错误的时候显示的图片
-                .showImageOnFail(null)// 设置图片加载或解码过程中发生错误显示的图片
-                .cacheInMemory(true) // 设置下载的图片是否缓存在内存中
-                .cacheOnDisk(true) // 设置下载的图片是否缓存在SD卡中
-                .build();
+
     }
 
     @Override
@@ -59,7 +63,7 @@ public class TeamContactsAdapter extends ServiceBaseAdapter<ShopEmployeeVo> impl
             convertView = View.inflate(mActivity, R.layout.item_team_contact, null);
             holder.tvLetter          = (TextView) convertView.findViewById(R.id.catalog);
             holder.flContactAvatar   = (FrameLayout) convertView.findViewById(R.id.fl_contact_avatar);
-            holder.civContactAvatar  = (CircleImageView) convertView.findViewById(R.id.civ_contact_avatar);
+            holder.civContactAvatar  = (SimpleDraweeView) convertView.findViewById(R.id.civ_contact_avatar);
             holder.tvContactAvatar   = (TextView) convertView.findViewById(R.id.tv_contact_avatar);
             holder.tvContactName     = (TextView) convertView.findViewById(R.id.tv_contact_name);
             holder.rlContactOnStatus = (RelativeLayout) convertView.findViewById(R.id.rl_contact_on_status);
@@ -71,9 +75,6 @@ public class TeamContactsAdapter extends ServiceBaseAdapter<ShopEmployeeVo> impl
         //根据position获取分类的首字母的Char ascii值
         final ShopEmployeeVo shopEmployeeVo = mDatas.get(position);
         int   section = getSectionForPosition(position);
-
-        final TextView tvContactAvatar = holder.tvContactAvatar;
-        final CircleImageView civContactAvatar = holder.civContactAvatar;
 
         /**  显示普通商家成员信息  */
         String deptName = shopEmployeeVo.getDept_name();
@@ -128,34 +129,7 @@ public class TeamContactsAdapter extends ServiceBaseAdapter<ShopEmployeeVo> impl
         });
 
         String empAvatarUrl = ProtocolUtil.getAvatarUrl(empID);
-        ImageLoader.getInstance().displayImage(
-            empAvatarUrl,
-            holder.civContactAvatar,
-            options,
-            new ImageLoadingListener() {
-                @Override
-                public void onLoadingStarted(String imageUri, View view) {
-                    tvContactAvatar.setBackgroundResource(shopEmployeeVo.getBg_color_res());
-                    civContactAvatar.setBackgroundColor(Color.TRANSPARENT);
-                }
-
-                @Override
-                public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-                    civContactAvatar.setVisibility(View.INVISIBLE);
-                    tvContactAvatar.setBackgroundResource(shopEmployeeVo.getBg_color_res());
-                }
-
-                @Override
-                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                }
-
-                @Override
-                public void onLoadingCancelled(String imageUri, View view) {
-                    civContactAvatar.setBackgroundColor(Color.TRANSPARENT);
-                    tvContactAvatar.setBackgroundResource(shopEmployeeVo.getBg_color_res());
-                }
-            }
-        );
+        holder.civContactAvatar.setImageURI( Uri.parse(empAvatarUrl));
 
         if(!TextUtils.isEmpty(empName)){
             if("?".equals(empName.trim().substring(0, 1))) {
@@ -164,6 +138,8 @@ public class TeamContactsAdapter extends ServiceBaseAdapter<ShopEmployeeVo> impl
                 holder.tvContactName.setText(empName);
             }
         }
+        holder.tvContactAvatar.setBackgroundResource(shopEmployeeVo.getBg_color_res());
+        holder.tvContactAvatar.setVisibility(View.VISIBLE);
         holder.tvContactOnLine.setVisibility(View.INVISIBLE);
         return convertView;
     }
@@ -172,7 +148,7 @@ public class TeamContactsAdapter extends ServiceBaseAdapter<ShopEmployeeVo> impl
 
         public TextView         tvLetter;
         public FrameLayout      flContactAvatar;
-        public CircleImageView  civContactAvatar;
+        public SimpleDraweeView  civContactAvatar;
         public TextView         tvContactAvatar;
         public TextView         tvContactName;
         public RelativeLayout   rlContactOnStatus;

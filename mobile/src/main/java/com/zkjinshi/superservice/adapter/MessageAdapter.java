@@ -1,6 +1,7 @@
 package com.zkjinshi.superservice.adapter;
 
 import android.content.Context;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -16,6 +17,7 @@ import com.easemob.chat.EMGroupManager;
 import com.easemob.chat.EMMessage;
 import com.easemob.chat.TextMessageBody;
 import com.easemob.exceptions.EaseMobException;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.zkjinshi.base.util.TimeUtil;
@@ -43,7 +45,6 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private ArrayList<EMConversation> conversationList;
     private Context context;
     private LayoutInflater inflater;
-    private DisplayImageOptions options;
     private RecyclerItemClickListener itemClickListener;
 
     public void setConversationList(ArrayList<EMConversation> conversationList) {
@@ -59,13 +60,6 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         this.context = context;
         this.inflater = LayoutInflater.from(context);
         this.setConversationList(conversationList);
-        this.options = new DisplayImageOptions.Builder()
-                .showImageOnLoading(R.mipmap.ic_launcher)
-                .showImageForEmptyUri(R.mipmap.ic_launcher)
-                .showImageOnFail(R.mipmap.ic_launcher)
-                .cacheInMemory(true) // 设置下载的图片是否缓存在内存中
-                .cacheOnDisk(true) // 设置下载的图片是否缓存在SD卡中
-                .build();
     }
 
     @Override
@@ -78,7 +72,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
 
-        holder.setIsRecyclable(false);
+        //holder.setIsRecyclable(false);
 
         EMConversation conversation = conversationList.get(position);
         EMConversation.EMConversationType chatType = conversation.getType();
@@ -113,13 +107,13 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             if(chatType == EMConversation.EMConversationType.Chat){
                 if(!TextUtils.isEmpty(userId)){
                     String userIconUrl = ProtocolUtil.getAvatarUrl(userId);
-                    ImageLoader.getInstance().displayImage(userIconUrl,((ViewHolder)holder).photoImageView, options);
+                    ((ViewHolder)holder).photoImageView.setImageURI(Uri.parse(userIconUrl));
                 }else {
-                    ((ViewHolder)holder).photoImageView.setImageResource(R.mipmap.ic_launcher);
+                    ((ViewHolder)holder).photoImageView.setImageResource(R.mipmap.logo_round);
                 }
 
             }else {
-                ((ViewHolder)holder).photoImageView.setImageResource(R.mipmap.ic_launcher);
+                ((ViewHolder)holder).photoImageView.setImageResource(R.mipmap.logo_round);
             }
 
             ((ViewHolder)holder).sendTimeTv.setText(TimeUtil.getChatTime(sendTime));
@@ -165,12 +159,12 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
-        private CircleImageView photoImageView;
+        private SimpleDraweeView photoImageView;
         private TextView titleTv,contentTv,sendTimeTv,noticeCountTv;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            photoImageView = (CircleImageView) itemView.findViewById(R.id.message_notice_photo_iv);
+            photoImageView = (SimpleDraweeView) itemView.findViewById(R.id.message_notice_photo_iv);
             titleTv = (TextView) itemView.findViewById(R.id.message_notice_title);
             contentTv = (TextView) itemView.findViewById(R.id.message_notice_content);
             sendTimeTv = (TextView) itemView.findViewById(R.id.message_notice_send_time);

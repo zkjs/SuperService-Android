@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal">
@@ -53,14 +53,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
-            <com.zkjinshi.superservice.view.CircleImageView
+            <com.facebook.drawee.view.SimpleDraweeView
+                android:id="@+id/civ_avatar"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_centerInParent="true"
-                android:scaleType="centerInside"
-                android:background="@mipmap/logo_round"
-                android:id="@+id/civ_avatar">
-            </com.zkjinshi.superservice.view.CircleImageView>
+                fresco:actualImageScaleType="centerInside"
+                fresco:placeholderImage="@mipmap/logo_round"
+                fresco:placeholderImageScaleType="centerInside"
+                fresco:roundAsCircle="true"
+                fresco:roundedCornerRadius="0dp"/>
 
         </RelativeLayout>
 
