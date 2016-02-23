@@ -53,8 +53,8 @@ public class ImgAsyncTask extends AsyncTask<Void,Void,Bitmap> {
 
         File file = new File(photoFilePath);
         if (file.exists()) {
-            int height = 190;
-            int width = 270;
+            int height = 190*3;
+            int width = 270*3;
             Bitmap displayBitmap =  ImageUtil.getBitmapFromFile(file, width, height);
             savePath = FileUtil.getInstance().getImageTempPath() + System.currentTimeMillis() + ".jpg";
             saveBitmap2JPGE(displayBitmap, savePath);
@@ -68,7 +68,7 @@ public class ImgAsyncTask extends AsyncTask<Void,Void,Bitmap> {
         //doInBackground返回时触发，换句话说，就是doInBackground执行完后触发
         //这里的displayBitmap就是上面doInBackground执行后的返回值
         DialogUtil.getInstance().cancelProgressDialog();
-        this.imageView.setImageBitmap(displayBitmap);
+        //this.imageView.setImageBitmap(displayBitmap);
         callback.getNewPath(savePath);
         super.onPostExecute(displayBitmap);
     }

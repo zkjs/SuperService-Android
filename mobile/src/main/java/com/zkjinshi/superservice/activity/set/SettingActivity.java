@@ -3,6 +3,7 @@ package com.zkjinshi.superservice.activity.set;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -11,6 +12,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.TextView;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.gson.Gson;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -51,10 +53,10 @@ public class SettingActivity extends Activity  {
 
     private final static String TAG = SettingActivity.class.getSimpleName();
 
-    public static int REQUEST_IMAGE = 1;
+
 
     private TextView usernameTv;
-    private CircleImageView iconCiv;
+    private SimpleDraweeView iconCiv;
     private ItemUserSettingView shopNameIusv;
     private ItemUserSettingView zoneIusv;
     private ItemUserSettingView phoneIusv;
@@ -62,7 +64,6 @@ public class SettingActivity extends Activity  {
     private ItemUserSettingView jobIusv;
 
     private UserVo userVo;
-    private DisplayImageOptions mOptions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,7 +87,7 @@ public class SettingActivity extends Activity  {
 
     private void initView() {
         usernameTv = (TextView)findViewById(R.id.username_tv);
-        iconCiv = (CircleImageView)findViewById(R.id.civ_user_icon);
+        iconCiv = (SimpleDraweeView)findViewById(R.id.civ_user_icon);
         shopNameIusv = (ItemUserSettingView)findViewById(R.id.shopname_iusv);
         zoneIusv = (ItemUserSettingView)findViewById(R.id.zone_iusv);
         phoneIusv = (ItemUserSettingView)findViewById(R.id.phone_iusv);
@@ -95,10 +96,7 @@ public class SettingActivity extends Activity  {
 
         addRightIcon(zoneIusv);
 
-        mOptions = new DisplayImageOptions.Builder()
-                .cacheInMemory(true)
-                .cacheOnDisk(true)
-                .build();
+
     }
 
     private void initData() {
@@ -118,7 +116,7 @@ public class SettingActivity extends Activity  {
         }
 
         String avatarUrl = ProtocolUtil.getAvatarUrl(CacheUtil.getInstance().getUserId());
-        ImageLoader.getInstance().displayImage(avatarUrl, iconCiv, mOptions);
+        iconCiv.setImageURI(Uri.parse(avatarUrl));
     }
 
     private void initListener() {

@@ -12,6 +12,7 @@ import com.easemob.chat.EMChat;
 import com.easemob.chat.EMChatManager;
 import com.easemob.chat.EMChatOptions;
 import com.easemob.chat.EMGroupManager;
+import com.facebook.drawee.backends.pipeline.Fresco;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -66,6 +67,7 @@ public class ServiceApplication extends Application{
         initFace();
         initImageLoader();
         initTest();
+        Fresco.initialize(this);
     }
 
     @Override
