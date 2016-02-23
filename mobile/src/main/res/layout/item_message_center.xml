@@ -1,17 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical" android:layout_width="match_parent"
     android:background="@android:color/white"
     android:layout_height="60dp">
 
-    <com.zkjinshi.superservice.view.CircleImageView
+    <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/message_notice_photo_iv"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_centerVertical="true"
         android:layout_marginLeft="8dp"
-        android:background="@mipmap/img_hotel_zhanwei"
-        android:scaleType="fitXY"/>
+        fresco:actualImageScaleType="centerInside"
+        fresco:placeholderImage="@mipmap/logo_round"
+        fresco:placeholderImageScaleType="centerInside"
+        fresco:roundAsCircle="true"
+        fresco:roundedCornerRadius="0dp"/>
     
     <RelativeLayout
         android:id="@+id/message_notice_center_layout"
@@ -40,7 +44,7 @@
             android:textSize="14sp"
             android:singleLine="true"
             android:ellipsize="end"
-            android:text="现在还有双人床吗"
+            android:text=""
             android:layout_height="wrap_content" />
     </RelativeLayout>
 

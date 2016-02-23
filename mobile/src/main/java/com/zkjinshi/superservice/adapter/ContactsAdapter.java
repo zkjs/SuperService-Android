@@ -15,6 +15,7 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.bean.ZoneBean;
 import com.zkjinshi.superservice.utils.RandomDrawbleUtil;
@@ -81,7 +82,7 @@ public class ContactsAdapter extends BaseAdapter{
         if (convertView == null) {
             convertView = mInflater.inflate(R.layout.item_employee_contact, null);
             holder = new ViewHolder();
-            holder.avatar = (CircleImageView)convertView.findViewById(R.id.avatar_civ);
+            holder.avatar = (SimpleDraweeView)convertView.findViewById(R.id.avatar_civ);
             holder.avatarText = (TextView)convertView.findViewById(R.id.avatar_tv);
             holder.name = (TextView)convertView.findViewById(R.id.tv_name);
             holder.check      = (ImageView)convertView.findViewById(R.id.iv_check);
@@ -92,13 +93,10 @@ public class ContactsAdapter extends BaseAdapter{
         }
 
         ContactLocalVo contactLocalVo = contactLocalList.get(position);
-        Bitmap contactPhoto = null;
         if(contactLocalVo.getPhotoid() > 0){
             holder.avatarText.setVisibility(View.GONE);
             Uri uri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, contactLocalVo.getContactid());
-            InputStream input = ContactsContract.Contacts.openContactPhotoInputStream(resolver, uri);
-            contactPhoto = BitmapFactory.decodeStream(input);
-            holder.avatar.setImageBitmap(contactPhoto);
+            holder.avatar.setImageURI(uri);
         }else{
             holder.avatarText.setVisibility(View.VISIBLE);
             String nameIndex = contactLocalVo.getContactName().substring(0,1);
@@ -132,7 +130,7 @@ public class ContactsAdapter extends BaseAdapter{
 
     /*存放控件*/
     public final class ViewHolder{
-        public CircleImageView avatar;
+        public SimpleDraweeView avatar;
         public TextView avatarText;
         public TextView  name;
         public TextView  phone;
