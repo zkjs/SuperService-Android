@@ -17,13 +17,6 @@ public class BookOrderBean implements Serializable {
     public final static String TRADE_CLOSED     = "trade_closed";   //  交易关闭
     public final static String FALSE            = "false";          //  未支付
 
-    public final static int ORDER_UNCONFIRMED   = 0; //  默认0 未确认
-    public final static int ORDER_CANCELLED     = 1; //  1 订单已取消
-    public final static int ORDER_CONFIRMED     = 2; //  2 已确认订单
-    public final static int ORDER_FINISHED      = 3; //  3 已经完成的订单
-    public final static int ORDER_USING         = 4; //  4 正在入住中
-    public final static int ORDER_DELETED       = 5; //  5 已删除订单
-
     private String id;//用户id
     private String reservation_no;//预订单号
     private String userid;//app用户ID

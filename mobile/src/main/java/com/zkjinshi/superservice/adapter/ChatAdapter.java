@@ -7,7 +7,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.AnimationDrawable;
 import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
 import android.text.Spannable;
@@ -35,7 +34,6 @@ import com.easemob.chat.ImageMessageBody;
 import com.easemob.chat.TextMessageBody;
 import com.easemob.chat.VoiceMessageBody;
 import com.easemob.exceptions.EaseMobException;
-import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -90,7 +88,7 @@ public class ChatAdapter extends BaseAdapter {
     private static final int TYPE_RECV_ITEM = 0; // 接收
     private static final int TYPE_SEND_ITEM = 1; // 发送
 
-   DisplayImageOptions  imageOptions, cardOptions; // DisplayImageOptions是用于设置图片显示的类
+    DisplayImageOptions options, imageOptions, cardOptions; // DisplayImageOptions是用于设置图片显示的类
     private Context context;
     private LayoutInflater inflater;
     private List<EMMessage> messageList;
@@ -107,7 +105,11 @@ public class ChatAdapter extends BaseAdapter {
         this.context = context;
         inflater = LayoutInflater.from(context);
         this.setMessageList(messageList);
-
+        options = new DisplayImageOptions.Builder()
+                .showImageOnLoading(R.mipmap.ic_launcher)
+                .cacheInMemory(true)
+                .cacheOnDisk(true)
+                .build();
         imageOptions = new DisplayImageOptions.Builder()
                 .showImageOnLoading(R.mipmap.url_image_loading)
                 .cacheInMemory(true)
@@ -186,7 +188,7 @@ public class ChatAdapter extends BaseAdapter {
                     convertView = inflater.inflate(R.layout.dataline_recv_item, parent, false);
                     rvh = new RecvViewHolder();
                     setViewHolder(rvh, convertView);
-                    rvh.name = (TextView) convertView.findViewById(R.id.name);
+//                    rvh.name = (TextView) convertView.findViewById(R.id.name);
                     convertView.setTag(rvh);
                     break;
 
@@ -195,7 +197,7 @@ public class ChatAdapter extends BaseAdapter {
                             parent, false);
                     svh = new SendViewHolder();
                     setViewHolder(svh, convertView);
-                    svh.name = (TextView) convertView.findViewById(R.id.name);
+//                    svh.name = (TextView) convertView.findViewById(R.id.name);
                     svh.progressBar = (ProgressBar) convertView
                             .findViewById(R.id.sendtextprogressbar);
                     svh.errIconIv = (ImageView) convertView
@@ -214,25 +216,27 @@ public class ChatAdapter extends BaseAdapter {
                     break;
             }
         }
-        String userName = message.getFrom();
-        try {
-            userName = message.getStringAttribute("fromName");
-        } catch (EaseMobException e) {
-            e.printStackTrace();
-        }
+
+//        String userName = message.getFrom();
+//        try {
+//            userName = message.getStringAttribute("fromName");
+//        } catch (EaseMobException e) {
+//            e.printStackTrace();
+//        }
+
         switch (itemType) {
             case TYPE_RECV_ITEM: // 别人发送的布局
                 setViewValues(rvh, position, true);
-                if (!TextUtils.isEmpty(userName)) {
-                    rvh.name.setText(userName + "：");
-                    rvh.name.setVisibility(View.VISIBLE);
-                }
+//                if (!TextUtils.isEmpty(userName)) {
+//                    rvh.name.setText(userName + "：");
+//                    rvh.name.setVisibility(View.VISIBLE);
+//                }
                 break;
 
             case TYPE_SEND_ITEM: // 自己发送的布局
                 setViewValues(svh, position, false);
-                svh.name.setText("我：");
-                svh.name.setVisibility(View.VISIBLE);
+//                svh.name.setText("我：");
+//                svh.name.setVisibility(View.VISIBLE);
                 EMMessage.Status sendStatus = message.status;
                 if (EMMessage.Status.INPROGRESS.equals(sendStatus)) { // 正在发送
                     svh.progressBar.setVisibility(View.VISIBLE);
@@ -264,7 +268,7 @@ public class ChatAdapter extends BaseAdapter {
      */
     private void setViewHolder(ViewHolder vh, View convertView) {
         vh.contentLayout = (LinearLayout) convertView.findViewById(R.id.content_layout);
-        vh.head = (SimpleDraweeView) convertView.findViewById(R.id.icon);
+        vh.head = (CircleImageView) convertView.findViewById(R.id.icon);
         vh.date = (TextView) convertView.findViewById(R.id.datetime);
         vh.msg = (TextView) convertView.findViewById(R.id.message);
         vh.img = (ImageView) convertView.findViewById(R.id.image);
@@ -272,8 +276,10 @@ public class ChatAdapter extends BaseAdapter {
         vh.time = (TextView) convertView.findViewById(R.id.tv_time);
         vh.selectCb = (CheckBox) convertView.findViewById(R.id.cb_select);
         vh.cardLayout = (LinearLayout) convertView.findViewById(R.id.card_layout);
+//        vh.contentTip = (TextView) convertView.findViewById(R.id.msg_content_tips);
+        vh.orderType = (TextView) convertView.findViewById(R.id.msg_order_type);
         vh.orderContent = (TextView) convertView.findViewById(R.id.msg_order_content);
-        vh.hotelImage = (ImageView) convertView.findViewById(R.id.msg_hotel_image);
+//        vh.hotelImage = (ImageView) convertView.findViewById(R.id.msg_hotel_image);
     }
 
     /**
@@ -297,69 +303,14 @@ public class ChatAdapter extends BaseAdapter {
         boolean isShowDate = (message.getMsgTime() - lastSendDate) > 5 * 60 * 1000;
         vh.date.setVisibility(isShowDate ? View.VISIBLE : View.GONE);
         String userId = message.getFrom();
-        vh.head.setImageURI(Uri.parse(ProtocolUtil.getAvatarUrl(userId)));
+        ImageLoader.getInstance().displayImage(ProtocolUtil.getAvatarUrl(userId), vh.head, options);
         EMMessage.Type mimeType = message.getType();
-        if (mimeType.equals(EMMessage.Type.TXT)) {// 卡片类型消息
+        if (mimeType.equals(EMMessage.Type.TXT)) {// 文本消息
             try {
                 int extType = message.getIntAttribute(Constants.MSG_TXT_EXT_TYPE);
                 TextMessageBody txtBody = (TextMessageBody) message.getBody();
                 String content = txtBody.getMessage();
-                if(TxtExtType.CARD.getVlaue() == extType){//普通文本消息
-                    final OrderDetailForDisplay bookOrder = new Gson().fromJson(content, OrderDetailForDisplay.class);
-                    if (null != bookOrder) {
-                        String roomType = bookOrder.getRoomtype();
-                        String arrivaDate = bookOrder.getArrivaldate();
-                        String departureDate = bookOrder.getLeavedate();
-                        String imageUrl = bookOrder.getImgurl();
-                        SimpleDateFormat descFormat = new SimpleDateFormat("MM月dd日");
-                        SimpleDateFormat sourceFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                        Date arrivalDate = sourceFormat.parse(arrivaDate);
-                        Date leaveDate = sourceFormat.parse(departureDate);
-                        String arriveStr = descFormat.format(arrivalDate);
-                        String leaveStr = descFormat.format(leaveDate);
-                        int dayNum = TimeUtil.daysBetween(arrivalDate, leaveDate);
-                        vh.orderContent.setText(roomType + " | " + arriveStr+"到"+leaveStr + " | " + dayNum + "晚");
-                        if (!TextUtils.isEmpty(imageUrl)) {
-                            String logoUrl = ProtocolUtil.getHostImgUrl(imageUrl);
-                            ImageLoader.getInstance().displayImage(logoUrl, vh.hotelImage, cardOptions);
-                        }
-                    }
-                    vh.msg.setVisibility(View.GONE);
-                    vh.img.setVisibility(View.GONE);
-                    vh.voice.setVisibility(View.GONE);
-                    vh.time.setVisibility(View.GONE);
-                    vh.cardLayout.setVisibility(View.VISIBLE);
-                    vh.contentLayout.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            String orderNo = bookOrder.getOrderno();
-                            Intent intent = new Intent();
-                            if(orderNo.startsWith("H")){
-                                intent.setClass(context,HotelDealActivity.class);
-                                intent.putExtra("orderNo",orderNo);
-                            }else if(orderNo.startsWith("K")){
-                                intent.setClass(context,KTVDealActivity.class);
-                                intent.putExtra("orderNo",orderNo);
-                            }
-                            else if(orderNo.startsWith("O")){
-                                intent.setClass(context,NormalDealActivity.class);
-                                intent.putExtra("orderNo",orderNo);
-                            }
-                            context.startActivity(intent);
-                        }
-                    });
-                    if (!isDelEnabled) {
-                        vh.contentLayout
-                                .setOnLongClickListener(new View.OnLongClickListener() {
-
-                                    @Override
-                                    public boolean onLongClick(View v) {
-                                        showChildQuickActionBar(v, isComMsg, position);
-                                        return true;
-                                    }
-                                });
-                    }
-                }else{//普通文本
+                if(TxtExtType.DEFAULT.getVlaue() == extType){//普通文本消息
                     if (!TextUtils.isEmpty(content)) {
                         String key = message.getMsgId();
                         CharSequence charSequence = (CharSequence) msgCacheMap
@@ -394,8 +345,7 @@ public class ChatAdapter extends BaseAdapter {
                             int end = text.length();
                             Spannable sp = (Spannable) vh.msg.getText();
                             URLSpan[] urls = sp.getSpans(0, end, URLSpan.class);
-                            SpannableStringBuilder style = new SpannableStringBuilder(
-                                    text);
+                            SpannableStringBuilder style = new SpannableStringBuilder(text);
                             style.clearSpans();// should clear old spans
                             // 循环把链接发过去
                             if (null != urls && urls.length > 0) {
@@ -415,6 +365,68 @@ public class ChatAdapter extends BaseAdapter {
                     }
                     if (!isDelEnabled) {
                         vh.contentLayout
+                            .setOnLongClickListener(new View.OnLongClickListener() {
+
+                                @Override
+                                public boolean onLongClick(View v) {
+                                    showChildQuickActionBar(v, isComMsg, position);
+                                    return true;
+                                }
+                            });
+                    }
+                    vh.msg.setVisibility(View.VISIBLE);
+                    vh.img.setVisibility(View.GONE);
+                    vh.voice.setVisibility(View.GONE);
+                    vh.time.setVisibility(View.GONE);
+                    vh.cardLayout.setVisibility(View.GONE);
+                }else{//卡片类型消息
+                    final OrderDetailForDisplay bookOrder = new Gson().fromJson(content, OrderDetailForDisplay.class);
+                    if (null != bookOrder) {
+                        String roomType = bookOrder.getRoomtype();
+                        String arrivaDate = bookOrder.getArrivaldate();
+                        String departureDate = bookOrder.getLeavedate();
+                        String imageUrl = bookOrder.getImgurl();
+                        SimpleDateFormat descFormat = new SimpleDateFormat("MM/dd");
+                        SimpleDateFormat sourceFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                        Date arrivalDate = sourceFormat.parse(arrivaDate);
+//                        Date leaveDate = sourceFormat.parse(departureDate);
+                        String arriveStr = descFormat.format(arrivalDate);
+//                        String leaveStr = descFormat.format(leaveDate);
+//                        int dayNum = TimeUtil.daysBetween(arrivalDate, leaveDate);
+                        //  vh.contentTip.setText(bookOrder.getContent());
+                        vh.orderContent.setText(arriveStr + " " + roomType);
+
+//                        if (!TextUtils.isEmpty(imageUrl)) {
+//                            String logoUrl = ProtocolUtil.getHostImgUrl(imageUrl);
+//                            ImageLoader.getInstance().displayImage(logoUrl, vh.hotelImage, cardOptions);
+//                        }
+                    }
+                    vh.msg.setVisibility(View.GONE);
+                    vh.img.setVisibility(View.GONE);
+                    vh.voice.setVisibility(View.GONE);
+                    vh.time.setVisibility(View.GONE);
+                    vh.cardLayout.setVisibility(View.VISIBLE);
+                    vh.contentLayout.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                        String orderNo = bookOrder.getOrderno();
+                        Intent intent = new Intent();
+                        if(orderNo.startsWith("H")){
+                            intent.setClass(context,HotelDealActivity.class);
+                            intent.putExtra("orderNo",orderNo);
+                        }else if(orderNo.startsWith("K")){
+                            intent.setClass(context,KTVDealActivity.class);
+                            intent.putExtra("orderNo",orderNo);
+                        }
+                        else if(orderNo.startsWith("O")){
+                            intent.setClass(context,NormalDealActivity.class);
+                            intent.putExtra("orderNo",orderNo);
+                        }
+                        context.startActivity(intent);
+                        }
+                    });
+                    if (!isDelEnabled) {
+                        vh.contentLayout
                                 .setOnLongClickListener(new View.OnLongClickListener() {
 
                                     @Override
@@ -424,11 +436,6 @@ public class ChatAdapter extends BaseAdapter {
                                     }
                                 });
                     }
-                    vh.msg.setVisibility(View.VISIBLE);
-                    vh.img.setVisibility(View.GONE);
-                    vh.voice.setVisibility(View.GONE);
-                    vh.time.setVisibility(View.GONE);
-                    vh.cardLayout.setVisibility(View.GONE);
                 }
             } catch (EaseMobException e) {
                 e.printStackTrace();
@@ -680,7 +687,6 @@ public class ChatAdapter extends BaseAdapter {
 
         @Override
         public void handleMessage(Message msg) {
-            // TODO Auto-generated method stub
             ImageView iv = (ImageView) msg.obj;
             switch (msg.what) {
                 case 0:// 别人
@@ -766,7 +772,7 @@ public class ChatAdapter extends BaseAdapter {
     }
 
     static class ViewHolder {
-        SimpleDraweeView head;
+        CircleImageView head;
         TextView        date;
         TextView        msg;
         ImageView       img;
@@ -775,18 +781,18 @@ public class ChatAdapter extends BaseAdapter {
         CheckBox        selectCb;
         LinearLayout    contentLayout;
         LinearLayout cardLayout;
-        TextView orderContent;
-        ImageView hotelImage;
+        TextView  orderType, orderContent;//contentTip,
+//        ImageView hotelImage;
     }
 
     static class RecvViewHolder extends ViewHolder {
-        TextView name;
+//        TextView name;
     }
 
     static class SendViewHolder extends ViewHolder {
         ProgressBar progressBar;
         ImageView errIconIv;
-        TextView name;
+//        TextView name;
     }
 
     static class TipsViewHolder {
