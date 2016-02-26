@@ -13,7 +13,7 @@
         android:layout_marginLeft="8dp"
         fresco:actualImageScaleType="centerInside"
         fresco:placeholderImage="@mipmap/logo_round"
-        fresco:placeholderImageScaleType="centerInside"
+        fresco:placeholderImageScaleType="fitCenter"
         fresco:roundAsCircle="true"
         fresco:roundedCornerRadius="0dp"/>
     
