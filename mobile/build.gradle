@@ -19,6 +19,9 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
 }
 
 dependencies {
@@ -39,4 +42,5 @@ dependencies {
     compile 'com.google.android.gms:play-services-appindexing:8.1.0'
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
     compile project(':drawee-backends:drawee-pipeline')
+    testCompile 'junit:junit:4.12'
 }

@@ -48,6 +48,8 @@
         android:theme="@style/Theme.App.Translucent.NoTitleBar"
         android:name=".ServiceApplication">
 
+        <uses-library android:name="android.test.runner" />
+
         <activity
             android:name=".activity.common.SplashActivity"
             android:label="@string/app_name"
@@ -454,5 +456,8 @@
         </receiver>
 
     </application>
+
+    <instrumentation android:name="android.test.InstrumentationTestRunner"
+        android:targetPackage="com.zkjinshi.superservice" />
 
 </manifest>
