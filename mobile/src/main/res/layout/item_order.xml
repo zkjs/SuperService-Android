@@ -60,7 +60,7 @@
                 android:layout_centerInParent="true"
                 fresco:actualImageScaleType="centerInside"
                 fresco:placeholderImage="@mipmap/logo_round"
-                fresco:placeholderImageScaleType="centerInside"
+                fresco:placeholderImageScaleType="fitCenter"
                 fresco:roundAsCircle="true"
                 fresco:roundedCornerRadius="0dp"/>
 
