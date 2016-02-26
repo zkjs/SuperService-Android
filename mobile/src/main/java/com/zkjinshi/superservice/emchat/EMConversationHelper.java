@@ -234,24 +234,26 @@ public class EMConversationHelper {
      */
     public void sendWelcomeMessage(String userName,String userId){
         try {
-            String shopId = CacheUtil.getInstance().getShopID();
-            String shopName = CacheUtil.getInstance().getShopFullName();
-            EMMessage sendMsg = EMMessage.createTxtSendMessage("欢迎光临，您有任何需求可通过聊天窗口与我们沟通", userId);
-            sendMsg.status = EMMessage.Status.SUCCESS;
-            sendMsg.setAttribute(Constants.MSG_TXT_EXT_TYPE, TxtExtType.DEFAULT.getVlaue());
-            sendMsg.setChatType(EMMessage.ChatType.Chat);
-            sendMsg.setAttribute("toName", "");
-            if(!TextUtils.isEmpty(userName)){
-                sendMsg.setAttribute("toName",userName);
+            if(!TextUtils.isEmpty(userName) && !TextUtils.isEmpty(userId)){
+                String shopId = CacheUtil.getInstance().getShopID();
+                String shopName = CacheUtil.getInstance().getShopFullName();
+                EMMessage sendMsg = EMMessage.createTxtSendMessage("欢迎光临，您有任何需求可通过聊天窗口与我们沟通", userId);
+                sendMsg.status = EMMessage.Status.SUCCESS;
+                sendMsg.setAttribute(Constants.MSG_TXT_EXT_TYPE, TxtExtType.DEFAULT.getVlaue());
+                sendMsg.setChatType(EMMessage.ChatType.Chat);
+                sendMsg.setAttribute("toName", "");
+                if(!TextUtils.isEmpty(userName)){
+                    sendMsg.setAttribute("toName",userName);
+                }
+                sendMsg.setAttribute("fromName",CacheUtil.getInstance().getUserName());
+                if(!TextUtils.isEmpty(shopId)){
+                    sendMsg.setAttribute("shopId",shopId);
+                }
+                if(!TextUtils.isEmpty(shopName)){
+                    sendMsg.setAttribute("shopName",shopName);
+                }
+                EMChatManager.getInstance().sendMessage(sendMsg);
             }
-            sendMsg.setAttribute("fromName",CacheUtil.getInstance().getUserName());
-            if(!TextUtils.isEmpty(shopId)){
-                sendMsg.setAttribute("shopId",shopId);
-            }
-            if(!TextUtils.isEmpty(shopName)){
-                sendMsg.setAttribute("shopName",shopName);
-            }
-            EMChatManager.getInstance().sendMessage(sendMsg);
         } catch (EaseMobException e) {
             e.printStackTrace();
         }

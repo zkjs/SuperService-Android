@@ -11,6 +11,7 @@ import com.zkjinshi.base.util.ActivityManagerHelper;
 import com.zkjinshi.superservice.ServiceApplication;
 import com.zkjinshi.superservice.bean.LocPushBean;
 import com.zkjinshi.superservice.emchat.EMConversationHelper;
+import com.zkjinshi.superservice.manager.SSOManager;
 import com.zkjinshi.superservice.manager.YunBaSubscribeManager;
 import com.zkjinshi.superservice.notification.NotificationHelper;
 import com.zkjinshi.superservice.vo.YunBaMsgVo;
@@ -58,16 +59,15 @@ public class YunBaMessageReceiver extends BroadcastReceiver {
                 }
             }
 
-
             //如果是商家中心，则执行发送消息给客人
-            //1、检测用户身份，是否为消息中心
-            //2、发送欢迎信息给客人
-            /*YunBaMsgVo yunBaMsgVo = new Gson().fromJson(msg, YunBaMsgVo.class);
-            if(null != yunBaMsgVo){
-                String userId = yunBaMsgVo.getUserId();
-                String userName = yunBaMsgVo.getUserName();
-                EMConversationHelper.getInstance().sendWelcomeMessage(userId,userName);
-            }*/
+            if(SSOManager.getInstance().isShopCenter()){//1、检测用户身份，是否为消息中心
+                YunBaMsgVo yunBaMsgVo = new Gson().fromJson(msg, YunBaMsgVo.class);
+                if(null != yunBaMsgVo){//2、发送欢迎信息给客人
+                    String userId = yunBaMsgVo.getUserId();
+                    String userName = yunBaMsgVo.getUserName();
+                    EMConversationHelper.getInstance().sendWelcomeMessage(userId,userName);
+                }
+            }
 
         } else if(YunBaManager.PRESENCE_RECEIVED_ACTION.equals(intent.getAction())) {
             String topic   = intent.getStringExtra(YunBaManager.MQTT_TOPIC);

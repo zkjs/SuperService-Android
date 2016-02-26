@@ -130,6 +130,8 @@ public class SplashActivity extends Activity{
                             UserDBUtil.getInstance().addUser(userVo);
                             //String avatarUrl = ProtocolUtil.getShopLogoUrl(adminLoginBean.getShopid());
                             //CacheUtil.getInstance().saveUserPhotoUrl(avatarUrl);
+                            YunBaSubscribeManager.getInstance().setAlias(SplashActivity.this,CacheUtil.getInstance().getUserId());
+                            YunBaSubscribeManager.getInstance().subscribe();
                         }
                     }
                 }
@@ -170,6 +172,8 @@ public class SplashActivity extends Activity{
                         CacheUtil.getInstance().setShopID(sempLoginbean.getShopid());
                         CacheUtil.getInstance().setShopFullName(sempLoginbean.getFullname());
                         CacheUtil.getInstance().setLoginIdentity(IdentityType.WAITER);
+                        YunBaSubscribeManager.getInstance().setAlias(SplashActivity.this,CacheUtil.getInstance().getUserId());
+                        YunBaSubscribeManager.getInstance().subscribe();
                         String locIds = sempLoginbean.getLocid();
                         if(!TextUtils.isEmpty(locIds)){
                             CacheUtil.getInstance().setAreaInfo(locIds);

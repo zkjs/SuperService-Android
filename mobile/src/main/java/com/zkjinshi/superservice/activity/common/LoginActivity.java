@@ -151,6 +151,8 @@ public class LoginActivity extends Activity implements VerifyPhoneControler.Succ
                     UserDBUtil.getInstance().addUser(userVo);
                     String avatarUrl = ProtocolUtil.getAvatarUrl(userVo.getUserId());
                     CacheUtil.getInstance().saveUserPhotoUrl(avatarUrl);
+                    YunBaSubscribeManager.getInstance().setAlias(LoginActivity.this,CacheUtil.getInstance().getUserId());
+                    YunBaSubscribeManager.getInstance().subscribe();
                     Intent intent;
                     if(TextUtils.isEmpty(sempLoginbean.getUrl())){
                         intent = new Intent(LoginActivity.this, MoreActivity.class);

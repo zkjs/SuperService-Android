@@ -1,10 +1,13 @@
 package com.zkjinshi.superservice.manager;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.zkjinshi.base.util.BaseContext;
+import com.zkjinshi.base.util.Constants;
 import com.zkjinshi.superservice.utils.CacheUtil;
+import com.zkjinshi.superservice.vo.PayloadVo;
 
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
@@ -39,7 +42,7 @@ public class YunBaSubscribeManager {
     }
 
     /**
-     * 云巴推送注册
+     * 订阅前端云巴推送(用户自选)
      * @param locIds
      */
     public void subscribe(String[] locIds){
@@ -65,39 +68,21 @@ public class YunBaSubscribeManager {
         );
     }
 
-//    /**
-//     * 取消云巴订阅
-//     */
-//    public void unSubscribe(){
-//        try {
-//            String locIds = CacheUtil.getInstance().getAreaInfo();
-//            String[] zoneArray = locIds.split(",");
-//            if(null != zoneArray && zoneArray.length > 0){
-//                YunBaManager.unsubscribe(
-//                    BaseContext.getInstance().getContext(),
-//                    zoneArray,
-//                    new IMqttActionListener() {
-//                        @Override
-//                        public void onSuccess(IMqttToken asyncActionToken) {
-//                            Log.i(TAG,"取消订阅云巴成功");
-//                            isSubscribed = false;
-//                        }
-//
-//                        @Override
-//                        public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-//                            if (exception instanceof MqttException) {
-//                                MqttException ex = (MqttException)exception;
-//                                String msg =  "Subscribe failed with error code : " + ex.getReasonCode();
-//                                Log.i(TAG,"取消订阅云巴失败:"+msg);
-//                            }
-//                        }
-//                    }
-//                );
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
+    /**
+     * 订阅后台云巴推送
+     */
+    public void subscribe(){
+        String token = CacheUtil.getInstance().getToken();
+        if(!TextUtils.isEmpty(token)){
+            PayloadVo payloadVo = SSOManager.getInstance().decodeToken(token);
+            if(null != payloadVo){
+                String[] channels = SSOManager.getInstance().subscribeChannels(payloadVo);
+                if(null != channels && channels.length > 0){
+                    subscribe(channels);
+                }
+            }
+        }
+    }
 
     /**
      * 当前是否注册订阅频道
@@ -160,4 +145,29 @@ public class YunBaSubscribeManager {
             }
         });
     }
+
+    /**
+     * 订阅别名
+     * @param context
+     * @param alias
+     */
+    public void setAlias(final Context context,String alias){
+        YunBaManager.setAlias(context, alias,
+                new IMqttActionListener() {
+                    @Override
+                    public void onSuccess(IMqttToken asyncActionToken) {
+                        Log.i(Constants.ZKJINSHI_BASE_TAG,"订阅别名成功");
+                    }
+
+                    @Override
+                    public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
+                        if (exception instanceof MqttException) {
+                            MqttException ex = (MqttException)exception;
+                            String msg =  "setAlias failed with error code : " + ex.getReasonCode();
+                        }
+                    }
+                }
+        );
+    }
+
 }

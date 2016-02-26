@@ -148,6 +148,8 @@ public class ShopLoginActivity extends Activity{
                         //String avatarUrl = ProtocolUtil.getShopLogoUrl(adminLoginBean.getShopid());
                         //CacheUtil.getInstance().saveUserPhotoUrl(avatarUrl);
                        // Intent mainIntent = new Intent(ShopLoginActivity.this, MainActivity.class);
+                        YunBaSubscribeManager.getInstance().setAlias(ShopLoginActivity.this,CacheUtil.getInstance().getUserId());
+                        YunBaSubscribeManager.getInstance().subscribe();
                         Intent mainIntent = new Intent(ShopLoginActivity.this, ZoneActivity.class);
                         startActivity(mainIntent);
                         finish();
