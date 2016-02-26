@@ -4,7 +4,6 @@ apply plugin: 'oneapm'
 android {
     compileSdkVersion 22
     buildToolsVersion "22.0.0"
-
     defaultConfig {
         applicationId "com.zkjinshi.superservice"
         minSdkVersion 15
