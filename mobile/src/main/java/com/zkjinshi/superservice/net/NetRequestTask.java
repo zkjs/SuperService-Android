@@ -108,6 +108,8 @@ public class NetRequestTask extends AsyncTask<NetRequest, Void, NetResponse> {
                 resultStr = RequestUtil.sendPostRequest(requestUrl, bizParamsMap, fileMap);
             }else if(methodType == MethodType.JSON){
                 resultStr = RequestUtil.sendPostRequest(requestUrl, bizParamsMap);
+            }else if(methodType == MethodType.JSONPOST){
+                resultStr = RequestUtil.sendJsonPostRequest(requestUrl,objectParamsMap);
             }else if(methodType == MethodType.PUT){
                 resultStr = RequestUtil.sendPutRequest(requestUrl,objectParamsMap);
             }else if(methodType == MethodType.DELETE){
