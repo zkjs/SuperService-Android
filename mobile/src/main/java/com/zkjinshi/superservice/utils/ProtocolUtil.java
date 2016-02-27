@@ -386,4 +386,12 @@ public class ProtocolUtil {
         return ConfigUtil.getInst().getPhpDomain()+"semp/aubdts";
     }
 
+    /**
+     * 获得刷新tokenUrl
+     * @return
+     */
+    public static String getTokenRefreshUrl(){
+        return ConfigUtil.getInst().getSsoDomain()+"/sso/token/v1";
+    }
+
 }

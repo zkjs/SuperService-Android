@@ -1,5 +1,8 @@
 package com.zkjinshi.superservice.net;
 
+import android.text.TextUtils;
+
+import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.FileUtil;
 
 import org.apache.http.HttpResponse;
@@ -106,6 +109,55 @@ public class RequestUtil {
             reader.close();
         }
         connection.disconnect();
+        return  resultInfo;
+    }
+
+    public static String sendPutRequest(String requestUrl,HashMap<String,Object> objectParamsMap) throws Exception{
+        String resultInfo = null;
+        JSONObject jsonObject = null;
+        URL url = new URL(requestUrl);
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setConnectTimeout(TIMEOUT);
+        connection.setReadTimeout(TIMEOUT);
+        connection.setDoOutput(true);
+        connection.setDoInput(true);
+        connection.setRequestMethod("PUT");
+        connection.setUseCaches(false);
+        connection.setInstanceFollowRedirects(true);
+        connection.setRequestProperty("Content-Type","application/json; charset=UTF-8");
+        String token = CacheUtil.getInstance().getToken();
+        if(!TextUtils.isEmpty(token)){
+            connection.setRequestProperty("Token",token);
+        }
+        connection.connect();
+        // POST请求
+        DataOutputStream out = new DataOutputStream(
+                connection.getOutputStream());
+        JSONObject obj = new JSONObject();
+
+        if (null != objectParamsMap) {
+            Iterator<Map.Entry<String, Object>> bizIterator = objectParamsMap.entrySet().iterator();
+            while (bizIterator.hasNext()) {
+                HashMap.Entry<String, Object> bizEntry = (HashMap.Entry<String, Object>) bizIterator.next();
+                obj.put(bizEntry.getKey(),bizEntry.getValue());
+            }
+        }
+        out.write(obj.toString().getBytes("UTF-8"));// 这样可以处理中文乱码问题
+        out.flush();
+        out.close();
+
+        // 读取响应
+        BufferedReader reader = new BufferedReader(new InputStreamReader(
+                connection.getInputStream()));
+        String lines;
+        StringBuffer sb = new StringBuffer("");
+        while ((lines = reader.readLine()) != null) {
+            lines = new String(lines.getBytes(), "utf-8");
+            sb.append(lines);
+        }
+        resultInfo = sb.toString();
+        reader.close();
+
         return  resultInfo;
     }
 

@@ -17,6 +17,7 @@ import com.zkjinshi.superservice.activity.set.TeamContactsController;
 import com.zkjinshi.superservice.bean.AdminLoginBean;
 import com.zkjinshi.superservice.bean.SempLoginBean;
 import com.zkjinshi.superservice.factory.UserFactory;
+import com.zkjinshi.superservice.manager.SSOManager;
 import com.zkjinshi.superservice.manager.YunBaSubscribeManager;
 import com.zkjinshi.superservice.manager.ZoneManager;
 import com.zkjinshi.superservice.net.ExtNetRequestListener;
@@ -77,6 +78,10 @@ public class SplashActivity extends Activity{
     }
 
     private void silentProcessData(){
+
+        //增加sso静默登录
+        SSOManager.getInstance().requestRefreshToken(this);
+
         LoginController.getInstance().init(this);
         if(IdentityType.BUSINESS ==  CacheUtil.getInstance().getLoginIdentity()){
             LoginController.getInstance().requestAdminLogin(

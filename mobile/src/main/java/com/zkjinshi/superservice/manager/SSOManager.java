@@ -1,13 +1,24 @@
 package com.zkjinshi.superservice.manager;
 
+import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.zkjinshi.base.log.LogLevel;
+import com.zkjinshi.base.log.LogUtil;
 import com.zkjinshi.base.util.Constants;
+import com.zkjinshi.superservice.net.ExtNetRequestListener;
+import com.zkjinshi.superservice.net.MethodType;
+import com.zkjinshi.superservice.net.NetRequest;
+import com.zkjinshi.superservice.net.NetRequestTask;
+import com.zkjinshi.superservice.net.NetResponse;
 import com.zkjinshi.superservice.utils.Base64Decoder;
 import com.zkjinshi.superservice.utils.CacheUtil;
+import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.vo.PayloadVo;
+
+import java.util.HashMap;
 
 /**
  * 开发者：JimmyZhang
@@ -93,6 +104,41 @@ public class SSOManager {
             }
         }
         return false;
+    }
+
+    /**
+     * 刷新token
+     */
+    public void requestRefreshToken(final Context context){
+        String url = ProtocolUtil.getTokenRefreshUrl();
+        NetRequest netRequest = new NetRequest(url);
+        NetRequestTask netRequestTask = new NetRequestTask(context,netRequest, NetResponse.class);
+        netRequestTask.methodType = MethodType.PUT;
+        netRequestTask.setNetRequestListener(new ExtNetRequestListener(context) {
+            @Override
+            public void onNetworkRequestError(int errorCode, String errorMessage) {
+                Log.i(Constants.ZKJINSHI_BASE_TAG, "errorCode:" + errorCode);
+                Log.i(Constants.ZKJINSHI_BASE_TAG, "errorMessage:" + errorMessage);
+            }
+
+            @Override
+            public void onNetworkRequestCancelled() {
+
+            }
+
+            @Override
+            public void onNetworkResponseSucceed(NetResponse result) {
+                super.onNetworkResponseSucceed(result);
+                Log.i(Constants.ZKJINSHI_BASE_TAG,"rawResult:"+result.rawResult);
+            }
+
+            @Override
+            public void beforeNetworkRequestStart() {
+
+            }
+        });
+        netRequestTask.isShowLoadingDialog = false;
+        netRequestTask.execute();
     }
 
 }
