@@ -2,6 +2,7 @@ package com.zkjinshi.superservice.utils;
 
 import com.zkjinshi.base.config.ConfigUtil;
 import com.zkjinshi.base.util.*;
+import com.zkjinshi.base.util.Constants;
 
 /**
  * 协议接口工具类
@@ -384,6 +385,22 @@ public class ProtocolUtil {
      */
     public static String getBindUserInfo(){
         return ConfigUtil.getInst().getPhpDomain()+"semp/aubdts";
+    }
+
+    /**
+     * 获取手机验证码
+     * @return
+     */
+    public static String ssoVcode(){
+        return com.zkjinshi.base.util.Constants.PAVO_HOST+"sso/vcode/"+ com.zkjinshi.base.util.Constants.PAVO_VERSION+"/ss";
+    }
+
+    /**
+     * 获取手机验证码
+     * @return
+     */
+    public static String ssoToken(){
+        return com.zkjinshi.base.util.Constants.PAVO_HOST+"sso/token/"+ Constants.PAVO_VERSION+"/phone/ss";
     }
 
     /**

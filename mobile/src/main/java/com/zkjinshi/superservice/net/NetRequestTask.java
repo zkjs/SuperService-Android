@@ -28,7 +28,6 @@ import java.util.HashMap;
  * 版权所有
  */
 public class NetRequestTask extends AsyncTask<NetRequest, Void, NetResponse> {
-
     /** http返回成功 */
     private static final int REQ_RESP_SUCCESS = 200;
 
@@ -99,15 +98,16 @@ public class NetRequestTask extends AsyncTask<NetRequest, Void, NetResponse> {
             Log.d("showurl", requestUrl);
             bizParamsMap = mediaRequest.getBizParamMap();
             fileParamsMap = mediaRequest.getFileParamMap();
+            objectParamsMap = mediaRequest.getObjectParamMap();
             fileMap = mediaRequest.getFileMap();
             if(methodType ==  MethodType.POST){
                 resultStr = RequestUtil.sendPostRequest(requestUrl, bizParamsMap, fileParamsMap);
             }else if(methodType == MethodType.GET){
                 resultStr = RequestUtil.sendGetRequest(requestUrl);
             }else if(methodType == MethodType.PUSH){
-                resultStr = RequestUtil.sendPostRequest(requestUrl, bizParamsMap, fileMap);
-            }else if(methodType == MethodType.JSON){
-                resultStr = RequestUtil.sendPostRequest(requestUrl, bizParamsMap);
+                resultStr = RequestUtil.sendPostRequest(requestUrl,bizParamsMap,fileMap);
+            } else if(methodType == MethodType.JSON){
+                resultStr = RequestUtil.sendPostRequest(requestUrl,bizParamsMap);
             }else if(methodType == MethodType.JSONPOST){
                 resultStr = RequestUtil.sendJsonPostRequest(requestUrl,objectParamsMap);
             }else if(methodType == MethodType.PUT){
@@ -190,5 +190,6 @@ public class NetRequestTask extends AsyncTask<NetRequest, Void, NetResponse> {
            DialogUtil.getInstance().cancelProgressDialog();
         }
     }
+
 
 }

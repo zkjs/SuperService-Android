@@ -17,4 +17,11 @@ public class Constants {
     //图片host
     public final static String IMG_HOST = "http://svip02.oss-cn-shenzhen.aliyuncs.com/";
 
+    //PAVO 认证服务API
+    public final static String PAVO_HOST = "http://120.25.80.143:8080/";
+    //PAVO 认证服务API 版本
+    public final static String PAVO_VERSION = "v1";
+    //PAVO 秘钥
+    public final static String PAVO_KEY = "7E/rYyOhzJW+QV8MOJC1Wg==";
+
 }

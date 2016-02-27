@@ -1,13 +1,11 @@
 package com.zkjinshi.superservice.utils;
 
-
-import org.apache.commons.codec.binary.Base64;
+import java.security.GeneralSecurityException;
+import java.security.Key;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
-import java.security.GeneralSecurityException;
-import java.security.Key;
 
 /**
  * Created by laiqingquan on 16/2/3.
@@ -20,9 +18,6 @@ public class AESUtil {
 
     //加解密算法/工作模式/填充方式,Java6.0支持PKCS5Padding填充方式,BouncyCastle支持PKCS7Padding填充方式
     public static final String CIPHER_ALGORITHM = "AES/CBC/PKCS5Padding";
-
-    //解密的key
-    public static final String ASE_KEY = "7E/rYyOhzJW+QV8MOJC1Wg==";
 
     /**
      * 转换密钥
@@ -39,15 +34,15 @@ public class AESUtil {
      * */
     public static String encrypt(String data, String key) throws GeneralSecurityException{
         //还原密钥
-        Key k = toKey(Base64.decodeBase64(key));
+        Key k = toKey(Base64Decoder.decodeToBytes(key));
         //采用密钥作为初始化向量
-        IvParameterSpec iv = new IvParameterSpec(Base64.decodeBase64(key));
+        IvParameterSpec iv = new IvParameterSpec(Base64Decoder.decodeToBytes(key));
         //实例化Cipher对象，它用于完成实际的加密操作
         Cipher cipher = Cipher.getInstance(CIPHER_ALGORITHM);
         //初始化Cipher对象，设置为加密模式
         cipher.init(Cipher.ENCRYPT_MODE, k, iv);
         //执行加密操作。加密后的结果通常都会用Base64编码进行传输
-        return Base64.encodeBase64String(cipher.doFinal(data.getBytes()));
+        return Base64Encoder.encode(cipher.doFinal(data.getBytes()));
     }
 
     /**
@@ -57,14 +52,14 @@ public class AESUtil {
      * @return 解密后的数据
      * */
     public static String decrypt(String data, String key) throws GeneralSecurityException{
-        Key k = toKey(Base64.decodeBase64(key));
+        Key k = toKey(Base64Decoder.decodeToBytes(key));
         //采用密钥作为初始化向量
-        IvParameterSpec iv = new IvParameterSpec(Base64.decodeBase64(key));
+        IvParameterSpec iv = new IvParameterSpec(Base64Decoder.decodeToBytes(key));
         Cipher cipher = Cipher.getInstance(CIPHER_ALGORITHM);
         //初始化Cipher对象，设置为解密模式
         cipher.init(Cipher.DECRYPT_MODE, k, iv);
         //执行解密操作
-        return new String(cipher.doFinal(Base64.decodeBase64(data)));
+        return new String(cipher.doFinal(Base64Decoder.decodeToBytes(data)));
     }
 
 }
