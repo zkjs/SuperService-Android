@@ -1,5 +1,8 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <config>
+
+    <!--统一登录-->
+    <sso-host>120.25.80.143:8080</sso-host>
     <!--测试-->
     <php-host>tst.zkjinshi.com</php-host>
     <java-host>test.zkjinshi.com/japi</java-host>
@@ -9,4 +12,6 @@
     <!--生产-->
     <!--<php-host>api.zkjinshi.com</php-host>-->
     <!--<java-host>mmm.zkjinshi.com</java-host>-->
+
+
 </config>
