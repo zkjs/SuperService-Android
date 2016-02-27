@@ -89,7 +89,7 @@ public class SSOManager {
      * @return
      */
     public boolean isShopCenter(){
-        String token = CacheUtil.getInstance().getToken();
+        String token = CacheUtil.getInstance().getExtToken();
         if(!TextUtils.isEmpty(token)){
             PayloadVo payloadVo = decodeToken(token);
             if(null != payloadVo){

@@ -72,7 +72,7 @@ public class YunBaSubscribeManager {
      * 订阅后台云巴推送
      */
     public void subscribe(){
-        String token = CacheUtil.getInstance().getToken();
+        String token = CacheUtil.getInstance().getExtToken();
         if(!TextUtils.isEmpty(token)){
             PayloadVo payloadVo = SSOManager.getInstance().decodeToken(token);
             if(null != payloadVo){
