@@ -175,8 +175,6 @@ public class MainActivity extends AppCompatActivity{
                             //http接口退出
                             String userID = CacheUtil.getInstance().getUserId();
                             logoutHttp(userID);
-                            //退出统一认证登录
-                            SSOManager.getInstance().requestDeleteToken(MainActivity.this);
                             //修改登录状态
                             CacheUtil.getInstance().setLogin(false);
                             startActivity(new Intent(MainActivity.this, LoginActivity.class));

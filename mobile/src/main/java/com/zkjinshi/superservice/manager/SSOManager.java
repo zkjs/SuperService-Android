@@ -13,6 +13,7 @@ import com.zkjinshi.superservice.net.MethodType;
 import com.zkjinshi.superservice.net.NetRequest;
 import com.zkjinshi.superservice.net.NetRequestTask;
 import com.zkjinshi.superservice.net.NetResponse;
+import com.zkjinshi.superservice.response.BasePavoResponse;
 import com.zkjinshi.superservice.utils.Base64Decoder;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
@@ -129,42 +130,16 @@ public class SSOManager {
             @Override
             public void onNetworkResponseSucceed(NetResponse result) {
                 super.onNetworkResponseSucceed(result);
-                Log.i(Constants.ZKJINSHI_BASE_TAG,"rawResult:"+result.rawResult);
-            }
-
-            @Override
-            public void beforeNetworkRequestStart() {
-
-            }
-        });
-        netRequestTask.isShowLoadingDialog = false;
-        netRequestTask.execute();
-    }
-
-    /**
-     * 退出登录，删除token
-     */
-    public void requestDeleteToken(final Context context){
-        String url = ProtocolUtil.getTokenDeleteUrl();
-        NetRequest netRequest = new NetRequest(url);
-        NetRequestTask netRequestTask = new NetRequestTask(context,netRequest, NetResponse.class);
-        netRequestTask.methodType = MethodType.DELETE;
-        netRequestTask.setNetRequestListener(new ExtNetRequestListener(context) {
-            @Override
-            public void onNetworkRequestError(int errorCode, String errorMessage) {
-                Log.i(Constants.ZKJINSHI_BASE_TAG, "errorCode:" + errorCode);
-                Log.i(Constants.ZKJINSHI_BASE_TAG, "errorMessage:" + errorMessage);
-            }
-
-            @Override
-            public void onNetworkRequestCancelled() {
-
-            }
-
-            @Override
-            public void onNetworkResponseSucceed(NetResponse result) {
-                super.onNetworkResponseSucceed(result);
-                Log.i(Constants.ZKJINSHI_BASE_TAG,"rawResult:"+result.rawResult);
+                if(null != result && !TextUtils.isEmpty(result.rawResult)){
+                    Log.i(Constants.ZKJINSHI_BASE_TAG,"rawResult:"+result.rawResult);
+                    BasePavoResponse basePavoResponse = new Gson().fromJson(result.rawResult,BasePavoResponse.class);
+                    if(null != basePavoResponse){
+                        String token = basePavoResponse.getToken();
+                        if(!TextUtils.isEmpty(token)){
+                            CacheUtil.getInstance().setToken(token);
+                        }
+                    }
+                }
             }
 
             @Override

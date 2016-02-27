@@ -53,8 +53,6 @@ public class EMessageReceiver extends BroadcastReceiver {
                         NotificationHelper.getInstance().showExitAccountNotification(context);
                         //移除云巴订阅推送
                         YunBaSubscribeManager.getInstance().unSubscribe(context);
-                        //退出统一认证登录
-                        SSOManager.getInstance().requestDeleteToken(context);
                         //环信接口退出
                         EasemobIMHelper.getInstance().logout();
                     }
