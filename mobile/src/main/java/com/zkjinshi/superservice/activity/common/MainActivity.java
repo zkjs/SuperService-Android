@@ -33,6 +33,7 @@ import com.zkjinshi.superservice.activity.set.SettingActivity;
 import com.zkjinshi.superservice.activity.set.TeamContactsActivity;
 
 import com.zkjinshi.superservice.emchat.EasemobIMHelper;
+import com.zkjinshi.superservice.manager.SSOManager;
 import com.zkjinshi.superservice.manager.YunBaSubscribeManager;
 import com.zkjinshi.superservice.net.ExtNetRequestListener;
 import com.zkjinshi.superservice.net.MethodType;
@@ -174,6 +175,8 @@ public class MainActivity extends AppCompatActivity{
                             //http接口退出
                             String userID = CacheUtil.getInstance().getUserId();
                             logoutHttp(userID);
+                            //退出统一认证登录
+                            SSOManager.getInstance().requestDeleteToken(MainActivity.this);
                             //修改登录状态
                             CacheUtil.getInstance().setLogin(false);
                             startActivity(new Intent(MainActivity.this, LoginActivity.class));

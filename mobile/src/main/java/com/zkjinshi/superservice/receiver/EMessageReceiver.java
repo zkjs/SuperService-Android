@@ -14,6 +14,7 @@ import com.zkjinshi.base.view.CustomDialog;
 import com.zkjinshi.superservice.activity.common.LoginActivity;
 import com.zkjinshi.superservice.bean.ClientBaseBean;
 import com.zkjinshi.superservice.emchat.EasemobIMHelper;
+import com.zkjinshi.superservice.manager.SSOManager;
 import com.zkjinshi.superservice.manager.YunBaSubscribeManager;
 import com.zkjinshi.superservice.notification.NotificationHelper;
 import com.zkjinshi.superservice.utils.CacheUtil;
@@ -52,6 +53,8 @@ public class EMessageReceiver extends BroadcastReceiver {
                         NotificationHelper.getInstance().showExitAccountNotification(context);
                         //移除云巴订阅推送
                         YunBaSubscribeManager.getInstance().unSubscribe(context);
+                        //退出统一认证登录
+                        SSOManager.getInstance().requestDeleteToken(context);
                         //环信接口退出
                         EasemobIMHelper.getInstance().logout();
                     }

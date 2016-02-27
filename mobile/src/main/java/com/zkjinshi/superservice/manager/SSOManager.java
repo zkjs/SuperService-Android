@@ -141,4 +141,39 @@ public class SSOManager {
         netRequestTask.execute();
     }
 
+    /**
+     * 退出登录，删除token
+     */
+    public void requestDeleteToken(final Context context){
+        String url = ProtocolUtil.getTokenDeleteUrl();
+        NetRequest netRequest = new NetRequest(url);
+        NetRequestTask netRequestTask = new NetRequestTask(context,netRequest, NetResponse.class);
+        netRequestTask.methodType = MethodType.DELETE;
+        netRequestTask.setNetRequestListener(new ExtNetRequestListener(context) {
+            @Override
+            public void onNetworkRequestError(int errorCode, String errorMessage) {
+                Log.i(Constants.ZKJINSHI_BASE_TAG, "errorCode:" + errorCode);
+                Log.i(Constants.ZKJINSHI_BASE_TAG, "errorMessage:" + errorMessage);
+            }
+
+            @Override
+            public void onNetworkRequestCancelled() {
+
+            }
+
+            @Override
+            public void onNetworkResponseSucceed(NetResponse result) {
+                super.onNetworkResponseSucceed(result);
+                Log.i(Constants.ZKJINSHI_BASE_TAG,"rawResult:"+result.rawResult);
+            }
+
+            @Override
+            public void beforeNetworkRequestStart() {
+
+            }
+        });
+        netRequestTask.isShowLoadingDialog = false;
+        netRequestTask.execute();
+    }
+
 }
