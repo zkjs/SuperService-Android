@@ -61,7 +61,7 @@ public class YunBaMessageReceiver extends BroadcastReceiver {
 
             //如果是商家中心，则执行发送消息给客人
             if(SSOManager.getInstance().isShopCenter()){//1、检测用户身份，是否为消息中心
-                YunBaMsgVo yunBaMsgVo = new Gson().fromJson(msg, YunBaMsgVo.class);
+                    YunBaMsgVo yunBaMsgVo = new Gson().fromJson(msg, YunBaMsgVo.class);
                 if(null != yunBaMsgVo){//2、发送欢迎信息给客人
                     String userId = yunBaMsgVo.getUserId();
                     String userName = yunBaMsgVo.getUserName();

@@ -195,7 +195,7 @@ public class ZoneActivity extends Activity {
         findViewById(R.id.go_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                CacheUtil.getInstance().saveListCache("zoneBeanList",zoneAdapter.getSelectZoneBeanList());
+                CacheUtil.getInstance().saveListCache("zoneBeanList", zoneAdapter.getSelectZoneBeanList());
                 subscribeLocs();//订阅云巴消息
                 semplocationupdate();
             }

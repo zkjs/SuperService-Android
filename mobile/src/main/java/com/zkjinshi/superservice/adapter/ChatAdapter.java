@@ -49,7 +49,6 @@ import com.zkjinshi.superservice.activity.order.HotelDealActivity;
 import com.zkjinshi.superservice.activity.order.KTVDealActivity;
 import com.zkjinshi.superservice.activity.order.NormalDealActivity;
 import com.zkjinshi.superservice.activity.preview.ScanImagesActivity;
-import com.zkjinshi.superservice.bean.BookOrderBean;
 import com.zkjinshi.superservice.net.ext.DownloadRequestListener;
 import com.zkjinshi.superservice.net.ext.DownloadTask;
 import com.zkjinshi.superservice.utils.CacheUtil;
@@ -60,7 +59,6 @@ import com.zkjinshi.superservice.utils.FileUtil;
 import com.zkjinshi.superservice.utils.MediaPlayerUtil;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.view.ActionItem;
-import com.zkjinshi.superservice.view.CircleImageView;
 import com.zkjinshi.superservice.view.MessageSpanURL;
 import com.zkjinshi.superservice.view.QuickAction;
 import com.zkjinshi.superservice.vo.OrderDetailForDisplay;
@@ -303,12 +301,16 @@ public class ChatAdapter extends BaseAdapter {
         String userId = message.getFrom();
         vh.head.setImageURI(Uri.parse(ProtocolUtil.getAvatarUrl(userId)));
         EMMessage.Type mimeType = message.getType();
-        if (mimeType.equals(EMMessage.Type.TXT)) {// 卡片类型消息
+        if (mimeType.equals(EMMessage.Type.TXT)) {
+            // 卡片类型消息
             try {
                 int extType = message.getIntAttribute(Constants.MSG_TXT_EXT_TYPE);
                 TextMessageBody txtBody = (TextMessageBody) message.getBody();
                 String content = txtBody.getMessage();
                 if(TxtExtType.DEFAULT.getVlaue() == extType){//普通文本消息
+                    if(isComMsg){
+                        vh.contentLayout.setBackgroundResource(R.drawable.bg_chat_left_white);
+                    }
                     if (!TextUtils.isEmpty(content)) {
                         String key = message.getMsgId();
                         CharSequence charSequence = (CharSequence) msgCacheMap
@@ -377,13 +379,17 @@ public class ChatAdapter extends BaseAdapter {
                     vh.voice.setVisibility(View.GONE);
                     vh.time.setVisibility(View.GONE);
                     vh.cardLayout.setVisibility(View.GONE);
-                }else{//卡片类型消息
+                }else{
+                    //卡片类型消息
                     final OrderDetailForDisplay bookOrder = new Gson().fromJson(content, OrderDetailForDisplay.class);
                     if (null != bookOrder) {
+                        if(isComMsg){
+                            vh.contentLayout.setBackgroundResource(R.drawable.bg_chat_left_blue);
+                        }
                         String roomType = bookOrder.getRoomtype();
                         String arrivaDate = bookOrder.getArrivaldate();
-                        String departureDate = bookOrder.getLeavedate();
-                        String imageUrl = bookOrder.getImgurl();
+//                        String departureDate = bookOrder.getLeavedate();
+//                        String imageUrl = bookOrder.getImgurl();
                         SimpleDateFormat descFormat = new SimpleDateFormat("MM/dd");
                         SimpleDateFormat sourceFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                         Date arrivalDate = sourceFormat.parse(arrivaDate);
@@ -393,12 +399,12 @@ public class ChatAdapter extends BaseAdapter {
 //                        int dayNum = TimeUtil.daysBetween(arrivalDate, leaveDate);
                         //  vh.contentTip.setText(bookOrder.getContent());
                         vh.orderContent.setText(arriveStr + " " + roomType);
-
 //                        if (!TextUtils.isEmpty(imageUrl)) {
 //                            String logoUrl = ProtocolUtil.getHostImgUrl(imageUrl);
 //                            ImageLoader.getInstance().displayImage(logoUrl, vh.hotelImage, cardOptions);
 //                        }
                     }
+
                     vh.msg.setVisibility(View.GONE);
                     vh.img.setVisibility(View.GONE);
                     vh.voice.setVisibility(View.GONE);
@@ -412,7 +418,7 @@ public class ChatAdapter extends BaseAdapter {
                         if(orderNo.startsWith("H")){
                             intent.setClass(context,HotelDealActivity.class);
                             intent.putExtra("orderNo",orderNo);
-                        }else if(orderNo.startsWith("K")){
+                        } else if(orderNo.startsWith("K")){
                             intent.setClass(context,KTVDealActivity.class);
                             intent.putExtra("orderNo",orderNo);
                         }
@@ -423,16 +429,17 @@ public class ChatAdapter extends BaseAdapter {
                         context.startActivity(intent);
                         }
                     });
-                    if (!isDelEnabled) {
-                        vh.contentLayout
-                                .setOnLongClickListener(new View.OnLongClickListener() {
 
-                                    @Override
-                                    public boolean onLongClick(View v) {
-                                        showChildQuickActionBar(v, isComMsg, position);
-                                        return true;
-                                    }
-                                });
+                    if (!isDelEnabled) {
+                        vh.contentLayout.setOnLongClickListener(
+                            new View.OnLongClickListener() {
+                                @Override
+                                public boolean onLongClick(View v) {
+                                    showChildQuickActionBar(v, isComMsg, position);
+                                    return true;
+                                }
+                            }
+                        );
                     }
                 }
             } catch (EaseMobException e) {
@@ -442,34 +449,41 @@ public class ChatAdapter extends BaseAdapter {
             } catch (ParseException e){
                 e.printStackTrace();
             }
-
-        } else if (mimeType.equals(EMMessage.Type.IMAGE)) {// 图片
+        } else if (mimeType.equals(EMMessage.Type.IMAGE)) {
+            // 图片
+            if(isComMsg){
+                vh.contentLayout.setBackgroundResource(R.drawable.bg_chat_left_white);
+            }
             ImageMessageBody imgBody = (ImageMessageBody) message.getBody();
             if (!isDelEnabled) {
-                vh.contentLayout
-                        .setOnLongClickListener(new View.OnLongClickListener() {
-
-                            @Override
-                            public boolean onLongClick(View v) {
-                                return true;
-                            }
-                        });
-                vh.contentLayout.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        EMMessage vo = (EMMessage) v.getTag();
-                        ArrayList<String> urls = getImageUrls(messageList);
-                        int picPostion = getPicPositon(vo, urls);
-                        Intent it = new Intent(context,
-                                ScanImagesActivity.class);
-                        it.putStringArrayListExtra(
-                                ScanImagesActivity.EXTRA_IMAGE_URLS, urls);
-                        it.putExtra(ScanImagesActivity.EXTRA_IMAGE_INDEX,
-                                picPostion);
-                        context.startActivity(it);
+                vh.contentLayout .setOnLongClickListener(
+                    new View.OnLongClickListener() {
+                        @Override
+                        public boolean onLongClick(View v) {
+                            return true;
+                        }
                     }
-                });
+                );
+
+                vh.contentLayout.setOnClickListener(
+                    new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            EMMessage vo = (EMMessage) v.getTag();
+                            ArrayList<String> urls = getImageUrls(messageList);
+                            int picPostion = getPicPositon(vo, urls);
+                            Intent it = new Intent(context,
+                                    ScanImagesActivity.class);
+                            it.putStringArrayListExtra(
+                                    ScanImagesActivity.EXTRA_IMAGE_URLS, urls);
+                            it.putExtra(ScanImagesActivity.EXTRA_IMAGE_INDEX,
+                                    picPostion);
+                            context.startActivity(it);
+                        }
+                    }
+                );
             }
+
             vh.msg.setText("");
             vh.msg.setVisibility(View.GONE);
             final String key = message.getMsgId();
@@ -502,7 +516,11 @@ public class ChatAdapter extends BaseAdapter {
             vh.voice.setVisibility(View.GONE);
             vh.time.setVisibility(View.GONE);
             vh.cardLayout.setVisibility(View.GONE);
-        } else if (mimeType.equals(EMMessage.Type.VOICE)) {// 语音
+        } else if (mimeType.equals(EMMessage.Type.VOICE)) {
+            // 语音
+            if(isComMsg){
+                vh.contentLayout.setBackgroundResource(R.drawable.bg_chat_left_white);
+            }
             vh.contentLayout.setTag(R.id.content_layout, vh.voice);
             if (!isDelEnabled) {
                 vh.contentLayout
@@ -673,7 +691,7 @@ public class ChatAdapter extends BaseAdapter {
             VoiceMessageBody voiceBody = (VoiceMessageBody) message.getBody();
             int voiceTime = voiceBody.getLength();
             setTimeView(voiceTime, vh.time, vh.contentLayout);
-            vh.msg.setVisibility(View.INVISIBLE);
+            vh.msg.setVisibility(View.GONE);
             vh.img.setVisibility(View.GONE);
             vh.voice.setVisibility(View.VISIBLE);
             vh.time.setVisibility(View.VISIBLE);
@@ -755,7 +773,8 @@ public class ChatAdapter extends BaseAdapter {
                                                         int actionId) {
                                     switch (actionId) {
                                         case 0:// 转发
-                                            final OrderDetailForDisplay bookOrder = new Gson().fromJson(content, OrderDetailForDisplay.class);
+                                            final OrderDetailForDisplay bookOrder = new Gson().fromJson(
+                                                                   content, OrderDetailForDisplay.class);
                                             Intent intent = new Intent(context, TranspondActivity.class);
                                             intent.putExtra("bookOrder",bookOrder);
                                             context.startActivity(intent);

@@ -105,8 +105,7 @@ public class TranspondActivity extends AppCompatActivity {
         mToken      = CacheUtil.getInstance().getToken();
         mShopID     = CacheUtil.getInstance().getShopID();
 
-        mTeamContactAdapter = new TranspondAdapter(TranspondActivity.this,
-                                         new ArrayList<ShopEmployeeVo>());
+        mTeamContactAdapter = new TranspondAdapter(TranspondActivity.this, new ArrayList<ShopEmployeeVo>());
         mRvTeamContacts.setAdapter(mTeamContactAdapter);
     }
 

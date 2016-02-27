@@ -17,6 +17,7 @@ import android.widget.RelativeLayout;
 import android.widget.SectionIndexer;
 import android.widget.TextView;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
@@ -68,7 +69,7 @@ public class TranspondAdapter extends ServiceBaseAdapter<ShopEmployeeVo> impleme
             convertView = View.inflate(mActivity, R.layout.item_team_contact, null);
             holder.tvLetter          = (TextView) convertView.findViewById(R.id.catalog);
             holder.flContactAvatar   = (FrameLayout) convertView.findViewById(R.id.fl_contact_avatar);
-            holder.civContactAvatar  = (CircleImageView) convertView.findViewById(R.id.civ_contact_avatar);
+            holder.civContactAvatar  = (SimpleDraweeView) convertView.findViewById(R.id.civ_contact_avatar);
             holder.tvContactAvatar   = (TextView) convertView.findViewById(R.id.tv_contact_avatar);
             holder.tvContactName     = (TextView) convertView.findViewById(R.id.tv_contact_name);
             holder.rlContactOnStatus = (RelativeLayout) convertView.findViewById(R.id.rl_contact_on_status);
@@ -82,7 +83,7 @@ public class TranspondAdapter extends ServiceBaseAdapter<ShopEmployeeVo> impleme
         int   section = getSectionForPosition(position);
 
         final TextView tvContactAvatar = holder.tvContactAvatar;
-        final CircleImageView civContactAvatar = holder.civContactAvatar;
+        final SimpleDraweeView civContactAvatar = holder.civContactAvatar;
 
         /**  显示普通商家成员信息  */
         String deptName = shopEmployeeVo.getDept_name();
@@ -179,7 +180,7 @@ public class TranspondAdapter extends ServiceBaseAdapter<ShopEmployeeVo> impleme
 
         public TextView         tvLetter;
         public FrameLayout      flContactAvatar;
-        public CircleImageView  civContactAvatar;
+        public SimpleDraweeView civContactAvatar;
         public TextView         tvContactAvatar;
         public TextView         tvContactName;
         public RelativeLayout   rlContactOnStatus;
