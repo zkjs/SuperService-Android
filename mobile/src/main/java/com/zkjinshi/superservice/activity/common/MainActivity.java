@@ -170,6 +170,8 @@ public class MainActivity extends AppCompatActivity{
                         public void onClick(DialogInterface dialog, int which) {
                             //移除云巴订阅推送
                             YunBaSubscribeManager.getInstance().unSubscribe(MainActivity.this);
+                            //取消订阅别名
+                            YunBaSubscribeManager.getInstance().setAlias(MainActivity.this,"");
                             //环信接口退出
                             EasemobIMHelper.getInstance().logout();
                             //http接口退出

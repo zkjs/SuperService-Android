@@ -41,6 +41,7 @@ import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.utils.MediaPlayerUtil;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.vo.TxtExtType;
+import com.zkjinshi.superservice.vo.YunBaMsgVo;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -184,6 +185,63 @@ public class NotificationHelper {
 
             }
         }
+    }
+
+    /**
+     * 接收云巴到店通知
+     * @param context
+     * @param yunBaMsgVo
+     */
+    public void showNotification(final Context context, final YunBaMsgVo yunBaMsgVo){
+        ImageSize imageSize = new ImageSize(DisplayUtil.dip2px(context, 36),
+                DisplayUtil.dip2px(context, 36));
+        String contactId = yunBaMsgVo.getUserId();
+        String imageUrl  = ProtocolUtil.getAvatarUrl(contactId);
+        ImageLoader.getInstance().loadImage(imageUrl,imageSize, new ImageLoadingListener() {
+            @Override
+            public void onLoadingStarted(String imageUri, View view) {
+
+            }
+
+            @Override
+            public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+
+            }
+
+            @Override
+            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                NotificationCompat.Builder notificationBuilder = null;
+                // 1.设置显示信息
+                notificationBuilder = new NotificationCompat.Builder(context);
+                String contactName = yunBaMsgVo.getUserName();
+                String locDesc = yunBaMsgVo.getContent();
+                if(!TextUtils.isEmpty(contactName)){
+                    notificationBuilder.setContentTitle(contactName);
+                }
+                String welcomeMsg = "已到达"+locDesc;
+                notificationBuilder.setContentText(welcomeMsg);
+                notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
+                notificationBuilder.setLargeIcon(loadedImage);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    notificationBuilder.setStyle(new NotificationCompat.BigPictureStyle().bigPicture(loadedImage));
+                }
+                // 2.设置点击跳转事件
+                Intent intent = new Intent(context, SplashActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+                notificationBuilder.setContentIntent(pendingIntent);
+                // 3.设置通知栏其他属性
+                notificationBuilder.setAutoCancel(true);
+                notificationBuilder.setDefaults(Notification.DEFAULT_ALL);
+                NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+                notificationManager.notify(++NOTIFY_ID, notificationBuilder.build());
+            }
+
+            @Override
+            public void onLoadingCancelled(String imageUri, View view) {
+
+            }
+        });
     }
 
     /**
