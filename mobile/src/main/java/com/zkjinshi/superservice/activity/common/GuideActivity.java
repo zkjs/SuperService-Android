@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import com.zkjinshi.superservice.R;
+import com.zkjinshi.superservice.manager.YunBaSubscribeManager;
 import com.zkjinshi.superservice.view.scviewpager.DotsView;
 import com.zkjinshi.superservice.view.scviewpager.SCPositionAnimation;
 import com.zkjinshi.superservice.view.scviewpager.SCViewAnimation;
@@ -38,6 +39,8 @@ public class GuideActivity extends FragmentActivity {
         getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_guide);
+
+        YunBaSubscribeManager.getInstance().unSubscribe(this);
 
         mViewPager = (SCViewPager) findViewById(R.id.viewpager_main_activity);
         mDotsView = (DotsView) findViewById(R.id.dotsview_main);
