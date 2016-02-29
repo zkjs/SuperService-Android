@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.AnimationDrawable;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
 import android.text.Spannable;
@@ -34,6 +35,7 @@ import com.easemob.chat.ImageMessageBody;
 import com.easemob.chat.TextMessageBody;
 import com.easemob.chat.VoiceMessageBody;
 import com.easemob.exceptions.EaseMobException;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -48,7 +50,6 @@ import com.zkjinshi.superservice.activity.chat.single.TranspondActivity;
 import com.zkjinshi.superservice.activity.order.HotelDealActivity;
 import com.zkjinshi.superservice.activity.order.KTVDealActivity;
 import com.zkjinshi.superservice.activity.order.NormalDealActivity;
-import com.zkjinshi.superservice.bean.BookOrderBean;
 import com.zkjinshi.superservice.bean.MemberBean;
 import com.zkjinshi.superservice.net.ext.DownloadRequestListener;
 import com.zkjinshi.superservice.net.ext.DownloadTask;
@@ -60,7 +61,6 @@ import com.zkjinshi.superservice.utils.FileUtil;
 import com.zkjinshi.superservice.utils.MediaPlayerUtil;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.view.ActionItem;
-import com.zkjinshi.superservice.view.CircleImageView;
 import com.zkjinshi.superservice.view.MessageSpanURL;
 import com.zkjinshi.superservice.view.QuickAction;
 import com.zkjinshi.superservice.vo.OrderDetailForDisplay;
@@ -278,7 +278,7 @@ public class GroupChatAdapter extends BaseAdapter {
      */
     private void setViewHolder(ViewHolder vh, View convertView) {
         vh.contentLayout = (LinearLayout) convertView.findViewById(R.id.content_layout);
-        vh.head = (CircleImageView) convertView.findViewById(R.id.icon);
+        vh.head = (SimpleDraweeView) convertView.findViewById(R.id.icon);
         vh.date = (TextView) convertView.findViewById(R.id.datetime);
         vh.msg = (TextView) convertView.findViewById(R.id.message);
         vh.img = (ImageView) convertView.findViewById(R.id.image);
@@ -313,7 +313,8 @@ public class GroupChatAdapter extends BaseAdapter {
         boolean isShowDate = (message.getMsgTime() - lastSendDate) > 5 * 60 * 1000;
         vh.date.setVisibility(isShowDate ? View.VISIBLE : View.GONE);
         String userId = message.getFrom();
-        ImageLoader.getInstance().displayImage(ProtocolUtil.getAvatarUrl(userId), vh.head, options);
+        vh.head.setImageURI(Uri.parse(ProtocolUtil.getAvatarUrl(userId)));
+
         EMMessage.Type mimeType = message.getType();
         if (mimeType.equals(EMMessage.Type.TXT)) {// 文本消息
             try {
@@ -805,7 +806,7 @@ public class GroupChatAdapter extends BaseAdapter {
     }
 
     static class ViewHolder {
-        CircleImageView head;
+        SimpleDraweeView head;
         TextView        date;
         TextView        msg;
         ImageView       img;
