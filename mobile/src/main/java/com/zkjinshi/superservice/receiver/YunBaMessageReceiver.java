@@ -4,10 +4,12 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
+import android.view.Gravity;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.zkjinshi.base.util.ActivityManagerHelper;
+import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.ServiceApplication;
 import com.zkjinshi.superservice.bean.LocPushBean;
 import com.zkjinshi.superservice.emchat.EMConversationHelper;
@@ -43,25 +45,27 @@ public class YunBaMessageReceiver extends BroadcastReceiver {
             String msg   = intent.getStringExtra(YunBaManager.MQTT_MSG);
             Log.i(TAG, "YunBaMessageReceiver-msg:"+msg);
             Log.i(TAG, "YunBaMessageReceiver-topic:"+topic);
-            LocPushBean locPushBean = null;
+
+            DialogUtil.getInstance().showCustomToast(context,"云巴推送内容:"+msg, Gravity.CENTER);
+
+            YunBaMsgVo yunBaMsgVo = null;
 
             try {
-                locPushBean = new Gson().fromJson(msg, LocPushBean.class);
+                yunBaMsgVo = new Gson().fromJson(msg, YunBaMsgVo.class);
             } catch (JsonSyntaxException e) {
                 e.printStackTrace();
             }
 
             //是否注册接受到店通知
             if(YunBaSubscribeManager.getInstance().isSubscribed()){
-                if(null != locPushBean){
+                if(null != yunBaMsgVo){
                     //弹出当前位置到达提示
-                    NotificationHelper.getInstance().showNotification(context, locPushBean);
+                    NotificationHelper.getInstance().showNotification(context, yunBaMsgVo);
                 }
             }
 
             //如果是商家中心，则执行发送消息给客人
             if(SSOManager.getInstance().isShopCenter()){//1、检测用户身份，是否为消息中心
-                    YunBaMsgVo yunBaMsgVo = new Gson().fromJson(msg, YunBaMsgVo.class);
                 if(null != yunBaMsgVo){//2、发送欢迎信息给客人
                     String userId = yunBaMsgVo.getUserId();
                     String userName = yunBaMsgVo.getUserName();
