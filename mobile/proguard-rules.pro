@@ -78,6 +78,7 @@
 -keep class com.zkjinshi.superservice.bean.** { *; }
 -keep class com.zkjinshi.superservice.entity.** { *; }
 -keep class com.zkjinshi.superservice.vo.** { *; }
+-keep class com.zkjinshi.superservice.response.** { *; }
 -keep class com.zkjinshi.superservice.net.** { *; }
 -keep class com.zkjinshi.superservice.fragment.**{ *; }
 -keep class com.zkjinshi.superservice.activity.**{ *; }

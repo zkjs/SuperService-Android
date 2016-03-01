@@ -462,6 +462,7 @@ public class VerifyPhoneControler {
                                 if(!StringUtil.isEmpty(basePavoResponse.getToken())){
                                     CacheUtil.getInstance().setExtToken(basePavoResponse.getToken());
                                     successCallBack.verrifySuccess();
+                                    LogUtil.getInstance().info(LogLevel.INFO,"获取token成功。");
                                 }
                             }else{
                                 PavoUtil.showErrorMsg(context,basePavoResponse.getRes());
