@@ -240,7 +240,7 @@ public class VerifyPhoneControler {
                             if(basePavoResponse.getRes() == 0){
                                 handler.sendEmptyMessage(SEND_SMS_VERIFY);
                             }else{
-                                PavoUtil.showErrorMsg(context,basePavoResponse.getRes());
+                                PavoUtil.showErrorMsg(context,basePavoResponse.getResDesc());
                                 sendCodeFail();
                             }
                         }
@@ -465,7 +465,7 @@ public class VerifyPhoneControler {
                                     LogUtil.getInstance().info(LogLevel.INFO,"获取token成功。");
                                 }
                             }else{
-                                PavoUtil.showErrorMsg(context,basePavoResponse.getRes());
+                                PavoUtil.showErrorMsg(context,basePavoResponse.getResDesc());
                             }
                         }
 
