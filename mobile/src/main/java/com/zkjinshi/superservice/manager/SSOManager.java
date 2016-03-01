@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.Gravity;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.zkjinshi.base.log.LogLevel;
 import com.zkjinshi.base.log.LogUtil;
 import com.zkjinshi.base.util.Constants;
@@ -134,21 +135,25 @@ public class SSOManager {
                 @Override
                 public void onNetworkResponseSucceed(NetResponse result) {
                     super.onNetworkResponseSucceed(result);
-                    if(null != result && !TextUtils.isEmpty(result.rawResult)){
-                        Log.i(Constants.ZKJINSHI_BASE_TAG,"rawResult:"+result.rawResult);
-                        BasePavoResponse basePavoResponse = new Gson().fromJson(result.rawResult,BasePavoResponse.class);
-                        int restult = basePavoResponse.getRes();
-                        if(0 == restult){
-                            String token = basePavoResponse.getToken();
-                            if(!TextUtils.isEmpty(token)){
-                                CacheUtil.getInstance().setExtToken(token);
-                            }
-                        }else{
-                            String errorMsg = basePavoResponse.getResDesc();
-                            if(!TextUtils.isEmpty(errorMsg)){
-                                DialogUtil.getInstance().showCustomToast(context,errorMsg, Gravity.CENTER);
+                    try {
+                        if(null != result && !TextUtils.isEmpty(result.rawResult)){
+                            Log.i(Constants.ZKJINSHI_BASE_TAG,"rawResult:"+result.rawResult);
+                            BasePavoResponse basePavoResponse = new Gson().fromJson(result.rawResult,BasePavoResponse.class);
+                            int restult = basePavoResponse.getRes();
+                            if(0 == restult){
+                                String token = basePavoResponse.getToken();
+                                if(!TextUtils.isEmpty(token)){
+                                    CacheUtil.getInstance().setExtToken(token);
+                                }
+                            }else{
+                                String errorMsg = basePavoResponse.getResDesc();
+                                if(!TextUtils.isEmpty(errorMsg)){
+                                    DialogUtil.getInstance().showCustomToast(context,errorMsg, Gravity.CENTER);
+                                }
                             }
                         }
+                    } catch (JsonSyntaxException e) {
+                        e.printStackTrace();
                     }
                 }
 
