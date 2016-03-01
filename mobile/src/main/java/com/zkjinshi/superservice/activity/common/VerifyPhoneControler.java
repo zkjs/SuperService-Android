@@ -30,6 +30,7 @@ import com.zkjinshi.superservice.net.NetResponse;
 import com.zkjinshi.superservice.response.BasePavoResponse;
 import com.zkjinshi.superservice.utils.AESUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
+import com.zkjinshi.superservice.utils.PavoUtil;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.utils.SmsUtil;
 import com.zkjinshi.superservice.utils.StringUtil;
@@ -239,6 +240,7 @@ public class VerifyPhoneControler {
                             if(basePavoResponse.getRes() == 0){
                                 handler.sendEmptyMessage(SEND_SMS_VERIFY);
                             }else{
+                                PavoUtil.showErrorMsg(context,basePavoResponse.getRes());
                                 sendCodeFail();
                             }
                         }
@@ -462,7 +464,7 @@ public class VerifyPhoneControler {
                                     successCallBack.verrifySuccess();
                                 }
                             }else{
-                                Log.e(TAG,"使用手机验证码创建Token错误"+basePavoResponse.toString());
+                                PavoUtil.showErrorMsg(context,basePavoResponse.getRes());
                             }
                         }
 
