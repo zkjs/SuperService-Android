@@ -1,7 +1,6 @@
 package com.zkjinshi.superservice.emchat;
 
 import android.os.AsyncTask;
-import android.os.Parcelable;
 import android.support.v4.util.Pair;
 import android.text.TextUtils;
 import android.util.Log;
@@ -232,7 +231,7 @@ public class EMConversationHelper {
     /**
      * 发送欢迎信息
      */
-    public void sendWelcomeMessage(String userName,String userId){
+    public void sendWelcomeMessage(String userId,String userName){
         try {
             if(!TextUtils.isEmpty(userName) && !TextUtils.isEmpty(userId)){
                 String shopId = CacheUtil.getInstance().getShopID();

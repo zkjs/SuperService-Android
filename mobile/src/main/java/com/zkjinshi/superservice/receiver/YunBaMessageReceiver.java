@@ -4,14 +4,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
-import android.view.Gravity;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.zkjinshi.base.util.ActivityManagerHelper;
-import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.ServiceApplication;
-import com.zkjinshi.superservice.bean.LocPushBean;
 import com.zkjinshi.superservice.emchat.EMConversationHelper;
 import com.zkjinshi.superservice.manager.SSOManager;
 import com.zkjinshi.superservice.manager.YunBaSubscribeManager;
@@ -45,8 +42,6 @@ public class YunBaMessageReceiver extends BroadcastReceiver {
             String msg   = intent.getStringExtra(YunBaManager.MQTT_MSG);
             Log.i(TAG, "YunBaMessageReceiver-msg:"+msg);
             Log.i(TAG, "YunBaMessageReceiver-topic:"+topic);
-
-            DialogUtil.getInstance().showCustomToast(context,"云巴推送内容:"+msg, Gravity.CENTER);
 
             YunBaMsgVo yunBaMsgVo = null;
 
