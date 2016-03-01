@@ -3,11 +3,13 @@ package com.zkjinshi.superservice.manager;
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 
 import com.google.gson.Gson;
 import com.zkjinshi.base.log.LogLevel;
 import com.zkjinshi.base.log.LogUtil;
 import com.zkjinshi.base.util.Constants;
+import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.net.ExtNetRequestListener;
 import com.zkjinshi.superservice.net.MethodType;
 import com.zkjinshi.superservice.net.NetRequest;
@@ -135,10 +137,16 @@ public class SSOManager {
                     if(null != result && !TextUtils.isEmpty(result.rawResult)){
                         Log.i(Constants.ZKJINSHI_BASE_TAG,"rawResult:"+result.rawResult);
                         BasePavoResponse basePavoResponse = new Gson().fromJson(result.rawResult,BasePavoResponse.class);
-                        if(null != basePavoResponse){
+                        int restult = basePavoResponse.getRes();
+                        if(0 == restult){
                             String token = basePavoResponse.getToken();
                             if(!TextUtils.isEmpty(token)){
                                 CacheUtil.getInstance().setExtToken(token);
+                            }
+                        }else{
+                            String errorMsg = basePavoResponse.getResDesc();
+                            if(!TextUtils.isEmpty(errorMsg)){
+                                DialogUtil.getInstance().showCustomToast(context,errorMsg, Gravity.CENTER);
                             }
                         }
                     }
