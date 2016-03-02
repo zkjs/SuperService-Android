@@ -8,8 +8,8 @@ android {
         applicationId "com.zkjinshi.superservice"
         minSdkVersion 15
         targetSdkVersion 22
-        versionCode 77
-        versionName "1.13.1"
+        versionCode 78
+        versionName "1.13.2"
         multiDexEnabled true
     }
 
@@ -17,6 +17,7 @@ android {
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
         }
     }
     testOptions {
@@ -41,6 +42,6 @@ dependencies {
     compile project(':library.FileChoser')
     compile 'com.google.android.gms:play-services-appindexing:8.1.0'
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
-    compile project(':drawee-backends:drawee-pipeline')
     testCompile 'junit:junit:4.12'
+    compile 'com.facebook.fresco:fresco:0.9.0'
 }
