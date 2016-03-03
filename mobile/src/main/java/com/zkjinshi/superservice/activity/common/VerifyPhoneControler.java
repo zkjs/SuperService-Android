@@ -216,8 +216,6 @@ public class VerifyPhoneControler {
             netRequest.setObjectParamMap(bizMap);
             NetRequestTask netRequestTask = new NetRequestTask(context,netRequest, NetResponse.class);
             netRequestTask.methodType = MethodType.JSONPOST;
-            LogUtil.getInstance().info(LogLevel.DEBUG,"调用API："+url);
-            LogUtil.getInstance().info(LogLevel.DEBUG,"API推送参数:"+bizMap.toString());
             netRequestTask.setNetRequestListener(new ExtNetRequestListener(context) {
                 @Override
                 public void onNetworkRequestError(int errorCode, String errorMessage) {

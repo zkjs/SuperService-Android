@@ -392,7 +392,7 @@ public class ProtocolUtil {
      * @return
      */
     public static String ssoVcode(){
-        return com.zkjinshi.base.util.Constants.PAVO_HOST+"sso/vcode/"+ com.zkjinshi.base.util.Constants.PAVO_VERSION+"/ss";
+        return com.zkjinshi.base.util.Constants.PAVO_HOST+"sso/vcode/"+ com.zkjinshi.base.util.Constants.PAVO_VERSION+"/ss?source=login";
     }
 
     /**
