@@ -144,6 +144,7 @@ public class SSOManager {
                                 String token = basePavoResponse.getToken();
                                 if(!TextUtils.isEmpty(token)){
                                     CacheUtil.getInstance().setExtToken(token);
+                                    YunBaSubscribeManager.getInstance().setAlias(context);
                                 }
                             }else{
                                 String errorMsg = basePavoResponse.getResDesc();

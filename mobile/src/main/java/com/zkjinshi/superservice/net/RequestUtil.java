@@ -59,6 +59,10 @@ public class RequestUtil {
                 "android");
         httpclient.getParams().setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, TIMEOUT);
         httpclient.getParams().setParameter(CoreConnectionPNames.SO_TIMEOUT, TIMEOUT);
+        String token = CacheUtil.getInstance().getExtToken();
+        if(!TextUtils.isEmpty(token)){
+            httpRequest.addHeader("Token",token);
+        }
         HttpResponse httpResponse = httpclient.execute(httpRequest);
         if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_OK)
         {
@@ -81,6 +85,10 @@ public class RequestUtil {
         connection.setInstanceFollowRedirects(true);
         connection.setRequestProperty("Content-Type","application/json; charset=UTF-8");
         connection.connect();
+        String token = CacheUtil.getInstance().getExtToken();
+        if(!TextUtils.isEmpty(token)){
+            connection.setRequestProperty("Token",token);
+        }
         DataOutputStream out = new DataOutputStream(connection.getOutputStream());
         jsonObject = new JSONObject();
         if (null != bizParamsMap) {
@@ -163,7 +171,6 @@ public class RequestUtil {
 
     public static String sendJsonPostRequest(String requestUrl,HashMap<String,Object> objectParamsMap) throws Exception{
         String resultInfo = null;
-        JSONObject jsonObject = null;
         URL url = new URL(requestUrl);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setConnectTimeout(TIMEOUT);
@@ -174,6 +181,10 @@ public class RequestUtil {
         connection.setUseCaches(false);
         connection.setInstanceFollowRedirects(true);
         connection.setRequestProperty("Content-Type","application/json; charset=UTF-8");
+        String token = CacheUtil.getInstance().getExtToken();
+        if(!TextUtils.isEmpty(token)){
+            connection.setRequestProperty("Token",token);
+        }
         connection.connect();
         // POST请求
         DataOutputStream out = new DataOutputStream(
@@ -187,9 +198,6 @@ public class RequestUtil {
                 obj.put(bizEntry.getKey(),bizEntry.getValue());
             }
         }
-//        obj.put("data", objectParamsMap.get("data"));
-//        obj.put("category", "0");
-
         out.write(obj.toString().getBytes("UTF-8"));// 这样可以处理中文乱码问题
         out.flush();
         out.close();
@@ -205,7 +213,6 @@ public class RequestUtil {
         }
         resultInfo = sb.toString();
         reader.close();
-
         return  resultInfo;
     }
 

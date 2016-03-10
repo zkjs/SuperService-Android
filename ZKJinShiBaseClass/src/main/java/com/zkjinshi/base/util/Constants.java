@@ -15,7 +15,8 @@ public class Constants {
     public static final String SSO_HOST = "sso-host";
 
     //图片host
-    public final static String IMG_HOST = "http://svip02.oss-cn-shenzhen.aliyuncs.com/";
+    //public final static String IMG_HOST = "http://svip02.oss-cn-shenzhen.aliyuncs.com/";
+    public final static String IMG_HOST = "http://for-testea01cc11-44f5-431f-a393-a6595c09410d.oss-cn-shenzhen.aliyuncs.com/";
 
     //PAVO 认证服务API
     public final static String PAVO_HOST = "http://120.25.80.143:8080/";

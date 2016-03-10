@@ -54,7 +54,7 @@ public class EMessageReceiver extends BroadcastReceiver {
                         //移除云巴订阅推送
                         YunBaSubscribeManager.getInstance().unSubscribe(context);
                         //取消订阅别名
-                        YunBaSubscribeManager.getInstance().setAlias(context,"");
+                        YunBaSubscribeManager.getInstance().cancelAlias(context);
                         //环信接口退出
                         EasemobIMHelper.getInstance().logout();
                     }

@@ -22,6 +22,7 @@ import com.zkjinshi.superservice.manager.YunBaSubscribeManager;
 import com.zkjinshi.superservice.manager.ZoneManager;
 import com.zkjinshi.superservice.net.ExtNetRequestListener;
 import com.zkjinshi.superservice.net.NetResponse;
+import com.zkjinshi.superservice.notification.NotificationHelper;
 import com.zkjinshi.superservice.sqlite.DBOpenHelper;
 import com.zkjinshi.superservice.sqlite.UserDBUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
@@ -135,7 +136,6 @@ public class SplashActivity extends Activity{
                             UserDBUtil.getInstance().addUser(userVo);
                             //String avatarUrl = ProtocolUtil.getShopLogoUrl(adminLoginBean.getShopid());
                             //CacheUtil.getInstance().saveUserPhotoUrl(avatarUrl);
-                            YunBaSubscribeManager.getInstance().setAlias(SplashActivity.this,CacheUtil.getInstance().getUserId());
                             YunBaSubscribeManager.getInstance().subscribe();
                         }
                     }
@@ -177,7 +177,6 @@ public class SplashActivity extends Activity{
                         CacheUtil.getInstance().setShopID(sempLoginbean.getShopid());
                         CacheUtil.getInstance().setShopFullName(sempLoginbean.getFullname());
                         CacheUtil.getInstance().setLoginIdentity(IdentityType.WAITER);
-                        YunBaSubscribeManager.getInstance().setAlias(SplashActivity.this,CacheUtil.getInstance().getUserId());
                         YunBaSubscribeManager.getInstance().subscribe();
                         String locIds = sempLoginbean.getLocid();
                         if(!TextUtils.isEmpty(locIds)){

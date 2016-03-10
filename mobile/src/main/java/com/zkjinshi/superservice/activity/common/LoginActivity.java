@@ -21,6 +21,7 @@ import com.zkjinshi.superservice.manager.YunBaSubscribeManager;
 import com.zkjinshi.superservice.manager.ZoneManager;
 import com.zkjinshi.superservice.net.ExtNetRequestListener;
 import com.zkjinshi.superservice.net.NetResponse;
+import com.zkjinshi.superservice.notification.NotificationHelper;
 import com.zkjinshi.superservice.sqlite.DBOpenHelper;
 import com.zkjinshi.superservice.sqlite.UserDBUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
@@ -151,7 +152,6 @@ public class LoginActivity extends Activity implements VerifyPhoneControler.Succ
                     UserDBUtil.getInstance().addUser(userVo);
                     String avatarUrl = ProtocolUtil.getAvatarUrl(userVo.getUserId());
                     CacheUtil.getInstance().saveUserPhotoUrl(avatarUrl);
-                    YunBaSubscribeManager.getInstance().setAlias(LoginActivity.this,CacheUtil.getInstance().getUserId());
                     YunBaSubscribeManager.getInstance().subscribe();
                     Intent intent;
                     if(TextUtils.isEmpty(sempLoginbean.getUrl())){

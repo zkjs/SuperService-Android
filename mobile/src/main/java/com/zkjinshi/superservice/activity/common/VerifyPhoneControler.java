@@ -22,6 +22,7 @@ import com.google.gson.Gson;
 import com.zkjinshi.base.log.LogLevel;
 import com.zkjinshi.base.log.LogUtil;
 import com.zkjinshi.superservice.R;
+import com.zkjinshi.superservice.manager.YunBaSubscribeManager;
 import com.zkjinshi.superservice.net.ExtNetRequestListener;
 import com.zkjinshi.superservice.net.MethodType;
 import com.zkjinshi.superservice.net.NetRequest;
@@ -459,6 +460,7 @@ public class VerifyPhoneControler {
                             if(basePavoResponse.getRes() == 0){
                                 if(!StringUtil.isEmpty(basePavoResponse.getToken())){
                                     CacheUtil.getInstance().setExtToken(basePavoResponse.getToken());
+                                    YunBaSubscribeManager.getInstance().setAlias(context);
                                     successCallBack.verrifySuccess();
                                     LogUtil.getInstance().info(LogLevel.INFO,"获取token成功。");
                                 }

@@ -151,14 +151,39 @@ public class YunBaSubscribeManager {
     /**
      * 订阅别名
      * @param context
-     * @param alias
      */
-    public void setAlias(final Context context,String alias){
+    public void setAlias(final Context context){
+        String tokenStr = CacheUtil.getInstance().getExtToken();
+        PayloadVo payloadVo = SSOManager.getInstance().decodeToken(tokenStr);
+        String alias = payloadVo.getSub();
         YunBaManager.setAlias(context, alias,
                 new IMqttActionListener() {
                     @Override
                     public void onSuccess(IMqttToken asyncActionToken) {
                         Log.i(Constants.ZKJINSHI_BASE_TAG,"订阅别名成功");
+                    }
+
+                    @Override
+                    public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
+                        if (exception instanceof MqttException) {
+                            MqttException ex = (MqttException)exception;
+                            String msg =  "setAlias failed with error code : " + ex.getReasonCode();
+                        }
+                    }
+                }
+        );
+    }
+
+    /**
+     * 取消订阅别名
+     * @param context
+     */
+    public void cancelAlias(final Context context){
+        YunBaManager.setAlias(context, "",
+                new IMqttActionListener() {
+                    @Override
+                    public void onSuccess(IMqttToken asyncActionToken) {
+                        Log.i(Constants.ZKJINSHI_BASE_TAG,"取消订阅别名成功");
                     }
 
                     @Override

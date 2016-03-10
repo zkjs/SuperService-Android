@@ -527,4 +527,6 @@
     <color name="Gray8a8a8a">#8a8a8a</color>
     <color name="province_line_border">#D0D0D0</color>
 
+    <color name="light_transparent">#aa000000</color>
+
 </resources>

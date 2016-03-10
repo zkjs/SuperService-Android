@@ -26,6 +26,7 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.zkjinshi.base.log.LogLevel;
 import com.zkjinshi.base.log.LogUtil;
 
+import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
 
 import com.zkjinshi.superservice.activity.set.ClientActivity;
@@ -33,6 +34,7 @@ import com.zkjinshi.superservice.activity.set.SettingActivity;
 import com.zkjinshi.superservice.activity.set.TeamContactsActivity;
 
 import com.zkjinshi.superservice.emchat.EasemobIMHelper;
+import com.zkjinshi.superservice.ext.activity.facepay.CheckOutActivity;
 import com.zkjinshi.superservice.manager.SSOManager;
 import com.zkjinshi.superservice.manager.YunBaSubscribeManager;
 import com.zkjinshi.superservice.net.ExtNetRequestListener;
@@ -48,6 +50,8 @@ import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.view.CustomExtDialog;
 import com.zkjinshi.superservice.vo.IdentityType;
 import com.zkjinshi.superservice.vo.UserVo;
+
+import org.apache.log4j.chainsaw.Main;
 
 
 /**
@@ -171,7 +175,7 @@ public class MainActivity extends AppCompatActivity{
                             //移除云巴订阅推送
                             YunBaSubscribeManager.getInstance().unSubscribe(MainActivity.this);
                             //取消订阅别名
-                            YunBaSubscribeManager.getInstance().setAlias(MainActivity.this,"");
+                            YunBaSubscribeManager.getInstance().cancelAlias(MainActivity.this);
                             //环信接口退出
                             EasemobIMHelper.getInstance().logout();
                             //http接口退出
@@ -275,6 +279,12 @@ public class MainActivity extends AppCompatActivity{
         switch (item.getItemId()) {
             case android.R.id.home:
                 mainActivityController.toggleDrawer();
+                return true;
+            case R.id.menu_checkout_center:
+                //开启刷脸支付
+                Intent intent = new Intent();
+                intent.setClass(MainActivity.this, CheckOutActivity.class);
+                startActivity(intent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
