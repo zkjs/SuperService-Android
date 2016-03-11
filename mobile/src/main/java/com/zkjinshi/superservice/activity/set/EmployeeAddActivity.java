@@ -3,6 +3,7 @@ package com.zkjinshi.superservice.activity.set;
 import android.app.Activity;
 
 import android.content.ContentResolver;
+import android.content.Context;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -16,6 +17,8 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.JsonHttpResponseHandler;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.filechoser.activity.FileListActivity;
 import com.zkjinshi.superservice.R;
@@ -29,21 +32,30 @@ import com.zkjinshi.superservice.net.NetResponse;
 import com.zkjinshi.superservice.sqlite.ShopDepartmentDBUtil;
 import com.zkjinshi.superservice.sqlite.ShopEmployeeDBUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
+import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.utils.JxlUtil;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.vo.ContactLocalVo;
 import com.zkjinshi.superservice.vo.DepartmentVo;
+import com.zkjinshi.superservice.vo.EmployeeVo;
 import com.zkjinshi.superservice.vo.ShopEmployeeVo;
 
 import android.content.Intent;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.provider.ContactsContract.CommonDataKinds.Photo;
 import android.text.TextUtils;
+import android.widget.Toast;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.entity.StringEntity;
 
 /**
  * 开发者：dujiande
@@ -88,12 +100,13 @@ public class EmployeeAddActivity extends Activity {
 
     private boolean hasGetDept = false;
     private String mShopID;
+    private Context mContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_employee_add);
-
+        mContext = this;
         initView();
         initData();
         initListener();
@@ -347,57 +360,60 @@ public class EmployeeAddActivity extends Activity {
             return;
         }
 
-        String url = ProtocolUtil.getBatchAddClientUrl();
-        Log.i(TAG, url);
-        String employeesJson = new Gson().toJson(allList);
-        NetRequest netRequest = new NetRequest(url);
-        HashMap<String,String> bizMap = new HashMap<String,String>();
-        bizMap.put("salesid", CacheUtil.getInstance().getUserId());
-        bizMap.put("token", CacheUtil.getInstance().getToken());
-        bizMap.put("shopid", CacheUtil.getInstance().getShopID());
-        bizMap.put("userdata", employeesJson);
-        netRequest.setBizParamMap(bizMap);
-        NetRequestTask netRequestTask = new NetRequestTask(this,netRequest, NetResponse.class);
-        netRequestTask.methodType = MethodType.PUSH;
-        netRequestTask.setNetRequestListener(new ExtNetRequestListener(this) {
-            @Override
-            public void onNetworkRequestError(int errorCode, String errorMessage) {
-                Log.i(TAG, "errorCode:" + errorCode);
-                Log.i(TAG, "errorMessage:" + errorMessage);
-            }
+        ArrayList<EmployeeVo> users = new ArrayList<EmployeeVo>();
+        for(int i=0;i<allList.size();i++){
+            EmployeeVo employeeVo = new EmployeeVo();
+            employeeVo.setPhone(allList.get(i).getPhone());
+            employeeVo.setUsername(allList.get(i).getName());
+            users.add(employeeVo);
+        }
 
-            @Override
-            public void onNetworkRequestCancelled() {
-
-            }
-
-            @Override
-            public void onNetworkResponseSucceed(NetResponse result) {
-                super.onNetworkResponseSucceed(result);
-
-                Log.i(TAG, "result.rawResult:" + result.rawResult);
-                try{
-                    ImportSempBean importSempBean = new Gson().fromJson(result.rawResult,ImportSempBean.class);
-                    if(importSempBean != null && importSempBean.isSet()){
-                        DialogUtil.getInstance().showToast(EmployeeAddActivity.this,"成功添加"+importSempBean.getInsert()+"成员\n"+"成功更新"+importSempBean.getUpdate()+"成员\n");
-                        setResult(RESULT_OK);
-                        finish();
-                    }else{
-                        Log.e(TAG,"添加成员失败");
-                    }
-
-                }catch (Exception e){
-                    Log.e(TAG,e.getMessage());
+        String usersJsonStr = new Gson().toJson(users);
+        try{
+            AsyncHttpClient client = new AsyncHttpClient();
+            client.setTimeout(Constants.OVERTIMEOUT);
+            client.addHeader("Content-Type","application/json; charset=UTF-8");
+            client.addHeader("Token",CacheUtil.getInstance().getExtToken());
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("users",usersJsonStr);
+            StringEntity stringEntity = new StringEntity(jsonObject.toString());
+            String url = ProtocolUtil.registerSSusers();
+            client.post(mContext,url, stringEntity, "application/json", new JsonHttpResponseHandler(){
+                public void onStart(){
+                    super.onStart();
+                    DialogUtil.getInstance().showAvatarProgressDialog(mContext,"");
                 }
-            }
 
-            @Override
-            public void beforeNetworkRequestStart() {
+                public void onFinish(){
+                    super.onFinish();
+                    DialogUtil.getInstance().cancelProgressDialog();
+                }
 
-            }
-        });
-        netRequestTask.isShowLoadingDialog = true;
-        netRequestTask.execute();
+                public void onSuccess(int statusCode, Header[] headers, JSONObject response){
+                    super.onSuccess(statusCode,headers,response);
+                    try {
+                        if(response.getInt("res") == 0){
+                            Toast.makeText(mContext,"成功添加",Toast.LENGTH_SHORT).show();
+                            setResult(RESULT_OK);
+                            finish();
+                        }else{
+                            Toast.makeText(mContext,response.getString("resDesc"),Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        Toast.makeText(mContext,"解析异常",Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse){
+                    super.onFailure(statusCode,headers,throwable,errorResponse);
+                    Toast.makeText(mContext,"API 错误："+statusCode,Toast.LENGTH_SHORT).show();
+                }
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

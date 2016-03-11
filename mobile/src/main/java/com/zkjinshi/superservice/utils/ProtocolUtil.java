@@ -238,13 +238,6 @@ public class ProtocolUtil {
         return ConfigUtil.getInst().getPhpDomain()+"user/logout?userid=" + userID;
     }
 
-    /**
-     * 获取用户信息
-     * @return
-     */
-    public static String getUserInfoUrl(){
-        return  ConfigUtil.getInst().getPhpDomain()+"v10/user";
-    }
 
     /**
      * 添加用户发票列表
@@ -402,6 +395,47 @@ public class ProtocolUtil {
     public static String ssoToken(){
         return com.zkjinshi.base.util.Constants.PAVO_HOST+"sso/token/"+ Constants.PAVO_VERSION+"/phone/ss";
     }
+
+    /**
+     * 使用用户名密码创建Token
+     * @return
+     */
+    public static String ssoPasswordGetToken(){
+        return com.zkjinshi.base.util.Constants.PAVO_HOST+"sso/token/v1/name/ss";
+    }
+
+    /**
+     * 获取用户资料-批量，所有用户
+     * @return
+     */
+    public static String getUserInfoAll(){
+        return com.zkjinshi.base.util.Constants.FORNAX_HOST+"res/v1/query/user/all";
+    }
+
+    /**
+     * 登陆后更新用户资料
+     * @return
+     */
+    public static String updateUserInfo(){
+        return com.zkjinshi.base.util.Constants.FORNAX_HOST+"res/v1/update/user";
+    }
+
+    /**
+     * 我的客人（ss），查询销售的客人资料
+     * @return
+     */
+    public static String getClientList(){
+        return com.zkjinshi.base.util.Constants.FORNAX_HOST+"res/v1/query/sis/";
+    }
+
+    /**
+     * 批量注册SS用户
+     * @return
+     */
+    public static String registerSSusers(){
+        return com.zkjinshi.base.util.Constants.FORNAX_HOST+"res/v1/register/users";
+    }
+
 
     /**
      * 获得刷新token Url

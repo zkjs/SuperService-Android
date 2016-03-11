@@ -207,6 +207,8 @@ public class CacheUtil {
 		sp.edit().putString("userName", userName).commit();
 	}
 
+
+
 	/**
 	 * 获取用户姓名
 	 * @return
@@ -218,6 +220,32 @@ public class CacheUtil {
 		SharedPreferences sp = context.getSharedPreferences(
 				SVIP_CACHE, Context.MODE_PRIVATE);
 		return sp.getString("userName","");
+	}
+
+	/**
+	 * 保存用户姓别
+	 * @param sex
+	 */
+	public void setSex(String sex) {
+		if (null == context) {
+			return;
+		}
+		SharedPreferences sp = context.getSharedPreferences(
+				SVIP_CACHE, Context.MODE_PRIVATE);
+		sp.edit().putString("sex", sex).commit();
+	}
+
+	/**
+	 * 获取用户姓别
+	 * @return
+	 */
+	public String getSex() {
+		if (null == context) {
+			return null;
+		}
+		SharedPreferences sp = context.getSharedPreferences(
+				SVIP_CACHE, Context.MODE_PRIVATE);
+		return sp.getString("sex","0");
 	}
 
 	/**
