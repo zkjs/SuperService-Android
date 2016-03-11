@@ -113,7 +113,7 @@ public class SSOManager {
     /**
      * 刷新token
      */
-    public void requestRefreshToken(final Context context){
+    public void requestRefreshToken(final Context context,final SSOCallBack ssoCallBack){
         boolean isLogin = CacheUtil.getInstance().isLogin();
         if(isLogin){
             String url = ProtocolUtil.getTokenRefreshUrl();
@@ -145,6 +145,9 @@ public class SSOManager {
                                 if(!TextUtils.isEmpty(token)){
                                     CacheUtil.getInstance().setExtToken(token);
                                     YunBaSubscribeManager.getInstance().setAlias(context);
+                                    if(null != ssoCallBack){
+                                        ssoCallBack.onNetworkResponseSucceed();
+                                    }
                                 }
                             }else{
                                 String errorMsg = basePavoResponse.getResDesc();
@@ -166,6 +169,10 @@ public class SSOManager {
             netRequestTask.isShowLoadingDialog = false;
             netRequestTask.execute();
         }
+    }
+
+    public interface SSOCallBack{
+        public void onNetworkResponseSucceed();
     }
 
 }

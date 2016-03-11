@@ -22,6 +22,7 @@ import com.google.gson.Gson;
 import com.zkjinshi.base.log.LogLevel;
 import com.zkjinshi.base.log.LogUtil;
 import com.zkjinshi.superservice.R;
+import com.zkjinshi.superservice.manager.SSOManager;
 import com.zkjinshi.superservice.manager.YunBaSubscribeManager;
 import com.zkjinshi.superservice.net.ExtNetRequestListener;
 import com.zkjinshi.superservice.net.MethodType;
@@ -29,12 +30,17 @@ import com.zkjinshi.superservice.net.NetRequest;
 import com.zkjinshi.superservice.net.NetRequestTask;
 import com.zkjinshi.superservice.net.NetResponse;
 import com.zkjinshi.superservice.response.BasePavoResponse;
+import com.zkjinshi.superservice.sqlite.DBOpenHelper;
 import com.zkjinshi.superservice.utils.AESUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.PavoUtil;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.utils.SmsUtil;
 import com.zkjinshi.superservice.utils.StringUtil;
+import com.zkjinshi.superservice.vo.IdentityType;
+import com.zkjinshi.superservice.vo.PayloadVo;
+
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -428,62 +434,23 @@ public class VerifyPhoneControler {
      * @param code
      */
     private void getToken(final String phone,final String code){
-        try{
-            String url = ProtocolUtil.ssoToken();
-            NetRequest netRequest = new NetRequest(url);
-            HashMap<String,Object> bizMap = new HashMap<String,Object>();
-            bizMap.put("phone",phone);
-            bizMap.put("code",code);
-            netRequest.setObjectParamMap(bizMap);
-            NetRequestTask netRequestTask = new NetRequestTask(context,netRequest, NetResponse.class);
-            netRequestTask.methodType = MethodType.JSONPOST;
-            LogUtil.getInstance().info(LogLevel.DEBUG,"调用API："+url);
-            LogUtil.getInstance().info(LogLevel.DEBUG,"API推送参数:"+bizMap.toString());
-            netRequestTask.setNetRequestListener(new ExtNetRequestListener(context) {
-                @Override
-                public void onNetworkRequestError(int errorCode, String errorMessage) {
-                    Log.i(TAG, "errorCode:" + errorCode);
-                    Log.i(TAG, "errorMessage:" + errorMessage);
+        LoginController.getInstance().getTokenByCode(context, phone, code, new LoginController.CallBackListener() {
+            @Override
+            public void successCallback(JSONObject response) {
+                try {
+                    String token = response.getString("token");
+                    CacheUtil.getInstance().setExtToken(token);
+                    PayloadVo payloadVo = SSOManager.getInstance().decodeToken(token);
+                    CacheUtil.getInstance().setUserId(payloadVo.getSub());
+                    CacheUtil.getInstance().setLoginIdentity(IdentityType.WAITER);
+                    DBOpenHelper.DB_NAME = payloadVo.getSub() + ".db";
+                    successCallBack.verrifySuccess();
+                }catch (Exception e){
+                    e.printStackTrace();
                 }
 
-                @Override
-                public void onNetworkRequestCancelled() {
-
-                }
-
-                @Override
-                public void onNetworkResponseSucceed(NetResponse result) {
-                    super.onNetworkResponseSucceed(result);
-                    try{
-                        BasePavoResponse basePavoResponse = new Gson().fromJson(result.rawResult,BasePavoResponse.class);
-                        if(basePavoResponse != null){
-                            if(basePavoResponse.getRes() == 0){
-                                if(!StringUtil.isEmpty(basePavoResponse.getToken())){
-                                    CacheUtil.getInstance().setExtToken(basePavoResponse.getToken());
-                                    YunBaSubscribeManager.getInstance().setAlias(context);
-                                    successCallBack.verrifySuccess();
-                                    LogUtil.getInstance().info(LogLevel.INFO,"获取token成功。");
-                                }
-                            }else{
-                                PavoUtil.showErrorMsg(context,basePavoResponse.getResDesc());
-                            }
-                        }
-
-                    }catch (Exception e){
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void beforeNetworkRequestStart() {
-
-                }
-            });
-            netRequestTask.isShowLoadingDialog = true;
-            netRequestTask.execute();
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+            }
+        });
     }
 
 }

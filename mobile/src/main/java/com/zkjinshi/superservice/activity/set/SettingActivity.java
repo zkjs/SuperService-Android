@@ -63,7 +63,7 @@ public class SettingActivity extends Activity  {
     private ItemUserSettingView authIusv;
     private ItemUserSettingView jobIusv;
 
-    private UserVo userVo;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,22 +100,11 @@ public class SettingActivity extends Activity  {
     }
 
     private void initData() {
-        userVo = UserDBUtil.getInstance().queryUserById(CacheUtil.getInstance().getUserId());
-        if(null != userVo){
-            String userName = userVo.getUserName();
-            if(!TextUtils.isEmpty(userName)){
-                usernameTv.setText(userName);
-            }
-            String shopName = userVo.getShopName();
-            if(!TextUtils.isEmpty(shopName)){
-                shopNameIusv.setTextContent2(shopName);
-            }
-            if(!TextUtils.isEmpty(CacheUtil.getInstance().getUserPhone())){
-                phoneIusv.setTextContent2(CacheUtil.getInstance().getUserPhone());
-            }
-        }
 
-        String avatarUrl = ProtocolUtil.getAvatarUrl(CacheUtil.getInstance().getUserId());
+        usernameTv.setText(CacheUtil.getInstance().getUserName());
+        shopNameIusv.setTextContent2(CacheUtil.getInstance().getShopFullName());
+        phoneIusv.setTextContent2(CacheUtil.getInstance().getUserPhone());
+        String avatarUrl = CacheUtil.getInstance().getUserPhotoUrl();
         iconCiv.setImageURI(Uri.parse(avatarUrl));
     }
 

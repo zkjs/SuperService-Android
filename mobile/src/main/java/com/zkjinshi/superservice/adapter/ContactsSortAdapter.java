@@ -95,7 +95,7 @@ public class ContactsSortAdapter extends ServiceBaseAdapter<ClientContactVo> imp
         String clientID = contact.getUserid();
 
         //根据url显示图片
-        String avatarUrl = ProtocolUtil.getAvatarUrl(clientID);
+        String avatarUrl = ProtocolUtil.getHostImgUrl(contact.getUserimage());
         holder.civContactAvatar.setImageURI( Uri.parse(avatarUrl));
         holder.tvContactAvatar.setBackgroundResource(RandomDrawbleUtil.getRandomDrawable());
         holder.tvContactAvatar.setVisibility(View.VISIBLE);

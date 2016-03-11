@@ -72,7 +72,6 @@ public class MainActivity extends AppCompatActivity{
     private TextView        shopnameTv;
     private CheckBox        onlineCbx;
     private RelativeLayout  avatarLayout;
-    private UserVo          userVo;
     private ImageButton     setIbtn;
 
     private void initView(){
@@ -221,17 +220,11 @@ public class MainActivity extends AppCompatActivity{
 
     protected void onResume(){
         super.onResume();
-        userVo = UserDBUtil.getInstance().queryUserById(CacheUtil.getInstance().getUserId());
-        if(null != userVo){
-            String userName = userVo.getUserName();
-            if(!TextUtils.isEmpty(userName)){
-                usernameTv.setText(userName);
-            }
-            String shopName = userVo.getShopName();
-            if(!TextUtils.isEmpty(shopName)){
-                shopnameTv.setText(shopName);
-            }
-        }
+
+        String userName = CacheUtil.getInstance().getUserName();
+        usernameTv.setText(userName);
+        String shopName = CacheUtil.getInstance().getShopFullName();
+        shopnameTv.setText(shopName);
         onlineCbx.setChecked(CacheUtil.getInstance().getOnline());
         TextView teamTv = (TextView)findViewById(R.id.team_tv);
         if(IdentityType.BUSINESS ==  CacheUtil.getInstance().getLoginIdentity()){

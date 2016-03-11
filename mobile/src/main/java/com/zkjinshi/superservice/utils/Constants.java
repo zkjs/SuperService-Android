@@ -51,5 +51,5 @@ public class Constants {
 
     public static final String WECHAT_APP_ID = "wx55cd1d05f22990a0";
 
-
+    public static final int OVERTIMEOUT = 5000;
 }

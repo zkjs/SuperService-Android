@@ -1,5 +1,6 @@
 package com.zkjinshi.superservice.activity.set;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,10 +14,14 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.JsonHttpResponseHandler;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.chat.single.ChatActivity;
@@ -24,16 +29,24 @@ import com.zkjinshi.superservice.adapter.ContactsSortAdapter;
 import com.zkjinshi.superservice.factory.ClientFactory;
 import com.zkjinshi.superservice.net.ExtNetRequestListener;
 import com.zkjinshi.superservice.net.NetResponse;
+import com.zkjinshi.superservice.response.GetClientsResponse;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.ClientComparator;
 import com.zkjinshi.superservice.utils.Constants;
+import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.view.CustomExtDialog;
 import com.zkjinshi.superservice.view.SideBar;
 import com.zkjinshi.superservice.vo.ClientContactVo;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.entity.StringEntity;
 
 /**
  * 联系人列表显示
@@ -47,14 +60,13 @@ public class ClientActivity extends AppCompatActivity{
     private final static String TAG = ClientActivity.class.getSimpleName();
 
     private boolean     mChooseOrderPerson;
-    private String      mUserID;
-    private String      mToken;
     private String      mShopID;
     private Toolbar     mToolbar;
     private TextView    mTvCenterTitle;
     private SideBar     mSideBar;
     private TextView    mTvDialog;
     private ListView    mRcvContacts;
+    private Context mContext;
 
     private List<ClientContactVo>   mAllContactsList;
 //    private Map<String, ContactVo>  mLocalClientMap;
@@ -65,6 +77,8 @@ public class ClientActivity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_client);
+
+        mContext = this;
         initView();
         initData();
         initListener();
@@ -87,9 +101,6 @@ public class ClientActivity extends AppCompatActivity{
     private void initData() {
 
         mChooseOrderPerson = getIntent().getBooleanExtra("choose_order_person", false);
-
-        mUserID = CacheUtil.getInstance().getUserId();
-        mToken  = CacheUtil.getInstance().getToken();
         mShopID = CacheUtil.getInstance().getShopID();
 
         /** 给ListView设置adapter **/
@@ -101,7 +112,7 @@ public class ClientActivity extends AppCompatActivity{
         mContactsAdapter  = new ContactsSortAdapter(this, mAllContactsList);
 
         mRcvContacts.setAdapter(mContactsAdapter);
-        showMyClientList(mUserID, mToken, mShopID);
+        showMyClientList();
     }
 
     private void initListener() {
@@ -203,77 +214,67 @@ public class ClientActivity extends AppCompatActivity{
 
     /**
      * 获取我的客户列表
-     * @param userID
-     * @param token
-     * @param shopID
      */
-    public void showMyClientList(String userID, String token, String shopID) {
-        //  2  获取本地客户联系人列表
-//        if(null != mAllContactsList && !mAllContactsList.isEmpty()){
-//            mAllContactsList.removeAll(mAllContactsList);
-//        }
-//        List<ClientVo> clientVos = ClientDBUtil.getInstance().queryUnNormalClient();
-//        if(null != clientVos && !clientVos.isEmpty()){
-//            List<ContactVo> contactVos = new ArrayList<>();
-//            for(ClientVo clientVo : clientVos){
-//                ContactVo contact =  ContactFactory.getInstance().buildContactVoByMyClientVo(clientVo);
-//                contact.setIsOnLine(OnlineStatus.OFFLINE);
-//                mLocalClientMap.put(contact.getClientID(), contact);
-//                contactVos.add(contact);
-//            }
-//            Collections.sort(contactVos, pinyinComparator);
-//            mAllContactsList.addAll(contactVos);
-//        }
+    public void showMyClientList() {
 
-        // 1. 服务器获取联系人
-        ClientController.getInstance().getShopClients(ClientActivity.this, userID, token, shopID,
-            new ExtNetRequestListener(this) {
-            @Override
-            public void onNetworkRequestError(int errorCode, String errorMessage) {
-                DialogUtil.getInstance().cancelProgressDialog();
-
-                Log.i(TAG, "errorCode:" + errorCode);
-                Log.i(TAG, "errorMessage:" + errorMessage);
-            }
-
-            @Override
-            public void onNetworkRequestCancelled() {
-                DialogUtil.getInstance().cancelProgressDialog();
-            }
-
-            @Override
-            public void onNetworkResponseSucceed(NetResponse result) {
-                super.onNetworkResponseSucceed(result);
-                DialogUtil.getInstance().cancelProgressDialog();
-                try {
-                    Log.i(TAG, "result.rawResult:" + result.rawResult);
-                    String jsonResult = result.rawResult;
-                    Gson gson = new Gson();
-                    mAllContactsList = gson.fromJson(jsonResult,
-                    new TypeToken<ArrayList<ClientContactVo>>() {}.getType());
-                    if (null != mAllContactsList && !mAllContactsList.isEmpty()) {
-                        mTvDialog.setVisibility(View.GONE);
-                        mAllContactsList = ClientFactory.getInstance().
-                                buildSortContactList(mAllContactsList);
-                        Collections.sort(mAllContactsList, mClientCompatator);
-                        mContactsAdapter.setData(mAllContactsList);
-                    }
-                } catch (JsonSyntaxException e) {
-                    e.printStackTrace();
+        try{
+            AsyncHttpClient client = new AsyncHttpClient();
+            client.setTimeout(Constants.OVERTIMEOUT);
+            client.addHeader("Content-Type","application/json; charset=UTF-8");
+            client.addHeader("Token",CacheUtil.getInstance().getExtToken());
+            JSONObject jsonObject = new JSONObject();
+            StringEntity stringEntity = new StringEntity(jsonObject.toString());
+            String url = ProtocolUtil.getClientList();
+            client.get(mContext,url, stringEntity, "application/json", new AsyncHttpResponseHandler(){
+                public void onStart(){
+                    super.onStart();
+                    DialogUtil.getInstance().showAvatarProgressDialog(mContext,"");
                 }
-            }
 
-            @Override
-            public void beforeNetworkRequestStart() {
-                //网络请求前
-            }
-        });
+                public void onFinish(){
+                    super.onFinish();
+                    DialogUtil.getInstance().cancelProgressDialog();
+                }
+
+                public void onSuccess(int statusCode, Header[] headers, byte[] responseBody){
+                    try {
+                        String response = new String(responseBody,"utf-8");
+                        GetClientsResponse getClientsResponse = new Gson().fromJson(response,GetClientsResponse.class);
+                        if(getClientsResponse == null){
+                            return;
+                        }
+                        if(getClientsResponse.getRes() == 0){
+                            mAllContactsList = getClientsResponse.getData();
+                            if (null != mAllContactsList && !mAllContactsList.isEmpty()) {
+                                mTvDialog.setVisibility(View.GONE);
+                                mAllContactsList = ClientFactory.getInstance().
+                                        buildSortContactList(mAllContactsList);
+                                Collections.sort(mAllContactsList, mClientCompatator);
+                                mContactsAdapter.setData(mAllContactsList);
+                            }
+                        }else{
+                            Toast.makeText(mContext,getClientsResponse.getResDesc(),Toast.LENGTH_SHORT).show();
+                        }
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Toast.makeText(mContext,"解析异常",Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error){
+                    Toast.makeText(mContext,"API 错误："+statusCode,Toast.LENGTH_SHORT).show();
+                }
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        showMyClientList(mUserID, mToken, mShopID);
+        showMyClientList();
     }
 
     @Override
