@@ -137,6 +137,15 @@ public class MainActivity extends AppCompatActivity{
             }
         });
 
+        //收款台
+        findViewById(R.id.amount_tv).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this,CheckOutActivity.class);
+                startActivity(intent);
+            }
+        });
+
         //设置点击事件
         findViewById(R.id.setting_tv).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -272,12 +281,6 @@ public class MainActivity extends AppCompatActivity{
         switch (item.getItemId()) {
             case android.R.id.home:
                 mainActivityController.toggleDrawer();
-                return true;
-            case R.id.menu_checkout_center:
-                //开启刷脸支付
-                Intent intent = new Intent();
-                intent.setClass(MainActivity.this, CheckOutActivity.class);
-                startActivity(intent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
