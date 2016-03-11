@@ -100,7 +100,6 @@ public class SettingActivity extends Activity  {
     }
 
     private void initData() {
-
         usernameTv.setText(CacheUtil.getInstance().getUserName());
         shopNameIusv.setTextContent2(CacheUtil.getInstance().getShopFullName());
         phoneIusv.setTextContent2(CacheUtil.getInstance().getUserPhone());

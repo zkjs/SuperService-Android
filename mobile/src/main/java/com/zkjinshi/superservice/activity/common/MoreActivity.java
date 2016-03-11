@@ -22,6 +22,7 @@ import com.facebook.imagepipeline.core.ImagePipeline;
 import com.google.gson.Gson;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.zkjinshi.base.util.DialogUtil;
@@ -184,15 +185,14 @@ public class MoreActivity extends FragmentActivity implements MultiImageSelector
             AsyncHttpClient client = new AsyncHttpClient();
             client.setTimeout(Constants.OVERTIMEOUT);
             client.addHeader("Token",CacheUtil.getInstance().getExtToken());
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("username ",name);
-            jsonObject.put("sex",sex);
-            if(picPath != null){
-                jsonObject.put("image",new File(picPath));
-            }
-            StringEntity stringEntity = new StringEntity(jsonObject.toString());
             String url = ProtocolUtil.updateUserInfo();
-            client.post(this,url, stringEntity, "application/json", new JsonHttpResponseHandler(){
+            RequestParams params = new RequestParams();
+            params.put("sex",sex);
+            params.put("username",name);
+            if(picPath != null){
+                params.put("image",new File(picPath));
+            }
+            client.post(url, params, new JsonHttpResponseHandler(){
                 public void onStart(){
                     super.onStart();
                     DialogUtil.getInstance().showAvatarProgressDialog(MoreActivity.this,"");

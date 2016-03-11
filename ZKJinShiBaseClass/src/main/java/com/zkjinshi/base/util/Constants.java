@@ -25,6 +25,7 @@ public class Constants {
     //PAVO 秘钥
     public final static String PAVO_KEY = "X2VOV0+W7szslb+@kd7d44Im&JUAWO0y";
     //天炉座API
-    public final static String FORNAX_HOST = "http://120.25.80.143:8083/";
+    public final static String FORNAX_HOST = "http://120.24.37.1:8083/";
+    //public final static String FORNAX_HOST = "http://192.168.0.119:8080/";
 
 }

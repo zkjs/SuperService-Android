@@ -35,7 +35,7 @@
             android:layout_margin="20dp"
             fresco:actualImageScaleType="centerCrop"
             fresco:placeholderImage="@mipmap/ic_launcher"
-            fresco:placeholderImageScaleType="centerInside"
+            fresco:placeholderImageScaleType="centerCrop"
             fresco:roundAsCircle="true"
             fresco:roundedCornerRadius="0dp"/>
         <LinearLayout
