@@ -19,13 +19,13 @@ public class Constants {
     public final static String IMG_HOST = "http://for-testea01cc11-44f5-431f-a393-a6595c09410d.oss-cn-shenzhen.aliyuncs.com/";
 
     //PAVO 认证服务API
-    public final static String PAVO_HOST = "http://120.25.80.143:8080/";
+    public final static String PAVO_HOST = "http://p.zkjinshi.com/test/pav/";
     //PAVO 认证服务API 版本
     public final static String PAVO_VERSION = "v1";
     //PAVO 秘钥
     public final static String PAVO_KEY = "X2VOV0+W7szslb+@kd7d44Im&JUAWO0y";
     //天炉座API
-    public final static String FORNAX_HOST = "http://120.24.37.1:8083/";
+    public final static String FORNAX_HOST = "http://p.zkjinshi.com/test/for/";
     //public final static String FORNAX_HOST = "http://192.168.0.119:8080/";
 
 }
