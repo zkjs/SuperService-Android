@@ -1,6 +1,6 @@
 package com.zkjinshi.superservice.response;
 
-public class InsertResponse extends BaseResponse {
+public class InsertResponse extends BaseExtResponse {
 
     private  int id;
 

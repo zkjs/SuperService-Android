@@ -10,8 +10,10 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,18 +21,31 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.adapter.InviteCodeFragmentAdapter;
 import com.zkjinshi.superservice.fragment.UnusedInviteCodeFragment;
 import com.zkjinshi.superservice.fragment.UsedInviteCodeFragment;
 import com.zkjinshi.superservice.net.ExtNetRequestListener;
+import com.zkjinshi.superservice.net.MethodType;
+import com.zkjinshi.superservice.net.NetRequest;
+import com.zkjinshi.superservice.net.NetRequestTask;
 import com.zkjinshi.superservice.net.NetResponse;
+import com.zkjinshi.superservice.response.AddInviteCodeResponse;
+import com.zkjinshi.superservice.utils.CacheUtil;
+import com.zkjinshi.superservice.utils.ProtocolUtil;
+import com.zkjinshi.superservice.vo.GoodInfoVo;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 邀请码管理界面
@@ -232,47 +247,49 @@ public class InviteCodesActivity extends AppCompatActivity {
     }
 
     private void createNewInviteCode() {
-        //服务员新增邀请码使用
-        InviteCodeController.getInstance().newInviteCode(
-            InviteCodesActivity.this,
-            new ExtNetRequestListener(InviteCodesActivity.this) {
-                @Override
-                public void onNetworkRequestError(int errorCode, String errorMessage) {
-                    super.onNetworkRequestError(errorCode, errorMessage);
+        String requestUrl = ProtocolUtil.getSaleCodeUrl();
+        NetRequest netRequest = new NetRequest(requestUrl);
+        HashMap<String,String> bizMap = new HashMap<String, String>();
+        bizMap.put("rmk", CacheUtil.getInstance().getUserName()+"生成邀请码");
+        netRequest.setBizParamMap(bizMap);
+        NetRequestTask netRequestTask = new NetRequestTask(this, netRequest, NetResponse.class);
+        netRequestTask.methodType = MethodType.JSON;
+        netRequestTask.setNetRequestListener(new ExtNetRequestListener(this) {
+            @Override
+            public void onNetworkRequestError(int errorCode, String errorMessage) {
+                Log.i(TAG, "errorCode:" + errorCode);
+                Log.i(TAG, "errorMessage:" + errorMessage);
+            }
 
-                    Log.i(TAG, "errorCode:" + errorCode);
-                    Log.i(TAG, "errorMessage:" + errorMessage);
-                }
+            @Override
+            public void onNetworkRequestCancelled() {
+            }
 
-                @Override
-                public void onNetworkRequestCancelled() {
-                    super.onNetworkRequestCancelled();
-                }
-
-                @Override
-                public void onNetworkResponseSucceed(NetResponse result) {
-                    super.onNetworkResponseSucceed(result);
-                    super.onNetworkResponseSucceed(result);
-                    Log.i(TAG, "result.rawResult:" + result.rawResult);
-                    String jsonResult = result.rawResult;
-                try {
-                    JSONObject resultObj = new JSONObject(jsonResult);
-                    Boolean    isSuccess = resultObj.getBoolean("set");
-                    if (isSuccess) {
+            @Override
+            public void onNetworkResponseSucceed(NetResponse result) {
+                super.onNetworkResponseSucceed(result);
+                Log.i(TAG, "result.rawResult:" + result.rawResult);
+                AddInviteCodeResponse addInviteCodeResponse = new Gson().fromJson(result.rawResult,AddInviteCodeResponse.class);
+                if(null != addInviteCodeResponse){
+                    int resultCode = addInviteCodeResponse.getRes();
+                    if(0 == resultCode){
                         mFragmentLists.get(0).onResume();
-                    } else {
-                        //TODO: 提示生成邀请码失败
-                        mFragmentLists.get(0).onResume();
+                    }else {
+                        String resultMsg = addInviteCodeResponse.getResDesc();
+                        if(!TextUtils.isEmpty(resultMsg)){
+                            DialogUtil.getInstance().showCustomToast(InviteCodesActivity.this,resultMsg, Gravity.CENTER);
+                        }
                     }
-                } catch (JSONException e) {
-                    e.printStackTrace();
                 }
             }
+
             @Override
             public void beforeNetworkRequestStart() {
-                super.beforeNetworkRequestStart();
             }
         });
+        netRequestTask.isShowLoadingDialog = true;
+        netRequestTask.execute();
+
     }
 
     /**

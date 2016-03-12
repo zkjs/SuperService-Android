@@ -164,7 +164,7 @@ public class ProtocolUtil {
      * @return
      */
     public static String getCodeUserListUrl(){
-        return ConfigUtil.getInst().getPhpDomain()+" invitation/codeuser";
+        return ConfigUtil.getInst().getPhpDomain()+"invitation/codeuser";
     }
 
     /**
@@ -369,7 +369,15 @@ public class ProtocolUtil {
      * @return
      */
     public static String getTokenRefreshUrl(){
-        return ConfigUtil.getInst().getPavDomain()+"/sso/token/v1";
+        return ConfigUtil.getInst().getPavDomain()+"sso/token/v1";
+    }
+
+    /**
+     * 获取邀请码
+     * @return
+     */
+    public static String getSaleCodeUrl(){
+        return ConfigUtil.getInst().getForDomain()+"res/v1/salecode/get/salecode";
     }
 
 }

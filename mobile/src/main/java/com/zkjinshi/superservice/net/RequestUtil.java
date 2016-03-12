@@ -42,7 +42,8 @@ import java.util.Map;
  */
 public class RequestUtil {
 
-    public static int TIMEOUT = 5*1000;  //超时时间
+    public static int CONNECT_TIMEOUT = 3*1000;//连接超时时间
+    public static int SO_TIMEOUT = 5*1000;//请求超时时间
 
     /**
      * 发送Get请求
@@ -57,8 +58,8 @@ public class RequestUtil {
         httpclient.getParams().setParameter(
                 HttpProtocolParams.USER_AGENT,
                 "android");
-        httpclient.getParams().setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, TIMEOUT);
-        httpclient.getParams().setParameter(CoreConnectionPNames.SO_TIMEOUT, TIMEOUT);
+        httpclient.getParams().setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, CONNECT_TIMEOUT);
+        httpclient.getParams().setParameter(CoreConnectionPNames.SO_TIMEOUT, SO_TIMEOUT);
         String token = CacheUtil.getInstance().getExtToken();
         if(!TextUtils.isEmpty(token)){
             httpRequest.addHeader("Token",token);
@@ -76,19 +77,19 @@ public class RequestUtil {
         JSONObject jsonObject = null;
         URL url = new URL(requestUrl);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setConnectTimeout(TIMEOUT);
-        connection.setReadTimeout(TIMEOUT);
+        connection.setConnectTimeout(CONNECT_TIMEOUT);
+        connection.setReadTimeout(SO_TIMEOUT);
         connection.setDoOutput(true);
         connection.setDoInput(true);
         connection.setRequestMethod("POST");
         connection.setUseCaches(false);
         connection.setInstanceFollowRedirects(true);
         connection.setRequestProperty("Content-Type","application/json; charset=UTF-8");
-        connection.connect();
         String token = CacheUtil.getInstance().getExtToken();
         if(!TextUtils.isEmpty(token)){
             connection.setRequestProperty("Token",token);
         }
+        connection.connect();
         DataOutputStream out = new DataOutputStream(connection.getOutputStream());
         jsonObject = new JSONObject();
         if (null != bizParamsMap) {
@@ -125,8 +126,8 @@ public class RequestUtil {
         JSONObject jsonObject = null;
         URL url = new URL(requestUrl);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setConnectTimeout(TIMEOUT);
-        connection.setReadTimeout(TIMEOUT);
+        connection.setConnectTimeout(CONNECT_TIMEOUT);
+        connection.setReadTimeout(SO_TIMEOUT);
         connection.setDoOutput(true);
         connection.setDoInput(true);
         connection.setRequestMethod("PUT");
@@ -173,8 +174,8 @@ public class RequestUtil {
         String resultInfo = null;
         URL url = new URL(requestUrl);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setConnectTimeout(TIMEOUT);
-        connection.setReadTimeout(TIMEOUT);
+        connection.setConnectTimeout(CONNECT_TIMEOUT);
+        connection.setReadTimeout(SO_TIMEOUT);
         connection.setDoOutput(true);
         connection.setDoInput(true);
         connection.setRequestMethod("POST");
@@ -216,55 +217,6 @@ public class RequestUtil {
         return  resultInfo;
     }
 
-    public static String sendDeleteRequest(String requestUrl,HashMap<String,Object> objectParamsMap) throws Exception{
-        String resultInfo = null;
-        JSONObject jsonObject = null;
-        URL url = new URL(requestUrl);
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setConnectTimeout(TIMEOUT);
-        connection.setReadTimeout(TIMEOUT);
-        connection.setDoOutput(true);
-        connection.setDoInput(true);
-        connection.setRequestMethod("DELETE");
-        connection.setUseCaches(false);
-        connection.setInstanceFollowRedirects(true);
-        connection.setRequestProperty("Content-Type","application/json; charset=UTF-8");
-        String token = CacheUtil.getInstance().getExtToken();
-        if(!TextUtils.isEmpty(token)){
-            connection.setRequestProperty("Token",token);
-        }
-        connection.connect();
-        // POST请求
-        DataOutputStream out = new DataOutputStream(
-                connection.getOutputStream());
-        JSONObject obj = new JSONObject();
-
-        if (null != objectParamsMap) {
-            Iterator<Map.Entry<String, Object>> bizIterator = objectParamsMap.entrySet().iterator();
-            while (bizIterator.hasNext()) {
-                HashMap.Entry<String, Object> bizEntry = (HashMap.Entry<String, Object>) bizIterator.next();
-                obj.put(bizEntry.getKey(),bizEntry.getValue());
-            }
-        }
-        out.write(obj.toString().getBytes("UTF-8"));// 这样可以处理中文乱码问题
-        out.flush();
-        out.close();
-
-        // 读取响应
-        BufferedReader reader = new BufferedReader(new InputStreamReader(
-                connection.getInputStream()));
-        String lines;
-        StringBuffer sb = new StringBuffer("");
-        while ((lines = reader.readLine()) != null) {
-            lines = new String(lines.getBytes(), "utf-8");
-            sb.append(lines);
-        }
-        resultInfo = sb.toString();
-        reader.close();
-
-        return  resultInfo;
-    }
-
     /**
      * 发送post请求
      * @param requestUrl
@@ -302,8 +254,8 @@ public class RequestUtil {
         }
         HttpPost httpPost = new HttpPost(requestUrl);
         HttpClient httpClient = new DefaultHttpClient();
-        httpClient.getParams().setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, TIMEOUT);
-        httpClient.getParams().setParameter(CoreConnectionPNames.SO_TIMEOUT, TIMEOUT);
+        httpClient.getParams().setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, CONNECT_TIMEOUT);
+        httpClient.getParams().setParameter(CoreConnectionPNames.SO_TIMEOUT, SO_TIMEOUT);
         httpPost.setEntity(multipartEntity);
         HttpResponse response = httpClient.execute(httpPost);
         int respCode = 0;
@@ -329,8 +281,8 @@ public class RequestUtil {
         String CHARSET = "UTF-8";
         URL uri = new URL(requestUrl);
         HttpURLConnection conn = (HttpURLConnection) uri.openConnection();
-        conn.setReadTimeout(TIMEOUT);
-        conn.setConnectTimeout(TIMEOUT);
+        conn.setReadTimeout(CONNECT_TIMEOUT);
+        conn.setConnectTimeout(SO_TIMEOUT);
         conn.setDoInput(true);
         conn.setDoOutput(true);
         conn.setUseCaches(false);
