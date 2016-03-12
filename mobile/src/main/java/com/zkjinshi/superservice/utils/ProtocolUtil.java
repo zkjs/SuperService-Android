@@ -14,30 +14,6 @@ import com.zkjinshi.base.util.Constants;
 public class ProtocolUtil {
 
     /**
-     * 管理员登陆
-     * @return
-     */
-    public static String getAdminLoginUrl(){
-        return ConfigUtil.getInst().getPhpDomain()+"semp/semplogin";
-    }
-
-    /**
-     * 服务员登陆
-     * @return
-     */
-    public static String getSempLoginUrl(){
-        return ConfigUtil.getInst().getPhpDomain()+"semp/login";
-    }
-
-    /**
-     * 服务员修改资料
-     * @return
-     */
-    public static String getSempupdateUrl(){
-        return ConfigUtil.getInst().getPhpDomain()+"semp/sempupdate";
-    }
-
-    /**
      * 服务员获取商家整个区域列表
      * @return
      */
@@ -70,27 +46,11 @@ public class ProtocolUtil {
     }
 
     /**
-     * 会员信息 获取客人基础信息
-     * @return
-     */
-    public static String getClientBasicUrl(){
-        return ConfigUtil.getInst().getPhpDomain()+"semp/sempsuforphone";
-    }
-
-    /**
      * 会员信息 获取客人详细信息
      * @return
      */
     public static String getAddTagUrl(){
         return ConfigUtil.getInst().getPhpDomain()+"semp/addtag";
-    }
-
-    /**
-     * 会员信息 绑定会员
-     * @return
-     */
-    public static String getAddUserUrl(){
-        return ConfigUtil.getInst().getPhpDomain()+"semp/adduser";
     }
 
     /**
@@ -147,13 +107,6 @@ public class ProtocolUtil {
     }
 
     /**
-     * 管理: 批量添加服务员
-     */
-    public static String getBatchAddClientUrl(){
-        return ConfigUtil.getInst().getPhpDomain()+"shop/importsemp";
-    }
-
-    /**
      * 员工批量修改部门
      */
     public static String getChangeDeptUrl(){
@@ -196,22 +149,6 @@ public class ProtocolUtil {
      */
     public static String getCodeUserAllUrl(){
         return ConfigUtil.getInst().getPhpDomain()+"invitation/codeuserall";
-    }
-
-    /**
-     * POST 客户根据邀请码查询服务员
-     * @return
-     */
-    public static String getEmpByInviteCodeUrl(){
-        return ConfigUtil.getInst().getPhpDomain()+"invitation/getcode";
-    }
-
-    /**
-     * POST 超级身份输入邀请码动作
-     * @return
-     */
-    public static String getUserBindInviteCodeURrl(){
-        return ConfigUtil.getInst().getPhpDomain()+"invitation/bdcode";
     }
 
     /**
@@ -318,15 +255,6 @@ public class ProtocolUtil {
     }
 
     /**
-     *获取订单评论
-     * Method: GET
-     * @return
-     */
-    public static String getCommentShow(String orderNO, int page, int pageSize){
-        return ConfigUtil.getInst().getJavaDomain()+"order/evaluation/get/"+orderNO+"/"+page+"/"+pageSize;
-    }
-
-    /**
      * 查询用户(服务员)简单信息
      * @return
      */
@@ -360,7 +288,7 @@ public class ProtocolUtil {
      * @return
      */
     public static String getHostImgUrl(String apiUrl){
-        return com.zkjinshi.base.util.Constants.IMG_HOST+apiUrl;
+        return ConfigUtil.getInst().getImgDomain()+apiUrl;
     }
 
     /**
@@ -369,7 +297,7 @@ public class ProtocolUtil {
      * @return
      */
     public static String getAvatarUrl(String userid){
-        return com.zkjinshi.base.util.Constants.IMG_HOST+"uploads/users/"+userid+".jpg";
+        return ConfigUtil.getInst().getImgDomain()+"uploads/users/"+userid+".jpg";
     }
 
     /**
@@ -385,7 +313,7 @@ public class ProtocolUtil {
      * @return
      */
     public static String ssoVcode(){
-        return com.zkjinshi.base.util.Constants.PAVO_HOST+"sso/vcode/"+ com.zkjinshi.base.util.Constants.PAVO_VERSION+"/ss?source=login";
+        return ConfigUtil.getInst().getPavDomain()+"sso/vcode/v1/ss?source=login";
     }
 
     /**
@@ -393,7 +321,7 @@ public class ProtocolUtil {
      * @return
      */
     public static String ssoToken(){
-        return com.zkjinshi.base.util.Constants.PAVO_HOST+"sso/token/"+ Constants.PAVO_VERSION+"/phone/ss";
+        return  ConfigUtil.getInst().getPavDomain()+"sso/token/v1/phone/ss";
     }
 
     /**
@@ -401,7 +329,7 @@ public class ProtocolUtil {
      * @return
      */
     public static String ssoPasswordGetToken(){
-        return com.zkjinshi.base.util.Constants.PAVO_HOST+"sso/token/v1/name/ss";
+        return  ConfigUtil.getInst().getPavDomain()+"sso/token/v1/name/ss";
     }
 
     /**
@@ -409,7 +337,7 @@ public class ProtocolUtil {
      * @return
      */
     public static String getUserInfoAll(){
-        return com.zkjinshi.base.util.Constants.FORNAX_HOST+"res/v1/query/user/all";
+        return ConfigUtil.getInst().getForDomain()+"res/v1/query/user/all";
     }
 
     /**
@@ -417,7 +345,7 @@ public class ProtocolUtil {
      * @return
      */
     public static String updateUserInfo(){
-        return com.zkjinshi.base.util.Constants.FORNAX_HOST+"res/v1/update/user";
+        return ConfigUtil.getInst().getForDomain()+"res/v1/update/user";
     }
 
     /**
@@ -425,7 +353,7 @@ public class ProtocolUtil {
      * @return
      */
     public static String getClientList(){
-        return com.zkjinshi.base.util.Constants.FORNAX_HOST+"res/v1/query/sis/";
+        return ConfigUtil.getInst().getForDomain()+"res/v1/query/sis/";
     }
 
     /**
@@ -433,24 +361,15 @@ public class ProtocolUtil {
      * @return
      */
     public static String registerSSusers(){
-        return com.zkjinshi.base.util.Constants.FORNAX_HOST+"res/v1/register/users";
+        return ConfigUtil.getInst().getForDomain()+"res/v1/register/users";
     }
-
 
     /**
      * 获得刷新token Url
      * @return
      */
     public static String getTokenRefreshUrl(){
-        return ConfigUtil.getInst().getSsoDomain()+"/sso/token/v1";
-    }
-
-    /**
-     * 删除token Url
-     * @return
-     */
-    public static String getTokenDeleteUrl(){
-        return ConfigUtil.getInst().getSsoDomain()+"/sso/token/v1";
+        return ConfigUtil.getInst().getPavDomain()+"/sso/token/v1";
     }
 
 }

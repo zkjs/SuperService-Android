@@ -209,7 +209,27 @@ public class NotificationHelper {
 
             @Override
             public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-
+                NotificationCompat.Builder notificationBuilder = null;
+                // 1.设置显示信息
+                notificationBuilder = new NotificationCompat.Builder(context);
+                String contactName = yunBaMsgVo.getUserName();
+                String locDesc = yunBaMsgVo.getContent();
+                if(!TextUtils.isEmpty(contactName)){
+                    notificationBuilder.setContentTitle(contactName);
+                }
+                String welcomeMsg = "已到达"+locDesc;
+                notificationBuilder.setContentText(welcomeMsg);
+                notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
+                // 2.设置点击跳转事件
+                Intent intent = new Intent(context, SplashActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+                notificationBuilder.setContentIntent(pendingIntent);
+                // 3.设置通知栏其他属性
+                notificationBuilder.setAutoCancel(true);
+                notificationBuilder.setDefaults(Notification.DEFAULT_ALL);
+                NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+                notificationManager.notify(++NOTIFY_ID, notificationBuilder.build());
             }
 
             @Override

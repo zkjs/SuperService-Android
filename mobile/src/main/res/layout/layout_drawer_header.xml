@@ -113,6 +113,11 @@
 
         <TextView
             style="@style/leftMenuText"
+            android:text="收款台"
+            android:id="@+id/amount_tv" />
+
+        <TextView
+            style="@style/leftMenuText"
             android:text="设置"
             android:id="@+id/setting_tv" />
 

@@ -23,7 +23,7 @@ public class JWTTest extends AndroidTestCase {
 
         try {
             String mobile = "15815507102";
-            String encryptData = AESUtil.encrypt(mobile,com.zkjinshi.base.util.Constants.PAVO_KEY);
+            String encryptData = AESUtil.encrypt(mobile,AESUtil.PAVO_KEY);
             //nrEqYHd3Px7JmFbcI2Aiig==
             Log.i(Constants.ZKJINSHI_BASE_TAG,"encryptData:"+encryptData);
 
