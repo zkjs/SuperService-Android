@@ -40,7 +40,7 @@
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_gravity="center_vertical"
-                fresco:actualImageScaleType="centerInside"
+                fresco:actualImageScaleType="centerCrop"
                 fresco:roundAsCircle="true"
                 fresco:roundedCornerRadius="0dp"
                 fresco:placeholderImage="@android:color/transparent"
