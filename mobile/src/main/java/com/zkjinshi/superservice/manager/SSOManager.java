@@ -57,7 +57,6 @@ public class SSOManager {
         if(null != tokenArr && tokenArr.length > 0){
             String payloadEncode = tokenArr[1];
             String payloadDecode = Base64Decoder.decode(payloadEncode);
-            Log.i(Constants.ZKJINSHI_BASE_TAG,"token负载信息:"+payloadDecode);
             payloadVo = new Gson().fromJson(payloadDecode,PayloadVo.class);
         }
         return payloadVo;
@@ -144,7 +143,6 @@ public class SSOManager {
                                 String token = basePavoResponse.getToken();
                                 if(!TextUtils.isEmpty(token)){
                                     CacheUtil.getInstance().setExtToken(token);
-                                    YunBaSubscribeManager.getInstance().setAlias(context);
                                     if(null != ssoCallBack){
                                         ssoCallBack.onNetworkResponseSucceed();
                                     }
