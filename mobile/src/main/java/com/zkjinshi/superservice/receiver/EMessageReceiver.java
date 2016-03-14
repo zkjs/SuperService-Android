@@ -36,17 +36,14 @@ public class EMessageReceiver extends BroadcastReceiver {
             String action = intent.getAction();
             if(!TextUtils.isEmpty(action)){
                 if(action.equals("com.zkjinshi.superservice.CONNECTION_CONFLICT")){
-                    //应用运行中: 提示用户帐户其他地方登录
-                    if(ActivityManagerHelper.isRunning(context)){
-                        showOfflineDialog(context);
-                        NotificationHelper.getInstance().showExitAccountNotification(context);
-                        //移除云巴订阅推送
-                        YunBaSubscribeManager.getInstance().unSubscribe(context);
-                        //取消订阅别名
-                        YunBaSubscribeManager.getInstance().cancelAlias(context);
-                        //环信接口退出
-                        EasemobIMHelper.getInstance().logout();
-                    }
+                    showOfflineDialog(context);
+                    NotificationHelper.getInstance().showExitAccountNotification(context);
+                    //移除云巴订阅推送
+                    YunBaSubscribeManager.getInstance().unSubscribe(context);
+                    //取消订阅别名
+                    YunBaSubscribeManager.getInstance().cancelAlias(context);
+                    //环信接口退出
+                    EasemobIMHelper.getInstance().logout();
                 } else if(action.equals("com.zkjinshi.superservice.AddSales")){
                     //提示用户已被专属客服绑定
                     final String userID   = intent.getStringExtra("userId");

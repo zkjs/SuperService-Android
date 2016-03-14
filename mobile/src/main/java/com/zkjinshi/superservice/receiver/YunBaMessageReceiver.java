@@ -35,11 +35,6 @@ public class YunBaMessageReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(final Context context, final Intent intent) {
 
-        //判断当前应用是否正在运行
-        if(!ActivityManagerHelper.isRunning(ServiceApplication.getContext())){
-            return ;
-        }
-
         //云巴推送处理
         if (YunBaManager.MESSAGE_RECEIVED_ACTION.equals(intent.getAction())) {
 
