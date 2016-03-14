@@ -13,16 +13,12 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.google.gson.Gson;
-import com.zkjinshi.base.log.LogLevel;
-import com.zkjinshi.base.log.LogUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.common.InviteCodeController;
 import com.zkjinshi.superservice.activity.common.InviteCodeOperater;
 import com.zkjinshi.superservice.activity.common.InviteCodesActivity;
 import com.zkjinshi.superservice.adapter.InviteCodeAdapter;
-import com.zkjinshi.superservice.bean.Head;
 import com.zkjinshi.superservice.bean.InviteCode;
-import com.zkjinshi.superservice.bean.InviteCodeData;
 import com.zkjinshi.superservice.listener.RecyclerItemClickListener;
 import com.zkjinshi.superservice.net.ExtNetRequestListener;
 import com.zkjinshi.superservice.net.NetResponse;
@@ -137,6 +133,7 @@ public class UnusedInviteCodeFragment extends Fragment {
             }
         });
 
+        //弹出短信邀请码
         mInviteCodeAdapter.setOnItemClickListener(
             new RecyclerItemClickListener() {
                 @Override

@@ -391,4 +391,12 @@ public class ProtocolUtil {
         return ConfigUtil.getInst().getForDomain()+"res/v1/salecode/salecodewithsi/"+type+"?page="+pageNo+"&page_size="+pageSize;
     }
 
+    /**
+     * 获取邀请码分享链接
+     * @return
+     */
+    public static String getSalesCodeShareUrl(){
+        return ConfigUtil.getInst().getForDomain()+"res/v1/link/joinpage";
+    }
+
 }

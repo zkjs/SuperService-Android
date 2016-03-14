@@ -70,11 +70,9 @@ public class UsedInviteCodeFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-
         if(null != mInviteCodeAdapter){
             mInviteCodeAdapter.clear();
         }
-
         mPage = 0;
         getHistoryInviteCodeUsers(mPage);
     }
@@ -97,6 +95,8 @@ public class UsedInviteCodeFragment extends Fragment {
     }
 
     private void initListeners(){
+
+        //刷新数据
         mSrlContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -104,8 +104,8 @@ public class UsedInviteCodeFragment extends Fragment {
             }
         });
 
-        //上拉加载数据
-        mRvUnusedCodes.setOnScrollListener(new RecyclerView.OnScrollListener() {
+        //滑动监听
+        mRvUnusedCodes.addOnScrollListener(new RecyclerView.OnScrollListener() {
             boolean isSlidingToLast = false;
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {

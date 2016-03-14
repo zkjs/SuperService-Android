@@ -59,14 +59,6 @@ public class InviteCodeAdapter extends RecyclerView.Adapter<InviteCodeAdapter.Vi
                 holder.tvInviteCode.setText(salesCode);
             }
         }
-
-        //生成短信链接并且发送
-        holder.ibtnTransfer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
     }
 
     @Override
