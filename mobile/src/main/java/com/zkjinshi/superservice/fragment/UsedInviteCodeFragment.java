@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,20 +15,15 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.google.gson.Gson;
-import com.zkjinshi.base.log.LogLevel;
-import com.zkjinshi.base.log.LogUtil;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.common.InviteCodeController;
 import com.zkjinshi.superservice.activity.common.InviteCodesActivity;
-import com.zkjinshi.superservice.adapter.InviteCodeAdapter;
 import com.zkjinshi.superservice.adapter.InviteCodeUserAdapter;
-import com.zkjinshi.superservice.bean.CodeUserData;
-import com.zkjinshi.superservice.bean.Head;
 import com.zkjinshi.superservice.bean.InviteCode;
-import com.zkjinshi.superservice.bean.InviteCodeUser;
 import com.zkjinshi.superservice.net.ExtNetRequestListener;
 import com.zkjinshi.superservice.net.NetResponse;
+import com.zkjinshi.superservice.response.InviteCodeResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +43,7 @@ public class UsedInviteCodeFragment extends Fragment {
     private RecyclerView          mRvUnusedCodes;
     private InviteCodeUserAdapter mInviteCodeAdapter;
     private LinearLayoutManager   mLayoutManager;
-    private List<InviteCodeUser>  mInviteCodeUsers;
+    private List<InviteCode>  mInviteCodeUsers;
     private int mPage;
 
     @Override
@@ -78,8 +74,8 @@ public class UsedInviteCodeFragment extends Fragment {
             mInviteCodeAdapter.clear();
         }
 
-        mPage = 1;
-        getAllInviteCodeUsers(mPage);
+        mPage = 0;
+        getHistoryInviteCodeUsers(mPage);
     }
 
     private void initView(View view){
@@ -90,7 +86,7 @@ public class UsedInviteCodeFragment extends Fragment {
 
     private void initData(){
         mActivity = this.getActivity();
-        mInviteCodeUsers   = new ArrayList<>();
+        mInviteCodeUsers   = new ArrayList<InviteCode>();
         mInviteCodeAdapter = new InviteCodeUserAdapter(mActivity, mInviteCodeUsers);
         mRvUnusedCodes.setAdapter(mInviteCodeAdapter);
         mRvUnusedCodes.setHasFixedSize(true);
@@ -103,7 +99,7 @@ public class UsedInviteCodeFragment extends Fragment {
         mSrlContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                getAllInviteCodeUsers(mPage);
+                getHistoryInviteCodeUsers(mPage);
             }
         });
 
@@ -119,7 +115,7 @@ public class UsedInviteCodeFragment extends Fragment {
                     int totalItemCount  = linearLayoutManager.getItemCount();
                     if (lastVisibleItem == (totalItemCount - 1) && isSlidingToLast) {
                         //加载更多功能的代码
-                        getAllInviteCodeUsers(mPage);
+                        getHistoryInviteCodeUsers(mPage);
                     }
                 }
             }
@@ -143,8 +139,8 @@ public class UsedInviteCodeFragment extends Fragment {
      * 获取邀请使用记录
      * @param page
      */
-    private void getAllInviteCodeUsers(int page) {
-        InviteCodeController.getInstance().getAllInviteCodeUsers(
+    private void getHistoryInviteCodeUsers(int page) {
+        InviteCodeController.getInstance().getHistoryInviteCodes(
             page,
             mActivity,
             new ExtNetRequestListener(mActivity) {
@@ -163,20 +159,23 @@ public class UsedInviteCodeFragment extends Fragment {
                 @Override
                 public void onNetworkResponseSucceed(NetResponse result) {
                     super.onNetworkResponseSucceed(result);
-                    LogUtil.getInstance().info(LogLevel.INFO, result.rawResult);
-
                     Gson gson = new Gson();
-                    CodeUserData codeUserData = gson.fromJson(result.rawResult, CodeUserData.class);
-                    if(null != codeUserData){
-                        Head head = codeUserData.getHead();
-                        if(head.isSet()){
-                            List<InviteCodeUser> inviteCodeUsers = codeUserData.getData();
+                    InviteCodeResponse historyInviteCodeResponse = gson.fromJson(result.rawResult, InviteCodeResponse.class);
+                    if(null != historyInviteCodeResponse){
+                        int resultCode = historyInviteCodeResponse.getRes();
+                        if(0 == resultCode){
+                            ArrayList<InviteCode> inviteCodeUsers = historyInviteCodeResponse.getData();
                             if (null != inviteCodeUsers && !inviteCodeUsers.isEmpty()) {
-                                int count = codeUserData.getHead().getCount();
+                                int count = historyInviteCodeResponse.getCount();
                                 ((InviteCodesActivity)mActivity).updateUsedCodeCount(count);
                                 mPage++;
                                 mInviteCodeUsers.addAll(inviteCodeUsers);
                                 mInviteCodeAdapter.notifyDataSetChanged();
+                            }
+                        }else {
+                            String resultMsg = historyInviteCodeResponse.getResDesc();
+                            if(!TextUtils.isEmpty(resultMsg)){
+                                DialogUtil.getInstance().showCustomToast(getActivity(),resultMsg, Gravity.CENTER);
                             }
                         }
                     }

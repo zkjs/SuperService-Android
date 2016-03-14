@@ -1,28 +1,20 @@
 package com.zkjinshi.superservice.fragment;
 
 import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.zkjinshi.base.config.ConfigUtil;
 import com.zkjinshi.base.log.LogLevel;
 import com.zkjinshi.base.log.LogUtil;
-import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.common.InviteCodeController;
 import com.zkjinshi.superservice.activity.common.InviteCodeOperater;
@@ -33,19 +25,10 @@ import com.zkjinshi.superservice.bean.InviteCode;
 import com.zkjinshi.superservice.bean.InviteCodeData;
 import com.zkjinshi.superservice.listener.RecyclerItemClickListener;
 import com.zkjinshi.superservice.net.ExtNetRequestListener;
-import com.zkjinshi.superservice.net.MethodType;
-import com.zkjinshi.superservice.net.NetRequest;
-import com.zkjinshi.superservice.net.NetRequestTask;
 import com.zkjinshi.superservice.net.NetResponse;
-import com.zkjinshi.superservice.utils.CacheUtil;
-import com.zkjinshi.superservice.utils.ProtocolUtil;
-import com.zkjinshi.superservice.vo.ComingVo;
-
-import org.json.JSONArray;
-import org.json.JSONException;
+import com.zkjinshi.superservice.response.InviteCodeResponse;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -91,7 +74,7 @@ public class UnusedInviteCodeFragment extends Fragment {
         if(null != mInviteCodeAdapter){
             mInviteCodeAdapter.clear();
         }
-        mPage = 1;
+        mPage = 0;
         getInviteCode(mPage);
     }
 
@@ -103,7 +86,7 @@ public class UnusedInviteCodeFragment extends Fragment {
 
     private void initData(){
         mActivity          = this.getActivity();
-        mInviteCodes       = new ArrayList<>();
+        mInviteCodes       = new ArrayList<InviteCode>();
         mInviteCodeAdapter = new InviteCodeAdapter(mActivity, mInviteCodes);
         mRvUnusedCodes.setAdapter(mInviteCodeAdapter);
         mRvUnusedCodes.setHasFixedSize(true);
@@ -170,7 +153,7 @@ public class UnusedInviteCodeFragment extends Fragment {
      * @param page
      */
     private void getInviteCode(int page) {
-        InviteCodeController.getInstance().getInviteCodes(
+        InviteCodeController.getInstance().getNewInviteCodes(
             page,
             mActivity,
             new ExtNetRequestListener(mActivity) {
@@ -189,18 +172,15 @@ public class UnusedInviteCodeFragment extends Fragment {
                 @Override
                 public void onNetworkResponseSucceed(NetResponse result) {
                     super.onNetworkResponseSucceed(result);
-                    LogUtil.getInstance().info(LogLevel.INFO, result.rawResult);
-
                     Gson gson = new Gson();
-                    InviteCodeData inviteCodeData = gson.fromJson(result.rawResult, InviteCodeData.class);
-                    if(null != inviteCodeData){
-                        Head head = inviteCodeData.getHead();
-                        if(head.isSet()){
-                            int count = head.getCount();
+                    InviteCodeResponse newInviteCodeResponse = gson.fromJson(result.rawResult, InviteCodeResponse.class);
+                    if(null != newInviteCodeResponse){
+                        int resultCode = newInviteCodeResponse.getRes();
+                        if(0 == resultCode){
+                            int count = newInviteCodeResponse.getCount();
                             ((InviteCodesActivity)mActivity).udpateUnusedCodeCount(count);
-
                             mPage++;
-                            List<InviteCode> inviteCodes = inviteCodeData.getCode_data();
+                            List<InviteCode> inviteCodes = newInviteCodeResponse.getData();
                             if(null!=inviteCodes && !inviteCodes.isEmpty()){
                                 mInviteCodes.addAll(inviteCodes);
                                 mInviteCodeAdapter.notifyDataSetChanged();

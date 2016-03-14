@@ -13,6 +13,7 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.zkjinshi.superservice.R;
+import com.zkjinshi.superservice.bean.InviteCode;
 import com.zkjinshi.superservice.bean.InviteCodeUser;
 import com.zkjinshi.superservice.listener.RecyclerItemClickListener;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
@@ -30,11 +31,11 @@ import java.util.List;
 public class InviteCodeUserAdapter extends RecyclerView.Adapter<InviteCodeUserAdapter.ViewHolder> {
 
     private Activity             mActivity;
-    private List<InviteCodeUser> mDatas;
+    private List<InviteCode> mDatas;
 
     private RecyclerItemClickListener itemClickListener;
 
-    public InviteCodeUserAdapter(Activity activity, List<InviteCodeUser> inviteCodes){
+    public InviteCodeUserAdapter(Activity activity, List<InviteCode> inviteCodes){
         super();
         this.mActivity = activity;
         if(null == inviteCodes){
@@ -54,8 +55,8 @@ public class InviteCodeUserAdapter extends RecyclerView.Adapter<InviteCodeUserAd
 
     @Override
     public void onBindViewHolder(InviteCodeUserAdapter.ViewHolder holder, int position) {
-        InviteCodeUser inviteCodeUser = mDatas.get(position);
-        String inviteCode = inviteCodeUser.getCode();
+        InviteCode inviteCodeUser = mDatas.get(position);
+        String inviteCode = inviteCodeUser.getSaleCode();
         String userID     = inviteCodeUser.getUserid();
         String userName   = inviteCodeUser.getUsername();
         String userPhone  = inviteCodeUser.getPhone();
@@ -118,7 +119,7 @@ public class InviteCodeUserAdapter extends RecyclerView.Adapter<InviteCodeUserAd
         }
     }
 
-    public void addAll(List<InviteCodeUser> list) {
+    public void addAll(List<InviteCode> list) {
         mDatas.addAll(list);
         notifyDataSetChanged();
     }

@@ -373,11 +373,22 @@ public class ProtocolUtil {
     }
 
     /**
-     * 获取邀请码
+     * 创建邀请码
      * @return
      */
     public static String getSaleCodeUrl(){
         return ConfigUtil.getInst().getForDomain()+"res/v1/salecode/get/salecode";
+    }
+
+    /**
+     * 获取邀请码列表
+     * @param type 1：已使用的邀请码， 0:未使用的邀请码
+     * @param pageSize 每个个数
+     * @param pageNo 第几页
+     * @return
+     */
+    public static String getSaleCodeListUrl(String type,String pageSize,String pageNo){
+        return ConfigUtil.getInst().getForDomain()+"res/v1/salecode/salecodewithsi/"+type+"?page="+pageNo+"&page_size="+pageSize;
     }
 
 }
