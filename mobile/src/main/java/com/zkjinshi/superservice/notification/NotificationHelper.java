@@ -22,6 +22,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.assist.ImageSize;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
+import com.zkjinshi.base.config.ConfigUtil;
 import com.zkjinshi.base.util.ActivityManagerHelper;
 import com.zkjinshi.base.util.DisplayUtil;
 import com.zkjinshi.base.util.TimeUtil;
@@ -394,8 +395,8 @@ public class NotificationHelper {
      */
     public void showNotification(final Context context, final ActiveCodeNoticeVo activeCodeNoticeVo) {
 
-        String fromID    = activeCodeNoticeVo.getUserid();
-        String avatarUrl = ProtocolUtil.getAvatarUrl(fromID);
+        String imageUrl = activeCodeNoticeVo.getUserimage();
+        String avatarUrl = ConfigUtil.getInst().getImgDomain()+imageUrl;
         ImageSize imageSize = new ImageSize(DisplayUtil.dip2px(context, 36),
                 DisplayUtil.dip2px(context, 36));
         ImageLoader.getInstance().loadImage(avatarUrl, imageSize, new ImageLoadingListener() {

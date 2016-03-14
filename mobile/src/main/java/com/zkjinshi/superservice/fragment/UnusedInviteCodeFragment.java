@@ -27,6 +27,7 @@ import com.zkjinshi.superservice.listener.RecyclerItemClickListener;
 import com.zkjinshi.superservice.net.ExtNetRequestListener;
 import com.zkjinshi.superservice.net.NetResponse;
 import com.zkjinshi.superservice.response.InviteCodeResponse;
+import com.zkjinshi.superservice.vo.InviteCodeListVo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -177,13 +178,16 @@ public class UnusedInviteCodeFragment extends Fragment {
                     if(null != newInviteCodeResponse){
                         int resultCode = newInviteCodeResponse.getRes();
                         if(0 == resultCode){
-                            int count = newInviteCodeResponse.getCount();
-                            ((InviteCodesActivity)mActivity).udpateUnusedCodeCount(count);
-                            mPage++;
-                            List<InviteCode> inviteCodes = newInviteCodeResponse.getData();
-                            if(null!=inviteCodes && !inviteCodes.isEmpty()){
-                                mInviteCodes.addAll(inviteCodes);
-                                mInviteCodeAdapter.notifyDataSetChanged();
+                            InviteCodeListVo inviteCodeListVo = newInviteCodeResponse.getData();
+                            if(null != inviteCodeListVo){
+                                int count = inviteCodeListVo.getTotal();
+                                ((InviteCodesActivity)mActivity).udpateUnusedCodeCount(count);
+                                mPage++;
+                                List<InviteCode> inviteCodes = inviteCodeListVo.getSalecodes();
+                                if(null!=inviteCodes && !inviteCodes.isEmpty()){
+                                    mInviteCodes.addAll(inviteCodes);
+                                    mInviteCodeAdapter.notifyDataSetChanged();
+                                }
                             }
                         }
                     }

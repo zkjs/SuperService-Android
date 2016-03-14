@@ -24,6 +24,7 @@ import com.zkjinshi.superservice.bean.InviteCode;
 import com.zkjinshi.superservice.net.ExtNetRequestListener;
 import com.zkjinshi.superservice.net.NetResponse;
 import com.zkjinshi.superservice.response.InviteCodeResponse;
+import com.zkjinshi.superservice.vo.InviteCodeListVo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -164,14 +165,18 @@ public class UsedInviteCodeFragment extends Fragment {
                     if(null != historyInviteCodeResponse){
                         int resultCode = historyInviteCodeResponse.getRes();
                         if(0 == resultCode){
-                            ArrayList<InviteCode> inviteCodeUsers = historyInviteCodeResponse.getData();
-                            if (null != inviteCodeUsers && !inviteCodeUsers.isEmpty()) {
-                                int count = historyInviteCodeResponse.getCount();
+                            InviteCodeListVo inviteCodeListVo = historyInviteCodeResponse.getData();
+                            if(null != inviteCodeListVo){
+                                int count = inviteCodeListVo.getTotal();
                                 ((InviteCodesActivity)mActivity).updateUsedCodeCount(count);
-                                mPage++;
-                                mInviteCodeUsers.addAll(inviteCodeUsers);
-                                mInviteCodeAdapter.notifyDataSetChanged();
+                                ArrayList<InviteCode> inviteCodeUsers = inviteCodeListVo.getSalecodes();
+                                if (null != inviteCodeUsers && !inviteCodeUsers.isEmpty()) {
+                                    mPage++;
+                                    mInviteCodeUsers.addAll(inviteCodeUsers);
+                                    mInviteCodeAdapter.notifyDataSetChanged();
+                                }
                             }
+
                         }else {
                             String resultMsg = historyInviteCodeResponse.getResDesc();
                             if(!TextUtils.isEmpty(resultMsg)){

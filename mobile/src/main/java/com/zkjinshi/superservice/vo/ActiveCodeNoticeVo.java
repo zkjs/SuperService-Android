@@ -15,7 +15,16 @@ public class ActiveCodeNoticeVo implements Serializable {
     private String phone;
     private String salecode;
     private String userid;
+    private String userimage;
     private String username;
+
+    public String getUserimage() {
+        return userimage;
+    }
+
+    public void setUserimage(String userimage) {
+        this.userimage = userimage;
+    }
 
     public long getCreate() {
         return create;

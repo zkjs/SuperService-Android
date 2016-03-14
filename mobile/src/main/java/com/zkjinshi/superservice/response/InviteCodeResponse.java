@@ -1,6 +1,7 @@
 package com.zkjinshi.superservice.response;
 
 import com.zkjinshi.superservice.bean.InviteCode;
+import com.zkjinshi.superservice.vo.InviteCodeListVo;
 
 import java.util.ArrayList;
 
@@ -12,22 +13,13 @@ import java.util.ArrayList;
  */
 public class InviteCodeResponse extends BaseResponse {
 
-    private ArrayList<InviteCode> data;
-    private int count;
+    private InviteCodeListVo data;
 
-    public ArrayList<InviteCode> getData() {
+    public InviteCodeListVo getData() {
         return data;
     }
 
-    public void setData(ArrayList<InviteCode> data) {
+    public void setData(InviteCodeListVo data) {
         this.data = data;
-    }
-
-    public int getCount() {
-        return count;
-    }
-
-    public void setCount(int count) {
-        this.count = count;
     }
 }

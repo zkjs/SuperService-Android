@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.zkjinshi.base.config.ConfigUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.bean.InviteCode;
 import com.zkjinshi.superservice.bean.InviteCodeUser;
@@ -57,11 +58,12 @@ public class InviteCodeUserAdapter extends RecyclerView.Adapter<InviteCodeUserAd
     public void onBindViewHolder(InviteCodeUserAdapter.ViewHolder holder, int position) {
         InviteCode inviteCodeUser = mDatas.get(position);
         String inviteCode = inviteCodeUser.getSaleCode();
-        String userID     = inviteCodeUser.getUserid();
+        String imageUrl     = inviteCodeUser.getUserimage();
         String userName   = inviteCodeUser.getUsername();
         String userPhone  = inviteCodeUser.getPhone();
 
-        holder.civContactAvatar.setImageURI(Uri.parse(ProtocolUtil.getAvatarUrl(userID)));
+        String userPhotoUrl = ConfigUtil.getInst().getImgDomain()+imageUrl;
+        holder.civContactAvatar.setImageURI(Uri.parse(userPhotoUrl));
 
         if (!TextUtils.isEmpty(inviteCode)) {
             holder.tvInviteCode.setText(inviteCode);
