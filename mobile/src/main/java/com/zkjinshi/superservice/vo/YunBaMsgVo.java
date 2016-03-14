@@ -13,6 +13,7 @@ public class YunBaMsgVo {
     private String webUrl;
     private String userId;
     private String userName;
+    private String userimage;
 
     public String getTitle() {
         return title;
@@ -52,5 +53,13 @@ public class YunBaMsgVo {
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public String getUserimage() {
+        return userimage;
+    }
+
+    public void setUserimage(String userimage) {
+        this.userimage = userimage;
     }
 }
