@@ -104,6 +104,7 @@
         <TextView
             style="@style/leftMenuText"
             android:text="我的客人"
+            android:visibility="gone"
             android:id="@+id/client_tv" />
 
         <TextView

@@ -5,33 +5,24 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.adapter.ZoneAdapter;
-
 import com.zkjinshi.superservice.bean.BaseBean;
 import com.zkjinshi.superservice.bean.ZoneBean;
-
 import com.zkjinshi.superservice.manager.YunBaSubscribeManager;
 import com.zkjinshi.superservice.net.ExtNetRequestListener;
 import com.zkjinshi.superservice.net.MethodType;
 import com.zkjinshi.superservice.net.NetRequest;
 import com.zkjinshi.superservice.net.NetRequestTask;
 import com.zkjinshi.superservice.net.NetResponse;
-
-import com.zkjinshi.superservice.sqlite.UserDBUtil;
-
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
-import com.zkjinshi.superservice.vo.IdentityType;
-import com.zkjinshi.superservice.vo.UserVo;
 
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
@@ -55,15 +46,14 @@ public class ZoneActivity extends Activity {
     private ListView zoneLv;
     private ZoneAdapter zoneAdapter;
     private View header;
-    private UserVo userVo;
+    private String userId;
+    private String shopId;
+    private String token;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_zone);
-
-        String userid = CacheUtil.getInstance().getUserId();
-        userVo = UserDBUtil.getInstance().queryUserById(userid);
         initView();
         initData();
         initListener();
@@ -75,11 +65,14 @@ public class ZoneActivity extends Activity {
     }
 
     private void initData() {
+        userId = CacheUtil.getInstance().getUserId();
+        shopId = CacheUtil.getInstance().getShopID();
+        token = CacheUtil.getInstance().getExtToken();
         NetRequest netRequest = new NetRequest(ProtocolUtil.getZonelistUrl());
         HashMap<String,String> bizMap = new HashMap<String,String>();
-        bizMap.put("salesid",userVo.getUserId());
-        bizMap.put("token",userVo.getToken());
-        bizMap.put("shopid",userVo.getShopId());
+        bizMap.put("salesid",userId);
+        bizMap.put("token",token);
+        bizMap.put("shopid",shopId);
         netRequest.setBizParamMap(bizMap);
         NetRequestTask netRequestTask = new NetRequestTask(this,netRequest, NetResponse.class);
         netRequestTask.methodType = MethodType.PUSH;
@@ -125,9 +118,9 @@ public class ZoneActivity extends Activity {
     private void getMyZone(){
         NetRequest netRequest = new NetRequest(ProtocolUtil.getMySemplocationUrl());
         HashMap<String,String> bizMap = new HashMap<String,String>();
-        bizMap.put("salesid",userVo.getUserId());
-        bizMap.put("token",userVo.getToken());
-        bizMap.put("shopid",userVo.getShopId());
+        bizMap.put("salesid",userId);
+        bizMap.put("token",token);
+        bizMap.put("shopid",shopId);
         netRequest.setBizParamMap(bizMap);
         NetRequestTask netRequestTask = new NetRequestTask(this,netRequest, NetResponse.class);
         netRequestTask.methodType = MethodType.PUSH;
@@ -171,26 +164,6 @@ public class ZoneActivity extends Activity {
 
 
     private void initListener() {
-        //界面后退操作
-//        findViewById(R.id.back_btn).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                if(CacheUtil.getInstance().getLoginIdentity() == IdentityType.BUSINESS){
-//                    if(!getIntent().getBooleanExtra("from_setting",false)){
-//                        startActivity(new Intent(ZoneActivity.this,ShopLoginActivity.class));
-//                    }
-//                    finish();
-//                    overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
-//                }else{
-//                    if(!getIntent().getBooleanExtra("from_setting",false)){
-//                        startActivity(new Intent(ZoneActivity.this,MoreActivity.class));
-//                    }
-//                    finish();
-//                    overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
-//                }
-//
-//            }
-//        });
 
         findViewById(R.id.go_btn).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -251,9 +224,9 @@ public class ZoneActivity extends Activity {
         String locid = zoneAdapter.getCheckedIds();
         NetRequest netRequest = new NetRequest(ProtocolUtil.getSemplocationupdateUrl());
         HashMap<String,String> bizMap = new HashMap<String,String>();
-        bizMap.put("salesid",userVo.getUserId());
-        bizMap.put("token",userVo.getToken());
-        bizMap.put("shopid",userVo.getShopId());
+        bizMap.put("salesid",userId);
+        bizMap.put("token",token);
+        bizMap.put("shopid",shopId);
         bizMap.put("locid",locid);
         netRequest.setBizParamMap(bizMap);
         NetRequestTask netRequestTask = new NetRequestTask(this,netRequest, NetResponse.class);
@@ -298,7 +271,4 @@ public class ZoneActivity extends Activity {
         netRequestTask.isShowLoadingDialog = true;
         netRequestTask.execute();
     }
-
-
-
 }

@@ -204,9 +204,9 @@ public class MainActivityController implements View.OnClickListener{
             case ViewPagerAdapter.SHARED_POS:
                 materialSheetFab.showFab();
                 break;
-            case ViewPagerAdapter.FAVORITES_POS:
-                materialSheetFab.hideSheetThenFab();
-                break;
+          //  case ViewPagerAdapter.FAVORITES_POS:
+            //    materialSheetFab.hideSheetThenFab();
+              //  break;
             default:
         }
     }

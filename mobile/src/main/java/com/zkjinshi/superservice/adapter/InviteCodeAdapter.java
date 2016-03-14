@@ -26,7 +26,7 @@ import java.util.List;
  */
 public class InviteCodeAdapter extends RecyclerView.Adapter<InviteCodeAdapter.ViewHolder> {
 
-    private Activity         mActivity;
+    private Activity mActivity;
     private List<InviteCode> mDatas;
     private RecyclerItemClickListener itemClickListener;
 
@@ -54,7 +54,7 @@ public class InviteCodeAdapter extends RecyclerView.Adapter<InviteCodeAdapter.Vi
 
         //邀请码有效
         if(isValid == IsValidity.ISVALID.getValue()){
-            String salesCode = inviteCode.getSalecode();
+            String salesCode = inviteCode.getSaleCode();
             if (!TextUtils.isEmpty(salesCode)) {
                 holder.tvInviteCode.setText(salesCode);
             }

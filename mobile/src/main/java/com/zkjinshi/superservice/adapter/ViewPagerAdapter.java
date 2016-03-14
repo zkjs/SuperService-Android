@@ -24,12 +24,14 @@ import java.util.ArrayList;
  */
 public class ViewPagerAdapter extends FragmentPagerAdapter {
 
-    public static final int NUM_ITEMS = 3;
+    public static final int NUM_ITEMS = 2;
+   // public static final int NUM_ITEMS = 3;
     public static final int ALL_POS = 0;
     public static final int SHARED_POS = 1;
-    public static final int FAVORITES_POS = 2;
+    //public static final int FAVORITES_POS = 2;
 
-    public String[] tabTitles = {"到店通知","消息通知","订单处理"};
+    public String[] tabTitles = {"到店通知","消息通知"};
+    //public String[] tabTitles = {"到店通知","消息通知","订单处理"};
     public ArrayList<ViewHolder> myTagList = new ArrayList<ViewHolder>();
 
     private Context context;
@@ -48,8 +50,8 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
                 return NoticeFragment.newInstance();
             case SHARED_POS:
                 return MessageFragment.newInstance();
-            case FAVORITES_POS:
-                return new OrderFragment();
+           // case FAVORITES_POS:
+             //   return new OrderFragment();
             default:
                 return null;
         }
@@ -57,17 +59,16 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public CharSequence getPageTitle(int position) {
-//        switch (position) {
-//            case ALL_POS:
-//                return context.getString(R.string.coming_notice);
-//            case SHARED_POS:
-//                return context.getString(R.string.message_notice);
-//            case FAVORITES_POS:
-//                return context.getString(R.string.deal_with_order);
-//            default:
-//                return "";
-//        }
-        return  null;
+        switch (position) {
+            case ALL_POS:
+                return context.getString(R.string.coming_notice);
+            case SHARED_POS:
+                return context.getString(R.string.message_notice);
+            //case FAVORITES_POS:
+              //  return context.getString(R.string.deal_with_order);
+            default:
+                return "";
+        }
     }
 
     @Override

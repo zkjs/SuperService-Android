@@ -123,7 +123,7 @@ public class UnusedInviteCodeFragment extends Fragment {
         });
 
         //上拉加载数据
-        mRvUnusedCodes.setOnScrollListener(new RecyclerView.OnScrollListener() {
+        mRvUnusedCodes.addOnScrollListener(new RecyclerView.OnScrollListener() {
             boolean isSlidingToLast = false;
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -158,7 +158,7 @@ public class UnusedInviteCodeFragment extends Fragment {
                 @Override
                 public void onItemClick(View view, int position) {
                     InviteCode inviteCode = mInviteCodes.get(position);
-                    String inviteCodeStr  = inviteCode.getSalecode();
+                    String inviteCodeStr  = inviteCode.getSaleCode();
                     InviteCodeOperater.getInstance().showOperationDialog(mActivity, inviteCodeStr);
                 }
             }

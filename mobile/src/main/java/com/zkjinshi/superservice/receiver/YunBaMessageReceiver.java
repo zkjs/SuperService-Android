@@ -14,6 +14,7 @@ import com.zkjinshi.superservice.ext.vo.AmountStatusVo;
 import com.zkjinshi.superservice.manager.SSOManager;
 import com.zkjinshi.superservice.manager.YunBaSubscribeManager;
 import com.zkjinshi.superservice.notification.NotificationHelper;
+import com.zkjinshi.superservice.vo.ActiveCodeNoticeVo;
 import com.zkjinshi.superservice.vo.YunBaMsgVo;
 
 import org.json.JSONException;
@@ -51,12 +52,12 @@ public class YunBaMessageReceiver extends BroadcastReceiver {
                 String type = jsonObject.getString("type");
                 String data = jsonObject.getString("data");
                 //PAYMENT_RESULT | PAYMENT_CONFIRM | ARRIVING
-                if("PAYMENT_RESULT".equals(type)){
+                if("PAYMENT_RESULT".equals(type)){//刷脸支付
                     AmountStatusVo amountStatusVo = new Gson().fromJson(data,AmountStatusVo.class);
                     if(null != amountStatusVo){
                         NotificationHelper.getInstance().showNotification(context, amountStatusVo);
                     }
-                }else if("ARRIVING".equals(type)){
+                }else if("ARRIVING".equals(type)){//到店通知（GPS/蓝牙）
                     YunBaMsgVo yunBaMsgVo = new Gson().fromJson(data, YunBaMsgVo.class);
                     //是否注册接受到店通知
                     if(YunBaSubscribeManager.getInstance().isSubscribed()){
@@ -72,6 +73,14 @@ public class YunBaMessageReceiver extends BroadcastReceiver {
                             String userName = yunBaMsgVo.getUserName();
                             EMConversationHelper.getInstance().sendWelcomeMessage(userId,userName);
                         }
+                    }
+                }else if("ACTIVATESALECODE".equals(type)){//激活邀请码
+                    ActiveCodeNoticeVo activeCodeNoticeVo = new Gson().fromJson(data,ActiveCodeNoticeVo.class);
+                    if(null != activeCodeNoticeVo){
+                        Intent receiver = new Intent();
+                        receiver.setAction("com.zkjinshi.invite_code");
+                        context.sendBroadcast(receiver);
+                        NotificationHelper.getInstance().showNotification(context,activeCodeNoticeVo);
                     }
                 }
 

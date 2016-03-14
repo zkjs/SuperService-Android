@@ -35,18 +35,7 @@ public class EMessageReceiver extends BroadcastReceiver {
         if(intent != null ){
             String action = intent.getAction();
             if(!TextUtils.isEmpty(action)){
-                if(action.equals("com.zkjinshi.superservice.ACTION_INVITE")){
-                    String userID   = intent.getStringExtra("userId");
-                    String userName = intent.getStringExtra("userName");
-                    String mobileNo = intent.getStringExtra("mobileNo");
-                    long   datetime = intent.getLongExtra("date", 0);
-                    ClientBaseBean clientBase = new ClientBaseBean();
-                    clientBase.setUserid(userID);
-                    clientBase.setUsername(userName);
-                    clientBase.setPhone(mobileNo);
-                    //提示用户邀请码被绑定
-                    NotificationHelper.getInstance().showNotification(context, clientBase, datetime);
-                } else if(action.equals("com.zkjinshi.superservice.CONNECTION_CONFLICT")){
+                if(action.equals("com.zkjinshi.superservice.CONNECTION_CONFLICT")){
                     //应用运行中: 提示用户帐户其他地方登录
                     if(ActivityManagerHelper.isRunning(context)){
                         showOfflineDialog(context);

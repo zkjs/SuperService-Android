@@ -42,6 +42,7 @@ import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.utils.MediaPlayerUtil;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
+import com.zkjinshi.superservice.vo.ActiveCodeNoticeVo;
 import com.zkjinshi.superservice.vo.TxtExtType;
 import com.zkjinshi.superservice.vo.YunBaMsgVo;
 
@@ -389,12 +390,11 @@ public class NotificationHelper {
     /**
      * 通知提示:客户使用邀请码成功
      * @param context
-     * @param clientBase
-     * @param dateTime
+     * @param activeCodeNoticeVo
      */
-    public void showNotification(final Context context, final ClientBaseBean clientBase,final long dateTime) {
+    public void showNotification(final Context context, final ActiveCodeNoticeVo activeCodeNoticeVo) {
 
-        String fromID    = clientBase.getUserid();
+        String fromID    = activeCodeNoticeVo.getUserid();
         String avatarUrl = ProtocolUtil.getAvatarUrl(fromID);
         ImageSize imageSize = new ImageSize(DisplayUtil.dip2px(context, 36),
                 DisplayUtil.dip2px(context, 36));
@@ -406,16 +406,35 @@ public class NotificationHelper {
 
             @Override
             public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-
+                long activeTime = activeCodeNoticeVo.getCreate();
+                String time = TimeUtil.getChatTime(activeTime);
+                String userName = activeCodeNoticeVo.getUsername();
+                NotificationCompat.Builder notificationBuilder = null;
+                // 1.设置显示信息
+                notificationBuilder = new NotificationCompat.Builder(context);
+                String content = context.getString(R.string.user) + " " + userName + " 于 "+ time +
+                        context.getString(R.string.use_your_invite_code);
+                notificationBuilder.setContentTitle("邀请码通知");
+                notificationBuilder.setContentText(content);
+                notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
+                // 2.设置点击跳转事件
+                Intent intent = new Intent(context, SplashActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+                notificationBuilder.setContentIntent(pendingIntent);
+                // 3.设置通知栏其他属性
+                notificationBuilder.setAutoCancel(true);
+                notificationBuilder.setDefaults(Notification.DEFAULT_ALL);
+                NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+                notificationManager.notify(++NOTIFY_ID, notificationBuilder.build());
             }
 
             @Override
             public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                Intent receiver = new Intent();
-                receiver.setAction("com.zkjinshi.invite_code");
-                context.sendBroadcast(receiver);
-                String time = TimeUtil.getChatTime(dateTime);
-                String userName = clientBase.getUsername();
+
+                long activeTime = activeCodeNoticeVo.getCreate();
+                String time = TimeUtil.getChatTime(activeTime);
+                String userName = activeCodeNoticeVo.getUsername();
                 NotificationCompat.Builder notificationBuilder = null;
                 // 1.设置显示信息
                 notificationBuilder = new NotificationCompat.Builder(context);

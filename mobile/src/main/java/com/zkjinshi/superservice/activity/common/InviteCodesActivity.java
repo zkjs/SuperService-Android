@@ -134,6 +134,8 @@ public class InviteCodesActivity extends AppCompatActivity {
     }
 
     private void initListener() {
+
+        //未使用的邀请码
         mLlUnusedCodes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -143,6 +145,7 @@ public class InviteCodesActivity extends AppCompatActivity {
             }
         });
 
+        //已使用邀请码
         mLlUsedCodes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -152,6 +155,7 @@ public class InviteCodesActivity extends AppCompatActivity {
             }
         });
 
+        //返回
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -159,26 +163,15 @@ public class InviteCodesActivity extends AppCompatActivity {
             }
         });
 
-        mVpInviteCode.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            /**
-             * position :当前页面，及你点击滑动的页面 offset:当前页面偏移的百分比
-             * offsetPixels:当前页面偏移的像素位置
-             */
+        //页面滑动切换
+        mVpInviteCode.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+
             @Override
             public void onPageScrolled(int position, float offset, int i1) {
-
                 LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) mIvTabLine.getLayoutParams();
-                Log.e("offset:", offset + "");
-                /**
-                 * 利用currentIndex(当前所在页面)和position(下一个页面)以及offset来
-                 * 设置mTabLineIv的左边距 滑动场景：
-                 * 从左到右分别为0,1  0->1; 1->2; 2->1; 1->0
-                 */
-                // 0->1
                 if (mCurrentIndex == 0 && position == 0){
                     lp.leftMargin = (int) (offset * (mScreenWidth * 1.0 / 2)
                                            + mCurrentIndex * (mScreenWidth / 2));
-                // 1->0
                 } else if (mCurrentIndex == 1 && position == 0){
                     lp.leftMargin = (int) ( - (1 - offset) * (mScreenWidth * 1.0 / 2)
                                             + mCurrentIndex * (mScreenWidth / 2));
@@ -191,10 +184,6 @@ public class InviteCodesActivity extends AppCompatActivity {
                 mCurrentIndex = position;
             }
 
-            /**
-             * state滑动中的状态
-             * 有三种状态（0，1，2） 1：正在滑动 2：滑动完毕 0：什么都没做。
-             */
             @Override
             public void onPageScrollStateChanged(int i) {
 
@@ -206,7 +195,6 @@ public class InviteCodesActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemID = item.getItemId();
         if(itemID == R.id.item_add_invite_code){
-            // showAddInviteCodeDialog();
             createNewInviteCode();
         }
         return super.onOptionsItemSelected(item);
@@ -246,6 +234,9 @@ public class InviteCodesActivity extends AppCompatActivity {
         mTvUsedCount.setText(count+"");
     }
 
+    /**
+     * 创建邀请码
+     */
     private void createNewInviteCode() {
         String requestUrl = ProtocolUtil.getSaleCodeUrl();
         NetRequest netRequest = new NetRequest(requestUrl);
