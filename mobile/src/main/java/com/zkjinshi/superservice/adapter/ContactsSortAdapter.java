@@ -135,7 +135,7 @@ public class ContactsSortAdapter extends ServiceBaseAdapter<ClientContactVo> imp
                 String userID  = contact.getUserid();
                 if(!TextUtils.isEmpty(userID)) {
                     Intent clientDetail = new Intent(mActivity, ClientDetailActivity.class);
-                    clientDetail.putExtra("user_id", userID);
+                    clientDetail.putExtra("contact", contact);
                     mActivity.startActivity(clientDetail);
                 } else {
                     DialogUtil.getInstance().showCustomToast(mActivity, "电话号码为空！", Gravity.CENTER);

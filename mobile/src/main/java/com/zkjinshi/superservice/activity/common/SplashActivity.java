@@ -61,8 +61,6 @@ public class SplashActivity extends Activity{
         if(NetWorkUtil.isNetworkConnected(this)){
             // 判断用户是否登录，如果登录则进入主页面
             if (CacheUtil.getInstance().isLogin()) {
-                //启动应用静默处理数据
-                silentProcessData();
                 // 使用Handler的postDelayed方法，3秒后执行跳转到MainActivity
                 handler.sendEmptyMessageDelayed(GO_HOME, SPLASH_DELAY_MILLIS);
             } else  if (!CacheUtil.getInstance().isGuide()){
@@ -97,7 +95,10 @@ public class SplashActivity extends Activity{
         LoginController.getInstance().getUserInfo(this, CacheUtil.getInstance().getUserId(), new LoginController.CallBackListener() {
             @Override
             public void successCallback(JSONObject response) {
-                goHome();
+                Intent mainIntent = new Intent(SplashActivity.this, MainActivity.class);
+                SplashActivity.this.startActivity(mainIntent);
+                SplashActivity.this.finish();
+                overridePendingTransition(R.anim.activity_new, R.anim.activity_out);
             }
         });
     }
@@ -117,10 +118,9 @@ public class SplashActivity extends Activity{
     }
 
     private void goHome() {
-        Intent mainIntent = new Intent(SplashActivity.this, MainActivity.class);
-        SplashActivity.this.startActivity(mainIntent);
-        SplashActivity.this.finish();
-        overridePendingTransition(R.anim.activity_new, R.anim.activity_out);
+        //启动应用静默处理数据
+        silentProcessData();
+
     }
 
     Handler handler = new Handler() {
