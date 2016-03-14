@@ -44,7 +44,7 @@ public class InviteCodeController {
         NetRequestTask netRequestTask = new NetRequestTask(context, netRequest, NetResponse.class);
         netRequestTask.methodType = MethodType.GET;
         netRequestTask.setNetRequestListener(listener);
-        netRequestTask.isShowLoadingDialog = true;
+        netRequestTask.isShowLoadingDialog = false;
         netRequestTask.execute();
     }
 
@@ -59,7 +59,7 @@ public class InviteCodeController {
         NetRequestTask netRequestTask = new NetRequestTask(context, netRequest, NetResponse.class);
         netRequestTask.methodType = MethodType.GET;
         netRequestTask.setNetRequestListener(listener);
-        netRequestTask.isShowLoadingDialog = true;
+        netRequestTask.isShowLoadingDialog = false;
         netRequestTask.execute();
     }
 }

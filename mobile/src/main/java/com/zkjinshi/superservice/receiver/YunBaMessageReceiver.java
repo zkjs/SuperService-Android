@@ -7,6 +7,8 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
+import com.zkjinshi.base.log.LogLevel;
+import com.zkjinshi.base.log.LogUtil;
 import com.zkjinshi.base.util.ActivityManagerHelper;
 import com.zkjinshi.superservice.ServiceApplication;
 import com.zkjinshi.superservice.emchat.EMConversationHelper;
@@ -54,6 +56,11 @@ public class YunBaMessageReceiver extends BroadcastReceiver {
                     }
                 }else if("ARRIVING".equals(type)){//到店通知（GPS/蓝牙）
                     YunBaMsgVo yunBaMsgVo = new Gson().fromJson(data, YunBaMsgVo.class);
+                    String arriveType = yunBaMsgVo.getType();
+                    if("GPS".equals(arriveType)){
+                        LogUtil.getInstance().info(LogLevel.ERROR,"收到GPS分级推送");
+                        LogUtil.getInstance().info(LogLevel.ERROR,"推送内容:"+data);
+                    }
                     //是否注册接受到店通知
                     if(YunBaSubscribeManager.getInstance().isSubscribed()){
                         if(null != yunBaMsgVo){

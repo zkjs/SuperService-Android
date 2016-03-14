@@ -39,12 +39,16 @@ public class InviteCodeUserAdapter extends RecyclerView.Adapter<InviteCodeUserAd
     public InviteCodeUserAdapter(Activity activity, List<InviteCode> inviteCodes){
         super();
         this.mActivity = activity;
-        if(null == inviteCodes){
+        this.setData(inviteCodes);
+    }
+
+    public void setData(List<InviteCode> data){
+        if(null == data){
             this.mDatas = new ArrayList<>();
         }else {
-            this.mDatas = inviteCodes;
+            this.mDatas = data;
         }
-
+        notifyDataSetChanged();
     }
 
     @Override

@@ -74,7 +74,7 @@ public class UsedInviteCodeFragment extends Fragment {
             mInviteCodeAdapter.clear();
         }
         mPage = 0;
-        getHistoryInviteCodeUsers(mPage);
+        getHistoryInviteCodeUsers(mPage,true);
     }
 
     private void initView(View view){
@@ -100,7 +100,8 @@ public class UsedInviteCodeFragment extends Fragment {
         mSrlContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                getHistoryInviteCodeUsers(mPage);
+                mPage = 0;
+                getHistoryInviteCodeUsers(mPage,true);
             }
         });
 
@@ -116,7 +117,7 @@ public class UsedInviteCodeFragment extends Fragment {
                     int totalItemCount  = linearLayoutManager.getItemCount();
                     if (lastVisibleItem == (totalItemCount - 1) && isSlidingToLast) {
                         //加载更多功能的代码
-                        getHistoryInviteCodeUsers(mPage);
+                        getHistoryInviteCodeUsers(mPage,false);
                     }
                 }
             }
@@ -140,7 +141,7 @@ public class UsedInviteCodeFragment extends Fragment {
      * 获取邀请使用记录
      * @param page
      */
-    private void getHistoryInviteCodeUsers(int page) {
+    private void getHistoryInviteCodeUsers(int page,final boolean isRefresh) {
         InviteCodeController.getInstance().getHistoryInviteCodes(
             page,
             mActivity,
@@ -172,8 +173,12 @@ public class UsedInviteCodeFragment extends Fragment {
                                 ArrayList<InviteCode> inviteCodeUsers = inviteCodeListVo.getSalecodes();
                                 if (null != inviteCodeUsers && !inviteCodeUsers.isEmpty()) {
                                     mPage++;
-                                    mInviteCodeUsers.addAll(inviteCodeUsers);
-                                    mInviteCodeAdapter.notifyDataSetChanged();
+                                    if(isRefresh){
+                                        mInviteCodeUsers =inviteCodeUsers;
+                                    }else {
+                                        mInviteCodeUsers.addAll(inviteCodeUsers);
+                                    }
+                                    mInviteCodeAdapter.setData(mInviteCodeUsers);
                                 }
                             }
 

@@ -201,7 +201,7 @@ public class NotificationHelper {
     public void showNotification(final Context context, final YunBaMsgVo yunBaMsgVo){
         ImageSize imageSize = new ImageSize(DisplayUtil.dip2px(context, 36),
                 DisplayUtil.dip2px(context, 36));
-        String imageSuffix = yunBaMsgVo.getUserimage();
+        String imageSuffix = yunBaMsgVo.getUserImage();
         String imageUrl  = ConfigUtil.getInst().getImgDomain()+imageSuffix;
         ImageLoader.getInstance().loadImage(imageUrl,imageSize, new ImageLoadingListener() {
             @Override
@@ -349,64 +349,6 @@ public class NotificationHelper {
                 notificationBuilder.setDefaults(Notification.DEFAULT_ALL);
                 NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
                 notificationManager.notify(NOTIFY_ID, notificationBuilder.build());
-            }
-
-            @Override
-            public void onLoadingCancelled(String imageUri, View view) {
-
-            }
-        });
-    }
-
-
-    /**
-     * 接收到店通知
-     *
-     * @param context
-     * @param locPushBean
-     */
-    public void showNotification(final Context context,final LocPushBean locPushBean) {
-
-        ImageSize imageSize = new ImageSize(DisplayUtil.dip2px(context, 36),
-                DisplayUtil.dip2px(context, 36));
-        String contactId = locPushBean.getUserid();
-        String imageUrl  = ProtocolUtil.getAvatarUrl(contactId);
-        ImageLoader.getInstance().loadImage(imageUrl,imageSize, new ImageLoadingListener() {
-            @Override
-            public void onLoadingStarted(String imageUri, View view) {
-
-            }
-
-            @Override
-            public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-
-            }
-
-            @Override
-            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                NotificationCompat.Builder notificationBuilder = null;
-                // 1.设置显示信息
-                notificationBuilder = new NotificationCompat.Builder(context);
-                String contactName = locPushBean.getUsername();
-                String locDesc = locPushBean.getLocdesc();
-                notificationBuilder.setContentTitle(contactName);
-                String welcomeMsg = "已到达"+locDesc;
-                notificationBuilder.setContentText(welcomeMsg);
-                notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
-                notificationBuilder.setLargeIcon(loadedImage);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                    notificationBuilder.setStyle(new NotificationCompat.BigPictureStyle().bigPicture(loadedImage));
-                }
-                // 2.设置点击跳转事件
-                Intent intent = new Intent(context, SplashActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
-                notificationBuilder.setContentIntent(pendingIntent);
-                // 3.设置通知栏其他属性
-                notificationBuilder.setAutoCancel(true);
-                notificationBuilder.setDefaults(Notification.DEFAULT_ALL);
-                NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-                notificationManager.notify(++NOTIFY_ID, notificationBuilder.build());
             }
 
             @Override
