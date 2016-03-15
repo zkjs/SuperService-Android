@@ -21,6 +21,7 @@ import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.emchat.EMConversationHelper;
 import com.zkjinshi.superservice.emchat.EasemobIMHelper;
+import com.zkjinshi.superservice.emchat.EasemobIMManager;
 import com.zkjinshi.superservice.emchat.observer.EMessageListener;
 import com.zkjinshi.superservice.manager.SSOManager;
 import com.zkjinshi.superservice.manager.YunBaSubscribeManager;
@@ -129,36 +130,6 @@ public class LoginController {
         });
         netRequestTask.isShowLoadingDialog = false;
         netRequestTask.execute();
-    }
-
-    /**
-     * 登录环形IM
-     */
-    public void loginHxUser(){
-        EasemobIMHelper.getInstance().loginUser(CacheUtil.getInstance().getUserId(), "123456", new EMCallBack() {
-            @Override
-            public void onSuccess() {
-                // ** 第一次登录或者之前logout后再登录，加载所有本地群和回话
-                EMGroupManager.getInstance().loadAllGroups();
-                EMChatManager.getInstance().loadAllConversations();
-                EMessageListener.getInstance().registerEventListener();
-                EMConversationHelper.getInstance().requestGroupListTask();
-                EMChatManager.getInstance().updateCurrentUserNick(CacheUtil.getInstance().getUserName());
-            }
-
-            @Override
-            public void onError(int i, String s) {
-                Log.i(TAG, "环信登录失败-errorCode:" + i);
-                Log.i(TAG, "环信登录失败-errorMessage:" + s);
-                LogUtil.getInstance().info(LogLevel.ERROR,"环信登录失败-errorCode:" + i);
-                LogUtil.getInstance().info(LogLevel.ERROR,"环信登录失败-errorMessage:" + s);
-            }
-
-            @Override
-            public void onProgress(int i, String s) {
-
-            }
-        });
     }
 
 
@@ -337,7 +308,7 @@ public class LoginController {
                                 CacheUtil.getInstance().saveUserPhotoUrl(imgurl);
                                 CacheUtil.getInstance().setSex(dataJson.getString("sex"));
 
-                                LoginController.getInstance().loginHxUser();
+                                EasemobIMManager.getInstance().loginHxUser();
                                 YunBaSubscribeManager.getInstance().setAlias(context);
                                 YunBaSubscribeManager.getInstance().subscribe();
 

@@ -69,6 +69,41 @@ public class YunBaSubscribeManager {
     }
 
     /**
+     * 订阅频道
+     * @param context
+     */
+    public void subscribe(final Context context){
+        YunBaManager.getTopicList(context, new IMqttActionListener() {
+            @Override
+            public void onSuccess(IMqttToken iMqttToken) {
+                JSONObject result = iMqttToken.getResult();
+                try {
+                    JSONArray topics = result.getJSONArray("topics");
+                    if(null != topics && topics.length() > 0){
+                        String[]  channels = new String[topics.length()];
+                        for(int i=0; i <topics.length(); i++){
+                            channels[i] = topics.get(i).toString();
+                        }
+                        subscribe(channels);
+                    }
+
+                } catch (JSONException e) {
+                    Log.i(TAG, "获取云巴订阅频道 json解析异常:"+e.getMessage());
+                }
+            }
+
+            @Override
+            public void onFailure(IMqttToken iMqttToken, Throwable throwable) {
+                if (throwable instanceof MqttException) {
+                    MqttException ex = (MqttException)throwable;
+                    String msg = TAG + "getTopicList failed with error code : " + ex.getReasonCode();
+                    Log.i(TAG, "获取云巴订阅频道失败:"+msg);
+                }
+            }
+        });
+    }
+
+    /**
      * 订阅后台云巴推送
      */
     public void subscribe(){
@@ -92,7 +127,7 @@ public class YunBaSubscribeManager {
         return isSubscribed;
     }
 
-        /**
+    /**
      * 获取订阅频道
      * @param context
      */
