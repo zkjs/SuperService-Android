@@ -1,5 +1,6 @@
 package com.zkjinshi.superservice.activity.set;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -12,23 +13,36 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.base.util.DisplayUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.chat.single.ChatActivity;
 import com.zkjinshi.superservice.adapter.TeamContactsAdapter;
-import com.zkjinshi.superservice.listener.GetTeamContactsListener;
+
+import com.zkjinshi.superservice.manager.SSOManager;
+import com.zkjinshi.superservice.response.GetEmployeesResponse;
 import com.zkjinshi.superservice.sqlite.ShopEmployeeDBUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
+import com.zkjinshi.superservice.utils.Constants;
+import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.view.AutoSideBar;
+import com.zkjinshi.superservice.vo.EmployeeVo;
 import com.zkjinshi.superservice.vo.IdentityType;
-import com.zkjinshi.superservice.vo.OnlineStatus;
-import com.zkjinshi.superservice.vo.ShopEmployeeVo;
+import com.zkjinshi.superservice.vo.PayloadVo;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Iterator;
+
 import java.util.List;
+
+import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.entity.StringEntity;
 
 /**
  * 团队联系人显示界面
@@ -49,16 +63,15 @@ public class TeamContactsActivity extends AppCompatActivity{
     private AutoSideBar     mAutoSideBar;
 
     private TeamContactsAdapter mTeamContactAdapter;
-    private String mUserID;
-    private String mShopID;
-    private String mToken;
-
     private IdentityType mUserType;
+
+    Context mContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_team_contacts);
+        mContext = this;
 
         initView();
         initData();
@@ -87,87 +100,99 @@ public class TeamContactsActivity extends AppCompatActivity{
     }
 
     private void initData() {
-
-        mUserID   = CacheUtil.getInstance().getUserId();
-        mToken    = CacheUtil.getInstance().getToken();
-        mShopID   = CacheUtil.getInstance().getShopID();
         mUserType = CacheUtil.getInstance().getLoginIdentity();
-
-        mTeamContactAdapter = new TeamContactsAdapter(TeamContactsActivity.this,
-                                               new ArrayList<ShopEmployeeVo>());
+        mTeamContactAdapter = new TeamContactsAdapter(TeamContactsActivity.this,new ArrayList<EmployeeVo>());
         mRvTeamContacts.setAdapter(mTeamContactAdapter);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        showDataList();
+        getEmployeesList();
     }
 
-    /**
-     * 初始化待显示数据并展示
-     */
-    private void showDataList() {
-        TeamContactsController.getInstance().getTeamContacts(
-                TeamContactsActivity.this,
-                mUserID, mToken, mShopID, new GetTeamContactsListener() {
-                    @Override
-                    public void getContactsDone(List<ShopEmployeeVo> shopEmployeeVos) {
 
-                        List<String> strLetters = new ArrayList<>();//首字母显示数组
-                        List<String> empids     = new ArrayList<>();//员工ID数组
 
-                        if (null != shopEmployeeVos && !shopEmployeeVos.isEmpty()) {
-                            Iterator<ShopEmployeeVo> shopEmployeeVoIterator = shopEmployeeVos.iterator();
-                            while (shopEmployeeVoIterator.hasNext()) {
-                                ShopEmployeeVo shopEmployeeVo = shopEmployeeVoIterator.next();
-                                String empID = shopEmployeeVo.getEmpid();
-                                if (empID.equals(mUserID)) {
-                                    shopEmployeeVoIterator.remove();
-                                } else {
-                                    shopEmployeeVo.setOnline_status(OnlineStatus.OFFLINE);
-                                    continue;
-                                }
-                            }
 
-                            //获取部门首字母进行排序
-                            for (ShopEmployeeVo shopEmployeeVo : shopEmployeeVos) {
-                                empids.add(shopEmployeeVo.getEmpid());
-                                String deptName = shopEmployeeVo.getDept_name();
-                                String sortLetter = null;
+    private void getEmployeesList(){
+        try{
+            AsyncHttpClient client = new AsyncHttpClient();
+            client.setTimeout(Constants.OVERTIMEOUT);
+            client.addHeader("Content-Type","application/json; charset=UTF-8");
+            client.addHeader("Token",CacheUtil.getInstance().getExtToken());
+            JSONObject jsonObject = new JSONObject();
+            StringEntity stringEntity = new StringEntity(jsonObject.toString());
+            String url = ProtocolUtil.getEmpployeeList();
+            client.get(mContext,url, stringEntity, "application/json", new AsyncHttpResponseHandler(){
+                public void onStart(){
+                    super.onStart();
+                    DialogUtil.getInstance().showAvatarProgressDialog(mContext,"");
+                }
 
-                                if (TextUtils.isEmpty(deptName)) {
-                                    sortLetter = "#";
-                                    shopEmployeeVo.setDept_name(sortLetter);
-                                } else {
-                                    sortLetter = deptName.substring(0, 1);
-                                }
+                public void onFinish(){
+                    super.onFinish();
+                    DialogUtil.getInstance().cancelProgressDialog();
+                }
 
-                                //部门分类并消除相同部门
-                                if (!TextUtils.isEmpty(sortLetter) && !strLetters.contains(sortLetter)) {
-                                    strLetters.add(sortLetter);
-                                }
-                            }
-
-                            String[] sortArray = strLetters.toArray(new String[strLetters.size()]);
-                            if (sortArray.length > 0) {
-                                mAutoSideBar.setSortArray(sortArray);
-                                //移除之前设置
-                                mRlSideBar.removeAllViews();
-                                mRlSideBar.addView(mAutoSideBar);
-                            }
-                            mTeamContactAdapter.setData(shopEmployeeVos);
-                            ShopEmployeeDBUtil.getInstance().batchAddShopEmployees(shopEmployeeVos);
+                public void onSuccess(int statusCode, Header[] headers, byte[] responseBody){
+                    try {
+                        String response = new String(responseBody,"utf-8");
+                        GetEmployeesResponse getEmployeesResponse = new Gson().fromJson(response,GetEmployeesResponse.class);
+                        if(getEmployeesResponse == null){
+                            return;
                         }
-                    }
+                        if(getEmployeesResponse.getRes() == 0){
+                            ArrayList<EmployeeVo> employeeVos = getEmployeesResponse.getData();
+                            if (null != employeeVos && !employeeVos.isEmpty()) {
+                                ShopEmployeeDBUtil.getInstance().batchAddShopEmployees(employeeVos);
+                                employeeVos = ShopEmployeeDBUtil.getInstance().queryAllExceptUser(CacheUtil.getInstance().getUserId());
+                                List<String> strLetters = new ArrayList<>();//首字母显示数组
 
-                    @Override
-                    public void getContactsFailed() {
-                        //获取在线数据失败更新
-                        DialogUtil.getInstance().cancelProgressDialog();
+                                //获取部门首字母进行排序
+                                for (EmployeeVo employeeVo : employeeVos) {
+                                    String roleName = employeeVo.getRolename();
+                                    String sortLetter = null;
+
+                                    if (TextUtils.isEmpty(roleName)) {
+                                        sortLetter = "#";
+                                        employeeVo.setRolename(sortLetter);
+                                    } else {
+                                        sortLetter = roleName.substring(0, 1);
+                                    }
+
+                                    //部门分类并消除相同部门
+                                    if (!TextUtils.isEmpty(sortLetter) && !strLetters.contains(sortLetter)) {
+                                        strLetters.add(sortLetter);
+                                    }
+
+                                }
+
+                                String[] sortArray = strLetters.toArray(new String[strLetters.size()]);
+                                if (sortArray.length > 0) {
+                                    mAutoSideBar.setSortArray(sortArray);
+                                    //移除之前设置
+                                    mRlSideBar.removeAllViews();
+                                    mRlSideBar.addView(mAutoSideBar);
+                                }
+                                mTeamContactAdapter.setData(employeeVos);
+                            }
+                        }else{
+                            Toast.makeText(mContext,getEmployeesResponse.getResDesc(),Toast.LENGTH_SHORT).show();
+                        }
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Toast.makeText(mContext,"解析异常",Toast.LENGTH_SHORT).show();
                     }
                 }
-        );
+
+                public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error){
+                    Toast.makeText(mContext,"API 错误："+statusCode,Toast.LENGTH_SHORT).show();
+                }
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     private void initListener() {
@@ -190,7 +215,6 @@ public class TeamContactsActivity extends AppCompatActivity{
 
                     case R.id.menu_team_edit:
                         Intent teamEdit = new Intent(TeamContactsActivity.this, TeamEditActivity.class);
-                        teamEdit.putExtra("shop_id", mShopID);
                         TeamContactsActivity.this.startActivity(teamEdit);
                         break;
                 }
@@ -211,14 +235,15 @@ public class TeamContactsActivity extends AppCompatActivity{
         mRvTeamContacts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ShopEmployeeVo shopEmployeeVo = mTeamContactAdapter.mDatas.get(position);
-                String userId = shopEmployeeVo.getEmpid();
-                String toName = shopEmployeeVo.getName();
+                EmployeeVo employeeVo = mTeamContactAdapter.mDatas.get(position);
+                String userId = employeeVo.getUserid();
+                String toName = employeeVo.getUsername();
                 String shopName = CacheUtil.getInstance().getShopFullName();
                 Intent intent = new Intent(TeamContactsActivity.this, ChatActivity.class);
                 intent.putExtra(com.zkjinshi.superservice.utils.Constants.EXTRA_USER_ID, userId);
-                if (!TextUtils.isEmpty(mShopID)) {
-                    intent.putExtra(com.zkjinshi.superservice.utils.Constants.EXTRA_SHOP_ID,mShopID);
+                PayloadVo payloadVo = SSOManager.getInstance().decodeToken(CacheUtil.getInstance().getExtToken());
+                if (!TextUtils.isEmpty(payloadVo.getShopid())) {
+                    intent.putExtra(com.zkjinshi.superservice.utils.Constants.EXTRA_SHOP_ID,payloadVo.getShopid());
                 }
                 intent.putExtra(com.zkjinshi.superservice.utils.Constants.EXTRA_SHOP_NAME, shopName);
                 if(!TextUtils.isEmpty(toName)){
@@ -235,7 +260,7 @@ public class TeamContactsActivity extends AppCompatActivity{
         super.onActivityResult(requestCode, resultCode, data);
         if (RESULT_OK == resultCode) {
             if (ADD_REQUEST_CODE == requestCode) {
-                showDataList();
+
             }
         }
     }

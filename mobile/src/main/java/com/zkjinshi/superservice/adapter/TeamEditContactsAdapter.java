@@ -33,7 +33,7 @@ import com.zkjinshi.superservice.utils.StringUtil;
 import com.zkjinshi.superservice.view.CircleImageView;
 import com.zkjinshi.superservice.view.CircleTextView;
 import com.zkjinshi.superservice.vo.OnlineStatus;
-import com.zkjinshi.superservice.vo.ShopEmployeeVo;
+import com.zkjinshi.superservice.vo.EmployeeVo;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,12 +50,12 @@ import java.util.Map;
  */
 public class TeamEditContactsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements SectionIndexer {
 
-    private List<ShopEmployeeVo>  mList;
+    private List<EmployeeVo>  mList;
     private Context               mContext;
     private Map<Integer, Boolean> mCheckedMap;
     private RecyclerItemClickListener mRecyclerItemClickListener;
 
-    public TeamEditContactsAdapter(Context mContext, List<ShopEmployeeVo> list) {
+    public TeamEditContactsAdapter(Context mContext, List<EmployeeVo> list) {
 
         this.mContext = mContext;
         this.mList    = list;
@@ -67,7 +67,7 @@ public class TeamEditContactsAdapter extends RecyclerView.Adapter<RecyclerView.V
      * 当ListView数据发生变化时,调用此方法来更新ListView
      * @param list
      */
-    public void updateListView(List<ShopEmployeeVo> list) {
+    public void updateListView(List<EmployeeVo> list) {
         if (list == null) {
             this.mList = new ArrayList<>();
         } else {
@@ -92,12 +92,12 @@ public class TeamEditContactsAdapter extends RecyclerView.Adapter<RecyclerView.V
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
 
-        ShopEmployeeVo employeeVo = mList.get(position);
+        EmployeeVo employeeVo = mList.get(position);
         int section = getSectionForPosition(position);
 
         if (position == getPositionForSection(section)) {
             ((ContactViewHolder)holder).tvLetter.setVisibility(View.VISIBLE);
-            String deptName = employeeVo.getDept_name();
+            String deptName = employeeVo.getRolename();
             if(!TextUtils.isEmpty(deptName)){
                 ((ContactViewHolder)holder).tvLetter.setText(deptName);
             }
@@ -106,7 +106,7 @@ public class TeamEditContactsAdapter extends RecyclerView.Adapter<RecyclerView.V
         }
 
         //显示客户名称
-        final String employeeName = employeeVo.getName();
+        final String employeeName = employeeVo.getUsername();
         if(!TextUtils.isEmpty(employeeName)) {
             final String firstName = employeeName.substring(0, 1);
             ((ContactViewHolder) holder).tvContactAvatar.setText(firstName);
@@ -114,9 +114,10 @@ public class TeamEditContactsAdapter extends RecyclerView.Adapter<RecyclerView.V
         }
 
         //根据url显示图片
-        String avatarUrl = ProtocolUtil.getAvatarUrl(employeeVo.getEmpid());
-        ((ContactViewHolder) holder).civContactAvatar.setImageURI( Uri.parse(avatarUrl));
-        ((ContactViewHolder) holder).tvContactAvatar.setBackgroundResource(employeeVo.getBg_color_res());
+        int bgColorRes = RandomDrawbleUtil.getDrawableByIndex(position);
+        String empAvatarUrl = ProtocolUtil.getHostImgUrl(employeeVo.getUserimage());
+        ((ContactViewHolder) holder).civContactAvatar.setImageURI( Uri.parse(empAvatarUrl));
+        ((ContactViewHolder) holder).tvContactAvatar.setBackgroundResource(bgColorRes);
         ((ContactViewHolder) holder).tvContactAvatar.setVisibility(View.VISIBLE);
 
 
@@ -148,8 +149,8 @@ public class TeamEditContactsAdapter extends RecyclerView.Adapter<RecyclerView.V
      * 根据ListView的当前位置获取分类的首字母的Char ascii值
      */
     public int getSectionForPosition(int position) {
-        if(!TextUtils.isEmpty(mList.get(position).getDept_name())){
-            return mList.get(position).getDept_name().charAt(0);
+        if(!TextUtils.isEmpty(mList.get(position).getRolename())){
+            return mList.get(position).getRolename().charAt(0);
         }
         return -1;
     }
@@ -164,7 +165,7 @@ public class TeamEditContactsAdapter extends RecyclerView.Adapter<RecyclerView.V
      */
     public int getPositionForSection(int section) {
         for (int i = 0; i < getItemCount(); i++) {
-            String sortStr = mList.get(i).getDept_name();
+            String sortStr = mList.get(i).getRolename();
             if(!TextUtils.isEmpty(sortStr)){
                 char firstChar = sortStr.toUpperCase(Locale.CHINESE).charAt(0);
                 if (firstChar == section) {

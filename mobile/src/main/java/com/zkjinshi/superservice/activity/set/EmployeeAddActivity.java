@@ -38,7 +38,6 @@ import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.vo.ContactLocalVo;
 import com.zkjinshi.superservice.vo.DepartmentVo;
 import com.zkjinshi.superservice.vo.EmployeeVo;
-import com.zkjinshi.superservice.vo.ShopEmployeeVo;
 
 import android.content.Intent;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
@@ -46,6 +45,7 @@ import android.provider.ContactsContract.CommonDataKinds.Photo;
 import android.text.TextUtils;
 import android.widget.Toast;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -90,13 +90,13 @@ public class EmployeeAddActivity extends Activity {
     private ListView listView;
     private ContactsAdapter contactsAdapter;
 
-    private List<ShopEmployeeVo> employeeVoList; //团队联系人列表
+    private List<EmployeeVo> employeeVoList; //团队联系人列表
     private ArrayList<ContactLocalVo> contactLocalList = new ArrayList<ContactLocalVo>(); //手机联系人
-    private List<ShopEmployeeVo> excelList = new ArrayList<ShopEmployeeVo>(); //解析excel得到的员工资料
-    private ShopEmployeeVo handEmployeeVo = null; //手动输入的员工资料
+    private List<EmployeeVo> excelList = new ArrayList<EmployeeVo>(); //解析excel得到的员工资料
+    private EmployeeVo handEmployeeVo = null; //手动输入的员工资料
     private ArrayList<DepartmentVo> deptList;
 
-    private  List<ShopEmployeeVo> allList = new ArrayList<ShopEmployeeVo>(); // 汇总的要提交的新成员。
+    private  List<EmployeeVo> allList = new ArrayList<EmployeeVo>(); // 汇总的要提交的新成员。
 
     private boolean hasGetDept = false;
     private String mShopID;
@@ -175,11 +175,8 @@ public class EmployeeAddActivity extends Activity {
     }
 
     private boolean isExsitInEmployeeVoList(String phone){
-        for(ShopEmployeeVo employeeVo : employeeVoList){
+        for(EmployeeVo employeeVo : employeeVoList){
             if(employeeVo.getPhone() != null && employeeVo.getPhone().equals(phone)){
-                return true;
-            }
-            else if(employeeVo.getPhone2() != null && employeeVo.getPhone2().equals(phone)){
                 return true;
             }
         }
@@ -281,10 +278,10 @@ public class EmployeeAddActivity extends Activity {
                             hasGetDept = true;
                             ShopDepartmentDBUtil.getInstance().batchAddShopDepartments(deptList);
 
-                            for (ShopEmployeeVo shopEmployeeVo : excelList) {
+                            for (EmployeeVo shopEmployeeVo : excelList) {
                                 for (DepartmentVo departmentVo : deptList) {
-                                    if (shopEmployeeVo.getDept_name().equals(departmentVo.getDept_name())) {
-                                        shopEmployeeVo.setDept_id(departmentVo.getDeptid());
+                                    if (shopEmployeeVo.getRolename().equals(departmentVo.getDept_name())) {
+
                                         break;
                                     }
                                 }
@@ -321,12 +318,12 @@ public class EmployeeAddActivity extends Activity {
 
         //汇总导入的Excel
         if( excelList != null && excelList.size() > 0){
-            for(ShopEmployeeVo shopEmployeeVo : excelList){
+            for(EmployeeVo shopEmployeeVo : excelList){
                 if(!TextUtils.isEmpty(shopEmployeeVo.getPhone()) && !map.containsKey(shopEmployeeVo.getPhone())){
-                    if(shopEmployeeVo.getDept_name().equals("管理层")){
-                        shopEmployeeVo.setRoleid(1);
+                    if(shopEmployeeVo.getRolename().equals("管理层")){
+                        //shopEmployeeVo.setRoleid(1);
                     }else{
-                        shopEmployeeVo.setRoleid(2);
+                        //shopEmployeeVo.setRoleid(2);
                     }
                     allList.add(shopEmployeeVo);
                     map.put(shopEmployeeVo.getPhone(),shopEmployeeVo.getPhone());
@@ -336,13 +333,13 @@ public class EmployeeAddActivity extends Activity {
         //汇总要上传的手机联系人
         for(ContactLocalVo contactLocalVo : contactLocalList){
             if(contactLocalVo.isHasAdd()){
-                ShopEmployeeVo shopEmployeeVo = new ShopEmployeeVo();
+                EmployeeVo shopEmployeeVo = new EmployeeVo();
                 String phone = contactLocalVo.getPhoneNumber();
                 phone = phone.replaceAll(" ","");
                 shopEmployeeVo.setPhone(phone);
-                shopEmployeeVo.setName(contactLocalVo.getContactName());
-                shopEmployeeVo.setRoleid(2);
-                shopEmployeeVo.setDept_id(0);
+                shopEmployeeVo.setUsername(contactLocalVo.getContactName());
+//                shopEmployeeVo.setRoleid(2);
+//                shopEmployeeVo.setDept_id(0);
                 if(!TextUtils.isEmpty(shopEmployeeVo.getPhone()) && !map.containsKey(shopEmployeeVo.getPhone())){
                     allList.add(shopEmployeeVo);
                     map.put(shopEmployeeVo.getPhone(),shopEmployeeVo.getPhone());
@@ -359,23 +356,21 @@ public class EmployeeAddActivity extends Activity {
             DialogUtil.getInstance().showToast(this,"至少添加一个成员");
             return;
         }
-
-        ArrayList<EmployeeVo> users = new ArrayList<EmployeeVo>();
-        for(int i=0;i<allList.size();i++){
-            EmployeeVo employeeVo = new EmployeeVo();
-            employeeVo.setPhone(allList.get(i).getPhone());
-            employeeVo.setUsername(allList.get(i).getName());
-            users.add(employeeVo);
-        }
-
-        String usersJsonStr = new Gson().toJson(users);
         try{
+
+            JSONArray users = new JSONArray();
+            for(int i=0;i<allList.size();i++){
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("phone",allList.get(i).getPhone());
+                jsonObject.put("username",allList.get(i).getUsername());
+                users.put(jsonObject);
+            }
             AsyncHttpClient client = new AsyncHttpClient();
             client.setTimeout(Constants.OVERTIMEOUT);
             client.addHeader("Content-Type","application/json; charset=UTF-8");
             client.addHeader("Token",CacheUtil.getInstance().getExtToken());
             JSONObject jsonObject = new JSONObject();
-            jsonObject.put("users",usersJsonStr);
+            jsonObject.put("users",users);
             StringEntity stringEntity = new StringEntity(jsonObject.toString());
             String url = ProtocolUtil.registerSSusers();
             client.post(mContext,url, stringEntity, "application/json", new JsonHttpResponseHandler(){
@@ -427,8 +422,8 @@ public class EmployeeAddActivity extends Activity {
                 }
             }else if (HAND_REQUEST_CODE == requestCode) {
                 if (null != data) {
-                    handEmployeeVo = (ShopEmployeeVo)data.getSerializableExtra(EmployeeHandAddActivity.CREATE_RESULT);
-                    handText.setText(handEmployeeVo.getName()+","+handEmployeeVo.getPhone());
+                    handEmployeeVo = (EmployeeVo)data.getSerializableExtra(EmployeeHandAddActivity.CREATE_RESULT);
+                    handText.setText(handEmployeeVo.getUsername()+","+handEmployeeVo.getPhone());
                 }
             }
         }
@@ -448,11 +443,11 @@ public class EmployeeAddActivity extends Activity {
     }
 
     //获取部门列表
-    private void getDeptList(List<ShopEmployeeVo> excelList){
+    private void getDeptList(List<EmployeeVo> excelList){
         deptList = new ArrayList<DepartmentVo>();
         HashMap<String,String> map = new HashMap<String,String>();
-        for(ShopEmployeeVo shopEmployeeVo : excelList){
-            String deptname = shopEmployeeVo.getDept_name();
+        for(EmployeeVo shopEmployeeVo : excelList){
+            String deptname = shopEmployeeVo.getRolename();
             if(!TextUtils.isEmpty(deptname) && !map.containsKey(deptname)){
                 map.put(deptname, deptname);
                 DepartmentVo departmentVo = new DepartmentVo();
@@ -477,7 +472,7 @@ public class EmployeeAddActivity extends Activity {
         @Override
         protected Void doInBackground(Void... voids) {
             //获取团队联系人列表
-            employeeVoList = ShopEmployeeDBUtil.getInstance().queryAll(mShopID);
+            employeeVoList = ShopEmployeeDBUtil.getInstance().queryAllExceptUser(CacheUtil.getInstance().getUserId());
             //得到手机通讯录联系人信息
             getPhoneContacts();
             return null;

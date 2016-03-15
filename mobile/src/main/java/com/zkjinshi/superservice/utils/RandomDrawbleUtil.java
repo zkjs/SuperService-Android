@@ -21,4 +21,8 @@ public class RandomDrawbleUtil {
         return drawableRes[new Random().nextInt(drawableRes.length)];
     }
 
+    public static int getDrawableByIndex(int index){
+        return drawableRes[index % drawableRes.length];
+    }
+
 }

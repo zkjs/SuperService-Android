@@ -27,7 +27,7 @@ import com.zkjinshi.superservice.sqlite.ShopEmployeeDBUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.vo.ClientVo;
 import com.zkjinshi.superservice.vo.EContactVo;
-import com.zkjinshi.superservice.vo.ShopEmployeeVo;
+import com.zkjinshi.superservice.vo.EmployeeVo;
 
 import java.util.ArrayList;
 
@@ -47,7 +47,7 @@ public class ChatDetailActivity extends Activity{
     private ArrayList<EContactVo> contactList = new ArrayList<EContactVo>();
     private String userId;
     private String userName;
-    private ShopEmployeeVo shopEmployeeVo;
+    private EmployeeVo shopEmployeeVo;
     private EContactVo contactVo;
     private ClientVo clientVo;
     private String clientId;
@@ -73,7 +73,7 @@ public class ChatDetailActivity extends Activity{
 
         if(null != getIntent() && null != getIntent().getStringExtra("userId")){
             userId = getIntent().getStringExtra("userId");
-            shopEmployeeVo = ShopEmployeeDBUtil.getInstance().queryEmployeeById(mShopID, userId);
+            shopEmployeeVo = ShopEmployeeDBUtil.getInstance().queryEmployeeById(userId);
             if(null != shopEmployeeVo){
                 contactVo = EContactFactory.getInstance().buildEContactVo(shopEmployeeVo);
                 if(!contactList.contains(contactVo)){

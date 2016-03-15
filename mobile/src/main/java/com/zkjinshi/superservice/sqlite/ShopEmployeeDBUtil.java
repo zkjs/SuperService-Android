@@ -9,8 +9,8 @@ import com.zkjinshi.base.log.LogLevel;
 import com.zkjinshi.base.log.LogUtil;
 import com.zkjinshi.superservice.ServiceApplication;
 import com.zkjinshi.superservice.factory.ShopEmployeeFactory;
-import com.zkjinshi.superservice.utils.CacheUtil;
-import com.zkjinshi.superservice.vo.ShopEmployeeVo;
+import com.zkjinshi.superservice.vo.EmployeeVo;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,39 +46,15 @@ public class ShopEmployeeDBUtil {
         helper   = new DBOpenHelper(mContext);
     }
 
-    public long addShopEmployee(ShopEmployeeVo shopEmployeeVo){
-        ContentValues values = ShopEmployeeFactory.getInstance().buildAddContentValues(shopEmployeeVo);
-        long addResult    = -1;
-        SQLiteDatabase db = null;
-        try {
-            db        = helper.getWritableDatabase();
-            Cursor cursor = db.rawQuery(" select * from "
-                            + DBOpenHelper.SHOP_EMPLOYEE_TBL
-                            + " where empid = ? ",
-                                new String[] { shopEmployeeVo.getEmpid() });
 
-            if(cursor.getCount() > 0){
-                addResult = db.update(DBOpenHelper.SHOP_EMPLOYEE_TBL, values, " empid = ?", new String[] { shopEmployeeVo.getEmpid() });
-            } else {
-                addResult = db.insert(DBOpenHelper.SHOP_EMPLOYEE_TBL, null, values);
-            }
-        } catch (Exception e) {
-            LogUtil.getInstance().info(LogLevel.ERROR, TAG + ".addShopEmployee->" + e.getMessage());
-            e.printStackTrace();
-        } finally{
-            if(null != db)
-                db.close();
-        }
-        return addResult;
-    }
 
-    public long updateShopEmployee(ShopEmployeeVo shopEmployeeVo){
-        ContentValues values = ShopEmployeeFactory.getInstance().buildUpdateContentValues(shopEmployeeVo);
+    public long updateShopEmployee(EmployeeVo EmployeeVo){
+        ContentValues values = ShopEmployeeFactory.getInstance().buildContentValues(EmployeeVo);
         long updateResult    = -1;
         SQLiteDatabase db = null;
         try {
             db        = helper.getWritableDatabase();
-            updateResult = db.update(DBOpenHelper.SHOP_EMPLOYEE_TBL, values, " empid = ?", new String[] { shopEmployeeVo.getEmpid() });
+            updateResult = db.update(DBOpenHelper.SHOP_EMPLOYEE_TBL, values, " userid = ?", new String[] { EmployeeVo.getUserid() });
         } catch (Exception e) {
             LogUtil.getInstance().info(LogLevel.ERROR, TAG + ".updateShopEmployee->" + e.getMessage());
             e.printStackTrace();
@@ -90,22 +66,25 @@ public class ShopEmployeeDBUtil {
     }
 
     /**
-     * @param shopEmployeeVos
+     * @param EmployeeVos
      * @return
      */
-    public long batchAddShopEmployees(List<ShopEmployeeVo> shopEmployeeVos){
+    public long batchAddShopEmployees(List<EmployeeVo> EmployeeVos){
         long addResult    = -1;
         SQLiteDatabase db = null;
         try {
             db = helper.getWritableDatabase();
             db.beginTransaction();
-            for(ShopEmployeeVo shopEmployeeVo : shopEmployeeVos){
-                ContentValues values = ShopEmployeeFactory.getInstance().buildAddContentValues(shopEmployeeVo);
-
-                addResult = db.insert(DBOpenHelper.SHOP_EMPLOYEE_TBL, null, values);
+            for(EmployeeVo EmployeeVo : EmployeeVos){
+                ContentValues values = ShopEmployeeFactory.getInstance().buildContentValues(EmployeeVo);
+                try{
+                    addResult = db.insert(DBOpenHelper.SHOP_EMPLOYEE_TBL, null, values);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
                 if(addResult == -1){
-                    String empID = shopEmployeeVo.getEmpid();
-                    addResult = db.update(DBOpenHelper.SHOP_EMPLOYEE_TBL, values, " empid = ? ", new String[]{ empID });
+                    String empID = EmployeeVo.getUserid();
+                    addResult = db.update(DBOpenHelper.SHOP_EMPLOYEE_TBL, values, " userid = ? ", new String[]{ empID });
                 }
             }
 
@@ -121,115 +100,23 @@ public class ShopEmployeeDBUtil {
         }
         return addResult;
     }
-
-    /**
-     * 查询所有团队联系人
-     * @return
-     */
-    public List<ShopEmployeeVo> queryAll(String shopID) {
-        List<ShopEmployeeVo> shopEmployeeVos = new ArrayList<>();
-        ShopEmployeeVo shopEmployeeVo = null;
-        SQLiteDatabase db = null;
-        Cursor cursor = null;
-        if (null != helper) {
-            try {
-                db = helper.getReadableDatabase();
-                cursor = db.query(DBOpenHelper.SHOP_EMPLOYEE_TBL, null, " shop_id = ?", new String[] {shopID}, null, null, null);
-                if (cursor != null && cursor.getCount() > 0) {
-                    while (cursor.moveToNext()) {
-                        shopEmployeeVo = ShopEmployeeFactory.getInstance().buildShopEmployee(cursor);
-                        shopEmployeeVos.add(shopEmployeeVo);
-                    }
-                }
-            } catch (Exception e) {
-                LogUtil.getInstance().info(LogLevel.ERROR, TAG+".queryAll->"+e.getMessage());
-                e.printStackTrace();
-            } finally {
-                if (null != cursor) {
-                    cursor.close();
-                }
-                if (null != db) {
-                    db.close();
-                }
-            }
-        }
-        return  shopEmployeeVos;
-    }
-
-    /**
-     * 根据empID判断员工是否存在
-     * @return
-     */
-    public Boolean isEmployeeExistByEmpID(String empID) {
-        Cursor cursor = null;
-        SQLiteDatabase db = null;
-        try {
-            db = helper.getReadableDatabase();
-            cursor = db.rawQuery(" select * from " + DBOpenHelper.SHOP_EMPLOYEE_TBL + " where empid = ? ", new String[]{empID});
-            if(cursor.getCount() > 0){
-                return true;
-            }
-        } catch (Exception e) {
-            LogUtil.getInstance().info(LogLevel.ERROR, TAG + ".isEmployeeExistByEmpID->"+e.getMessage());
-            e.printStackTrace();
-        } finally{
-            if(null != db)
-                db.close();
-
-            if(null != cursor)
-                cursor.close();
-        }
-        return false;
-    }
-
-    /**
-     * 根据empID查询默认背景颜色资源值
-     * @return
-     */
-    public int queryBgColorResByEmpID(String empID) {
-        int    bgColorRes = 0;
-        Cursor cursor = null;
-        SQLiteDatabase db = null;
-        try {
-            db = helper.getReadableDatabase();
-            cursor = db.query(DBOpenHelper.SHOP_EMPLOYEE_TBL,
-                    new String[]{" bg_color_res "},
-                    " empid = ? ",
-                    new String[]{empID},
-                    null, null, null);
-            if(cursor.moveToFirst()){
-                bgColorRes = cursor.getInt(0);
-            }
-        } catch (Exception e) {
-            LogUtil.getInstance().info(LogLevel.ERROR, TAG + ".queryBgColorResByEmpID->"+e.getMessage());
-            e.printStackTrace();
-        } finally{
-            if(null != db)
-                db.close();
-
-            if(null != cursor)
-                cursor.close();
-        }
-        return bgColorRes;
-    }
-
     /**
      * query by department id asc
      * @return
      */
-    public List<ShopEmployeeVo> queryAllByDeptIDAsc(String shopID) {
-        List<ShopEmployeeVo> shopEmployeeVos = new ArrayList<>();
-        ShopEmployeeVo shopEmployeeVo = null;
+    public ArrayList<EmployeeVo> queryAllExceptUser(String userID) {
+        ArrayList<EmployeeVo> employeeVos = new ArrayList<EmployeeVo>();
+        EmployeeVo employeeVo = null;
         SQLiteDatabase db = null;
         Cursor cursor = null;
         if (null != helper) {
             try {
                 db = helper.getReadableDatabase();
-                cursor = db.query(DBOpenHelper.SHOP_EMPLOYEE_TBL, null, " shop_id = ?", new String[] {shopID}, null, null, " dept_id ASC");
+                cursor = db.query(DBOpenHelper.SHOP_EMPLOYEE_TBL, null, " userid != ?", new String[] {userID}, null, null, " rolename ASC");
                 if (cursor != null && cursor.getCount() > 0) {
                     while (cursor.moveToNext()) {
-                        shopEmployeeVo = ShopEmployeeFactory.getInstance().buildShopEmployee(cursor);
-                        shopEmployeeVos.add(shopEmployeeVo);
+                        employeeVo = ShopEmployeeFactory.getInstance().bulidEmployeeVo(cursor);
+                        employeeVos.add(employeeVo);
                     }
                 }
             } catch (Exception e) {
@@ -244,64 +131,10 @@ public class ShopEmployeeDBUtil {
                 }
             }
         }
-        return  shopEmployeeVos;
+        return  employeeVos;
     }
 
-    /**
-     * query by department id asc
-     * @return
-     */
-    public List<ShopEmployeeVo> queryAllExceptUser(String shopID, String userID) {
-        List<ShopEmployeeVo> shopEmployeeVos = new ArrayList<>();
-        ShopEmployeeVo shopEmployeeVo = null;
-        SQLiteDatabase db = null;
-        Cursor cursor = null;
-        if (null != helper) {
-            try {
-                db = helper.getReadableDatabase();
-                cursor = db.query(DBOpenHelper.SHOP_EMPLOYEE_TBL, null, " shop_id = ?", new String[] {shopID}, null, null, " dept_id ASC");
-                if (cursor != null && cursor.getCount() > 0) {
-                    while (cursor.moveToNext()) {
-                        shopEmployeeVo = ShopEmployeeFactory.getInstance().buildShopEmployee(cursor);
-                        if(!shopEmployeeVo.getEmpid().equals(userID)){
-                            shopEmployeeVos.add(shopEmployeeVo);
-                        }
-                    }
-                }
-            } catch (Exception e) {
-                LogUtil.getInstance().info(LogLevel.ERROR, TAG+".queryAll->"+e.getMessage());
-                e.printStackTrace();
-            } finally {
-                if (null != cursor) {
-                    cursor.close();
-                }
-                if (null != db) {
-                    db.close();
-                }
-            }
-        }
-        return  shopEmployeeVos;
-    }
 
-    /**
-     * 根据员工ID进行本地数据库的删除
-     * @param empid
-     */
-    public long deleteShopEmployeeByEmpID(String empid) {
-        SQLiteDatabase db = null;
-        long delResult = -1;
-        try {
-            db = helper.getWritableDatabase();
-            delResult = db.delete(DBOpenHelper.SHOP_EMPLOYEE_TBL, " empid = ? ", new String[]{ empid });
-        } catch (Exception e) {
-            LogUtil.getInstance().info(LogLevel.ERROR,TAG+".deleteShopEmployeeByEmpID->"+e.getMessage());
-            e.printStackTrace();
-        }finally{
-            if(null != db)
-                db.close();
-        }
-        return delResult;
-    }
 
     /**
      * 批量删除数据库员工
@@ -315,7 +148,7 @@ public class ShopEmployeeDBUtil {
             db = helper.getWritableDatabase();
             db.beginTransaction();
             for(String empID : empIDList){
-                delResult += db.delete(DBOpenHelper.SHOP_EMPLOYEE_TBL, " empid = ? ", new String[] { empID });
+                delResult += db.delete(DBOpenHelper.SHOP_EMPLOYEE_TBL, " userid = ? ", new String[] { empID });
             }
         } catch (Exception e) {
             LogUtil.getInstance().info(LogLevel.ERROR,TAG+".deleteShopEmployeeByEmpID->"+e.getMessage());
@@ -330,19 +163,19 @@ public class ShopEmployeeDBUtil {
         return delResult;
     }
 
-    public ShopEmployeeVo queryEmployeeById(String shopID, String empId) {
-        ShopEmployeeVo shopEmployeeVo = null;
+    public EmployeeVo queryEmployeeById( String empId) {
+        EmployeeVo EmployeeVo = null;
         SQLiteDatabase db = null;
         Cursor cursor = null;
         if (null != helper) {
             try {
                 db = helper.getReadableDatabase();
                 cursor = db.query(DBOpenHelper.SHOP_EMPLOYEE_TBL, null,
-                        " shop_id = ? and empid = ? ", new String[] { shopID, empId}, null, null, null);
+                        "  userid = ? ", new String[] { empId}, null, null, null);
                 if (cursor != null && cursor.getCount() > 0) {
                     while (cursor.moveToNext()) {
-                        shopEmployeeVo = new ShopEmployeeVo();
-                        shopEmployeeVo =  ShopEmployeeFactory.getInstance().buildShopEmployee(cursor);
+                        EmployeeVo = new EmployeeVo();
+                        EmployeeVo =  ShopEmployeeFactory.getInstance().bulidEmployeeVo(cursor);
                     }
                 }
 
@@ -360,73 +193,10 @@ public class ShopEmployeeDBUtil {
             }
 
         }
-        return shopEmployeeVo;
+        return EmployeeVo;
     }
 
-    /**
-     * 查询员工最后一次服务器在线时间
-     * @param empID
-     * @return
-     */
-    public long queryLatestOnlineByEmpID(String empID) {
-        long    lateOnlineTime = 0;
-        Cursor cursor = null;
-        SQLiteDatabase db = null;
-        try {
-            db = helper.getReadableDatabase();
-            cursor = db.query(DBOpenHelper.SHOP_EMPLOYEE_TBL,
-                    new String[]{" last_online_time "},
-                    " empid = ? ",
-                    new String[]{empID},
-                    null, null, null);
-            if(cursor.moveToFirst()){
-                lateOnlineTime = cursor.getLong(0);
-            }
-        } catch (Exception e) {
-            LogUtil.getInstance().info(LogLevel.ERROR, TAG + ".queryLatestOnlineByEmpID->"+e.getMessage());
-            e.printStackTrace();
-        } finally{
-            if(null != db)
-                db.close();
 
-            if(null != cursor)
-                cursor.close();
-        }
-        return lateOnlineTime;
-    }
 
-    /**
-     * 根据shopID获取团队列表
-     * @param shopID
-     * @return
-     */
-    public List<ShopEmployeeVo> queryTeamByShopID(String shopID) {
-        List<ShopEmployeeVo> shopEmployeeVos = new ArrayList<>();
-        ShopEmployeeVo shopEmployeeVo = null;
-        SQLiteDatabase db = null;
-        Cursor cursor = null;
-        if (null != helper) {
-            try {
-                db = helper.getReadableDatabase();
-                cursor = db.query(DBOpenHelper.SHOP_EMPLOYEE_TBL, null, " shop_id = ? ", new String[]{ shopID }, null, null, " dept_id ASC");
-                if (cursor != null && cursor.getCount() > 0) {
-                    while (cursor.moveToNext()) {
-                        shopEmployeeVo = ShopEmployeeFactory.getInstance().buildShopEmployee(cursor);
-                        shopEmployeeVos.add(shopEmployeeVo);
-                    }
-                }
-            } catch (Exception e) {
-                LogUtil.getInstance().info(LogLevel.ERROR, TAG+".queryAll->"+e.getMessage());
-                e.printStackTrace();
-            } finally {
-                if (null != cursor) {
-                    cursor.close();
-                }
-                if (null != db) {
-                    db.close();
-                }
-            }
-        }
-        return  shopEmployeeVos;
-    }
+
 }

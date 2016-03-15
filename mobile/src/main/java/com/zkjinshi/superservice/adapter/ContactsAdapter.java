@@ -21,7 +21,7 @@ import com.zkjinshi.superservice.bean.ZoneBean;
 import com.zkjinshi.superservice.utils.RandomDrawbleUtil;
 import com.zkjinshi.superservice.view.CircleImageView;
 import com.zkjinshi.superservice.vo.ContactLocalVo;
-import com.zkjinshi.superservice.vo.ShopEmployeeVo;
+
 
 import java.io.InputStream;
 import java.util.ArrayList;

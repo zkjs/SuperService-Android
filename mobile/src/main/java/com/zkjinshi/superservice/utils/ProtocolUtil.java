@@ -365,6 +365,14 @@ public class ProtocolUtil {
     }
 
     /**
+     * 根据shopid获取客服成员-按角色区分
+     * @return
+     */
+    public static String getEmpployeeList(){
+        return ConfigUtil.getInst().getForDomain()+"res/v1/query/sss";
+    }
+
+    /**
      * 获得刷新token Url
      * @return
      */

@@ -17,7 +17,7 @@ import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.utils.DepartmentDialog;
 import com.zkjinshi.superservice.utils.StringUtil;
 import com.zkjinshi.superservice.vo.DepartmentVo;
-import com.zkjinshi.superservice.vo.ShopEmployeeVo;
+import com.zkjinshi.superservice.vo.EmployeeVo;
 
 /**
  * 手动添加成员
@@ -113,19 +113,9 @@ public class EmployeeHandAddActivity extends Activity {
             return;
         }
 
-        ShopEmployeeVo shopEmployeeVo = new ShopEmployeeVo();
-        shopEmployeeVo.setName(name);
+        EmployeeVo shopEmployeeVo = new EmployeeVo();
+        shopEmployeeVo.setUsername(name);
         shopEmployeeVo.setPhone(phone);
-        shopEmployeeVo.setDesc(remark);
-        if(deptId != -1){
-            shopEmployeeVo.setDept_id(deptId);
-        }
-
-        if(adminCbx.isChecked()){
-            shopEmployeeVo.setRoleid(1);
-        }else{
-            shopEmployeeVo.setRoleid(2);
-        }
 
         Intent intent = getIntent();
         intent.putExtra(EmployeeHandAddActivity.CREATE_RESULT,shopEmployeeVo);

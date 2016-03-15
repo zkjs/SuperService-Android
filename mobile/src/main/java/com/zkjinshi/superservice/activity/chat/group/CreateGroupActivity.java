@@ -26,7 +26,7 @@ import com.zkjinshi.superservice.sqlite.ShopEmployeeDBUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.vo.ClientVo;
 import com.zkjinshi.superservice.vo.EContactVo;
-import com.zkjinshi.superservice.vo.ShopEmployeeVo;
+import com.zkjinshi.superservice.vo.EmployeeVo;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -51,10 +51,10 @@ public class CreateGroupActivity extends Activity {
 
     private LinearLayoutManager mLayoutManager;
     private CreateGroupAdapter mContactsAdapter;
-    private List<ShopEmployeeVo>    mShopEmployeeVos;
+    private List<EmployeeVo>    mEmployeeVos;
 //    private RelativeLayout createGroupLayout;
     private ImageButton goIbtn;
-    private ShopEmployeeVo shopEmployeeVo;
+    private EmployeeVo shopEmployeeVo;
     private ClientVo clientVo;
     private EContactVo contactVo;
     private String contactId;
@@ -90,7 +90,7 @@ public class CreateGroupActivity extends Activity {
         selectList = new ArrayList<String>();
         if(null != getIntent() && null != getIntent().getStringExtra("userId")){
             contactId = getIntent().getStringExtra("userId");
-            shopEmployeeVo = ShopEmployeeDBUtil.getInstance().queryEmployeeById(mShopID, contactId);
+            shopEmployeeVo = ShopEmployeeDBUtil.getInstance().queryEmployeeById(contactId);
             if(null != shopEmployeeVo){
                 if(!selectList.contains(contactId)){
                     addSucc = selectList.add(contactId);
@@ -114,12 +114,12 @@ public class CreateGroupActivity extends Activity {
         mLayoutManager = new LinearLayoutManager(this);
         mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRcvTeamContacts.setLayoutManager(mLayoutManager);
-        mShopEmployeeVos = ShopEmployeeDBUtil.getInstance().queryAllByDeptIDAsc(mShopID);
-        if(null != mShopEmployeeVos && !mShopEmployeeVos.isEmpty()){
-            for(int i= 0 ; i< mShopEmployeeVos.size(); i++){
-                shopEmployeeVo = mShopEmployeeVos.get(i);
+        mEmployeeVos = ShopEmployeeDBUtil.getInstance().queryAllExceptUser(CacheUtil.getInstance().getUserId());
+        if(null != mEmployeeVos && !mEmployeeVos.isEmpty()){
+            for(int i= 0 ; i< mEmployeeVos.size(); i++){
+                shopEmployeeVo = mEmployeeVos.get(i);
                 if(null != shopEmployeeVo){
-                    shopEmployeeId = shopEmployeeVo.getEmpid();
+                    shopEmployeeId = shopEmployeeVo.getUserid();
                     if(!TextUtils.isEmpty(shopEmployeeId) && shopEmployeeId.equals(contactId)){
                         enabledMap.put(i,true);
                     }
@@ -129,7 +129,7 @@ public class CreateGroupActivity extends Activity {
                 }
             }
         }
-        mContactsAdapter = new CreateGroupAdapter(CreateGroupActivity.this, mShopEmployeeVos);
+        mContactsAdapter = new CreateGroupAdapter(CreateGroupActivity.this, mEmployeeVos);
         mRcvTeamContacts.setAdapter(mContactsAdapter);
         mContactsAdapter.setEnabledMap(enabledMap);
         mContactsAdapter.setSelectMap(selectMap);
@@ -149,8 +149,8 @@ public class CreateGroupActivity extends Activity {
         mContactsAdapter.setOnItemClickListener(new RecyclerItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                ShopEmployeeVo shopEmployeeVo = mShopEmployeeVos.get(position);
-                String empID = shopEmployeeVo.getEmpid();
+                EmployeeVo shopEmployeeVo = mEmployeeVos.get(position);
+                String empID = shopEmployeeVo.getUserid();
                 if (selectList.contains(empID)) {
                     selectList.remove(empID);
                 } else {
@@ -232,7 +232,7 @@ public class CreateGroupActivity extends Activity {
     private String convertList2String(List<String> selectList){
         StringBuilder teamTitle = new StringBuilder();
         for(String contactId : selectList){
-            shopEmployeeVo = ShopEmployeeDBUtil.getInstance().queryEmployeeById(mShopID, contactId);
+            shopEmployeeVo = ShopEmployeeDBUtil.getInstance().queryEmployeeById( contactId);
             if(null != shopEmployeeVo){
                 contactVo = EContactFactory.getInstance().buildEContactVo(shopEmployeeVo);
             }

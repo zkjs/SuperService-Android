@@ -8,7 +8,7 @@ import com.zkjinshi.superservice.sqlite.ShopDepartmentDBUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.RandomDrawbleUtil;
 import com.zkjinshi.superservice.vo.OnlineStatus;
-import com.zkjinshi.superservice.vo.ShopEmployeeVo;
+import com.zkjinshi.superservice.vo.EmployeeVo;
 import com.zkjinshi.superservice.vo.WorkStatus;
 
 import java.util.ArrayList;
@@ -35,138 +35,51 @@ public class ShopEmployeeFactory {
 
     /**
      *
-     * @param shopEmployeeVo
+     * @param EmployeeVo
      * @return
      */
-    public ContentValues buildAddContentValues(ShopEmployeeVo shopEmployeeVo) {
+    public ContentValues buildContentValues(EmployeeVo EmployeeVo) {
 
         ContentValues values = new ContentValues();
-        values.put("empid", shopEmployeeVo.getEmpid());
-        values.put("empcode", shopEmployeeVo.getEmpcode());
-        values.put("name", shopEmployeeVo.getName());
-        values.put("roleid", shopEmployeeVo.getRoleid());
-        values.put("email", shopEmployeeVo.getEmail());
-        values.put("phone", shopEmployeeVo.getPhone());
-        values.put("phone2", shopEmployeeVo.getPhone2());
-        values.put("fax", shopEmployeeVo.getFax());
-        values.put("created", shopEmployeeVo.getCreated());
-        values.put("locationid", shopEmployeeVo.getLocationid());
-        values.put("role_name", shopEmployeeVo.getRole_name());
-
-        OnlineStatus onlineStatus = shopEmployeeVo.getOnline_status();
-
-        if(null != onlineStatus ){
-            values.put("online_status", onlineStatus.getValue());
-        }
-
-        WorkStatus workStatus = shopEmployeeVo.getWork_status();
-        if(null != workStatus ){
-            values.put("work_status", workStatus.getValue());
-        }
-
-        values.put("last_online_time", shopEmployeeVo.getLastOnLineTime());
-        values.put("dept_id", shopEmployeeVo.getDept_id());
-        values.put("desc", shopEmployeeVo.getDesc());
-        values.put("shop_id", shopEmployeeVo.getShop_id());
-        values.put("dept_name", shopEmployeeVo.getDept_name());
-        values.put("bg_color_res", RandomDrawbleUtil.getRandomDrawable());
+        values.put("email", EmployeeVo.getEmail());
+        values.put("phone", EmployeeVo.getPhone());
+        values.put("realname", EmployeeVo.getRealname());
+        values.put("rolecode", EmployeeVo.getRoleid());
+        values.put("roledesc", EmployeeVo.getEmail());
+        values.put("roleid", EmployeeVo.getPhone());
+        values.put("rolename", EmployeeVo.getRolename());
+        values.put("sex", EmployeeVo.getSex());
+        values.put("userid", EmployeeVo.getUserid());
+        values.put("userimage", EmployeeVo.getUserimage());
+        values.put("username", EmployeeVo.getUsername());
         return values;
     }
 
-    /**
-     * 根据游标构建客户对象
-     * @param cursor
-     * @return
-     */
-    public ShopEmployeeVo buildShopEmployee(Cursor cursor) {
-        ShopEmployeeVo shopEmployeeVo = new ShopEmployeeVo();
-        shopEmployeeVo.setEmpid(cursor.getString(0));
-        shopEmployeeVo.setEmpcode(cursor.getString(1));
-        shopEmployeeVo.setName(cursor.getString(2));
-        shopEmployeeVo.setRoleid(cursor.getInt(3));
-        shopEmployeeVo.setEmail(cursor.getString(4));
-        shopEmployeeVo.setPhone(cursor.getString(5));
-        shopEmployeeVo.setPhone2(cursor.getString(6));
-        shopEmployeeVo.setFax(cursor.getString(7));
-        shopEmployeeVo.setCreated(cursor.getLong(8));
-        shopEmployeeVo.setLocationid(cursor.getInt(9));
-        shopEmployeeVo.setRole_name(cursor.getString(10));
-        shopEmployeeVo.setOnline_status(OnlineStatus.OFFLINE.getValue() ==
-                cursor.getInt(11) ?
-                OnlineStatus.OFFLINE : OnlineStatus.ONLINE);
-        shopEmployeeVo.setWork_status(WorkStatus.OFFWORK.getValue() ==
-                cursor.getInt(12) ?
-                WorkStatus.OFFWORK : WorkStatus.ONWORK);
-        shopEmployeeVo.setLastOnLineTime(cursor.getLong(13));
-        shopEmployeeVo.setDept_id(cursor.getInt(14));
-        shopEmployeeVo.setDesc(cursor.getString(15));
-        shopEmployeeVo.setShop_id(cursor.getString(16));
-        shopEmployeeVo.setDept_name(cursor.getString(17));
-        shopEmployeeVo.setBg_color_res(cursor.getInt(18));
-        return  shopEmployeeVo;
-    }
+    public EmployeeVo bulidEmployeeVo(Cursor cursor){
+        String userid = cursor.getString(cursor.getColumnIndex("userid"));
+        String email = cursor.getString(cursor.getColumnIndex("email"));
+        String phone = cursor.getString(cursor.getColumnIndex("phone"));
+        String realname = cursor.getString(cursor.getColumnIndex("realname"));
+        String rolecode = cursor.getString(cursor.getColumnIndex("rolecode"));
+        String roledesc = cursor.getString(cursor.getColumnIndex("roledesc"));
+        String roleid = cursor.getString(cursor.getColumnIndex("roleid"));
+        String rolename = cursor.getString(cursor.getColumnIndex("rolename"));
+        int sex = cursor.getInt(cursor.getColumnIndex("sex"));
+        String userimage = cursor.getString(cursor.getColumnIndex("userimage"));
+        String username = cursor.getString(cursor.getColumnIndex("username"));
 
-    /**
-     *
-     * @param teamContactBean
-     * @return
-     */
-    public ShopEmployeeVo buildShopEmployeeVo(TeamContactBean teamContactBean) {
-        ShopEmployeeVo shopEmployeeVo = new ShopEmployeeVo();
-        shopEmployeeVo.setEmpid(teamContactBean.getSalesid());
-        shopEmployeeVo.setName(teamContactBean.getName());
-        shopEmployeeVo.setPhone(teamContactBean.getPhone());
-        shopEmployeeVo.setRoleid(teamContactBean.getRole_id());
-        shopEmployeeVo.setRole_name(teamContactBean.getRole_name());
-        shopEmployeeVo.setDept_id(teamContactBean.getDeptid());
-        shopEmployeeVo.setDept_name(teamContactBean.getDept_name());
-        shopEmployeeVo.setShop_id(CacheUtil.getInstance().getShopID());
-        return  shopEmployeeVo;
-    }
-
-    /**
-     * @param teamContactBeans
-     * @return
-     */
-    public List<ShopEmployeeVo> buildShopEmployees(List<TeamContactBean> teamContactBeans) {
-        List<ShopEmployeeVo> shopEmployeeVos = new ArrayList<>();
-        ShopEmployeeVo       shopEmployeeVo  = null;
-        for(TeamContactBean teamContactBean : teamContactBeans){
-            shopEmployeeVo = buildShopEmployeeVo(teamContactBean);
-            shopEmployeeVos.add(shopEmployeeVo);
-        }
-        return shopEmployeeVos;
-    }
-
-    public ContentValues buildUpdateContentValues(ShopEmployeeVo shopEmployeeVo) {
-        ContentValues values = new ContentValues();
-        values.put("empcode", shopEmployeeVo.getEmpcode());
-        values.put("name", shopEmployeeVo.getName());
-        values.put("roleid", shopEmployeeVo.getRoleid());
-        values.put("email", shopEmployeeVo.getEmail());
-        values.put("phone", shopEmployeeVo.getPhone());
-        values.put("phone2", shopEmployeeVo.getPhone2());
-        values.put("fax", shopEmployeeVo.getFax());
-        values.put("created", shopEmployeeVo.getCreated());
-        values.put("locationid", shopEmployeeVo.getLocationid());
-        values.put("role_name", shopEmployeeVo.getRole_name());
-
-        OnlineStatus onlineStatus = shopEmployeeVo.getOnline_status();
-
-        if(null != onlineStatus ){
-            values.put("online_status", onlineStatus.getValue());
-        }
-
-        WorkStatus workStatus = shopEmployeeVo.getWork_status();
-        if(null != onlineStatus ){
-            values.put("work_status", workStatus.getValue());
-        }
-
-        values.put("last_online_time", shopEmployeeVo.getLastOnLineTime());
-        values.put("dept_id", shopEmployeeVo.getDept_id());
-        values.put("desc", shopEmployeeVo.getDesc());
-        values.put("shop_id", shopEmployeeVo.getShop_id());
-        values.put("dept_name", shopEmployeeVo.getDept_name());
-        return values;
+        EmployeeVo employeeVo = new EmployeeVo();
+        employeeVo.setUserid(userid);
+        employeeVo.setEmail(email);
+        employeeVo.setPhone(phone);
+        employeeVo.setRealname(realname);
+        employeeVo.setRolecode(rolecode);
+        employeeVo.setRoledesc(roledesc);
+        employeeVo.setRoleid(roleid);
+        employeeVo.setRolename(rolename);
+        employeeVo.setSex(sex);
+        employeeVo.setUserimage(userimage);
+        employeeVo.setUsername(username);
+        return  employeeVo;
     }
 }

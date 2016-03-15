@@ -20,7 +20,7 @@ import com.zkjinshi.superservice.sqlite.ShopEmployeeDBUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
-import com.zkjinshi.superservice.vo.ShopEmployeeVo;
+import com.zkjinshi.superservice.vo.EmployeeVo;
 
 /**
  * 开发者：vincent
@@ -33,7 +33,7 @@ public class EmployeeInfoActivity extends Activity{
     private String          mShopID;
     private String          mUserID;
 
-    private ShopEmployeeVo      mEmployee;
+    private EmployeeVo      mEmployee;
     private DisplayImageOptions mOptions;
 
     private ImageView       mIvAvatar;
@@ -74,7 +74,7 @@ public class EmployeeInfoActivity extends Activity{
         mShopID = CacheUtil.getInstance().getShopID();
         mUserID = CacheUtil.getInstance().getUserId();
 
-        mEmployee      = (ShopEmployeeVo) getIntent().getSerializableExtra("shop_employee");
+        mEmployee      = (EmployeeVo) getIntent().getSerializableExtra("shop_employee");
         this.mOptions  = new DisplayImageOptions.Builder()
                 .showImageOnLoading(R.drawable.img_morentu)
                 .showImageForEmptyUri(R.drawable.img_morentu)
@@ -84,7 +84,7 @@ public class EmployeeInfoActivity extends Activity{
                 .build();
 
         if(null != mEmployee){
-            String empID     = mEmployee.getEmpid();
+            String empID     = mEmployee.getUserid();
             String avatarUrl = ProtocolUtil.getAvatarUrl(empID);
             mIvAvatar.setScaleType(ImageView.ScaleType.CENTER_CROP);
             ImageLoader.getInstance().displayImage(avatarUrl, mIvAvatar, mOptions);
@@ -94,7 +94,7 @@ public class EmployeeInfoActivity extends Activity{
                 mTvPhoneNumber.setText(phoneNumber);
             }
 
-            String empName = mEmployee.getName();
+            String empName = mEmployee.getUsername();
             if(!TextUtils.isEmpty(empName)){
                 mTvEmpName.setText(empName);
             }
@@ -104,13 +104,13 @@ public class EmployeeInfoActivity extends Activity{
                 mTvShopName.setText(shopName);
             }
 
-            long latestOnlineTime = ShopEmployeeDBUtil.getInstance().queryLatestOnlineByEmpID(empID);
-            if(latestOnlineTime > 0){
-                String onlineTime = TimeUtil.getChatTime(latestOnlineTime * 10);
-                mTvLatestOnline.setText(getString(R.string.latest) + onlineTime + getString(R.string.online));
-            } else {
-                mTvLatestOnline.setText(getString(R.string.offline));
-            }
+//            long latestOnlineTime = ShopEmployeeDBUtil.getInstance().queryLatestOnlineByEmpID(empID);
+//            if(latestOnlineTime > 0){
+//                String onlineTime = TimeUtil.getChatTime(latestOnlineTime * 10);
+//                mTvLatestOnline.setText(getString(R.string.latest) + onlineTime + getString(R.string.online));
+//            } else {
+//                mTvLatestOnline.setText(getString(R.string.offline));
+//            }
         }
     }
 
@@ -125,8 +125,8 @@ public class EmployeeInfoActivity extends Activity{
         mRlDuiHua.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String userId    = mEmployee.getEmpid();
-                String toName  = mEmployee.getName();
+                String userId    = mEmployee.getUserid();
+                String toName  = mEmployee.getUsername();
                 String shopName = CacheUtil.getInstance().getShopFullName();
                 Intent intent = new Intent(EmployeeInfoActivity.this, ChatActivity.class);
                 intent.putExtra(Constants.EXTRA_USER_ID, userId);
@@ -156,8 +156,8 @@ public class EmployeeInfoActivity extends Activity{
         mBtnChat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String userId    = mEmployee.getEmpid();
-                String toName  = mEmployee.getName();
+                String userId    = mEmployee.getUserid();
+                String toName  = mEmployee.getUsername();
                 String shopName = CacheUtil.getInstance().getShopFullName();
                 Intent intent = new Intent(EmployeeInfoActivity.this, ChatActivity.class);
                 intent.putExtra(Constants.EXTRA_USER_ID, userId);

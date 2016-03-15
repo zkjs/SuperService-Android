@@ -5,7 +5,7 @@ import android.text.TextUtils;
 import com.zkjinshi.superservice.bean.MemberBean;
 import com.zkjinshi.superservice.vo.ClientVo;
 import com.zkjinshi.superservice.vo.EContactVo;
-import com.zkjinshi.superservice.vo.ShopEmployeeVo;
+import com.zkjinshi.superservice.vo.EmployeeVo;
 
 import java.util.ArrayList;
 
@@ -37,14 +37,14 @@ public class EContactFactory {
         return contactVo;
     }
 
-    public EContactVo buildEContactVo(ShopEmployeeVo shopEmployeeVo){
+    public EContactVo buildEContactVo(EmployeeVo shopEmployeeVo){
         EContactVo contactVo = new EContactVo();
         if(null != shopEmployeeVo){
-            String contactId = shopEmployeeVo.getEmpid();
+            String contactId = shopEmployeeVo.getUserid();
             if(!TextUtils.isEmpty(contactId)){
                 contactVo.setContactId(contactId);
             }
-            String contactName = shopEmployeeVo.getName();
+            String contactName = shopEmployeeVo.getUsername();
             if(!TextUtils.isEmpty(contactName)){
                 contactVo.setContactName(contactName);
             }

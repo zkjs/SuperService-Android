@@ -29,7 +29,7 @@ import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.DepartmentDialog;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.vo.DepartmentVo;
-import com.zkjinshi.superservice.vo.ShopEmployeeVo;
+import com.zkjinshi.superservice.vo.EmployeeVo;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -58,7 +58,7 @@ public class TeamEditActivity extends Activity {
 
     private LinearLayoutManager     mLayoutManager;
     private TeamEditContactsAdapter mContactsAdapter;
-    private List<ShopEmployeeVo>    mShopEmployeeVos;
+    private List<EmployeeVo>    mEmployeeVos;
 
     private String mUserID;
     private String mShopID;
@@ -95,8 +95,8 @@ public class TeamEditActivity extends Activity {
         mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRcvTeamContacts.setLayoutManager(mLayoutManager);
 
-        mShopEmployeeVos = ShopEmployeeDBUtil.getInstance().queryAllExceptUser(mShopID, mUserID);
-        mContactsAdapter = new TeamEditContactsAdapter(TeamEditActivity.this, mShopEmployeeVos);
+        mEmployeeVos = ShopEmployeeDBUtil.getInstance().queryAllExceptUser(mUserID);
+        mContactsAdapter = new TeamEditContactsAdapter(TeamEditActivity.this, mEmployeeVos);
         mRcvTeamContacts.setAdapter(mContactsAdapter);
     }
 
@@ -113,8 +113,8 @@ public class TeamEditActivity extends Activity {
         mContactsAdapter.setOnItemClickListener(new RecyclerItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                ShopEmployeeVo shopEmployeeVo = mShopEmployeeVos.get(position);
-                String empID = shopEmployeeVo.getEmpid();
+                EmployeeVo shopEmployeeVo = mEmployeeVos.get(position);
+                String empID = shopEmployeeVo.getUserid();
                 if (mCheckedList.contains(empID)) {
                     mCheckedList.remove(empID);
                 } else {
@@ -208,8 +208,8 @@ public class TeamEditActivity extends Activity {
                            if(delResult > 0){
                                DialogUtil.getInstance().showToast(TeamEditActivity.this, "删除成功");
                        }
-                        mShopEmployeeVos = ShopEmployeeDBUtil.getInstance().queryAllByDeptIDAsc(mShopID);
-                        mContactsAdapter.updateListView(mShopEmployeeVos);
+                        mEmployeeVos = ShopEmployeeDBUtil.getInstance().queryAllExceptUser(mUserID);
+                        mContactsAdapter.updateListView(mEmployeeVos);
                     } else {
                         DialogUtil.getInstance().showToast(TeamEditActivity.this, "删除失败，请稍后再试。");
                     }
@@ -315,11 +315,11 @@ public class TeamEditActivity extends Activity {
                                 mShopID,
                                 new GetTeamContactsListener() {
                                     @Override
-                                    public void getContactsDone(List<ShopEmployeeVo> shopEmployeeVos) {
-                                        mShopEmployeeVos.removeAll(mShopEmployeeVos);
-                                        mShopEmployeeVos.addAll(shopEmployeeVos);
+                                    public void getContactsDone(List<EmployeeVo> shopEmployeeVos) {
+                                        mEmployeeVos.removeAll(mEmployeeVos);
+                                        mEmployeeVos.addAll(shopEmployeeVos);
 
-                                        mContactsAdapter.updateListView(mShopEmployeeVos);
+                                        mContactsAdapter.updateListView(mEmployeeVos);
                                         DialogUtil.getInstance().cancelProgressDialog();
                                         DialogUtil.getInstance().showCustomToast(TeamEditActivity.this,
                                                        "change the department success", Gravity.CENTER);
