@@ -215,12 +215,11 @@ public class NotificationHelper {
                 // 1.设置显示信息
                 notificationBuilder = new NotificationCompat.Builder(context);
                 String contactName = yunBaMsgVo.getUserName();
-                String locDesc = yunBaMsgVo.getContent();
+                String content = yunBaMsgVo.getContent();
                 if(!TextUtils.isEmpty(contactName)){
                     notificationBuilder.setContentTitle(contactName);
                 }
-                String welcomeMsg = "已到达"+locDesc;
-                notificationBuilder.setContentText(welcomeMsg);
+                notificationBuilder.setContentText(content);
                 notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
                 // 2.设置点击跳转事件
                 Intent intent = new Intent(context, SplashActivity.class);
@@ -240,12 +239,11 @@ public class NotificationHelper {
                 // 1.设置显示信息
                 notificationBuilder = new NotificationCompat.Builder(context);
                 String contactName = yunBaMsgVo.getUserName();
-                String locDesc = yunBaMsgVo.getContent();
+                String content = yunBaMsgVo.getContent();
                 if(!TextUtils.isEmpty(contactName)){
                     notificationBuilder.setContentTitle(contactName);
                 }
-                String welcomeMsg = "已到达"+locDesc;
-                notificationBuilder.setContentText(welcomeMsg);
+                notificationBuilder.setContentText(content);
                 notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
                 notificationBuilder.setLargeIcon(loadedImage);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {

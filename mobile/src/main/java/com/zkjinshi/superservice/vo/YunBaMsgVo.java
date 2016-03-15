@@ -8,6 +8,10 @@ package com.zkjinshi.superservice.vo;
  */
 public class YunBaMsgVo {
 
+    /**
+     {"arrivalTime":"98","userName":"李嘉诚","type":"GPS","userId":"c_192541b79e79a49e","content":"客人李嘉诚距离您还有500米"}
+     */
+
     private String type;//GPS/BEACON
     private String title;
     private String content;
@@ -15,6 +19,7 @@ public class YunBaMsgVo {
     private String userId;
     private String userName;
     private String userImage;
+    private String arrivalTime;//预计达到时间
 
     public String getTitle() {
         return title;
@@ -70,5 +75,13 @@ public class YunBaMsgVo {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getArrivalTime() {
+        return arrivalTime;
+    }
+
+    public void setArrivalTime(String arrivalTime) {
+        this.arrivalTime = arrivalTime;
     }
 }
