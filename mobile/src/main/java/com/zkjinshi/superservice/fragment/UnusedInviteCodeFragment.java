@@ -72,7 +72,7 @@ public class UnusedInviteCodeFragment extends Fragment {
             mInviteCodeAdapter.clear();
         }
         mPage = 0;
-        getInviteCode(mPage);
+        getInviteCode(mPage,true);
     }
 
     private void initView(View view){
@@ -98,7 +98,8 @@ public class UnusedInviteCodeFragment extends Fragment {
         mSrlContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                getInviteCode(mPage);
+                mPage = 0;
+                getInviteCode(mPage,true);
             }
         });
 
@@ -114,7 +115,7 @@ public class UnusedInviteCodeFragment extends Fragment {
                     int totalItemCount  = linearLayoutManager.getItemCount();
                     if (lastVisibleItem == (totalItemCount - 1) && isSlidingToLast) {
                         //加载更多功能的代码
-                        getInviteCode(mPage);
+                        getInviteCode(mPage,false);
                     }
                 }
             }
@@ -150,7 +151,7 @@ public class UnusedInviteCodeFragment extends Fragment {
      * 获取我的邀请码列表
      * @param page
      */
-    private void getInviteCode(int page) {
+    private void getInviteCode(int page,final boolean isRefresh) {
         InviteCodeController.getInstance().getNewInviteCodes(
             page,
             mActivity,
@@ -181,10 +182,14 @@ public class UnusedInviteCodeFragment extends Fragment {
                                 ((InviteCodesActivity)mActivity).udpateUnusedCodeCount(count);
                                 mPage++;
                                 List<InviteCode> inviteCodes = inviteCodeListVo.getSalecodes();
-                                if(null!=inviteCodes && !inviteCodes.isEmpty()){
-                                    mInviteCodes.addAll(inviteCodes);
-                                    mInviteCodeAdapter.notifyDataSetChanged();
+                                if(isRefresh){
+                                    mInviteCodes = inviteCodes;
+                                }else {
+                                    if(null!=inviteCodes && !inviteCodes.isEmpty()){
+                                        mInviteCodes.addAll(inviteCodes);
+                                    }
                                 }
+                                mInviteCodeAdapter.setData(mInviteCodes);
                             }
                         }
                     }

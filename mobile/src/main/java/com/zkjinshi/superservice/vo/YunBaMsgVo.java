@@ -8,11 +8,13 @@ package com.zkjinshi.superservice.vo;
  */
 public class YunBaMsgVo {
 
+    private String type;//GPS/BEACON
     private String title;
     private String content;
     private String webUrl;
     private String userId;
     private String userName;
+    private String userImage;
 
     public String getTitle() {
         return title;
@@ -52,5 +54,21 @@ public class YunBaMsgVo {
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public String getUserImage() {
+        return userImage;
+    }
+
+    public void setUserImage(String userImage) {
+        this.userImage = userImage;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }
