@@ -1,6 +1,8 @@
 package com.zkjinshi.superservice.manager;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
@@ -11,6 +13,7 @@ import com.zkjinshi.base.log.LogLevel;
 import com.zkjinshi.base.log.LogUtil;
 import com.zkjinshi.base.util.Constants;
 import com.zkjinshi.base.util.DialogUtil;
+import com.zkjinshi.superservice.activity.common.LoginActivity;
 import com.zkjinshi.superservice.net.ExtNetRequestListener;
 import com.zkjinshi.superservice.net.MethodType;
 import com.zkjinshi.superservice.net.NetRequest;
@@ -151,6 +154,14 @@ public class SSOManager {
                                 String errorMsg = basePavoResponse.getResDesc();
                                 if(!TextUtils.isEmpty(errorMsg)){
                                     DialogUtil.getInstance().showCustomToast(context,errorMsg, Gravity.CENTER);
+                                }
+                                if(6 == restult){//token失效
+                                    Intent intent = new Intent(context, LoginActivity.class);
+                                    context.startActivity(intent);
+                                    if(context instanceof Activity){
+                                        Activity activity = (Activity)context;
+                                        activity.finish();
+                                    }
                                 }
                             }
                         }
