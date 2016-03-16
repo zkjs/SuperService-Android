@@ -26,15 +26,18 @@ import com.zkjinshi.superservice.activity.order.KTVDealActivity;
 import com.zkjinshi.superservice.activity.order.NormalDealActivity;
 import com.zkjinshi.superservice.adapter.LocNotificationAdapter;
 import com.zkjinshi.superservice.listener.RecyclerItemClickListener;
+import com.zkjinshi.superservice.manager.SSOManager;
 import com.zkjinshi.superservice.net.ExtNetRequestListener;
 import com.zkjinshi.superservice.net.MethodType;
 import com.zkjinshi.superservice.net.NetRequest;
 import com.zkjinshi.superservice.net.NetRequestTask;
 import com.zkjinshi.superservice.net.NetResponse;
+import com.zkjinshi.superservice.response.NoticeResponse;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.vo.NoticeVo;
 import com.zkjinshi.superservice.vo.OrderVo;
+import com.zkjinshi.superservice.vo.PayloadVo;
 
 import org.jivesoftware.smack.util.Base64Encoder;
 
@@ -51,6 +54,8 @@ import java.util.HashMap;
 public class NoticeFragment extends Fragment {
 
     public static final String TAG = "NoticeFragment";
+    public static final int PAGE_NO = 0;
+    public static final int PAGE_SIZE = 10;
     private Activity     activity;
     private RecyclerView notityRecyclerView;
     private LinearLayoutManager    notifyLayoutManager;
@@ -79,7 +84,6 @@ public class NoticeFragment extends Fragment {
     }
 
     private void initData() {
-
         activity = this.getActivity();
         notificationAdapter = new LocNotificationAdapter(activity, noticeList);
         notityRecyclerView.setAdapter(notificationAdapter);
@@ -88,7 +92,7 @@ public class NoticeFragment extends Fragment {
         notifyLayoutManager = new LinearLayoutManager(activity);
         notifyLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         notityRecyclerView.setLayoutManager(notifyLayoutManager);
-        requestNoticesTask();
+        initNoticesData();
     }
 
     private void initListeners() {
@@ -107,11 +111,11 @@ public class NoticeFragment extends Fragment {
             public void onItemClick(View view, int position) {
                 //获取订单信息并显示基本信息
                 NoticeVo noticeVo = noticeList.get(position);
-                ArrayList<OrderVo> orderList = noticeVo.getOrderForNotice();
+                ArrayList<OrderVo> orderList = noticeVo.getOrders();
                 if(null != orderList && !orderList.isEmpty()){
                     final OrderVo orderVo = orderList.get(0);
                     if(null != orderVo){
-                        String orderNO = orderVo.getOrderNo();
+                        String orderNO = orderVo.getOrderno();
                         if(!TextUtils.isEmpty(orderNO)){
                             Intent intent = new Intent();
                             if(orderNO.startsWith("H")){
@@ -148,7 +152,7 @@ public class NoticeFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        requestNoticesTask();
+        initNoticesData();
     }
 
     @Override
@@ -159,7 +163,7 @@ public class NoticeFragment extends Fragment {
     /**
      * 请求到店通知
      */
-    private void requestNoticesTask() {
+    private void initNoticesData() {
         String locIds = CacheUtil.getInstance().getAreaInfo();
         if (TextUtils.isEmpty(locIds)) {
             try {
@@ -174,80 +178,23 @@ public class NoticeFragment extends Fragment {
             return;
         }
         if (locIds.contains(",")) {
-            mutileZoneNotice();
-        } else {
-            singleZoneNotice();
+            requestNoticesTask();
         }
-
-    }
-
-    /**
-     * 获取单个到店区域通知
-     */
-    public void singleZoneNotice() {
-        String locIds = CacheUtil.getInstance().getAreaInfo();
-        String token = CacheUtil.getInstance().getToken();
-        String shopId = CacheUtil.getInstance().getShopID();
-        String noticesUrl = ProtocolUtil.getNoticeUrl(shopId, locIds, token);
-        NetRequest netRequest = new NetRequest(noticesUrl);
-        NetRequestTask netRequestTask = new NetRequestTask(getActivity(), netRequest, NetResponse.class);
-        netRequestTask.methodType = MethodType.GET;
-
-        netRequestTask.setNetRequestListener(new ExtNetRequestListener(getActivity()) {
-            @Override
-            public void onNetworkRequestError(int errorCode, String errorMessage) {
-                Log.i(TAG, "errorCode:" + errorCode);
-                Log.i(TAG, "errorMessage:" + errorMessage);
-                if (null != swipeRefreshLayout) {
-                    swipeRefreshLayout.setRefreshing(false);
-                }
-            }
-
-            @Override
-            public void onNetworkRequestCancelled() {
-            }
-
-            @Override
-            public void onNetworkResponseSucceed(NetResponse result) {
-                super.onNetworkResponseSucceed(result);
-                try {
-                    if (null != swipeRefreshLayout) {
-                        swipeRefreshLayout.setRefreshing(false);
-                    }
-                    Log.i(TAG, "result.rawResult:" + result.rawResult);
-                    noticeList = new Gson().fromJson(result.rawResult, new TypeToken<ArrayList<NoticeVo>>() {
-                    }.getType());
-                    notificationAdapter.setNoticeList(noticeList);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void beforeNetworkRequestStart() {
-
-            }
-        });
-        netRequestTask.isShowLoadingDialog = false;
-        netRequestTask.execute();
     }
 
     /**
      * 获取多个到店区域通知
      */
-    public void mutileZoneNotice() {
+    public void requestNoticesTask() {
         String locIds = CacheUtil.getInstance().getAreaInfo();
         String shopId = CacheUtil.getInstance().getShopID();
-        String noticesUrl = ConfigUtil.getInst().getJavaDomain() + "arrive/users";
-
+        String token = CacheUtil.getInstance().getExtToken();
+        PayloadVo payloadVo = SSOManager.getInstance().decodeToken(token);
+        String roles = SSOManager.getInstance().parseRoles(payloadVo);
+        String noticesUrl = ProtocolUtil.getNoticeUrl(shopId,locIds,roles,""+PAGE_NO,""+PAGE_SIZE);
         NetRequest netRequest = new NetRequest(noticesUrl);
-        HashMap<String, String> bigMap = new HashMap<>();
-        bigMap.put("shopid", shopId);
-        bigMap.put("locid", locIds);
-        netRequest.setBizParamMap(bigMap);
         NetRequestTask netRequestTask = new NetRequestTask(getActivity(), netRequest, NetResponse.class);
-        netRequestTask.methodType = MethodType.JSON;
-
+        netRequestTask.methodType = MethodType.GET;
         netRequestTask.setNetRequestListener(new ExtNetRequestListener(getActivity()) {
             @Override
             public void onNetworkRequestError(int errorCode, String errorMessage) {
@@ -266,13 +213,23 @@ public class NoticeFragment extends Fragment {
             public void onNetworkResponseSucceed(NetResponse result) {
                 super.onNetworkResponseSucceed(result);
                 try {
+                    Log.i(TAG, "result.rawResult:" + result.rawResult);
                     if (null != swipeRefreshLayout) {
                         swipeRefreshLayout.setRefreshing(false);
                     }
-                    Log.i(TAG, "result.rawResult:" + result.rawResult);
-                    noticeList = new Gson().fromJson(result.rawResult, new TypeToken<ArrayList<NoticeVo>>() {
-                    }.getType());
-                    notificationAdapter.setNoticeList(noticeList);
+                    NoticeResponse noticeResponse = new Gson().fromJson(result.rawResult,NoticeResponse.class);
+                    if(null != noticeResponse){
+                        int resultCode = noticeResponse.getRes();
+                        if(0 == resultCode){
+                            noticeList = noticeResponse.getUsers();
+                            notificationAdapter.setNoticeList(noticeList);
+                        }else {
+                            String resultMsg = noticeResponse.getResDesc();
+                            if(!TextUtils.isEmpty(resultMsg)){
+                                DialogUtil.getInstance().showCustomToast(getActivity(),resultMsg,Gravity.CENTER);
+                            }
+                        }
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

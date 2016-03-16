@@ -76,8 +76,8 @@ public class LocNotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
        // holder.setIsRecyclable(false);
 
         NoticeVo noticeVo = noticeList.get(position);
-        final String userId   = noticeVo.getUserId();
-        final String userName = noticeVo.getUserName();
+        final String userId   = noticeVo.getUserid();
+        final String userName = noticeVo.getUsername();
 
         //用户头像 和 姓名
         String imageUrl =  ProtocolUtil.getAvatarUrl(userId);
@@ -90,9 +90,9 @@ public class LocNotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             }
         }
 
-        String locid = noticeVo.getLocId();
+        String locid = noticeVo.getLocid();
         if(!TextUtils.isEmpty(locid)){
-            String locName = noticeVo.getLocname();
+            String locName = noticeVo.getLocdesc();
             if(TextUtils.isEmpty(locName)){
                 locName = context.getString(R.string.location) + locid;
             }
@@ -100,12 +100,12 @@ public class LocNotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         }
 
         //获取订单信息并显示基本信息
-        ArrayList<OrderVo> orderList = noticeVo.getOrderForNotice();
+        ArrayList<OrderVo> orderList = noticeVo.getOrders();
         if(null != orderList && !orderList.isEmpty()){
             final OrderVo orderVo = orderList.get(0);
             if(null != orderVo){
-                String roomType = orderVo.getOrderRoom();
-                String stayDays = orderVo.getCheckIn();
+                String roomType = orderVo.getRoom();
+                String stayDays = orderVo.getIndate();
                 if(!TextUtils.isEmpty(roomType)){
                     String orderStr = roomType+" | "+stayDays;
                     ((NoticeViewHolder) holder).tvOrderInfo.setText(orderStr);
@@ -119,7 +119,7 @@ public class LocNotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             ((NoticeViewHolder) holder).ivOrderInfo.setVisibility(View.GONE);
         }
 
-        String timeCreated = noticeVo.getCreated();
+        String timeCreated = noticeVo.getArrivetime();
         if(!TextUtils.isEmpty(timeCreated)){
             ((NoticeViewHolder) holder).tvTimeInfo.setText(TimeUtil.getChatTime(timeCreated));
         }

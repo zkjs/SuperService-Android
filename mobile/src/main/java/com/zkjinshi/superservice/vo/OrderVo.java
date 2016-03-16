@@ -9,40 +9,49 @@ package com.zkjinshi.superservice.vo;
  */
 public class OrderVo {
 
-    private String orderNo;
-    private String checkIn;
-    private String checkInDate;
-    private String orderRoom;
+    /**
+     {
+     "orderno": "订单号",
+     "room": "房间类型",
+     "duration": "入住时长",
+     "indate": "入住时间"
+     }
+     */
 
-    public String getCheckIn() {
-        return checkIn;
+    private String orderno;
+    private String indate;
+    private String duration;
+    private String room;
+
+    public String getOrderno() {
+        return orderno;
     }
 
-    public void setCheckIn(String checkIn) {
-        this.checkIn = checkIn;
+    public void setOrderno(String orderno) {
+        this.orderno = orderno;
     }
 
-    public String getCheckInDate() {
-        return checkInDate;
+    public String getIndate() {
+        return indate;
     }
 
-    public void setCheckInDate(String checkInDate) {
-        this.checkInDate = checkInDate;
+    public void setIndate(String indate) {
+        this.indate = indate;
     }
 
-    public String getOrderRoom() {
-        return orderRoom;
+    public String getDuration() {
+        return duration;
     }
 
-    public void setOrderRoom(String orderRoom) {
-        this.orderRoom = orderRoom;
+    public void setDuration(String duration) {
+        this.duration = duration;
     }
 
-    public String getOrderNo() {
-        return orderNo;
+    public String getRoom() {
+        return room;
     }
 
-    public void setOrderNo(String orderNo) {
-        this.orderNo = orderNo;
+    public void setRoom(String room) {
+        this.room = room;
     }
 }
