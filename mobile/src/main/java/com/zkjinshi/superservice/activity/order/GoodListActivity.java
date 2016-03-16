@@ -1,36 +1,50 @@
 package com.zkjinshi.superservice.activity.order;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
 
-
+import android.text.TextUtils;
 import android.util.Log;
 
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.adapter.GoodAdapter;
 
+import com.zkjinshi.superservice.listener.OnRefreshListener;
 import com.zkjinshi.superservice.net.ExtNetRequestListener;
 import com.zkjinshi.superservice.net.MethodType;
 import com.zkjinshi.superservice.net.NetRequest;
 import com.zkjinshi.superservice.net.NetRequestTask;
 import com.zkjinshi.superservice.net.NetResponse;
+import com.zkjinshi.superservice.response.GetGoodListResponse;
+import com.zkjinshi.superservice.utils.CacheUtil;
+import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
+import com.zkjinshi.superservice.view.RefreshListView;
 import com.zkjinshi.superservice.vo.GoodInfoVo;
+
+import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.List;
+
+import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.entity.StringEntity;
 
 /**
  * 商品列表Activity
@@ -43,18 +57,24 @@ public class GoodListActivity extends Activity {
 
     private final static String TAG = GoodListActivity.class.getSimpleName();
 
-    private ListView listView;
+    private RefreshListView refreshListView;
 
     private ArrayList<GoodInfoVo> goodInfoList;
     private GoodAdapter goodAdapter;
     private GoodInfoVo goodInfoVo = null;
     private String shopid;
+    private Context mContext;
+    private int    mCurrentPage = 0;//记录当前查询页
+    private int mPageSize = 10;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_good_list);
+
+        mContext = this;
+
         if(getIntent().getSerializableExtra("GoodInfoVo") != null){
             goodInfoVo = (GoodInfoVo)getIntent().getSerializableExtra("GoodInfoVo");
         }
@@ -65,16 +85,24 @@ public class GoodListActivity extends Activity {
     }
 
     private void initView() {
-        listView =  (ListView)findViewById(R.id.good_list_list_view);
+        refreshListView =  (RefreshListView)findViewById(R.id.good_list_list_view);
     }
 
     private void initData() {
         TextView tips  = (TextView)findViewById(R.id.empty_tips);
         tips.setText("暂无房型可选");
-        listView.setEmptyView(findViewById(R.id.empty_linearlayout));
+        refreshListView.setEmptyView(findViewById(R.id.empty_linearlayout));
         findViewById(R.id.empty_linearlayout).setVisibility(View.INVISIBLE);
-        //获取房型列表
-        showGoodInfoList();
+
+        goodInfoList = new ArrayList<GoodInfoVo>();
+        goodAdapter = new GoodAdapter(GoodListActivity.this,goodInfoList);
+        refreshListView.setAdapter(goodAdapter);
+        if(goodInfoVo != null){
+            goodAdapter.setSelectId(goodInfoVo.getId());
+            goodAdapter.setSelectName(goodInfoVo.getName());
+        }
+        DialogUtil.getInstance().showAvatarProgressDialog(mContext,"");
+        getShopGoods();
     }
 
     private void initListeners() {
@@ -87,75 +115,95 @@ public class GoodListActivity extends Activity {
            }
        });
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        refreshListView.setOnRefreshListener(new OnRefreshListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                goodInfoVo = (GoodInfoVo)goodAdapter.getItem(position);
-                Intent intent = new Intent();
-                intent.putExtra("GoodInfoVo", goodInfoVo);
-                intent.putExtra("shopid",shopid);
-                setResult(RESULT_OK, intent);
-                finish();
-            }
-        });
-    }
-
-    /**
-     * 获取商品（房型列表）
-     * @return
-     */
-    public void showGoodInfoList() {
-        String url = ProtocolUtil.getGoodListUrl(shopid);
-        Log.i(TAG, url);
-        NetRequest     netRequest     = new NetRequest(url);
-        NetRequestTask netRequestTask = new NetRequestTask(this, netRequest, NetResponse.class);
-        netRequestTask.methodType = MethodType.GET;
-        netRequestTask.setNetRequestListener(new ExtNetRequestListener(this) {
-            @Override
-            public void onNetworkRequestError(int errorCode, String errorMessage) {
-                Log.i(TAG, "errorCode:" + errorCode);
-                Log.i(TAG, "errorMessage:" + errorMessage);
+            public void onRefreshing() {
+                mCurrentPage = 0;
+                getShopGoods();
             }
 
             @Override
-            public void onNetworkRequestCancelled() {
+            public void onLoadingMore() {
+                getShopGoods();
             }
 
             @Override
-            public void onNetworkResponseSucceed(NetResponse result) {
-                super.onNetworkResponseSucceed(result);
-
-                Log.i(TAG, "result.rawResult:" + result.rawResult);
-                try {
-                    Type listType = new TypeToken<ArrayList<GoodInfoVo>>() {
-                    }.getType();
-                    Gson gson = new Gson();
-                    goodInfoList = gson.fromJson(result.rawResult, listType);
-                    if (null != goodInfoList && !goodInfoList.isEmpty()) {
-                        setResponseData(goodInfoList);
-                    }else{
-                        findViewById(R.id.empty_linearlayout).setVisibility(View.VISIBLE);
-                    }
-
-                } catch (Exception e) {
-                    Log.e(TAG, e.getMessage());
+            public void implOnItemClickListener(AdapterView<?> parent, View view, int position, long id) {
+                int realPostion = position - 1;
+                goodInfoVo = (GoodInfoVo)goodAdapter.getItem(realPostion);
+                String goodId = goodInfoVo.getId();
+                if(!TextUtils.isEmpty(goodId)){
+                    goodAdapter.setSelectId(goodId);
+                    goodAdapter.notifyDataSetChanged();
+                    //跳转回预定页面
+                    Intent intent = new Intent();
+                    intent.putExtra("GoodInfoVo", goodInfoVo);
+                    intent.putExtra("shopid",shopid);
+                    setResult(RESULT_OK, intent);
+                    finish();
                 }
-            }
 
-            @Override
-            public void beforeNetworkRequestStart() {
             }
         });
-        netRequestTask.isShowLoadingDialog = true;
-        netRequestTask.execute();
     }
 
-    private void setResponseData(ArrayList<GoodInfoVo> goodInfoList){
-        goodAdapter = new GoodAdapter(this,goodInfoList);
-        listView.setAdapter(goodAdapter);
-        if(goodInfoVo != null){
-            goodAdapter.selectGood(goodInfoVo.getId());
+
+    //获取酒店信息
+    private void getShopGoods(){
+
+        try{
+            AsyncHttpClient client = new AsyncHttpClient();
+            client.setTimeout(Constants.OVERTIMEOUT);
+            client.addHeader("Content-Type","application/json; charset=UTF-8");
+            if(CacheUtil.getInstance().isLogin()){
+                client.addHeader("Token",CacheUtil.getInstance().getExtToken());
+            }
+            JSONObject jsonObject = new JSONObject();
+            StringEntity stringEntity = new StringEntity(jsonObject.toString());
+            String url = ProtocolUtil.getGoodListByCity(shopid,mCurrentPage,mPageSize);
+            client.get(mContext,url, stringEntity, "application/json", new AsyncHttpResponseHandler(){
+                public void onStart(){
+                }
+
+                public void onFinish(){
+                    DialogUtil.getInstance().cancelProgressDialog();
+                    refreshListView.refreshFinish();//结束刷新状态
+                }
+
+                public void onSuccess(int statusCode, Header[] headers, byte[] responseBody){
+                    try {
+                        String response = new String(responseBody,"utf-8");
+                        GetGoodListResponse getGoodListResponse = new Gson().fromJson(response,GetGoodListResponse.class);
+                        if (getGoodListResponse == null){
+                            return;
+                        }
+                        if(getGoodListResponse.getRes() == 0){
+                            goodInfoList = getGoodListResponse.getData();
+                            if (null != goodInfoList && !goodInfoList.isEmpty()) {
+                                if(mCurrentPage == 0){
+                                    goodAdapter.refresh(goodInfoList);
+                                }else{
+                                    goodAdapter.loadMore(goodInfoList);
+                                }
+                                mCurrentPage++;
+                            }
+                        }else{
+                            Toast.makeText(mContext,getGoodListResponse.getResDesc(),Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error){
+                    Toast.makeText(mContext,"API 错误："+statusCode, Toast.LENGTH_SHORT).show();
+                }
+            });
+        }catch (Exception e){
+            Toast.makeText(mContext,"json解析错误",Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
         }
+
     }
 
 }

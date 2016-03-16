@@ -334,8 +334,8 @@ public class OrderNewActivity extends Activity {
                     mGoodInfoVo = (GoodInfoVo) data.getSerializableExtra("room_type");
                     if (null != mGoodInfoVo) {
 
-                        String room = mGoodInfoVo.getRoom();
-                        String price = mGoodInfoVo.getPrice();
+                        String room = mGoodInfoVo.getName();
+                        String price = mGoodInfoVo.getPrice()+"";
                         String imgUrl = mGoodInfoVo.getImgurl();
 
                         if (!TextUtils.isEmpty(room)) {
@@ -410,7 +410,7 @@ public class OrderNewActivity extends Activity {
         }
 
         //判断房型是否为空
-        if(null == mGoodInfoVo || TextUtils.isEmpty(mGoodInfoVo.getRoom())){
+        if(null == mGoodInfoVo || TextUtils.isEmpty(mGoodInfoVo.getName())){
             DialogUtil.getInstance().showCustomToast(OrderNewActivity.this, getString(R.string.choose_room_type), Gravity.CENTER);
             return ;
         }
@@ -435,7 +435,7 @@ public class OrderNewActivity extends Activity {
         bizMap.put("guest", mClientName);//预订人姓名
 
         bizMap.put("roomid", mGoodInfoVo.getId());//房型ID
-        bizMap.put("room_type", mGoodInfoVo.getRoom());//房型
+        bizMap.put("room_type", mGoodInfoVo.getName());//房型
         bizMap.put("imgurl", mGoodInfoVo.getImgurl());//图片路径
 
         mRoomCount = mAivRoomCount.getNumber();
