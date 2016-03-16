@@ -6,6 +6,7 @@ import com.zkjinshi.superservice.bean.MemberBean;
 import com.zkjinshi.superservice.vo.ClientVo;
 import com.zkjinshi.superservice.vo.EContactVo;
 import com.zkjinshi.superservice.vo.EmployeeVo;
+import com.zkjinshi.superservice.vo.MemberVo;
 
 import java.util.ArrayList;
 
@@ -28,7 +29,7 @@ public class EContactFactory {
         return instance;
     }
 
-    public EContactVo buildEContactVo(MemberBean memberBean){
+    public EContactVo buildEContactVo(MemberVo memberBean){
         EContactVo contactVo = new EContactVo();
         if(null != memberBean){
             contactVo.setContactName(memberBean.getUsername());

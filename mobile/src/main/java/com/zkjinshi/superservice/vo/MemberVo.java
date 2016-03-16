@@ -1,31 +1,36 @@
 package com.zkjinshi.superservice.vo;
 
+import com.blueware.agent.android.harvest.P;
+
 import java.io.Serializable;
 
 /**
- * 聊天室成员
+ * 群成员实体
  * 开发者：JimmyZhang
  * 日期：2015/7/28
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
 public class MemberVo implements Serializable{
-
-    private String sessionid;//会话ID
-    private String userid;//用户ID
-    private int    logintype;//用户类型 0:app用户  1:商家员工 默认为:0
-    private String shopid;//商家ID
-    private String empid;//员工ID
-    private String roleid;//角色ID
-    private long   created;//创建时间
-
-    public String getSessionid() {
-        return sessionid;
-    }
-
-    public void setSessionid(String sessionid) {
-        this.sessionid = sessionid;
-    }
+    /**
+     "userid": "c_ae0f4570a5a9fd55",
+     "username": "林2哈哈",
+     "phone": "13560727890",
+     "password": null,
+     "realname": null,
+     "userimage": "uploads/users/c_ae0f4570a5a9fd55.jpg",
+     "sex": 1,
+     "email": null,
+     "userstatus": 0,
+     "viplevel": 0
+     */
+    private String userid;
+    private String username;
+    private String phone;
+    private String userimage;
+    private int sex;
+    private String email;
+    private int viplevel;
 
     public String getUserid() {
         return userid;
@@ -35,43 +40,51 @@ public class MemberVo implements Serializable{
         this.userid = userid;
     }
 
-    public int getLogintype() {
-        return logintype;
+    public String getUsername() {
+        return username;
     }
 
-    public void setLogintype(int logintype) {
-        this.logintype = logintype;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    public String getShopid() {
-        return shopid;
+    public String getPhone() {
+        return phone;
     }
 
-    public void setShopid(String shopid) {
-        this.shopid = shopid;
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
-    public String getEmpid() {
-        return empid;
+    public String getUserimage() {
+        return userimage;
     }
 
-    public void setEmpid(String empid) {
-        this.empid = empid;
+    public void setUserimage(String userimage) {
+        this.userimage = userimage;
     }
 
-    public String getRoleid() {
-        return roleid;
+    public int getSex() {
+        return sex;
     }
 
-    public void setRoleid(String roleid) {
-        this.roleid = roleid;
+    public void setSex(int sex) {
+        this.sex = sex;
     }
 
-    public long getCreated() {
-        return created;
+    public String getEmail() {
+        return email;
     }
 
-    public void setCreated(long created) {
-        this.created = created;
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public int getViplevel() {
+        return viplevel;
+    }
+
+    public void setViplevel(int viplevel) {
+        this.viplevel = viplevel;
     }
 }

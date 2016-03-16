@@ -196,11 +196,10 @@ public class ProtocolUtil {
      * 获取环信群成员
      * @return
      */
-    public static String getGroupMemberUrl(){
-        return ConfigUtil.getInst().getPhpDomain()+"hxim/member";
+    public static String getGroupMemberUrl(String groupId){
+        return ConfigUtil.getInst().getForDomain()+"res/v1/im/members/"+groupId;
     }
 
-    /** 订单操作相关 */
     /**
      * 订单处理1,商家锁定/增加订单
      * Method: POST
