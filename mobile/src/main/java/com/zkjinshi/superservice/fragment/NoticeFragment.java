@@ -188,10 +188,7 @@ public class NoticeFragment extends Fragment {
     public void requestNoticesTask() {
         String locIds = CacheUtil.getInstance().getAreaInfo();
         String shopId = CacheUtil.getInstance().getShopID();
-        String token = CacheUtil.getInstance().getExtToken();
-        PayloadVo payloadVo = SSOManager.getInstance().decodeToken(token);
-        String roles = SSOManager.getInstance().parseRoles(payloadVo);
-        String noticesUrl = ProtocolUtil.getNoticeUrl(shopId,locIds,roles,""+PAGE_NO,""+PAGE_SIZE);
+        String noticesUrl = ProtocolUtil.getNoticeUrl(shopId,locIds,""+PAGE_NO,""+PAGE_SIZE);
         NetRequest netRequest = new NetRequest(noticesUrl);
         NetRequestTask netRequestTask = new NetRequestTask(getActivity(), netRequest, NetResponse.class);
         netRequestTask.methodType = MethodType.GET;
@@ -221,7 +218,7 @@ public class NoticeFragment extends Fragment {
                     if(null != noticeResponse){
                         int resultCode = noticeResponse.getRes();
                         if(0 == resultCode){
-                            noticeList = noticeResponse.getUsers();
+                            noticeList = noticeResponse.getData();
                             notificationAdapter.setNoticeList(noticeList);
                         }else {
                             String resultMsg = noticeResponse.getResDesc();
