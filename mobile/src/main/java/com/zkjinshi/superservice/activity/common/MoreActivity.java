@@ -215,7 +215,6 @@ public class MoreActivity extends FragmentActivity implements MultiImageSelector
                             CacheUtil.getInstance().setSex(sex);
 
                             if(!getIntent().getBooleanExtra("from_setting",false)){
-                                //startActivity(new Intent(MoreActivity.this, ZoneActivity.class));
                                 getUserInfo();
                             }
                             finish();
@@ -246,7 +245,7 @@ public class MoreActivity extends FragmentActivity implements MultiImageSelector
             @Override
             public void successCallback(JSONObject response) {
                 try{
-                    Intent mainIntent = new Intent(MoreActivity.this, MainActivity.class);
+                    Intent mainIntent = new Intent(MoreActivity.this, ZoneActivity.class);
                     startActivity(mainIntent);
                     finish();
                     overridePendingTransition(R.anim.activity_new, R.anim.activity_out);

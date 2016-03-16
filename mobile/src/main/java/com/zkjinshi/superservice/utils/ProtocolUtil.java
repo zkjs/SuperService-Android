@@ -373,6 +373,14 @@ public class ProtocolUtil {
     }
 
     /**
+     * 获取当前商家Beacon列表
+     * @return
+     */
+    public static String getZoneList(){
+        return ConfigUtil.getInst().getPyxDomain()+"lbs/v1/loc/beacon/subscription";
+    }
+
+    /**
      * 获得刷新token Url
      * @return
      */

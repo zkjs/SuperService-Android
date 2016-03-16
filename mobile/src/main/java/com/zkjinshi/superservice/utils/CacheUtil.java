@@ -596,7 +596,7 @@ public class CacheUtil {
 	 */
 	public <T> void saveListCache(String key,
 								  ArrayList<T> cacheList) {
-		if (null != cacheList && cacheList.size() > 0) {
+		if (null != cacheList && cacheList.size() >= 0) {
 			Gson gson = new Gson();
 			String json = gson.toJson(cacheList);
 			try {

@@ -123,7 +123,7 @@ public class ShopLoginActivity extends Activity{
             @Override
             public void successCallback(JSONObject response) {
                 try{
-                    Intent mainIntent = new Intent(ShopLoginActivity.this, MainActivity.class);
+                    Intent mainIntent = new Intent(ShopLoginActivity.this, ZoneActivity.class);
                     startActivity(mainIntent);
                     finish();
                     overridePendingTransition(R.anim.activity_new, R.anim.activity_out);
