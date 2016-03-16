@@ -14,13 +14,13 @@ import java.util.ArrayList;
  */
 public class NoticeResponse extends BaseResponse {
 
-    private ArrayList<NoticeVo> users;
+    private ArrayList<NoticeVo> data;
 
-    public ArrayList<NoticeVo> getUsers() {
-        return users;
+    public ArrayList<NoticeVo> getData() {
+        return data;
     }
 
-    public void setUsers(ArrayList<NoticeVo> users) {
-        this.users = users;
+    public void setData(ArrayList<NoticeVo> data) {
+        this.data = data;
     }
 }

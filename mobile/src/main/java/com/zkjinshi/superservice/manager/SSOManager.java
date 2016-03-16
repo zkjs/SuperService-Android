@@ -69,29 +69,6 @@ public class SSOManager {
      * 获得角色相关频道
      * @return
      */
-    public String parseRoles(PayloadVo payloadVo){
-        String shopId = null;
-        String[] roles = null;
-        StringBuffer roleStr = new StringBuffer();
-        if(null != payloadVo){
-            shopId = payloadVo.getShopid();
-            if(!TextUtils.isEmpty(shopId)){
-                roles =  payloadVo.getRoles();
-                if(null != roles && roles.length > 0){
-                    for(int i = 0; i< roles.length; i++){
-                        roleStr.append(roles[i]).append(",");
-                    }
-                    return roleStr.substring(0,roleStr.length()-1);
-                }
-            }
-        }
-        return null;
-    }
-
-    /**
-     * 获得角色相关频道
-     * @return
-     */
     public String[] subscribeChannels(PayloadVo payloadVo){
         String shopId = null;
         String[] roles = null;
