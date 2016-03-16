@@ -6,6 +6,8 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.ListView;
@@ -18,14 +20,22 @@ import com.easemob.chat.EMConversation;
 import com.easemob.chat.EMGroup;
 import com.easemob.chat.EMGroupManager;
 import com.easemob.chat.EMMessage;
+import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.zkjinshi.base.util.DeviceUtils;
+import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
+import com.zkjinshi.superservice.activity.chat.single.controller.ChatMemberController;
 import com.zkjinshi.superservice.adapter.ChatAdapter;
 import com.zkjinshi.superservice.emchat.observer.EMessageSubject;
 import com.zkjinshi.superservice.emchat.observer.IEMessageObserver;
+import com.zkjinshi.superservice.net.ExtNetRequestListener;
+import com.zkjinshi.superservice.net.NetResponse;
+import com.zkjinshi.superservice.response.MembersResponse;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.view.MsgListView;
+import com.zkjinshi.superservice.vo.MemberVo;
 import com.zkjinshi.superservice.vo.TxtExtType;
 
 import java.lang.reflect.Method;
@@ -43,6 +53,7 @@ public class MessageListViewManager extends Handler implements MsgListView.IXLis
         ChatAdapter.ResendListener,IEMessageObserver {
 
     private static final int MESSAGE_LIST_VIEW_UPDATE_UI = 0X00;
+    public static final String TAG = MessageListViewManager.class.getSimpleName();
 
     private Context context;
     private MsgListView messageListView;
@@ -56,6 +67,7 @@ public class MessageListViewManager extends Handler implements MsgListView.IXLis
     private String toName;// 接收者姓名
     private String shopId;// 商店id
     private String shopName;// 商店名称
+    private ArrayList<MemberVo> memberList;
 
     public MessageListViewManager(Context context, String userId,String fromName,String toName,String shopId,String shopName) {
         this.context    = context;
@@ -316,6 +328,50 @@ public class MessageListViewManager extends Handler implements MsgListView.IXLis
         EMessageSubject.getInstance().removeObserver(this, EMNotifierEvent.Event.EventDeliveryAck);
         EMessageSubject.getInstance().removeObserver(this, EMNotifierEvent.Event.EventReadAck);
         EMessageSubject.getInstance().removeObserver(this, EMNotifierEvent.Event.EventOfflineMessage);
+    }
+
+    /**
+     * 请求私聊成员信息
+     */
+    private void requestChatMembersTask(){
+
+        ChatMemberController.getInstance().requestChatMembersTask(userId, new ExtNetRequestListener(context) {
+            @Override
+            public void onNetworkRequestError(int errorCode, String errorMessage) {
+                super.onNetworkRequestError(errorCode, errorMessage);
+                Log.i(TAG, "errorCode:" + errorCode);
+                Log.i(TAG, "errorMessage:" + errorMessage);
+            }
+
+            @Override
+            public void onNetworkResponseSucceed(NetResponse result) {
+                super.onNetworkResponseSucceed(result);
+                if(null != result && !TextUtils.isEmpty(result.rawResult)){
+
+                    try {
+
+                        Log.i(TAG, "result:" + result.rawResult);
+                        Log.i(TAG, "result:" + result.rawResult);
+                        MembersResponse membersResponse = new Gson().fromJson(result.rawResult,MembersResponse.class);
+                        if(null != membersResponse) {
+                            int resultCode = membersResponse.getRes();
+                            if (0 == resultCode) {
+                                memberList = membersResponse.getData();
+                                chatAdapter.setMemberList(memberList);
+                            }else {
+                                String resultMsg = membersResponse.getResDesc();
+                                if(!TextUtils.isEmpty(resultMsg)){
+                                    DialogUtil.getInstance().showCustomToast(context,resultMsg, Gravity.CENTER);
+                                }
+                            }
+                        }
+
+                    } catch (JsonSyntaxException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        },context);
     }
 
     @Override

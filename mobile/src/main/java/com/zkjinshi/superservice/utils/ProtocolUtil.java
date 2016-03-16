@@ -426,4 +426,13 @@ public class ProtocolUtil {
         return ConfigUtil.getInst().getForDomain()+"res/v1/link/joinpage";
     }
 
+    /**
+     * 获取用户信息
+     * @param userIds
+     * @return
+     */
+    public static String getUsersInfoUrl(String userIds){
+        return ConfigUtil.getInst().getForDomain()+"res/v1/query/user/all?userids="+userIds;
+    }
+
 }
