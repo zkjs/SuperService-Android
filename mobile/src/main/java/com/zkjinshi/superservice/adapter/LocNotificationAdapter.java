@@ -105,9 +105,10 @@ public class LocNotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             final OrderVo orderVo = orderList.get(0);
             if(null != orderVo){
                 String roomType = orderVo.getRoom();
-                String stayDays = orderVo.getIndate();
+                String inDate = orderVo.getIndate();
+                long checkInDate = TimeUtil.timeStrToTimeStamp(inDate);
                 if(!TextUtils.isEmpty(roomType)){
-                    String orderStr = roomType+" | "+stayDays;
+                    String orderStr = roomType+" | "+TimeUtil.getMonthTime(checkInDate)+"入住";
                     ((NoticeViewHolder) holder).tvOrderInfo.setText(orderStr);
                 }else{
                     ((NoticeViewHolder) holder).tvOrderInfo.setVisibility(View.GONE);
