@@ -35,7 +35,7 @@ import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.view.AutoSideBar;
 import com.zkjinshi.superservice.vo.OnlineStatus;
 import com.zkjinshi.superservice.vo.OrderDetailForDisplay;
-import com.zkjinshi.superservice.vo.ShopEmployeeVo;
+import com.zkjinshi.superservice.vo.EmployeeVo;
 import java.util.ArrayList;;
 import java.util.Iterator;
 import java.util.List;
@@ -105,8 +105,7 @@ public class TranspondActivity extends AppCompatActivity {
         mToken      = CacheUtil.getInstance().getToken();
         mShopID     = CacheUtil.getInstance().getShopID();
 
-        mTeamContactAdapter = new TranspondAdapter(TranspondActivity.this,
-                                         new ArrayList<ShopEmployeeVo>());
+        mTeamContactAdapter = new TranspondAdapter(TranspondActivity.this, new ArrayList<EmployeeVo>());
         mRvTeamContacts.setAdapter(mTeamContactAdapter);
     }
 
@@ -125,30 +124,30 @@ public class TranspondActivity extends AppCompatActivity {
                 TranspondActivity.this,
                 mUserID, mToken, mShopID, new GetTeamContactsListener() {
                     @Override
-                    public void getContactsDone(List<ShopEmployeeVo> shopEmployeeVos) {
+                    public void getContactsDone(List<EmployeeVo> shopEmployeeVos) {
 
                         List<String> strLetters = new ArrayList<>();//首字母显示数组
                         List<String> empids     = new ArrayList<>();//员工ID数组
 
                         if (null != shopEmployeeVos && !shopEmployeeVos.isEmpty()) {
-                            Iterator<ShopEmployeeVo> shopEmployeeVoIterator = shopEmployeeVos.iterator();
+                            Iterator<EmployeeVo> shopEmployeeVoIterator = shopEmployeeVos.iterator();
                             while (shopEmployeeVoIterator.hasNext()) {
-                                ShopEmployeeVo shopEmployeeVo = shopEmployeeVoIterator.next();
-                                String empID = shopEmployeeVo.getEmpid();
+                                EmployeeVo shopEmployeeVo = shopEmployeeVoIterator.next();
+                                String empID = shopEmployeeVo.getUserid();
                                 if (empID.equals(mUserID)) {
                                     shopEmployeeVoIterator.remove();
                                 } else {
-                                    shopEmployeeVo.setOnline_status(OnlineStatus.OFFLINE);
+                                    //shopEmployeeVo.setOnline_status(OnlineStatus.OFFLINE);
                                     continue;
                                 }
                             }
 
                             //获取部门首字母进行排序
-                            for (ShopEmployeeVo shopEmployeeVo : shopEmployeeVos) {
-                                empids.add(shopEmployeeVo.getEmpid());
-                                String deptName = shopEmployeeVo.getDept_name();
+                            for (EmployeeVo shopEmployeeVo : shopEmployeeVos) {
+                                empids.add(shopEmployeeVo.getUserid());
+                                String deptName = shopEmployeeVo.getRolename();
                                 if (TextUtils.isEmpty(deptName)) {
-                                    shopEmployeeVo.setDept_name("#");
+                                    shopEmployeeVo.setRolename("#");
                                 }else {
                                     String sortLetter = deptName.substring(0, 1);
                                     //部门分类并消除相同部门
@@ -200,7 +199,7 @@ public class TranspondActivity extends AppCompatActivity {
         mRvTeamContacts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ShopEmployeeVo shopEmployeeVo = mTeamContactAdapter.mDatas.get(position);
+                EmployeeVo shopEmployeeVo = mTeamContactAdapter.mDatas.get(position);
                 if(null != shopEmployeeVo){
                     showTranspondDialog(TranspondActivity.this, shopEmployeeVo);
                 }
@@ -211,9 +210,9 @@ public class TranspondActivity extends AppCompatActivity {
     /**
      * 显示订单转发对话框
      */
-    private void showTranspondDialog(Context context,ShopEmployeeVo shopEmployeeVo){
-        final String userId = shopEmployeeVo.getEmpid();
-        final String toName = shopEmployeeVo.getName();
+    private void showTranspondDialog(Context context,EmployeeVo shopEmployeeVo){
+        final String userId = shopEmployeeVo.getUserid();
+        final String toName = shopEmployeeVo.getUsername();
         CustomDialog.Builder customBuilder = new CustomDialog.Builder(context);
         customBuilder.setTitle("提示");
         customBuilder.setMessage("确认发送给"+toName+"?");

@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:zkjinshi="http://schemas.android.com/apk/res-auto"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#eeeeee"
     android:orientation="vertical">
+
     <RelativeLayout
         android:id="@+id/title"
         android:layout_width="match_parent"
@@ -13,22 +15,24 @@
 
         <ImageButton
             android:id="@+id/back_btn"
-            style="@style/backBtn"/>
+            style="@style/backBtn" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
             android:text="设置"
             android:textColor="@android:color/white"
-            android:textSize="18sp"
-            android:layout_centerInParent="true"/>
+            android:textSize="18sp" />
 
     </RelativeLayout>
+
     <ScrollView
-        android:scrollbars="none"
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:scrollbars="none">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -53,86 +57,107 @@
                     android:textColor="#000000"
                     android:textSize="16sp" />
 
-                <com.zkjinshi.superservice.view.CircleImageView
+                <com.facebook.drawee.view.SimpleDraweeView
                     android:id="@+id/civ_user_icon"
                     android:layout_width="72dp"
                     android:layout_height="72dp"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:layout_marginRight="15dp"
-                    android:src="@mipmap/ic_launcher"/>
+                    fresco:actualImageScaleType="focusCrop"
+                    fresco:placeholderImage="@mipmap/ic_launcher"
+                    fresco:placeholderImageScaleType="focusCrop"
+                    fresco:roundAsCircle="true"
+                    fresco:roundedCornerRadius="0dp"
+                    />
             </RelativeLayout>
 
             <View style="@style/GrayLineBorder"></View>
+
             <com.zkjinshi.superservice.view.ItemUserSettingView
                 android:id="@+id/shopname_iusv"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
+                android:background="#ffffff"
                 android:clickable="true"
-                zkjinshi:itemSettingTitle="组织"
-                android:background="#ffffff"/>
+                zkjinshi:itemSettingTitle="组织" />
+
             <View style="@style/GrayLineBorder"></View>
+
             <com.zkjinshi.superservice.view.ItemUserSettingView
                 android:id="@+id/autho_iusv"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
+                android:background="#ffffff"
                 android:clickable="true"
-                zkjinshi:itemSettingTitle="认证机构"
                 zkjinshi:itemSettingContent2=""
-                android:background="#ffffff"/>
+                zkjinshi:itemSettingTitle="认证机构" />
+
             <View style="@style/GrayLineBorder"></View>
+
             <com.zkjinshi.superservice.view.ItemUserSettingView
                 android:id="@+id/zone_iusv"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
+                android:background="#ffffff"
                 android:clickable="true"
-                zkjinshi:itemSettingTitle="区域"
-                android:background="#ffffff"/>
+                zkjinshi:itemSettingTitle="区域" />
+
             <View style="@style/GrayLineBorder"></View>
+
             <com.zkjinshi.superservice.view.ItemUserSettingView
                 android:id="@+id/job_iusv"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
+                android:background="#ffffff"
                 android:clickable="true"
-                zkjinshi:itemSettingTitle="业务信息"
                 zkjinshi:itemSettingContent2=""
-                android:background="#ffffff"/>
+                zkjinshi:itemSettingTitle="业务信息" />
+
             <View style="@style/GrayLineBorder"></View>
+
             <com.zkjinshi.superservice.view.ItemUserSettingView
                 android:id="@+id/phone_iusv"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
+                android:background="#ffffff"
                 android:clickable="true"
-                zkjinshi:itemSettingTitle="账号"
                 zkjinshi:itemSettingContent2=""
-                android:background="#ffffff"/>
+                zkjinshi:itemSettingTitle="账号" />
+
             <View style="@style/GrayLineBorder"></View>
 
-            <View style="@style/GrayLineBorder"  android:layout_marginTop="10dp"></View>
+            <View
+                style="@style/GrayLineBorder"
+                android:layout_marginTop="10dp"></View>
+
             <com.zkjinshi.superservice.view.ItemUserSettingView
                 android:id="@+id/about_iusv"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
+                android:background="#ffffff"
                 android:clickable="true"
-                zkjinshi:itemSettingTitle="关于我们"
                 zkjinshi:itemSettingContent2=""
-                android:background="#ffffff"/>
+                zkjinshi:itemSettingTitle="关于我们" />
+
             <View style="@style/GrayLineBorder"></View>
+
             <com.zkjinshi.superservice.view.ItemUserSettingView
                 android:id="@+id/update_iusv"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
+                android:background="#ffffff"
                 android:clickable="true"
-                zkjinshi:itemSettingTitle="更新"
                 zkjinshi:itemSettingContent2=""
-                android:background="#ffffff"/>
+                zkjinshi:itemSettingTitle="更新" />
+
             <View style="@style/GrayLineBorder"></View>
 
         </LinearLayout>

@@ -23,7 +23,7 @@ import com.zkjinshi.superservice.listener.RecyclerItemClickListener;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.utils.RandomDrawbleUtil;
 import com.zkjinshi.superservice.view.CircleImageView;
-import com.zkjinshi.superservice.vo.ShopEmployeeVo;
+import com.zkjinshi.superservice.vo.EmployeeVo;
 
 import java.util.List;
 import java.util.Locale;
@@ -37,7 +37,7 @@ import java.util.Map;
  */
 public class InviteTeamAdapter extends  RecyclerView.Adapter<RecyclerView.ViewHolder> implements SectionIndexer {
 
-    private List<ShopEmployeeVo> mList;
+    private List<EmployeeVo> mList;
     private Context mContext;
     private DisplayImageOptions options;
     private Map<Integer, Boolean> selectMap;
@@ -54,7 +54,7 @@ public class InviteTeamAdapter extends  RecyclerView.Adapter<RecyclerView.ViewHo
     }
     private RecyclerItemClickListener mRecyclerItemClickListener;
 
-    public InviteTeamAdapter(Context mContext, List<ShopEmployeeVo> list) {
+    public InviteTeamAdapter(Context mContext, List<EmployeeVo> list) {
         this.mContext = mContext;
         this.mList    = list;
         this.options  = new DisplayImageOptions.Builder()
@@ -79,12 +79,12 @@ public class InviteTeamAdapter extends  RecyclerView.Adapter<RecyclerView.ViewHo
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
 
-        ShopEmployeeVo employeeVo = mList.get(position);
+        EmployeeVo employeeVo = mList.get(position);
         int section = getSectionForPosition(position);
 
         if (position == getPositionForSection(section)) {
             ((ContactViewHolder)holder).tvLetter.setVisibility(View.VISIBLE);
-            String deptName = employeeVo.getDept_name();
+            String deptName = employeeVo.getRolename();
             if(!TextUtils.isEmpty(deptName)){
                 ((ContactViewHolder)holder).tvLetter.setText(deptName);
             }
@@ -93,7 +93,7 @@ public class InviteTeamAdapter extends  RecyclerView.Adapter<RecyclerView.ViewHo
         }
 
         //显示客户名称
-        final String employeeName = employeeVo.getName();
+        final String employeeName = employeeVo.getUsername();
         if(!TextUtils.isEmpty(employeeName)) {
             final String firstName = employeeName.substring(0, 1);
             ((ContactViewHolder) holder).tvContactAvatar.setText(firstName);
@@ -101,7 +101,7 @@ public class InviteTeamAdapter extends  RecyclerView.Adapter<RecyclerView.ViewHo
         }
 
         //根据url显示图片
-        String avatarUrl = ProtocolUtil.getAvatarUrl(employeeVo.getEmpid());
+        String avatarUrl = ProtocolUtil.getAvatarUrl(employeeVo.getUserid());
         ImageLoader.getInstance().displayImage(avatarUrl, ((ContactViewHolder) holder).civContactAvatar, options, new ImageLoadingListener() {
             @Override
             public void onLoadingStarted(String imageUri, View view) {
@@ -161,7 +161,7 @@ public class InviteTeamAdapter extends  RecyclerView.Adapter<RecyclerView.ViewHo
      * 根据ListView的当前位置获取分类的首字母的Char ascii值
      */
     public int getSectionForPosition(int position) {
-        return mList.get(position).getDept_name().charAt(0);
+        return mList.get(position).getRolename().charAt(0);
     }
 
     @Override
@@ -174,7 +174,7 @@ public class InviteTeamAdapter extends  RecyclerView.Adapter<RecyclerView.ViewHo
      */
     public int getPositionForSection(int section) {
         for (int i = 0; i < getItemCount(); i++) {
-            String sortStr = mList.get(i).getDept_name();
+            String sortStr = mList.get(i).getRolename();
             char firstChar = sortStr.toUpperCase(Locale.CHINESE).charAt(0);
             if (firstChar == section) {
                 return i;

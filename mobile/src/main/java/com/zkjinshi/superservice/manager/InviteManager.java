@@ -61,43 +61,16 @@ public class InviteManager {
                         clientVo.setUsername(userName);
                         clientVo.setPhone(mobileNo);
                         ClientDBUtil.getInstance().addClient(clientVo);
+                    }
 
-//                        ClientController.getInstance().getClientDetail(
-//                                context,
-//                                CacheUtil.getInstance().getUserId(),
-//                                CacheUtil.getInstance().getToken(),
-//                                CacheUtil.getInstance().getShopID(),
-//                                mobileNo,
-//                                new ExtNetRequestListener(context) {
-//                                    @Override
-//                                    public void onNetworkRequestError(int errorCode, String errorMessage) {
-//                                        Log.i(TAG, "errorCode:" + errorCode);
-//                                        Log.i(TAG, "errorMessage:" + errorMessage);
-//                                    }
-//
-//                                    @Override
-//                                    public void onNetworkRequestCancelled() {
-//                                    }
-//
-//                                    @Override
-//                                    public void onNetworkResponseSucceed(NetResponse result) {
-//                                        Log.i(TAG, "result.rawResult:" + result.rawResult);
-//                                        DialogUtil.getInstance().cancelProgressDialog();
-//                                        String jsonResult = result.rawResult;
-//                                        if (jsonResult.contains("false") || jsonResult.trim().contains("err")) {
-//                                        } else {
-//                                            Gson gson = new Gson();
-//                                            ClientDetailBean clientDetail = gson.fromJson(jsonResult, ClientDetailBean.class);
-//                                            ClientVo clientVo = ClientFactory.getInstance().convertClientDetailBean2ClientVO(clientDetail);
-//                                            ClientDBUtil.getInstance().addClient(clientVo);
-//                                        }
-//                                    }
-//
-//                                    @Override
-//                                    public void beforeNetworkRequestStart() {
-//                                        //网络请求前
-//                                    }
-//                                });
+                    if(!TextUtils.isEmpty(aciton) && "addSales".equals(aciton)){
+                        String userId = message.getStringAttribute("userId");
+                        String userName = message.getStringAttribute("userName");
+                        Intent intent = new Intent();
+                        intent.setAction("com.zkjinshi.superservice.AddSales");
+                        intent.putExtra("userId", userId);
+                        intent.putExtra("userName", userName);
+                        context.sendBroadcast(intent);
                     }
                 } catch (EaseMobException e) {
                     e.printStackTrace();

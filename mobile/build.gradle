@@ -1,22 +1,27 @@
 apply plugin: 'com.android.application'
+apply plugin: 'oneapm'
 
 android {
     compileSdkVersion 22
     buildToolsVersion "22.0.0"
-
     defaultConfig {
         applicationId "com.zkjinshi.superservice"
         minSdkVersion 15
         targetSdkVersion 22
-        versionCode 68
-        versionName "1.6.7"
+        versionCode 83
+        versionName "1.13.7"
         multiDexEnabled true
     }
+
     buildTypes {
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
         }
+    }
+    testOptions {
+        unitTests.returnDefaultValues = true
     }
 }
 
@@ -35,8 +40,9 @@ dependencies {
     compile project(':Cloud_TagView')
     compile project(':CalendarListview')
     compile project(':library.FileChoser')
-    compile 'com.android.support:recyclerview-v7:22.0.0'
     compile 'com.google.android.gms:play-services-appindexing:8.1.0'
-    compile files('libs/libammsdk.jar')
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
+    testCompile 'junit:junit:4.12'
+    compile 'com.facebook.fresco:fresco:0.9.0'
+    compile 'com.loopj.android:android-async-http:1.4.9'
 }

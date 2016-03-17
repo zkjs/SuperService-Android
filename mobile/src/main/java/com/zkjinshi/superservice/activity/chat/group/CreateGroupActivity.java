@@ -1,7 +1,6 @@
 package com.zkjinshi.superservice.activity.chat.group;
 
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -10,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -17,7 +17,6 @@ import com.easemob.chat.EMGroup;
 import com.easemob.chat.EMGroupManager;
 import com.easemob.exceptions.EaseMobException;
 import com.zkjinshi.base.util.DialogUtil;
-import com.zkjinshi.base.view.CustomDialog;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.adapter.CreateGroupAdapter;
 import com.zkjinshi.superservice.factory.EContactFactory;
@@ -27,7 +26,7 @@ import com.zkjinshi.superservice.sqlite.ShopEmployeeDBUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.vo.ClientVo;
 import com.zkjinshi.superservice.vo.EContactVo;
-import com.zkjinshi.superservice.vo.ShopEmployeeVo;
+import com.zkjinshi.superservice.vo.EmployeeVo;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,16 +44,17 @@ public class CreateGroupActivity extends Activity {
 
     public static final String TAG = CreateGroupActivity.class.getSimpleName();
 
-    private List<String> selectList;;
+    private List<String> selectList;
     private RelativeLayout mRlBack;
     private TextView mTvTitle;
     private RecyclerView mRcvTeamContacts;
 
     private LinearLayoutManager mLayoutManager;
     private CreateGroupAdapter mContactsAdapter;
-    private List<ShopEmployeeVo>    mShopEmployeeVos;
-    private RelativeLayout createGroupLayout;
-    private ShopEmployeeVo shopEmployeeVo;
+    private List<EmployeeVo>    mEmployeeVos;
+//    private RelativeLayout createGroupLayout;
+    private ImageButton goIbtn;
+    private EmployeeVo shopEmployeeVo;
     private ClientVo clientVo;
     private EContactVo contactVo;
     private String contactId;
@@ -64,10 +64,13 @@ public class CreateGroupActivity extends Activity {
     private Map<Integer, Boolean> enabledMap = new HashMap<Integer, Boolean>();
     private boolean addSucc;
 
+    private String mShopID;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_invite_team);
+
         initView();
         initData();
         initListener();
@@ -77,10 +80,13 @@ public class CreateGroupActivity extends Activity {
         mRlBack   = (RelativeLayout) findViewById(R.id.rl_back);
         mTvTitle  = (TextView)    findViewById(R.id.tv_title);
         mRcvTeamContacts     = (RecyclerView) findViewById(R.id.rcv_team_contacts);
-        createGroupLayout = (RelativeLayout)findViewById(R.id.invite_create_group_layout);
+        goIbtn = (ImageButton)findViewById(R.id.go_ibtn);
+//        createGroupLayout = (RelativeLayout)findViewById(R.id.invite_create_group_layout);
     }
 
     private void initData() {
+        mShopID = CacheUtil.getInstance().getShopID();
+
         selectList = new ArrayList<String>();
         if(null != getIntent() && null != getIntent().getStringExtra("userId")){
             contactId = getIntent().getStringExtra("userId");
@@ -103,17 +109,17 @@ public class CreateGroupActivity extends Activity {
                 }
             }
         }
-        mTvTitle.setText("创建团队");
+        mTvTitle.setText("添加群聊对象");
         mRcvTeamContacts.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(this);
         mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRcvTeamContacts.setLayoutManager(mLayoutManager);
-        mShopEmployeeVos = ShopEmployeeDBUtil.getInstance().queryAllByDeptIDAsc();
-        if(null != mShopEmployeeVos && !mShopEmployeeVos.isEmpty()){
-            for(int i= 0 ; i< mShopEmployeeVos.size(); i++){
-                shopEmployeeVo = mShopEmployeeVos.get(i);
+        mEmployeeVos = ShopEmployeeDBUtil.getInstance().queryAllExceptUser(CacheUtil.getInstance().getUserId());
+        if(null != mEmployeeVos && !mEmployeeVos.isEmpty()){
+            for(int i= 0 ; i< mEmployeeVos.size(); i++){
+                shopEmployeeVo = mEmployeeVos.get(i);
                 if(null != shopEmployeeVo){
-                    shopEmployeeId = shopEmployeeVo.getEmpid();
+                    shopEmployeeId = shopEmployeeVo.getUserid();
                     if(!TextUtils.isEmpty(shopEmployeeId) && shopEmployeeId.equals(contactId)){
                         enabledMap.put(i,true);
                     }
@@ -123,7 +129,7 @@ public class CreateGroupActivity extends Activity {
                 }
             }
         }
-        mContactsAdapter = new CreateGroupAdapter(CreateGroupActivity.this, mShopEmployeeVos);
+        mContactsAdapter = new CreateGroupAdapter(CreateGroupActivity.this, mEmployeeVos);
         mRcvTeamContacts.setAdapter(mContactsAdapter);
         mContactsAdapter.setEnabledMap(enabledMap);
         mContactsAdapter.setSelectMap(selectMap);
@@ -143,8 +149,8 @@ public class CreateGroupActivity extends Activity {
         mContactsAdapter.setOnItemClickListener(new RecyclerItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                ShopEmployeeVo shopEmployeeVo = mShopEmployeeVos.get(position);
-                String empID = shopEmployeeVo.getEmpid();
+                EmployeeVo shopEmployeeVo = mEmployeeVos.get(position);
+                String empID = shopEmployeeVo.getUserid();
                 if (selectList.contains(empID)) {
                     selectList.remove(empID);
                 } else {
@@ -154,7 +160,7 @@ public class CreateGroupActivity extends Activity {
         });
 
         //创建群
-        createGroupLayout.setOnClickListener(new View.OnClickListener() {
+        goIbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
                 requestCreateGroupTask();
@@ -226,7 +232,7 @@ public class CreateGroupActivity extends Activity {
     private String convertList2String(List<String> selectList){
         StringBuilder teamTitle = new StringBuilder();
         for(String contactId : selectList){
-            shopEmployeeVo = ShopEmployeeDBUtil.getInstance().queryEmployeeById(contactId);
+            shopEmployeeVo = ShopEmployeeDBUtil.getInstance().queryEmployeeById( contactId);
             if(null != shopEmployeeVo){
                 contactVo = EContactFactory.getInstance().buildEContactVo(shopEmployeeVo);
             }

@@ -6,7 +6,7 @@ import android.database.Cursor;
 import com.zkjinshi.superservice.bean.TeamContactBean;
 import com.zkjinshi.superservice.vo.DepartmentVo;
 import com.zkjinshi.superservice.vo.OnlineStatus;
-import com.zkjinshi.superservice.vo.ShopEmployeeVo;
+
 import com.zkjinshi.superservice.vo.WorkStatus;
 
 import java.util.ArrayList;

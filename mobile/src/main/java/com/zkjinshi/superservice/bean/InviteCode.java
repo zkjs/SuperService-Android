@@ -3,7 +3,7 @@ package com.zkjinshi.superservice.bean;
 import java.io.Serializable;
 
 /**
- * 邀请码对象
+ * 邀请码实体
  * 开发者：WinkyQin
  * 日期：2015/11/5
  * Copyright (C) 2015 深圳中科金石科技有限公司
@@ -11,33 +11,87 @@ import java.io.Serializable;
  */
 public class InviteCode implements Serializable{
 
-    private String salesid;
-    private int    codeid;
-    private String salecode;//邀请码
-    private int    is_validity; //0有效,1失效(已被使用)
+    private String userid;
+    private String username;
+    private String phone;
+    private String userimage;
+    private int sex;
+    private String email;
+    private int userstatus;
+    private int viplevel;
+    private String saleCode;
+    private int is_validity;
 
-    public String getSalesid() {
-        return salesid;
+    public String getUserid() {
+        return userid;
     }
 
-    public void setSalesid(String salesid) {
-        this.salesid = salesid;
+    public void setUserid(String userid) {
+        this.userid = userid;
     }
 
-    public int getCodeid() {
-        return codeid;
+    public String getUsername() {
+        return username;
     }
 
-    public void setCodeid(int codeid) {
-        this.codeid = codeid;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    public String getSalecode() {
-        return salecode;
+    public String getPhone() {
+        return phone;
     }
 
-    public void setSalecode(String salecode) {
-        this.salecode = salecode;
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getUserimage() {
+        return userimage;
+    }
+
+    public void setUserimage(String userimage) {
+        this.userimage = userimage;
+    }
+
+    public int getSex() {
+        return sex;
+    }
+
+    public void setSex(int sex) {
+        this.sex = sex;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public int getUserstatus() {
+        return userstatus;
+    }
+
+    public void setUserstatus(int userstatus) {
+        this.userstatus = userstatus;
+    }
+
+    public int getViplevel() {
+        return viplevel;
+    }
+
+    public void setViplevel(int viplevel) {
+        this.viplevel = viplevel;
+    }
+
+    public String getSaleCode() {
+        return saleCode;
+    }
+
+    public void setSaleCode(String saleCode) {
+        this.saleCode = saleCode;
     }
 
     public int getIs_validity() {

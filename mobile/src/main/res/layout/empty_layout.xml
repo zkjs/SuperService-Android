@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:background="#ffffff">
 
+    <!-- 暂时去掉空数据的默认布局显示 -->
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -14,22 +16,26 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@mipmap/img_nodate"/>
+            android:visibility="invisible"
+            android:src="@mipmap/img_nodate" />
+
         <TextView
             android:id="@+id/empty_tips"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
             android:text="暂无数据"
-            android:textSize="20sp"
             android:textColor="#101010"
-            android:layout_marginTop="30dp"/>
+            android:textSize="20sp"
+            android:visibility="invisible" />
     </LinearLayout>
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@mipmap/img_nodate_bg"
+        android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true"/>
+        android:src="@mipmap/img_nodate_bg"
+        android:visibility="invisible" />
 
 </RelativeLayout>

@@ -12,14 +12,35 @@ import android.telephony.SmsMessage;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import com.google.gson.Gson;
+import com.zkjinshi.base.log.LogLevel;
+import com.zkjinshi.base.log.LogUtil;
 import com.zkjinshi.superservice.R;
+import com.zkjinshi.superservice.manager.SSOManager;
+import com.zkjinshi.superservice.manager.YunBaSubscribeManager;
+import com.zkjinshi.superservice.net.ExtNetRequestListener;
+import com.zkjinshi.superservice.net.MethodType;
+import com.zkjinshi.superservice.net.NetRequest;
+import com.zkjinshi.superservice.net.NetRequestTask;
+import com.zkjinshi.superservice.net.NetResponse;
+import com.zkjinshi.superservice.response.BasePavoResponse;
+import com.zkjinshi.superservice.sqlite.DBOpenHelper;
+import com.zkjinshi.superservice.utils.AESUtil;
+import com.zkjinshi.superservice.utils.CacheUtil;
+import com.zkjinshi.superservice.utils.PavoUtil;
+import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.utils.SmsUtil;
 import com.zkjinshi.superservice.utils.StringUtil;
+import com.zkjinshi.superservice.vo.IdentityType;
+import com.zkjinshi.superservice.vo.PayloadVo;
+
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -36,6 +57,8 @@ import java.util.regex.Pattern;
  * 版权所有
  */
 public class VerifyPhoneControler {
+
+    private final static String TAG = VerifyPhoneControler.class.getSimpleName();
 
     private final static int SMS_UNSEND         = 0;  //默认状态，尚未申请点击发送验证码
     private final static int SMS_SENDED         = 1;  //请求点击发送验证码状态
@@ -64,8 +87,6 @@ public class VerifyPhoneControler {
     private ImageView mImgVerifyStatus;
 
     private Boolean   mSmsVerifySuccess;            //短信验证是否正确
-    private Map<String, String> mPhoneVerifyMap;//指定手机对应验证码
-    private Map<String, Object>       mResultMap;
 
     private SuccessCallBack successCallBack;
 
@@ -102,8 +123,9 @@ public class VerifyPhoneControler {
             @Override
             public void onClick(View view) {
                 String inputPhone = mInputPhone.getText().toString();
+                String code = mVerifyCode.getText().toString();
                 if (mSmsVerifySuccess) {
-                    successCallBack.verrifySuccess();
+                    getToken(inputPhone,code);
                 } else {
                     mVerifyCode.setHint("请输入验证码");//1.请求验证码
                     mVerifyCode.setFocusable(true);
@@ -170,24 +192,18 @@ public class VerifyPhoneControler {
                 String verifyCode = inputVerifyCode.toString();
                 String phoneNumber = mInputPhone.getText().toString();
                 if (inputVerifyCode.length() == 6) {
-                    //确认手机号对应的验证码
-                    if (StringUtil.isEquals(verifyCode, mPhoneVerifyMap.get(phoneNumber))) {
-                        //设置验证码输入正确后的图标
-                        mImgVerifyStatus.setVisibility(View.VISIBLE);
-                        mImgVerifyStatus.setImageResource(R.mipmap.img_input_right);
-                        mSmsVerifySuccess = true;//verify success
-                        mSmsVerifyStatus = SMS_VERIFY_SUCCESS;
-                        mBtnConfirm.setEnabled(true);
-                        mBtnConfirm.setText("确定");
-                        //输入正确切换按钮状态,关闭倒计时
-                        if (mTimer != null) {
-                            mTimer.cancel();//停止倒计时
-                        }
-                    } else {
-                        mSmsVerifySuccess = false;//verify failed
-                        mImgVerifyStatus.setVisibility(View.VISIBLE);
-                        mImgVerifyStatus.setImageResource(R.mipmap.img_input_warning);
+                    //设置验证码输入正确后的图标
+                    mImgVerifyStatus.setVisibility(View.VISIBLE);
+                    mImgVerifyStatus.setImageResource(R.mipmap.img_input_right);
+                    mSmsVerifySuccess = true;//verify success
+                    mSmsVerifyStatus = SMS_VERIFY_SUCCESS;
+                    mBtnConfirm.setEnabled(true);
+                    mBtnConfirm.setText("确定");
+                    //输入正确切换按钮状态,关闭倒计时
+                    if (mTimer != null) {
+                        mTimer.cancel();//停止倒计时
                     }
+
                 }
             }
         });
@@ -198,23 +214,67 @@ public class VerifyPhoneControler {
      * @param phoneNumber
      */
     private void sendVerifyCodeForPhone(final String phoneNumber) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                //生成成员变量随机验证码
-                String verifyCode = SmsUtil.getInstance().generateVerifyCode();
-                Map<String, Object> result =  SmsUtil.getInstance().sendTemplateSMS(
-                        phoneNumber, verifyCode);
-                Message msg = Message.obtain();
-                msg.what    = SEND_SMS_VERIFY;
-                msg.obj     = result;
-                Bundle bundle = new Bundle();
-                bundle.putString("phone_number", phoneNumber);
-                bundle.putString("verify_code", verifyCode);
-                msg.setData(bundle);
-                handler.sendMessage(msg);
-            }
-        }).start();
+        try{
+            String url = ProtocolUtil.ssoVcode();
+            NetRequest netRequest = new NetRequest(url);
+            HashMap<String,Object> bizMap = new HashMap<String,Object>();
+            String phoneStr = AESUtil.encrypt(phoneNumber, AESUtil.PAVO_KEY);
+            bizMap.put("phone",phoneStr);
+            netRequest.setObjectParamMap(bizMap);
+            NetRequestTask netRequestTask = new NetRequestTask(context,netRequest, NetResponse.class);
+            netRequestTask.methodType = MethodType.JSONPOST;
+            netRequestTask.setNetRequestListener(new ExtNetRequestListener(context) {
+                @Override
+                public void onNetworkRequestError(int errorCode, String errorMessage) {
+                    Log.i(TAG, "errorCode:" + errorCode);
+                    Log.i(TAG, "errorMessage:" + errorMessage);
+                    sendCodeFail();
+                }
+
+                @Override
+                public void onNetworkRequestCancelled() {
+
+                }
+
+                @Override
+                public void onNetworkResponseSucceed(NetResponse result) {
+                    super.onNetworkResponseSucceed(result);
+                    try{
+                        BasePavoResponse basePavoResponse = new Gson().fromJson(result.rawResult,BasePavoResponse.class);
+                        if(basePavoResponse != null){
+                            if(basePavoResponse.getRes() == 0){
+                                handler.sendEmptyMessage(SEND_SMS_VERIFY);
+                            }else{
+                                PavoUtil.showErrorMsg(context,basePavoResponse.getResDesc());
+                                sendCodeFail();
+                            }
+                        }
+
+                    }catch (Exception e){
+                        sendCodeFail();
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void beforeNetworkRequestStart() {
+
+                }
+            });
+            netRequestTask.isShowLoadingDialog = true;
+            netRequestTask.execute();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    private void sendCodeFail(){
+        //验证码发送失败
+        if(mInputPhone.getText().toString().length() >= 11){
+            mBtnConfirm.setEnabled(true);
+        }
+        mSmsCountSeconds = 60;//重新置为60s
+        mBtnConfirm.setText("发送失败，重新发送？");
     }
 
     private Handler handler = new Handler(){
@@ -223,45 +283,20 @@ public class VerifyPhoneControler {
             super.handleMessage(msg);
             switch(msg.what){
                 case  SEND_SMS_VERIFY:
-                    mResultMap = (Map<String, Object>) msg.obj;
-                    String statusCode = (String) mResultMap.get("statusCode");
-                    //LogUtil.getInstance().info(LogLevel.INFO,  "短信验证码验证状态" + statusCode);
-                    if("000000".equals(statusCode)){
-                        //验证发送成功
-                        mBtnConfirm.setEnabled(false);
-                        if(mPhoneVerifyMap == null){
-                            mPhoneVerifyMap = new HashMap<>();
-                        } else {
-                            mPhoneVerifyMap.clear();//清空之前数据
-                        }
-
-                        Bundle bundle = msg.getData();//获得手机和对应验证码
-                        if(null != bundle){
-                            String phoneNumber = (String) bundle.get("phone_number");
-                            String verifyCode  = (String) bundle.get("verify_code");
-                            mPhoneVerifyMap.put(phoneNumber, verifyCode);
-                        }
-
-                        mSmsVerifyStatus = SMS_SENDED;//验证码请求成功开启倒计时
-                        if(mTimer != null){
-                            mTimer.cancel();
-                            mTimer = null;
-                        }
-                        if(mSmsCountTask != null){
-                            mSmsCountTask.cancel();
-                            mSmsCountTask = null;
-                        }
-                        mTimer = new Timer();
-                        mSmsCountTask = new SmsCountTask();
-                        mTimer.schedule(mSmsCountTask, 1000, 1000);
-                    } else {
-                        //验证码发送失败
-                        if(mInputPhone.getText().toString().length() >= 11){
-                            mBtnConfirm.setEnabled(true);
-                        }
-                        mSmsCountSeconds = 60;//重新置为60s
-                        mBtnConfirm.setText("发送失败，重新发送？");
+                    //验证发送成功
+                    mBtnConfirm.setEnabled(false);
+                    mSmsVerifyStatus = SMS_SENDED;//验证码请求成功开启倒计时
+                    if(mTimer != null){
+                        mTimer.cancel();
+                        mTimer = null;
                     }
+                    if(mSmsCountTask != null){
+                        mSmsCountTask.cancel();
+                        mSmsCountTask = null;
+                    }
+                    mTimer = new Timer();
+                    mSmsCountTask = new SmsCountTask();
+                    mTimer.schedule(mSmsCountTask, 1000, 1000);
                     break;
                 case SMS_COUNTING_DOWN:
                     int countSeconds = msg.arg1;
@@ -392,5 +427,30 @@ public class VerifyPhoneControler {
             }
         }
     };
+
+    /**
+     * 使用手机验证码创建Token
+     * @param phone
+     * @param code
+     */
+    private void getToken(final String phone,final String code){
+        LoginController.getInstance().getTokenByCode(context, phone, code, new LoginController.CallBackListener() {
+            @Override
+            public void successCallback(JSONObject response) {
+                try {
+                    String token = response.getString("token");
+                    CacheUtil.getInstance().setExtToken(token);
+                    PayloadVo payloadVo = SSOManager.getInstance().decodeToken(token);
+                    CacheUtil.getInstance().setUserId(payloadVo.getSub());
+                    CacheUtil.getInstance().setLoginIdentity(IdentityType.WAITER);
+                    DBOpenHelper.DB_NAME = payloadVo.getSub() + ".db";
+                    successCallBack.verrifySuccess();
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+
+            }
+        });
+    }
 
 }

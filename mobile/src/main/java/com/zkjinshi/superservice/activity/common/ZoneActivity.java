@@ -1,46 +1,40 @@
 package com.zkjinshi.superservice.activity.common;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.adapter.ZoneAdapter;
 
-import com.zkjinshi.superservice.bean.BaseBean;
 import com.zkjinshi.superservice.bean.ZoneBean;
 
-import com.zkjinshi.superservice.manager.YunBaSubscribeManager;
-import com.zkjinshi.superservice.net.ExtNetRequestListener;
-import com.zkjinshi.superservice.net.MethodType;
-import com.zkjinshi.superservice.net.NetRequest;
-import com.zkjinshi.superservice.net.NetRequestTask;
-import com.zkjinshi.superservice.net.NetResponse;
-
-import com.zkjinshi.superservice.sqlite.UserDBUtil;
-
+import com.zkjinshi.superservice.response.GetZoneListResponse;
 import com.zkjinshi.superservice.utils.CacheUtil;
+import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
-import com.zkjinshi.superservice.vo.IdentityType;
-import com.zkjinshi.superservice.vo.UserVo;
 
-import org.eclipse.paho.client.mqttv3.IMqttActionListener;
-import org.eclipse.paho.client.mqttv3.IMqttToken;
-import org.eclipse.paho.client.mqttv3.MqttException;
+import org.json.JSONObject;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.HashMap;
 
-import io.yunba.android.manager.YunBaManager;
+
+import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.entity.StringEntity;
+;
 
 /**
  * 开发者：dujiande
@@ -51,257 +45,127 @@ import io.yunba.android.manager.YunBaManager;
 public class ZoneActivity extends Activity {
 
     private final static String TAG = ZoneActivity.class.getSimpleName();
-
+    private String ZONE_CACHE_KEY = "zoneBeanList"+CacheUtil.getInstance().getUserId();
     private ListView zoneLv;
     private ZoneAdapter zoneAdapter;
-    private View header;
-    private UserVo userVo;
+    private Context mContext;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_zone);
+        mContext = this;
 
-        String userid = CacheUtil.getInstance().getUserId();
-        userVo = UserDBUtil.getInstance().queryUserById(userid);
         initView();
         initData();
         initListener();
     }
 
     private void initView() {
-        header = getLayoutInflater().inflate(R.layout.header, null);
         zoneLv = (ListView)findViewById(R.id.zone_listview);
-
-        findViewById(R.id.back_btn).setVisibility(View.GONE);
     }
 
     private void initData() {
-        NetRequest netRequest = new NetRequest(ProtocolUtil.getZonelistUrl());
-        HashMap<String,String> bizMap = new HashMap<String,String>();
-        bizMap.put("salesid",userVo.getUserId());
-        bizMap.put("token",userVo.getToken());
-        bizMap.put("shopid",userVo.getShopId());
-        netRequest.setBizParamMap(bizMap);
-        NetRequestTask netRequestTask = new NetRequestTask(this,netRequest, NetResponse.class);
-        netRequestTask.methodType = MethodType.PUSH;
-        netRequestTask.setNetRequestListener(new ExtNetRequestListener(this) {
-            @Override
-            public void onNetworkRequestError(int errorCode, String errorMessage) {
-                Log.i(TAG, "errorCode:" + errorCode);
-                Log.i(TAG, "errorMessage:" + errorMessage);
-            }
 
-            @Override
-            public void onNetworkRequestCancelled() {
+        zoneAdapter = new ZoneAdapter(ZoneActivity.this, new ArrayList<ZoneBean>());
+        zoneLv.setAdapter(zoneAdapter);
+        getZoneList();
 
-            }
-
-            @Override
-            public void onNetworkResponseSucceed(NetResponse result) {
-                super.onNetworkResponseSucceed(result);
-
-                Log.i(TAG, "result.rawResult:" + result.rawResult);
-                try{
-                    ArrayList<ZoneBean> zoneList = new Gson().fromJson(result.rawResult, new TypeToken< ArrayList<ZoneBean>>(){}.getType());
-                    zoneAdapter = new ZoneAdapter(ZoneActivity.this, zoneList);
-                    zoneLv.setAdapter(zoneAdapter);
-                    unsubscribeLocs();
-                    getMyZone();
-                }catch (Exception e){
-                    Log.e(TAG,e.getMessage());
-                }
-
-            }
-
-            @Override
-            public void beforeNetworkRequestStart() {
-
-            }
-        });
-        netRequestTask.isShowLoadingDialog = true;
-        netRequestTask.execute();
     }
 
-    //服务员获取自己的通知区域
-    private void getMyZone(){
-        NetRequest netRequest = new NetRequest(ProtocolUtil.getMySemplocationUrl());
-        HashMap<String,String> bizMap = new HashMap<String,String>();
-        bizMap.put("salesid",userVo.getUserId());
-        bizMap.put("token",userVo.getToken());
-        bizMap.put("shopid",userVo.getShopId());
-        netRequest.setBizParamMap(bizMap);
-        NetRequestTask netRequestTask = new NetRequestTask(this,netRequest, NetResponse.class);
-        netRequestTask.methodType = MethodType.PUSH;
-        netRequestTask.setNetRequestListener(new ExtNetRequestListener(this) {
-            @Override
-            public void onNetworkRequestError(int errorCode, String errorMessage) {
-                Log.i(TAG, "errorCode:" + errorCode);
-                Log.i(TAG, "errorMessage:" + errorMessage);
-            }
-
-            @Override
-            public void onNetworkRequestCancelled() {
-
-            }
-
-            @Override
-            public void onNetworkResponseSucceed(NetResponse result) {
-                super.onNetworkResponseSucceed(result);
-
-                Log.i(TAG, "result.rawResult:" + result.rawResult);
-                try{
-                    ArrayList<ZoneBean> zoneList = new Gson().fromJson(result.rawResult, new TypeToken< ArrayList<ZoneBean>>(){}.getType());
-                   if(zoneList.size() > 0){
-                       zoneAdapter.setCheckedZone(zoneList);
-                       zoneAdapter.notifyDataSetChanged();
-                   }
-                }catch (Exception e){
-                    Log.e(TAG,e.getMessage());
+    private void getZoneList(){
+        try{
+            AsyncHttpClient client = new AsyncHttpClient();
+            client.setTimeout(Constants.OVERTIMEOUT);
+            client.addHeader("Content-Type","application/json; charset=UTF-8");
+            client.addHeader("Token",CacheUtil.getInstance().getExtToken());
+            JSONObject jsonObject = new JSONObject();
+            StringEntity stringEntity = new StringEntity(jsonObject.toString());
+            String url = ProtocolUtil.getZoneList();
+            client.get(mContext,url, stringEntity, "application/json", new AsyncHttpResponseHandler(){
+                public void onStart(){
+                    DialogUtil.getInstance().showAvatarProgressDialog(mContext,"");
                 }
 
-            }
+                public void onFinish(){
+                    DialogUtil.getInstance().cancelProgressDialog();
+                }
 
-            @Override
-            public void beforeNetworkRequestStart() {
+                public void onSuccess(int statusCode, Header[] headers, byte[] responseBody){
+                    try {
+                        String response = new String(responseBody,"utf-8");
+                        GetZoneListResponse getZoneListResponse = new Gson().fromJson(response,GetZoneListResponse.class);
+                        if (getZoneListResponse == null){
+                            return;
+                        }
+                        if(getZoneListResponse.getRes() == 0){
+                            ArrayList<ZoneBean> zoneListAll = getZoneListResponse.getData();
+                            if(!zoneListAll.isEmpty()){
+                                zoneAdapter.setZoneList(zoneListAll);
+                                String listStr = CacheUtil.getInstance().getListStrCache(ZONE_CACHE_KEY);
+                                if(!TextUtils.isEmpty(listStr)){
+                                    Type listType = new TypeToken<ArrayList<ZoneBean>>(){}.getType();
+                                    Gson gson = new Gson();
+                                    ArrayList<ZoneBean> myZoneList = gson.fromJson(listStr, listType);
+                                    if (null != myZoneList && !myZoneList.isEmpty()) {
+                                        zoneAdapter.setCheckedZone(myZoneList);
+                                    }
+                                }
+                                zoneAdapter.notifyDataSetChanged();
+                            }
 
-            }
-        });
-        netRequestTask.isShowLoadingDialog = true;
-        netRequestTask.execute();
+
+                        }else{
+                            Toast.makeText(mContext,getZoneListResponse.getResDesc(),Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error){
+                    Toast.makeText(mContext,"API 错误："+statusCode,Toast.LENGTH_SHORT).show();
+                }
+            });
+        }catch (Exception e){
+            Toast.makeText(mContext,"json解析错误",Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        }
     }
-
 
     private void initListener() {
-
-
-        findViewById(R.id.back_btn).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(CacheUtil.getInstance().getLoginIdentity() == IdentityType.BUSINESS){
-                    if(!getIntent().getBooleanExtra("from_setting",false)){
-                        startActivity(new Intent(ZoneActivity.this,ShopLoginActivity.class));
-                    }
-                    finish();
-                    overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
-                }else{
-                    if(!getIntent().getBooleanExtra("from_setting",false)){
-                        startActivity(new Intent(ZoneActivity.this,MoreActivity.class));
-                    }
-                    finish();
-                    overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
-                }
-
-            }
-        });
 
         findViewById(R.id.go_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                CacheUtil.getInstance().saveListCache("zoneBeanList",zoneAdapter.getSelectZoneBeanList());
-                subscribeLocs();//订阅云巴消息
-                semplocationupdate();
+                CacheUtil.getInstance().saveListCache(ZONE_CACHE_KEY, zoneAdapter.getSelectZoneBeanList());
+                CacheUtil.getInstance().setAreaInfo(zoneAdapter.getCheckedIds());
+
+                if (!getIntent().getBooleanExtra("from_setting", false)) {
+                    startActivity(new Intent(ZoneActivity.this, MainActivity.class));
+                }
+                finish();
+                overridePendingTransition(R.anim.activity_new, R.anim.activity_out);
+
             }
         });
 
         zoneLv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                boolean b =  zoneAdapter.getZoneList().get(i).isHasAdd();
-                zoneAdapter.getZoneList().get(i).setHasAdd(!b);
+                int added =  zoneAdapter.getZoneList().get(i).getSubscribed();
+                if(added == 0){
+                    zoneAdapter.getZoneList().get(i).setSubscribed(1);
+                }else{
+                    zoneAdapter.getZoneList().get(i).setSubscribed(0);
+                }
                 zoneAdapter.notifyDataSetChanged();
             }
         });
 
 
     }
-
-    /**
-     * 取消订阅区域
-     */
-    public void unsubscribeLocs(){
-        YunBaManager.unsubscribe(getApplicationContext(),zoneAdapter.getAllLocIds(),
-                new IMqttActionListener() {
-                    @Override
-                    public void onSuccess(IMqttToken asyncActionToken) {
-                        Log.i(TAG,"取消订阅云巴成功");
-                    }
-
-                    @Override
-                    public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-                        if (exception instanceof MqttException) {
-                            MqttException ex = (MqttException)exception;
-                            String msg =  "Subscribe failed with error code : " + ex.getReasonCode();
-                            Log.i(TAG,"取消订阅云巴失败:"+msg);
-                        }
-                    }
-                }
-        );
-    }
-
-    /**
-     * 订阅区域
-     */
-    public void subscribeLocs(){
-        YunBaSubscribeManager.getInstance().subscribe(zoneAdapter.getLocIds());
-    }
-
-    /*
-     * 服务员修改自己管辖的区域通知
-     *
-     */
-    public void semplocationupdate(){
-        String locid = zoneAdapter.getCheckedIds();
-        NetRequest netRequest = new NetRequest(ProtocolUtil.getSemplocationupdateUrl());
-        HashMap<String,String> bizMap = new HashMap<String,String>();
-        bizMap.put("salesid",userVo.getUserId());
-        bizMap.put("token",userVo.getToken());
-        bizMap.put("shopid",userVo.getShopId());
-        bizMap.put("locid",locid);
-        netRequest.setBizParamMap(bizMap);
-        NetRequestTask netRequestTask = new NetRequestTask(this,netRequest, NetResponse.class);
-        netRequestTask.methodType = MethodType.PUSH;
-        netRequestTask.setNetRequestListener(new ExtNetRequestListener(this) {
-            @Override
-            public void onNetworkRequestError(int errorCode, String errorMessage) {
-                Log.i(TAG, "errorCode:" + errorCode);
-                Log.i(TAG, "errorMessage:" + errorMessage);
-            }
-
-            @Override
-            public void onNetworkRequestCancelled() {
-
-            }
-
-            @Override
-            public void onNetworkResponseSucceed(NetResponse result) {
-                super.onNetworkResponseSucceed(result);
-
-                Log.i(TAG, "result.rawResult:" + result.rawResult);
-                BaseBean baseBean = new Gson().fromJson(result.rawResult, BaseBean.class);
-                if (baseBean.isSet()) {
-                    CacheUtil.getInstance().setLogin(true);
-                    CacheUtil.getInstance().setAreaInfo(zoneAdapter.getCheckedIds());
-                    if (!getIntent().getBooleanExtra("from_setting", false)) {
-                        startActivity(new Intent(ZoneActivity.this, MainActivity.class));
-                    }
-                    finish();
-                    overridePendingTransition(R.anim.activity_new, R.anim.activity_out);
-                } else {
-                    DialogUtil.getInstance().showToast(ZoneActivity.this, baseBean.getErr());
-                }
-
-            }
-
-            @Override
-            public void beforeNetworkRequestStart() {
-
-            }
-        });
-        netRequestTask.isShowLoadingDialog = true;
-        netRequestTask.execute();
-    }
-
-
 
 }

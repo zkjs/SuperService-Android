@@ -78,10 +78,12 @@
 -keep class com.zkjinshi.superservice.bean.** { *; }
 -keep class com.zkjinshi.superservice.entity.** { *; }
 -keep class com.zkjinshi.superservice.vo.** { *; }
+-keep class com.zkjinshi.superservice.response.** { *; }
 -keep class com.zkjinshi.superservice.net.** { *; }
 -keep class com.zkjinshi.superservice.fragment.**{ *; }
 -keep class com.zkjinshi.superservice.activity.**{ *; }
 -keep class io.codetail.animation.arcanimator.** { *; }
+-keep class com.zkjinshi.superservice.ext.**{ *; }
 
 #保留扩展控件不被混淆
 -keep class android.support.**{ *; }
@@ -113,6 +115,8 @@
 -libraryjars ..\\ZKJinShiBaseClass
 -dontwarn com.zkjinshi.base.**
 -keep class com.zkjinshi.base.** { *; }
+
+-keep class com.facebook.**{*;}
 
 #---配置library工程包over---#
 
@@ -153,7 +157,15 @@
  -dontwarn  com.easemob.**
 
  # 微信sdk不混淆
- -keep class com.tencent.mm.sdk.** {*;}
+ -keep class com.tencent.** {*;}
+
+ -dontwarn org.apache.commons.**
+ -keep class org.apache.http.impl.client.**
+ -dontwarn org.apache.commons.**
+ -keep class com.blueware.** { *; }
+ -dontwarn com.blueware.**
+ -keepattributes Exceptions, Signature, InnerClasses
+ -keepattributes SourceFile ,LineNumberTable
 
 #---配置lib jar包over---#
 

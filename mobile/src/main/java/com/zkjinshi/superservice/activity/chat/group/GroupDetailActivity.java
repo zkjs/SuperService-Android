@@ -39,12 +39,14 @@ import com.zkjinshi.superservice.bean.MemberBean;
 import com.zkjinshi.superservice.factory.EContactFactory;
 import com.zkjinshi.superservice.net.ExtNetRequestListener;
 import com.zkjinshi.superservice.net.NetResponse;
+import com.zkjinshi.superservice.response.MembersResponse;
 import com.zkjinshi.superservice.sqlite.ClientDBUtil;
 import com.zkjinshi.superservice.sqlite.ShopEmployeeDBUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.vo.ClientVo;
 import com.zkjinshi.superservice.vo.EContactVo;
-import com.zkjinshi.superservice.vo.ShopEmployeeVo;
+import com.zkjinshi.superservice.vo.MemberVo;
+
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -72,7 +74,7 @@ public class GroupDetailActivity extends Activity{
     private GridView shopEmpGv;
     private String groupId;
     private EMGroup group;
-    private List<MemberBean> memberList;
+    private List<MemberVo> memberList;
     private CheckBox blockMessageCb;
     private RelativeLayout blockMessageLayout,clearHistoryLayout,groupNameLayout;
     private Button dissolveBtn,quitBtn;
@@ -203,9 +205,9 @@ public class GroupDetailActivity extends Activity{
      * 设置联系人集合
      * @param memberList
      */
-    private ArrayList<EContactVo> setContactList(List<MemberBean> memberList){
+    private ArrayList<EContactVo> setContactList(List<MemberVo> memberList){
         if(null != memberList && !memberList.isEmpty()){
-            for(MemberBean member : memberList){
+            for(MemberVo member : memberList){
                 contactVo = EContactFactory.getInstance().buildEContactVo(member);
                 if(null != contactList && !contactList.contains(contactVo)){
                     contactList.add(contactVo);
@@ -259,29 +261,40 @@ public class GroupDetailActivity extends Activity{
                 if(null != result && !TextUtils.isEmpty(result.rawResult)){
                     try {
                         Log.i(TAG, "result:" + result.rawResult);
-                        Type listType = new TypeToken<ArrayList<MemberBean>>(){}.getType();
-                        Gson gson = new Gson();
-                        memberList = gson.fromJson(result.rawResult, listType);
-                        contactList = setContactList(memberList);
-                        chatDetailAdapter = new ChatDetailAdapter(GroupDetailActivity.this, contactList);
-                        gridView.setAdapter(chatDetailAdapter);
-                        setGridViewHeightBasedOnChildren(gridView);
-                        if(null != group){
-                            String groupName = group.getGroupName();
-                            if(!TextUtils.isEmpty(groupName)){
-                                groupNameTv.setText(groupName);
-                            }
-                            boolean msgBlocked = group.isMsgBlocked();
-                            blockMessageCb.setChecked(msgBlocked);
-                            String ownerId = group.getOwner();
-                            if(!TextUtils.isEmpty(ownerId) && ownerId.equals(CacheUtil.getInstance().getUserId())){
-                                dissolveBtn.setVisibility(View.VISIBLE);
-                                quitBtn.setVisibility(View.GONE);
-                            }else{
-                                dissolveBtn.setVisibility(View.GONE);
-                                quitBtn.setVisibility(View.VISIBLE);
+                        MembersResponse membersResponse = new Gson().fromJson(result.rawResult,MembersResponse.class);
+                        if(null != membersResponse){
+                            int resultCode = membersResponse.getRes();
+                            if(0 == resultCode){
+                                memberList =  membersResponse.getData();
+                                contactList = setContactList(memberList);
+                                chatDetailAdapter = new ChatDetailAdapter(GroupDetailActivity.this, contactList);
+                                gridView.setAdapter(chatDetailAdapter);
+                                setGridViewHeightBasedOnChildren(gridView);
+                                if(null != group){
+                                    String groupName = group.getGroupName();
+                                    if(!TextUtils.isEmpty(groupName)){
+                                        groupNameTv.setText(groupName);
+                                    }
+                                    boolean msgBlocked = group.isMsgBlocked();
+                                    blockMessageCb.setChecked(msgBlocked);
+                                    String ownerId = group.getOwner();
+                                    if(!TextUtils.isEmpty(ownerId) && ownerId.equals(CacheUtil.getInstance().getUserId())){
+                                        dissolveBtn.setVisibility(View.VISIBLE);
+                                        quitBtn.setVisibility(View.GONE);
+                                    }else{
+                                        dissolveBtn.setVisibility(View.GONE);
+                                        quitBtn.setVisibility(View.VISIBLE);
+                                    }
+                                }
+
+                            }else {
+                                String resultMsg = membersResponse.getResDesc();
+                                if(!TextUtils.isEmpty(resultMsg)){
+                                    DialogUtil.getInstance().showCustomToast(GroupDetailActivity.this,resultMsg,Gravity.CENTER);
+                                }
                             }
                         }
+
                     } catch (JsonSyntaxException e) {
                         e.printStackTrace();
                     }

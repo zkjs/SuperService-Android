@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.ListView;
@@ -23,6 +24,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import com.zkjinshi.base.util.DeviceUtils;
+import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.chat.group.controller.GroupMemberController;
 import com.zkjinshi.superservice.adapter.GroupChatAdapter;
@@ -32,9 +34,11 @@ import com.zkjinshi.superservice.emchat.observer.EMessageSubject;
 import com.zkjinshi.superservice.emchat.observer.IEMessageObserver;
 import com.zkjinshi.superservice.net.ExtNetRequestListener;
 import com.zkjinshi.superservice.net.NetResponse;
+import com.zkjinshi.superservice.response.MembersResponse;
 import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.view.MsgListView;
 import com.zkjinshi.superservice.vo.ContactLocalVo;
+import com.zkjinshi.superservice.vo.MemberVo;
 import com.zkjinshi.superservice.vo.TxtExtType;
 
 import java.lang.reflect.Method;
@@ -66,7 +70,7 @@ public class MessageListViewManager extends Handler implements MsgListView.IXLis
     private String groupId;
     private EMGroup group;
     private List<String> members;
-    private ArrayList<MemberBean> memberList;
+    private ArrayList<MemberVo> memberList;
 
     public MessageListViewManager(Context context, String groupId) {
         this.context = context;
@@ -122,14 +126,21 @@ public class MessageListViewManager extends Handler implements MsgListView.IXLis
             public void onNetworkResponseSucceed(NetResponse result) {
                 super.onNetworkResponseSucceed(result);
                 if(null != result && !TextUtils.isEmpty(result.rawResult)){
-
                     try {
-
                         Log.i(TAG, "result:" + result.rawResult);
-                        Type listType = new TypeToken<ArrayList<MemberBean>>(){}.getType();
-                        Gson gson = new Gson();
-                        memberList = gson.fromJson(result.rawResult, listType);
-                        chatAdapter.setMemberList(memberList);
+                        MembersResponse membersResponse = new Gson().fromJson(result.rawResult,MembersResponse.class);
+                        if(null != membersResponse) {
+                            int resultCode = membersResponse.getRes();
+                            if (0 == resultCode) {
+                                memberList = membersResponse.getData();
+                                chatAdapter.setMemberList(memberList);
+                            }else {
+                                String resultMsg = membersResponse.getResDesc();
+                                if(!TextUtils.isEmpty(resultMsg)){
+                                    DialogUtil.getInstance().showCustomToast(context,resultMsg, Gravity.CENTER);
+                                }
+                            }
+                        }
 
                     } catch (JsonSyntaxException e) {
                         e.printStackTrace();

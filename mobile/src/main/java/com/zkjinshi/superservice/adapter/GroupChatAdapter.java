@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.AnimationDrawable;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
 import android.text.Spannable;
@@ -34,12 +35,14 @@ import com.easemob.chat.ImageMessageBody;
 import com.easemob.chat.TextMessageBody;
 import com.easemob.chat.VoiceMessageBody;
 import com.easemob.exceptions.EaseMobException;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
+import com.zkjinshi.base.config.ConfigUtil;
 import com.zkjinshi.base.util.ClipboardUtil;
 import com.zkjinshi.base.util.ImageUtil;
 import com.zkjinshi.base.util.TimeUtil;
@@ -48,7 +51,6 @@ import com.zkjinshi.superservice.activity.chat.single.TranspondActivity;
 import com.zkjinshi.superservice.activity.order.HotelDealActivity;
 import com.zkjinshi.superservice.activity.order.KTVDealActivity;
 import com.zkjinshi.superservice.activity.order.NormalDealActivity;
-import com.zkjinshi.superservice.bean.BookOrderBean;
 import com.zkjinshi.superservice.bean.MemberBean;
 import com.zkjinshi.superservice.net.ext.DownloadRequestListener;
 import com.zkjinshi.superservice.net.ext.DownloadTask;
@@ -60,9 +62,9 @@ import com.zkjinshi.superservice.utils.FileUtil;
 import com.zkjinshi.superservice.utils.MediaPlayerUtil;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.view.ActionItem;
-import com.zkjinshi.superservice.view.CircleImageView;
 import com.zkjinshi.superservice.view.MessageSpanURL;
 import com.zkjinshi.superservice.view.QuickAction;
+import com.zkjinshi.superservice.vo.MemberVo;
 import com.zkjinshi.superservice.vo.OrderDetailForDisplay;
 import com.zkjinshi.superservice.vo.TxtExtType;
 
@@ -98,9 +100,9 @@ public class GroupChatAdapter extends BaseAdapter {
     private boolean isDelEnabled; // ture：启用删除状态，false：不启用
     private String keyWord = "";
     private ResendListener mResendListener;
-    private ArrayList<MemberBean> memberList;
+    private ArrayList<MemberVo> memberList;
 
-    public void setMemberList(ArrayList<MemberBean> memberList) {
+    public void setMemberList(ArrayList<MemberVo> memberList) {
         this.memberList = memberList;
         notifyDataSetChanged();
     }
@@ -231,7 +233,7 @@ public class GroupChatAdapter extends BaseAdapter {
                 String userId = message.getFrom();
                 String userName = null;
                 if(null != memberList && !memberList.isEmpty()){
-                    for(MemberBean member : memberList){
+                    for(MemberVo member : memberList){
                         if(member.getUserid().equals(userId)){
                             userName = member.getUsername();
                         }
@@ -278,7 +280,7 @@ public class GroupChatAdapter extends BaseAdapter {
      */
     private void setViewHolder(ViewHolder vh, View convertView) {
         vh.contentLayout = (LinearLayout) convertView.findViewById(R.id.content_layout);
-        vh.head = (CircleImageView) convertView.findViewById(R.id.icon);
+        vh.head = (SimpleDraweeView) convertView.findViewById(R.id.icon);
         vh.date = (TextView) convertView.findViewById(R.id.datetime);
         vh.msg = (TextView) convertView.findViewById(R.id.message);
         vh.img = (ImageView) convertView.findViewById(R.id.image);
@@ -286,9 +288,10 @@ public class GroupChatAdapter extends BaseAdapter {
         vh.time = (TextView) convertView.findViewById(R.id.tv_time);
         vh.selectCb = (CheckBox) convertView.findViewById(R.id.cb_select);
         vh.cardLayout = (LinearLayout) convertView.findViewById(R.id.card_layout);
-        vh.contentTip = (TextView) convertView.findViewById(R.id.msg_content_tips);
+//        vh.contentTip = (TextView) convertView.findViewById(R.id.msg_content_tips);
+        vh.orderType = (TextView) convertView.findViewById(R.id.msg_order_type);
         vh.orderContent = (TextView) convertView.findViewById(R.id.msg_order_content);
-        vh.hotelImage = (ImageView) convertView.findViewById(R.id.msg_hotel_image);
+//        vh.hotelImage = (ImageView) convertView.findViewById(R.id.msg_hotel_image);
     }
 
     /**
@@ -312,7 +315,9 @@ public class GroupChatAdapter extends BaseAdapter {
         boolean isShowDate = (message.getMsgTime() - lastSendDate) > 5 * 60 * 1000;
         vh.date.setVisibility(isShowDate ? View.VISIBLE : View.GONE);
         String userId = message.getFrom();
-        ImageLoader.getInstance().displayImage(ProtocolUtil.getAvatarUrl(userId), vh.head, options);
+        String userPhotoUrl = ConfigUtil.getInst().getImgDomain()+getUserPhoto(userId);
+        vh.head.setImageURI(Uri.parse(userPhotoUrl));
+
         EMMessage.Type mimeType = message.getType();
         if (mimeType.equals(EMMessage.Type.TXT)) {// 文本消息
             try {
@@ -396,19 +401,20 @@ public class GroupChatAdapter extends BaseAdapter {
                         String arrivaDate = bookOrder.getArrivaldate();
                         String departureDate = bookOrder.getLeavedate();
                         String imageUrl = bookOrder.getImgurl();
-                        SimpleDateFormat descFormat = new SimpleDateFormat("MM月dd日");
+                        SimpleDateFormat descFormat = new SimpleDateFormat("MM/dd");
                         SimpleDateFormat sourceFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                         Date arrivalDate = sourceFormat.parse(arrivaDate);
-                        Date leaveDate = sourceFormat.parse(departureDate);
+//                        Date leaveDate = sourceFormat.parse(departureDate);
                         String arriveStr = descFormat.format(arrivalDate);
-                        String leaveStr = descFormat.format(leaveDate);
-                        int dayNum = TimeUtil.daysBetween(arrivalDate, leaveDate);
-                        vh.contentTip.setText(bookOrder.getContent());
-                        vh.orderContent.setText(roomType + " | " + arriveStr+"到"+leaveStr + " | " + dayNum + "晚");
-                        if (!TextUtils.isEmpty(imageUrl)) {
-                            String logoUrl = ProtocolUtil.getHostImgUrl(imageUrl);
-                            ImageLoader.getInstance().displayImage(logoUrl, vh.hotelImage, cardOptions);
-                        }
+//                        String leaveStr = descFormat.format(leaveDate);
+//                        int dayNum = TimeUtil.daysBetween(arrivalDate, leaveDate);
+                        //  vh.contentTip.setText(bookOrder.getContent());
+                        vh.orderContent.setText(arriveStr + " " + roomType);
+
+//                        if (!TextUtils.isEmpty(imageUrl)) {
+//                            String logoUrl = ProtocolUtil.getHostImgUrl(imageUrl);
+//                            ImageLoader.getInstance().displayImage(logoUrl, vh.hotelImage, cardOptions);
+//                        }
                     }
                     vh.msg.setVisibility(View.GONE);
                     vh.img.setVisibility(View.GONE);
@@ -421,14 +427,14 @@ public class GroupChatAdapter extends BaseAdapter {
                         String orderNo = bookOrder.getOrderno();
                         Intent intent = new Intent();
                         if(orderNo.startsWith("H")){
-                            intent.setClass(context,HotelDealActivity.class);
+                            intent.setClass(context, HotelDealActivity.class);
                             intent.putExtra("orderNo",orderNo);
                         }else if(orderNo.startsWith("K")){
-                            intent.setClass(context,KTVDealActivity.class);
+                            intent.setClass(context, KTVDealActivity.class);
                             intent.putExtra("orderNo",orderNo);
                         }
                         else if(orderNo.startsWith("O")){
-                            intent.setClass(context,NormalDealActivity.class);
+                            intent.setClass(context, NormalDealActivity.class);
                             intent.putExtra("orderNo",orderNo);
                         }
                         context.startActivity(intent);
@@ -803,7 +809,7 @@ public class GroupChatAdapter extends BaseAdapter {
     }
 
     static class ViewHolder {
-        CircleImageView head;
+        SimpleDraweeView head;
         TextView        date;
         TextView        msg;
         ImageView       img;
@@ -812,8 +818,8 @@ public class GroupChatAdapter extends BaseAdapter {
         CheckBox        selectCb;
         LinearLayout    contentLayout;
         LinearLayout cardLayout;
-        TextView contentTip, orderContent;
-        ImageView hotelImage;
+        TextView  orderType, orderContent;//contentTip,
+//        ImageView hotelImage;
     }
 
     static class RecvViewHolder extends ViewHolder {
@@ -911,5 +917,23 @@ public class GroupChatAdapter extends BaseAdapter {
 
     public void setKeyWord(String keyWord) {
         this.keyWord = keyWord;
+    }
+
+    /**
+     * 获取用户头像链接
+     * @param userId
+     * @return
+     */
+    private String getUserPhoto(String userId){
+        String memberId = null;
+        if(null != memberList && !memberList.isEmpty()){
+            for(MemberVo memberVo : memberList) {
+                memberId = memberVo.getUserid();
+                if (!TextUtils.isEmpty(memberId) && memberId.equals(userId)) {
+                    return memberVo.getUserimage();
+                }
+            }
+        }
+        return null;
     }
 }

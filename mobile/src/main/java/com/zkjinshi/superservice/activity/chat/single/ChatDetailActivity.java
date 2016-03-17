@@ -8,6 +8,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ListAdapter;
@@ -26,10 +27,9 @@ import com.zkjinshi.superservice.sqlite.ShopEmployeeDBUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.vo.ClientVo;
 import com.zkjinshi.superservice.vo.EContactVo;
-import com.zkjinshi.superservice.vo.ShopEmployeeVo;
+import com.zkjinshi.superservice.vo.EmployeeVo;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * 单聊详情页
@@ -42,28 +42,35 @@ public class ChatDetailActivity extends Activity{
 
     private TextView titleTv;
     private ImageButton backIBtn;
+    private Button      chatBtn;
     private ChatDetailAdapter chatDetailAdapter;
     private ArrayList<EContactVo> contactList = new ArrayList<EContactVo>();
     private String userId;
     private String userName;
-    private ShopEmployeeVo shopEmployeeVo;
+    private EmployeeVo shopEmployeeVo;
     private EContactVo contactVo;
     private ClientVo clientVo;
     private String clientId;
     private GridView shopEmpGv;
     private boolean addSucc;
     private RelativeLayout clearHistoryLayout;
+    private String mShopID;
 
     private void initView(){
         titleTv = (TextView)findViewById(R.id.header_bar_tv_title);
         backIBtn = (ImageButton)findViewById(R.id.header_bar_btn_back);
+        chatBtn  = (Button)findViewById(R.id.btn_chat);
         shopEmpGv = (GridView)findViewById(R.id.chat_detail_gv_contacts);
         clearHistoryLayout = (RelativeLayout)findViewById(R.id.chat_detail_layout_clear_history);
     }
 
     private void initData(){
+
+        mShopID = CacheUtil.getInstance().getShopID();
+
         titleTv.setText("聊天详情");
         backIBtn.setVisibility(View.VISIBLE);
+
         if(null != getIntent() && null != getIntent().getStringExtra("userId")){
             userId = getIntent().getStringExtra("userId");
             shopEmployeeVo = ShopEmployeeDBUtil.getInstance().queryEmployeeById(userId);
@@ -107,11 +114,20 @@ public class ChatDetailActivity extends Activity{
             }
         });
 
+        //对话
+        chatBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
         shopEmpGv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (null != contactList && !contactList.isEmpty() && contactList.size() < 12 && contactList.size() == position || position == 11) { //点击加号
+                if (null != contactList && !contactList.isEmpty() && contactList.size() < 12
+                    && contactList.size() == position || position == 11) { //点击加号
                     if (contactList != null && !contactList.isEmpty()){
                         Intent intent = new Intent(ChatDetailActivity.this, CreateGroupActivity.class);
                         contactVo = contactList.get(0);
@@ -120,8 +136,7 @@ public class ChatDetailActivity extends Activity{
                         intent.putExtra("userId", userId);
                         intent.putExtra("userName", userName);
                         startActivity(intent);
-                        overridePendingTransition(R.anim.slide_in_bottom,
-                                R.anim.slide_out_top);
+                        overridePendingTransition(R.anim.slide_in_bottom, R.anim.slide_out_top);
                     }
                 }
             }
@@ -140,6 +155,7 @@ public class ChatDetailActivity extends Activity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_detail);
+
         initView();
         initData();
         initListeners();

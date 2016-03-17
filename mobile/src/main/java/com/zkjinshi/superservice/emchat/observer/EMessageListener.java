@@ -53,7 +53,7 @@ public class EMessageListener implements EMEventListener {
         //客服在线自动回复
         EMConversationHelper.getInstance().sendAutoMessage(event);
         //后台通知栏提示消息
-        NotificationHelper.getInstance().showNotification(ServiceApplication.getContext(),event);
+        NotificationHelper.getInstance().showNotification(ServiceApplication.getContext(), event);
         //消息订阅分发
         EMessageSubject.getInstance().notifyObservers(event);
     }

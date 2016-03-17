@@ -1,6 +1,7 @@
 package com.zkjinshi.superservice.activity.set;
 
 import android.app.Activity;
+import android.content.Context;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -17,7 +18,7 @@ import com.zkjinshi.superservice.net.NetRequestTask;
 import com.zkjinshi.superservice.net.NetResponse;
 import com.zkjinshi.superservice.sqlite.ShopEmployeeDBUtil;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
-import com.zkjinshi.superservice.vo.ShopEmployeeVo;
+import com.zkjinshi.superservice.vo.EmployeeVo;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,6 +32,7 @@ import java.util.List;
  * 版权所有
  */
 public class TeamContactsController {
+
     private static final String TAG = TeamContactsController.class.getSimpleName();
 
     private TeamContactsController(){}
@@ -45,8 +47,8 @@ public class TeamContactsController {
     }
 
     public void getTeamContacts(final Activity activity, String userID,
-                                  String token, final String shopID,
-                                  final GetTeamContactsListener listener){
+                                String token, final String shopID,
+                                final GetTeamContactsListener listener){
         NetRequest netRequest = new NetRequest(ProtocolUtil.getTeamListUrl());
         HashMap<String,String> bizMap = new HashMap<>();
         bizMap.put("salesid", userID);
@@ -84,12 +86,12 @@ public class TeamContactsController {
 
                     if (null != teamContactBeans) {
                         /** add to local db */
-                        List<ShopEmployeeVo> shopEmployeeVos = ShopEmployeeFactory.getInstance().buildShopEmployees(teamContactBeans);
-                        if(null != shopEmployeeVos && !shopEmployeeVos.isEmpty()){
-                            if (null != listener) {
-                                listener.getContactsDone(shopEmployeeVos);
-                            }
-                        }
+//                        List<EmployeeVo> shopEmployeeVos = ShopEmployeeFactory.getInstance().buildShopEmployees(teamContactBeans);
+//                        if(null != shopEmployeeVos && !shopEmployeeVos.isEmpty()){
+//                            if (null != listener) {
+//                                listener.getContactsDone(shopEmployeeVos);
+//                            }
+//                        }
                     }
                 } catch (JsonSyntaxException e) {
                     e.printStackTrace();
@@ -104,4 +106,6 @@ public class TeamContactsController {
         netRequestTask.isShowLoadingDialog = false;
         netRequestTask.execute();
     }
+
+   
 }

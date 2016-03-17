@@ -1,6 +1,5 @@
 package com.zkjinshi.superservice.emchat;
 
-import android.app.Activity;
 import android.os.AsyncTask;
 import android.support.v4.util.Pair;
 import android.text.TextUtils;
@@ -73,7 +72,6 @@ public class EMConversationHelper {
                 super.onPostExecute(aVoid);
             }
         }.execute();
-
     }
 
     /**
@@ -96,11 +94,71 @@ public class EMConversationHelper {
     }
 
     /**
+     * 发送绑定客户消息
+     * @param userId
+     * @param emCallBack
+     */
+    public void sendClientBindedNotification(String userId, EMCallBack emCallBack){
+        EMMessage cmdMsg = EMMessage.createSendMessage(EMMessage.Type.CMD);
+        cmdMsg.setChatType(EMMessage.ChatType.Chat);
+        cmdMsg.setAttribute("salesId", CacheUtil.getInstance().getUserId());
+        cmdMsg.setAttribute("salesName", CacheUtil.getInstance().getUserName());
+        String action="addGuest";
+        CmdMessageBody cmdBody = new CmdMessageBody(action);
+        cmdMsg.addBody(cmdBody);
+        cmdMsg.setReceipt(userId);
+        EMChatManager.getInstance().sendMessage(cmdMsg, emCallBack);
+    }
+
+    /**
+     * 发送绑定客户消息
+     * @param clientID
+     * @param toName
+     * @param fromName
+     * @param shopId
+     * @param shopName
+     * @param emCallBack
+     */
+    public void sendClientBindedTextMsg(String clientID, String toName,
+                                        String fromName, String shopId,
+                                        String shopName, boolean clientBind,
+                                        EMCallBack emCallBack){
+        String content = CacheUtil.getInstance().getUserName() + "已添加您为专属客人";
+        EMConversation conversation = EMChatManager.getInstance().getConversation(clientID);
+        EMMessage message = EMMessage.createTxtSendMessage(content, clientID);
+        message.setAttribute(Constants.MSG_TXT_EXT_TYPE, TxtExtType.DEFAULT.getVlaue());
+        message.setAttribute("toName", "");
+
+        if(!TextUtils.isEmpty(toName)){
+            message.setAttribute("toName", toName);
+        }
+
+        message.setAttribute("fromName", "");
+        if(!TextUtils.isEmpty(fromName)){
+            message.setAttribute("fromName", fromName);
+        }
+        if(!TextUtils.isEmpty(shopId)){
+            message.setAttribute("shopId", shopId);
+        }
+
+        if(!TextUtils.isEmpty(shopName)){
+            message.setAttribute("shopName", shopName);
+        }
+
+        message.setAttribute("bindClient", clientBind);
+        message.setChatType(EMMessage.ChatType.Chat);
+        message.status = EMMessage.Status.INPROGRESS;
+        //把消息加入到此会话对象中
+        conversation.addMessage(message);
+        EMChatManager.getInstance().sendMessage(message,emCallBack);
+    }
+
+    /**
      * 发送文本消息
      * @param content
      * @param username
      */
-    public void sendTxtMessage(String content,String username,EMCallBack emCallBack){
+    public void sendTxtMessage(String content, String username, EMCallBack emCallBack){
         //获取到与聊天人的会话对象。参数username为聊天人的userid或者groupid，后文中的username皆是如此
         EMConversation conversation = EMChatManager.getInstance().getConversation(username);
         //创建一条文本消息
@@ -132,30 +190,34 @@ public class EMConversationHelper {
                         String fromId = receiveMsg.getFrom();
                         if(!TextUtils.isEmpty(fromId) && !fromId.equals(CacheUtil.getInstance().getUserId())){
                             int extType = receiveMsg.getIntAttribute(Constants.MSG_TXT_EXT_TYPE);
-                            if(TxtExtType.CARD.getVlaue() == extType){
-                                String toName = receiveMsg.getStringAttribute("fromName");
-                                String fromName = receiveMsg.getStringAttribute("toName");
-                                String shopId = receiveMsg.getStringAttribute("shopId");
-                                String shopName = receiveMsg.getStringAttribute("shopName");
-                                EMMessage sendMsg = EMMessage.createTxtSendMessage("您好,客服["+ CacheUtil.getInstance().getUserName()+"]为您服务", fromId);
-                                sendMsg.status = EMMessage.Status.SUCCESS;
-                                sendMsg.setAttribute(Constants.MSG_TXT_EXT_TYPE, TxtExtType.DEFAULT.getVlaue());
-                                sendMsg.setChatType(EMMessage.ChatType.Chat);
-                                sendMsg.setAttribute("toName", "");
-                                if(!TextUtils.isEmpty(toName)){
-                                    sendMsg.setAttribute("toName",toName);
+                            if(TxtExtType.DEFAULT.getVlaue() == extType){
+                                TextMessageBody txtBody = (TextMessageBody) receiveMsg.getBody();
+                                String content = txtBody.getMessage();
+                                if(content.equals("您好，帮我预定这间房")){//增加特殊内容的过滤器
+                                    String toName = receiveMsg.getStringAttribute("fromName");
+                                    String fromName = receiveMsg.getStringAttribute("toName");
+                                    String shopId = receiveMsg.getStringAttribute("shopId");
+                                    String shopName = receiveMsg.getStringAttribute("shopName");
+                                    EMMessage sendMsg = EMMessage.createTxtSendMessage("您好,客服["+ CacheUtil.getInstance().getUserName()+"]为您服务", fromId);
+                                    sendMsg.status = EMMessage.Status.SUCCESS;
+                                    sendMsg.setAttribute(Constants.MSG_TXT_EXT_TYPE, TxtExtType.DEFAULT.getVlaue());
+                                    sendMsg.setChatType(EMMessage.ChatType.Chat);
+                                    sendMsg.setAttribute("toName", "");
+                                    if(!TextUtils.isEmpty(toName)){
+                                        sendMsg.setAttribute("toName",toName);
+                                    }
+                                    sendMsg.setAttribute("fromName","");
+                                    if(!TextUtils.isEmpty(fromName)){
+                                        sendMsg.setAttribute("fromName",fromName);
+                                    }
+                                    if(!TextUtils.isEmpty(shopId)){
+                                        sendMsg.setAttribute("shopId",shopId);
+                                    }
+                                    if(!TextUtils.isEmpty(shopName)){
+                                        sendMsg.setAttribute("shopName",shopName);
+                                    }
+                                    EMChatManager.getInstance().sendMessage(sendMsg);
                                 }
-                                sendMsg.setAttribute("fromName","");
-                                if(!TextUtils.isEmpty(fromName)){
-                                    sendMsg.setAttribute("fromName",fromName);
-                                }
-                                if(!TextUtils.isEmpty(shopId)){
-                                    sendMsg.setAttribute("shopId",shopId);
-                                }
-                                if(!TextUtils.isEmpty(shopName)){
-                                    sendMsg.setAttribute("shopName",shopName);
-                                }
-                                EMChatManager.getInstance().sendMessage(sendMsg);
                             }
                         }
                     }
@@ -163,6 +225,36 @@ public class EMConversationHelper {
                     e.printStackTrace();
                 }
                 break;
+        }
+    }
+
+    /**
+     * 发送欢迎信息
+     */
+    public void sendWelcomeMessage(String userId,String userName){
+        try {
+            if(!TextUtils.isEmpty(userName) && !TextUtils.isEmpty(userId)){
+                String shopId = CacheUtil.getInstance().getShopID();
+                String shopName = CacheUtil.getInstance().getShopFullName();
+                EMMessage sendMsg = EMMessage.createTxtSendMessage("欢迎光临，您有任何需求可通过聊天窗口与我们沟通", userId);
+                sendMsg.status = EMMessage.Status.SUCCESS;
+                sendMsg.setAttribute(Constants.MSG_TXT_EXT_TYPE, TxtExtType.DEFAULT.getVlaue());
+                sendMsg.setChatType(EMMessage.ChatType.Chat);
+                sendMsg.setAttribute("toName", "");
+                if(!TextUtils.isEmpty(userName)){
+                    sendMsg.setAttribute("toName",userName);
+                }
+                sendMsg.setAttribute("fromName",CacheUtil.getInstance().getUserName());
+                if(!TextUtils.isEmpty(shopId)){
+                    sendMsg.setAttribute("shopId",shopId);
+                }
+                if(!TextUtils.isEmpty(shopName)){
+                    sendMsg.setAttribute("shopName",shopName);
+                }
+                EMChatManager.getInstance().sendMessage(sendMsg);
+            }
+        } catch (EaseMobException e) {
+            e.printStackTrace();
         }
     }
 

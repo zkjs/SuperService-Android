@@ -12,7 +12,9 @@ public class Constants {
     public static final String ZKJINSHI_BASE_TAG = "ZKJinShi_TAG";
     public static final String PHP_HOST = "php-host";
     public static final String JAVA_HOST = "java-host";
-    //图片host
-    public final static String IMG_HOST = "http://svip02.oss-cn-shenzhen.aliyuncs.com/";
+    public static final String PAV_HOST = "pav-host";//孔雀座(认证服务)
+    public static final String PYX_HOST = "pyx-host";//罗盘座(位置服务)
+    public static final String FOR_HOST = "for-host";//天炉座(资源服务)
+    public final static String IMG_HOST = "img-host";//图片
 
 }

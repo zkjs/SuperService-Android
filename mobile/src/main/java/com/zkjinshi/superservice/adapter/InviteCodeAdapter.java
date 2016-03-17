@@ -26,18 +26,23 @@ import java.util.List;
  */
 public class InviteCodeAdapter extends RecyclerView.Adapter<InviteCodeAdapter.ViewHolder> {
 
-    private Activity         mActivity;
+    private Activity mActivity;
     private List<InviteCode> mDatas;
     private RecyclerItemClickListener itemClickListener;
 
     public InviteCodeAdapter(Activity activity, List<InviteCode> inviteCodes){
         super();
         this.mActivity = activity;
+        this.setData(inviteCodes);
+    }
+
+    public void setData( List<InviteCode> inviteCodes){
         if(null == inviteCodes){
             this.mDatas = new ArrayList<>();
         }else {
             this.mDatas = inviteCodes;
         }
+        notifyDataSetChanged();
     }
 
     @Override
@@ -54,19 +59,11 @@ public class InviteCodeAdapter extends RecyclerView.Adapter<InviteCodeAdapter.Vi
 
         //邀请码有效
         if(isValid == IsValidity.ISVALID.getValue()){
-            String salesCode = inviteCode.getSalecode();
+            String salesCode = inviteCode.getSaleCode();
             if (!TextUtils.isEmpty(salesCode)) {
                 holder.tvInviteCode.setText(salesCode);
             }
         }
-
-        //生成短信链接并且发送
-        holder.ibtnTransfer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
     }
 
     @Override

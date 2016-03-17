@@ -60,8 +60,8 @@ public class OrderPayActivity  extends Activity implements AdapterView.OnItemCli
     private ListView payListView;
     private ArrayList<PayBean> payBeanList;
     private PayAdapter payAdapter;
-    private PayBean selectPay;
-    private int selelectId = 0;
+    private PayBean    selectPay;
+    private int        selelectId = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,7 +123,6 @@ public class OrderPayActivity  extends Activity implements AdapterView.OnItemCli
         }else{
             priceEt.setText("0.0");
         }
-
 
         userInfoTv.setText("");
         loadPayList();
@@ -227,15 +226,21 @@ public class OrderPayActivity  extends Activity implements AdapterView.OnItemCli
     private void loadPayList(){
         payBeanList = new ArrayList<PayBean>();
         String payTypeArr[] = {"在线支付","到店支付","挂账"};
-        for(int i=0;i<payTypeArr.length;i++){
+        for(int i=0; i<payTypeArr.length; i++){
+            if(null != payTypeArr[i] && payTypeArr[i].equals("在线支付")){
+                continue;
+            }
+
             PayBean payBean = new PayBean();
             payBean.setPay_id(i+1);
             payBean.setPay_name(payTypeArr[i]);
             payBeanList.add(payBean);
         }
+
         payAdapter = new PayAdapter(OrderPayActivity.this,payBeanList,selelectId);
         payListView.setAdapter(payAdapter);
         payListView.setOnItemClickListener(OrderPayActivity.this);
+
 //        String url = ProtocolUtil.getSempPayListUrl();
 //        Log.i(TAG, url);
 //        NetRequest netRequest = new NetRequest(url);

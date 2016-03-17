@@ -1,51 +1,31 @@
 package com.zkjinshi.superservice.fragment;
 
 import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.zkjinshi.base.config.ConfigUtil;
-import com.zkjinshi.base.log.LogLevel;
-import com.zkjinshi.base.log.LogUtil;
-import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.common.InviteCodeController;
 import com.zkjinshi.superservice.activity.common.InviteCodeOperater;
 import com.zkjinshi.superservice.activity.common.InviteCodesActivity;
 import com.zkjinshi.superservice.adapter.InviteCodeAdapter;
-import com.zkjinshi.superservice.bean.Head;
 import com.zkjinshi.superservice.bean.InviteCode;
-import com.zkjinshi.superservice.bean.InviteCodeData;
 import com.zkjinshi.superservice.listener.RecyclerItemClickListener;
 import com.zkjinshi.superservice.net.ExtNetRequestListener;
-import com.zkjinshi.superservice.net.MethodType;
-import com.zkjinshi.superservice.net.NetRequest;
-import com.zkjinshi.superservice.net.NetRequestTask;
 import com.zkjinshi.superservice.net.NetResponse;
-import com.zkjinshi.superservice.utils.CacheUtil;
-import com.zkjinshi.superservice.utils.ProtocolUtil;
-import com.zkjinshi.superservice.vo.ComingVo;
-
-import org.json.JSONArray;
-import org.json.JSONException;
+import com.zkjinshi.superservice.response.InviteCodeResponse;
+import com.zkjinshi.superservice.vo.InviteCodeListVo;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -91,8 +71,8 @@ public class UnusedInviteCodeFragment extends Fragment {
         if(null != mInviteCodeAdapter){
             mInviteCodeAdapter.clear();
         }
-        mPage = 1;
-        getInviteCode(mPage);
+        mPage = 0;
+        getInviteCode(mPage,true);
     }
 
     private void initView(View view){
@@ -103,7 +83,7 @@ public class UnusedInviteCodeFragment extends Fragment {
 
     private void initData(){
         mActivity          = this.getActivity();
-        mInviteCodes       = new ArrayList<>();
+        mInviteCodes       = new ArrayList<InviteCode>();
         mInviteCodeAdapter = new InviteCodeAdapter(mActivity, mInviteCodes);
         mRvUnusedCodes.setAdapter(mInviteCodeAdapter);
         mRvUnusedCodes.setHasFixedSize(true);
@@ -118,12 +98,13 @@ public class UnusedInviteCodeFragment extends Fragment {
         mSrlContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                getInviteCode(mPage);
+                mPage = 0;
+                getInviteCode(mPage,true);
             }
         });
 
         //上拉加载数据
-        mRvUnusedCodes.setOnScrollListener(new RecyclerView.OnScrollListener() {
+        mRvUnusedCodes.addOnScrollListener(new RecyclerView.OnScrollListener() {
             boolean isSlidingToLast = false;
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -134,7 +115,7 @@ public class UnusedInviteCodeFragment extends Fragment {
                     int totalItemCount  = linearLayoutManager.getItemCount();
                     if (lastVisibleItem == (totalItemCount - 1) && isSlidingToLast) {
                         //加载更多功能的代码
-                        getInviteCode(mPage);
+                        getInviteCode(mPage,false);
                     }
                 }
             }
@@ -153,12 +134,13 @@ public class UnusedInviteCodeFragment extends Fragment {
             }
         });
 
+        //弹出短信邀请码
         mInviteCodeAdapter.setOnItemClickListener(
             new RecyclerItemClickListener() {
                 @Override
                 public void onItemClick(View view, int position) {
                     InviteCode inviteCode = mInviteCodes.get(position);
-                    String inviteCodeStr  = inviteCode.getSalecode();
+                    String inviteCodeStr  = inviteCode.getSaleCode();
                     InviteCodeOperater.getInstance().showOperationDialog(mActivity, inviteCodeStr);
                 }
             }
@@ -169,8 +151,8 @@ public class UnusedInviteCodeFragment extends Fragment {
      * 获取我的邀请码列表
      * @param page
      */
-    private void getInviteCode(int page) {
-        InviteCodeController.getInstance().getInviteCodes(
+    private void getInviteCode(int page,final boolean isRefresh) {
+        InviteCodeController.getInstance().getNewInviteCodes(
             page,
             mActivity,
             new ExtNetRequestListener(mActivity) {
@@ -189,21 +171,25 @@ public class UnusedInviteCodeFragment extends Fragment {
                 @Override
                 public void onNetworkResponseSucceed(NetResponse result) {
                     super.onNetworkResponseSucceed(result);
-                    LogUtil.getInstance().info(LogLevel.INFO, result.rawResult);
-
                     Gson gson = new Gson();
-                    InviteCodeData inviteCodeData = gson.fromJson(result.rawResult, InviteCodeData.class);
-                    if(null != inviteCodeData){
-                        Head head = inviteCodeData.getHead();
-                        if(head.isSet()){
-                            int count = head.getCount();
-                            ((InviteCodesActivity)mActivity).udpateUnusedCodeCount(count);
-
-                            mPage++;
-                            List<InviteCode> inviteCodes = inviteCodeData.getCode_data();
-                            if(null!=inviteCodes && !inviteCodes.isEmpty()){
-                                mInviteCodes.addAll(inviteCodes);
-                                mInviteCodeAdapter.notifyDataSetChanged();
+                    InviteCodeResponse newInviteCodeResponse = gson.fromJson(result.rawResult, InviteCodeResponse.class);
+                    if(null != newInviteCodeResponse){
+                        int resultCode = newInviteCodeResponse.getRes();
+                        if(0 == resultCode){
+                            InviteCodeListVo inviteCodeListVo = newInviteCodeResponse.getData();
+                            if(null != inviteCodeListVo){
+                                int count = inviteCodeListVo.getTotal();
+                                ((InviteCodesActivity)mActivity).udpateUnusedCodeCount(count);
+                                mPage++;
+                                List<InviteCode> inviteCodes = inviteCodeListVo.getSalecodes();
+                                if(isRefresh){
+                                    mInviteCodes = inviteCodes;
+                                }else {
+                                    if(null!=inviteCodes && !inviteCodes.isEmpty()){
+                                        mInviteCodes.addAll(inviteCodes);
+                                    }
+                                }
+                                mInviteCodeAdapter.setData(mInviteCodes);
                             }
                         }
                     }

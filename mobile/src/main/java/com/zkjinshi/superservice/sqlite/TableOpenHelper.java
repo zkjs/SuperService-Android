@@ -79,25 +79,17 @@ public class TableOpenHelper {
             " create table if not exists "
                     + DBOpenHelper.SHOP_EMPLOYEE_TBL
                     + " ( "
-                    + " empid         text primary key, " //员工ID
-                    + " empcode       text, "//工号
-                    + " name          text, "//用户名
-                    + " roleid        int,  "//所属角色
-                    + " email         text, "//邮箱
-                    + " phone         text, "//手机
-                    + " phone2        text, "//其它号码
-                    + " fax           text, "//传真
-                    + " created       long, "//增加时间
-                    + " locationid    int,"//区域ID
-                    + " role_name     text,"//角色名称
-                    + " online_status int,"// 服务器在线状态
-                    + " work_status   int,"//是否上班中
-                    + " last_online_time  long, "//上一次在线时间
-                    + " dept_id       int,"  //部门
-                    + " desc          text," //备注描述
-                    + " shop_id       text,"  //商家ID
-                    + " dept_name     text,"  //部门名称
-                    + " bg_color_res  int"    //背景颜色资源值
+                    + " userid         text primary key, " //员工ID
+                    + " email           text, "//
+                    + " phone          text, "
+                    + " realname        text,  "
+                    + " rolecode         text, "
+                    + " roledesc         text, "
+                    + " roleid        text, "
+                    + " rolename      text, "
+                    + " sex       int, "
+                    + " userimage    text,"
+                    + " username     text"
                     + " ) ";
 
     /** 商家部门表 */

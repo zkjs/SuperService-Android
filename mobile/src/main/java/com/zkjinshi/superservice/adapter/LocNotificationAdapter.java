@@ -3,16 +3,22 @@ package com.zkjinshi.superservice.adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.base.util.DisplayUtil;
 import com.zkjinshi.base.util.IntentUtil;
 import com.zkjinshi.base.util.TimeUtil;
@@ -29,7 +35,7 @@ import com.zkjinshi.superservice.vo.OrderVo;
 import java.util.ArrayList;
 
 /**
- * 开发者：vincent
+ * 开发者：WinkyQin
  * 日期：2015/9/25
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
@@ -38,8 +44,7 @@ public class LocNotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
     private Context context;
 
-    private  ArrayList<NoticeVo> noticeList;
-    private DisplayImageOptions  options;
+    private ArrayList<NoticeVo> noticeList;
     private RecyclerItemClickListener itemClickListener;
 
     public void setNoticeList(ArrayList<NoticeVo> noticeList) {
@@ -55,13 +60,7 @@ public class LocNotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
         this.context = activity;
         this.setNoticeList(comingList);
-        this.options = new DisplayImageOptions.Builder()
-                .showImageOnLoading(R.mipmap.ic_launcher)// 设置图片下载期间显示的图片
-                .showImageForEmptyUri(R.mipmap.ic_launcher)// 设置图片Uri为空或是错误的时候显示的图片
-                .showImageOnFail(R.mipmap.ic_launcher)// 设置图片加载或解码过程中发生错误显示的图片
-                .cacheInMemory(true) // 设置下载的图片是否缓存在内存中
-                .cacheOnDisk(true) // 设置下载的图片是否缓存在SD卡中
-                .build();
+
     }
 
     @Override
@@ -74,15 +73,16 @@ public class LocNotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
 
+       // holder.setIsRecyclable(false);
+
         NoticeVo noticeVo = noticeList.get(position);
-        final String userId   = noticeVo.getUserId();
-        final String userName = noticeVo.getUserName();
+        final String userId   = noticeVo.getUserid();
+        final String userName = noticeVo.getUsername();
 
         //用户头像 和 姓名
         String imageUrl =  ProtocolUtil.getAvatarUrl(userId);
         if(!TextUtils.isEmpty(imageUrl)){
-            ImageLoader.getInstance().displayImage(imageUrl, ((NoticeViewHolder) holder).civClientAvatar, options);
-
+            ((NoticeViewHolder) holder).civClientAvatar.setImageURI(Uri.parse(imageUrl));
             if(!TextUtils.isEmpty(userName)){
                 ((NoticeViewHolder) holder).tvClientName.setText(userName);
             } else {
@@ -90,9 +90,9 @@ public class LocNotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             }
         }
 
-        String locid = noticeVo.getLocId();
+        String locid = noticeVo.getLocid();
         if(!TextUtils.isEmpty(locid)){
-            String locName = noticeVo.getLocname();
+            String locName = noticeVo.getLocdesc();
             if(TextUtils.isEmpty(locName)){
                 locName = context.getString(R.string.location) + locid;
             }
@@ -100,24 +100,27 @@ public class LocNotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         }
 
         //获取订单信息并显示基本信息
-        ArrayList<OrderVo> orderList = noticeVo.getOrderForNotice();
+        ArrayList<OrderVo> orderList = noticeVo.getOrders();
         if(null != orderList && !orderList.isEmpty()){
-            OrderVo orderVo = orderList.get(0);
+            final OrderVo orderVo = orderList.get(0);
             if(null != orderVo){
-                String roomType = orderVo.getOrderRoom();
-                String stayDays = orderVo.getCheckIn();
+                String roomType = orderVo.getRoom();
+                String inDate = orderVo.getIndate();
+                long checkInDate = TimeUtil.timeStrToTimeStamp(inDate);
                 if(!TextUtils.isEmpty(roomType)){
-                    String orderStr = roomType+" | "+stayDays;
+                    String orderStr = roomType+" | "+TimeUtil.getMonthTime(checkInDate)+"入住";
                     ((NoticeViewHolder) holder).tvOrderInfo.setText(orderStr);
                 }else{
                     ((NoticeViewHolder) holder).tvOrderInfo.setVisibility(View.GONE);
+                    ((NoticeViewHolder) holder).ivOrderInfo.setVisibility(View.GONE);
                 }
             }
         } else {
             ((NoticeViewHolder) holder).tvOrderInfo.setVisibility(View.GONE);
+            ((NoticeViewHolder) holder).ivOrderInfo.setVisibility(View.GONE);
         }
 
-        String timeCreated = noticeVo.getCreated();
+        String timeCreated = noticeVo.getArrivetime();
         if(!TextUtils.isEmpty(timeCreated)){
             ((NoticeViewHolder) holder).tvTimeInfo.setText(TimeUtil.getChatTime(timeCreated));
         }
@@ -179,10 +182,11 @@ public class LocNotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     public class NoticeViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         View            upCutLineView;
-        CircleImageView civClientAvatar;
+        SimpleDraweeView civClientAvatar;
         TextView        tvClientName;
         TextView        tvLocationInfo;
         TextView        tvOrderInfo;
+        ImageView       ivOrderInfo;
         TextView        tvTimeInfo;
         LinearLayout    llChat;
         LinearLayout    llPhoneCall;
@@ -191,10 +195,11 @@ public class LocNotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         public NoticeViewHolder(View view) {
             super(view);
             upCutLineView   = view.findViewById(R.id.time_axis_cut_line_up);
-            civClientAvatar = (CircleImageView) view.findViewById(R.id.civ_client_avatar);
+            civClientAvatar = (SimpleDraweeView) view.findViewById(R.id.civ_client_avatar);
             tvClientName    = (TextView)  view.findViewById(R.id.tv_client_name);
             tvLocationInfo  = (TextView)  view.findViewById(R.id.tv_location_info);
             tvOrderInfo     = (TextView)  view.findViewById(R.id.tv_order_info);
+            ivOrderInfo     = (ImageView) view.findViewById(R.id.iv_order_info);
             tvTimeInfo      = (TextView)  view.findViewById(R.id.tv_time_info);
             llPhoneCall     = (LinearLayout)view.findViewById(R.id.ll_phone_call);
             llChat          = (LinearLayout)view.findViewById(R.id.ll_chat);

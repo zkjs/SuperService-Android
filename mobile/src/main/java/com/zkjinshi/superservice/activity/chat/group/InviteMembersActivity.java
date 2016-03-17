@@ -22,7 +22,8 @@ import com.zkjinshi.superservice.listener.RecyclerItemClickListener;
 import com.zkjinshi.superservice.sqlite.ShopEmployeeDBUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.vo.EContactVo;
-import com.zkjinshi.superservice.vo.ShopEmployeeVo;
+import com.zkjinshi.superservice.vo.EmployeeVo;
+
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -47,16 +48,17 @@ public class InviteMembersActivity extends Activity {
 
     private LinearLayoutManager mLayoutManager;
     private InviteTeamAdapter mContactsAdapter;
-    private List<ShopEmployeeVo> shopEmployeeList;
+    private List<EmployeeVo> shopEmployeeList;
     private RelativeLayout createGroupLayout;
     private EContactVo contactVo;
     private Map<Integer, Boolean> selectMap = new HashMap<Integer, Boolean>();
     private Map<Integer, Boolean> enabledMap = new HashMap<Integer, Boolean>();
     private String groupId;
-    private ShopEmployeeVo shopEmployeeVo;
+    private EmployeeVo shopEmployeeVo;
     private EMGroup group;
     private List<String> memberList;
     private String empid;
+    private String mShopID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,13 +77,16 @@ public class InviteMembersActivity extends Activity {
     }
 
     private void initData() {
+
+        mShopID = CacheUtil.getInstance().getShopID();
+
         selectList = new ArrayList<String>();
         mTvTitle.setText("邀请好友");
         mRcvTeamContacts.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(this);
         mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRcvTeamContacts.setLayoutManager(mLayoutManager);
-        shopEmployeeList = ShopEmployeeDBUtil.getInstance().queryAllByDeptIDAsc();
+        shopEmployeeList = ShopEmployeeDBUtil.getInstance().queryAllExceptUser(CacheUtil.getInstance().getUserId());
         mContactsAdapter = new InviteTeamAdapter(InviteMembersActivity.this, shopEmployeeList);
         mRcvTeamContacts.setAdapter(mContactsAdapter);
         mContactsAdapter.setSelectMap(selectMap);
@@ -111,8 +116,8 @@ public class InviteMembersActivity extends Activity {
                 if (enabledMap != null && enabledMap.containsKey(position)
                         && enabledMap.get(position))
                     return;
-                ShopEmployeeVo shopEmployeeVo = shopEmployeeList.get(position);
-                String empID = shopEmployeeVo.getEmpid();
+                EmployeeVo shopEmployeeVo = shopEmployeeList.get(position);
+                String empID = shopEmployeeVo.getUserid();
                 contactVo = EContactFactory.getInstance().buildEContactVo(shopEmployeeVo);
                 if (selectList.contains(empID)) {
                     selectList.remove(empID);
@@ -200,7 +205,7 @@ public class InviteMembersActivity extends Activity {
      * @param groupId
      * @param recyclerView
      */
-    private void requestGroupTask(final String groupId, final List<ShopEmployeeVo> shopEmployeeList,final RecyclerView recyclerView){
+    private void requestGroupTask(final String groupId, final List<EmployeeVo> shopEmployeeList,final RecyclerView recyclerView){
 
         new AsyncTask<Void,Void,Void>(){
 
@@ -223,7 +228,7 @@ public class InviteMembersActivity extends Activity {
                         if(null != shopEmployeeList && !shopEmployeeList.isEmpty()){
                             for(int i = 0 ; i< shopEmployeeList.size(); i++){
                                 shopEmployeeVo = shopEmployeeList.get(i);
-                                empid = shopEmployeeVo.getEmpid();
+                                empid = shopEmployeeVo.getUserid();
                                 if(!TextUtils.isEmpty(empid)){
                                     if(memberList.contains(empid)){
                                         enabledMap.put(i,true);

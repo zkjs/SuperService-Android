@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/theme_primary"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="32dp"
+        android:layout_gravity="center"
+        android:gravity="center_vertical"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true">
+
+        <com.zkjinshi.superservice.view.CircleImageView
+            android:id="@+id/civ_avata"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_centerVertical="true"
+            android:background="@mipmap/ic_launcher" />
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_toRightOf="@+id/civ_avata"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:gravity="center"
+            android:padding="5dp"
+            android:textSize="16sp"
+            android:text="@string/app_name"
+            android:textColor="@color/white" />
+
+    </RelativeLayout>
+
+</RelativeLayout>
+

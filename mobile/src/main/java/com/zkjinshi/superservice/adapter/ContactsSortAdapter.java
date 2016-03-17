@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -18,6 +19,7 @@ import android.widget.RelativeLayout;
 import android.widget.SectionIndexer;
 import android.widget.TextView;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
@@ -46,17 +48,11 @@ import java.util.List;
  */
 public class ContactsSortAdapter extends ServiceBaseAdapter<ClientContactVo> implements SectionIndexer {
 
-    private DisplayImageOptions   options;
+
 
     public ContactsSortAdapter(Activity activity, List<ClientContactVo> datas) {
         super(activity, datas);
-        this.options = new DisplayImageOptions.Builder()
-                .showImageOnLoading(null)// 设置图片下载期间显示的图片
-                .showImageForEmptyUri(null)// 设置图片Uri为空或是错误的时候显示的图片
-                .showImageOnFail(null)// 设置图片加载或解码过程中发生错误显示的图片
-                .cacheInMemory(true) // 设置下载的图片是否缓存在内存中
-                .cacheOnDisk(true) // 设置下载的图片是否缓存在SD卡中
-                .build();
+
     }
 
     @Override
@@ -66,7 +62,7 @@ public class ContactsSortAdapter extends ServiceBaseAdapter<ClientContactVo> imp
             holder      = new ViewHolder();
             convertView = View.inflate(mActivity, R.layout.item_my_cilent, null);
             holder.tvLetter         = (TextView) convertView.findViewById(R.id.catalog);
-            holder.civContactAvatar = (CircleImageView) convertView.findViewById(R.id.civ_contact_avatar);
+            holder.civContactAvatar = (SimpleDraweeView) convertView.findViewById(R.id.civ_contact_avatar);
             holder.tvContactAvatar  = (TextView) convertView.findViewById(R.id.tv_contact_avatar);
             holder.tvContactName    = (TextView) convertView.findViewById(R.id.tv_contact_name);
             holder.ivStar           = (ImageView) convertView.findViewById(R.id.iv_star);
@@ -97,41 +93,12 @@ public class ContactsSortAdapter extends ServiceBaseAdapter<ClientContactVo> imp
         }
 
         String clientID = contact.getUserid();
-//        int bgDrawableRes =  ClientDBUtil.getInstance().queryBgDrawableResByClientID(clientID);
-//        if(bgDrawableRes != 0){
-//            contact.setBgDrawableRes(bgDrawableRes);
-//        } else {
-//            int bgRes = RandomDrawbleUtil.getRandomDrawable();
-//            ClientDBUtil.getInstance().updateClientBgDrawableResByClientID(clientID, bgRes);
-//            contact.setBgDrawableRes(bgRes);
-//        }
-        final TextView tvContactAvatar = holder.tvContactAvatar;
-        final CircleImageView civContactAvatar = holder.civContactAvatar;
+
         //根据url显示图片
-        String avatarUrl = ProtocolUtil.getAvatarUrl(clientID);
-        ImageLoader.getInstance().displayImage(avatarUrl, holder.civContactAvatar, options, new ImageLoadingListener() {
-            @Override
-            public void onLoadingStarted(String imageUri, View view) {
-                tvContactAvatar.setBackgroundResource(RandomDrawbleUtil.getRandomDrawable());
-                civContactAvatar.setBackgroundColor(Color.TRANSPARENT);
-            }
-
-            @Override
-            public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-                civContactAvatar.setBackgroundColor(Color.TRANSPARENT);
-                tvContactAvatar.setBackgroundResource(RandomDrawbleUtil.getRandomDrawable());
-            }
-
-            @Override
-            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-            }
-
-            @Override
-            public void onLoadingCancelled(String imageUri, View view) {
-                civContactAvatar.setBackgroundColor(Color.TRANSPARENT);
-                tvContactAvatar.setBackgroundResource(RandomDrawbleUtil.getRandomDrawable());
-            }
-        });
+        String avatarUrl = ProtocolUtil.getHostImgUrl(contact.getUserimage());
+        holder.civContactAvatar.setImageURI( Uri.parse(avatarUrl));
+        holder.tvContactAvatar.setBackgroundResource(RandomDrawbleUtil.getRandomDrawable());
+        holder.tvContactAvatar.setVisibility(View.VISIBLE);
 
         //显示客户名称
         String clientName = contact.getUsername();
@@ -168,7 +135,7 @@ public class ContactsSortAdapter extends ServiceBaseAdapter<ClientContactVo> imp
                 String userID  = contact.getUserid();
                 if(!TextUtils.isEmpty(userID)) {
                     Intent clientDetail = new Intent(mActivity, ClientDetailActivity.class);
-                    clientDetail.putExtra("user_id", userID);
+                    clientDetail.putExtra("contact", contact);
                     mActivity.startActivity(clientDetail);
                 } else {
                     DialogUtil.getInstance().showCustomToast(mActivity, "电话号码为空！", Gravity.CENTER);
@@ -190,7 +157,7 @@ public class ContactsSortAdapter extends ServiceBaseAdapter<ClientContactVo> imp
 
     public static class ViewHolder{
         TextView         tvLetter;
-        CircleImageView  civContactAvatar;
+        SimpleDraweeView civContactAvatar;
         TextView         tvContactAvatar;
         TextView         tvContactName;
         ImageView        ivStar;

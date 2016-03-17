@@ -16,9 +16,11 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 import com.tencent.mm.sdk.modelmsg.SendMessageToWX;
 import com.tencent.mm.sdk.modelmsg.WXMediaMessage;
 import com.tencent.mm.sdk.modelmsg.WXWebpageObject;
@@ -34,9 +36,11 @@ import com.zkjinshi.superservice.net.MethodType;
 import com.zkjinshi.superservice.net.NetRequest;
 import com.zkjinshi.superservice.net.NetRequestTask;
 import com.zkjinshi.superservice.net.NetResponse;
+import com.zkjinshi.superservice.response.InviteCodeShareResponse;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
+import com.zkjinshi.superservice.vo.InviteCodeShareVo;
 
 import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
@@ -50,7 +54,7 @@ import java.util.HashMap;
 public class InviteCodeOperater {
 
     private static InviteCodeOperater instance;
-    private IWXAPI  mWxApi;
+    private IWXAPI mWxApi;
     private InviteCodeOperater(){}
 
     public static synchronized InviteCodeOperater getInstance(){
@@ -142,15 +146,9 @@ public class InviteCodeOperater {
      */
     private void makeInviteCodeUrl(final Context context, final String inviteCode) {
 
-        NetRequest netRequest = new NetRequest(ProtocolUtil.getMakeInviteCodeUrl());
-        HashMap<String,String> bizMap = new HashMap<>();
-        bizMap.put("code", inviteCode);
-        bizMap.put("salesid", CacheUtil.getInstance().getUserId());
-        bizMap.put("host", ConfigUtil.getInst().getPhpDomain());
-
-        netRequest.setBizParamMap(bizMap);
+        NetRequest netRequest = new NetRequest(ProtocolUtil.getSalesCodeShareUrl());
         NetRequestTask netRequestTask = new NetRequestTask(context, netRequest, NetResponse.class);
-        netRequestTask.methodType = MethodType.PUSH;
+        netRequestTask.methodType = MethodType.GET;
         netRequestTask.setNetRequestListener(new ExtNetRequestListener(context) {
             @Override
             public void onNetworkRequestError(int errorCode, String errorMessage) {
@@ -165,46 +163,49 @@ public class InviteCodeOperater {
             @Override
             public void onNetworkResponseSucceed(NetResponse result) {
                 super.onNetworkResponseSucceed(result);
+                try {
+                    InviteCodeShareResponse inviteCodeShareResponse = new Gson().fromJson(result.rawResult,InviteCodeShareResponse.class);
+                    if(null != inviteCodeShareResponse){
+                        int resultCode = inviteCodeShareResponse.getRes();
+                        if(0 == resultCode){
+                            InviteCodeShareVo inviteCodeShareVo = inviteCodeShareResponse.getData();
+                            if(null != inviteCodeShareVo){
+                                String shareUrl = inviteCodeShareVo.getJoinpage();
+                                if(!TextUtils.isEmpty(shareUrl)){
+                                    WXWebpageObject webpage = new WXWebpageObject();
+                                    webpage.webpageUrl = shareUrl;
+                                    WXMediaMessage msg = new WXMediaMessage(webpage);
+                                    msg.title = CacheUtil.getInstance().getUserName() + "邀请您激活超级身份";
+                                    msg.description = "激活超级身份，把您在某商家的会员保障扩展至全国，超过百家顶级商户和1000+名人工客服将竭诚为您服务。";
 
-                LogUtil.getInstance().info(LogLevel.INFO, "result:"+result.rawResult);
-                JsonParser paser = new JsonParser();
-                JsonElement element = paser.parse(result.rawResult);
-                JsonObject object  = element.getAsJsonObject();
-                Boolean isSet = object.get("set").getAsBoolean();
+                                    int WX_THUMB_SIZE = 120;
+                                    Bitmap thumb = BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher);
+                                    if(thumb == null){
+                                        Toast.makeText(context, "图片不能为空", Toast.LENGTH_SHORT).show();
+                                    }else{
+                                        Bitmap thumbBmp = Bitmap.createScaledBitmap(thumb, WX_THUMB_SIZE, WX_THUMB_SIZE, true);
+                                        thumb.recycle();
+                                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                                        thumbBmp.compress(Bitmap.CompressFormat.PNG, 100, baos);
+                                        msg.thumbData = baos.toByteArray();
+                                    }
 
-                if(isSet){
-                    //获得生成链接地址
-                    String url = object.get("url").getAsString();
-                    // 初始化一个WXWebpageObject对象
-                    if(TextUtils.isEmpty(url)){
-                        return ;
+                                    SendMessageToWX.Req req = new SendMessageToWX.Req();
+                                    req.transaction = buildTransaction("webpage");
+                                    req.message = msg;
+                                    req.scene   = SendMessageToWX.Req.WXSceneSession;
+                                    mWxApi.sendReq(req);
+                                }
+                            }
+                        }else {
+                            String resoutMsg = inviteCodeShareResponse.getResDesc();
+                            if(!TextUtils.isEmpty(resoutMsg)){
+                                DialogUtil.getInstance().showCustomToast(context,resoutMsg,Gravity.CENTER);
+                            }
+                        }
                     }
-
-                    WXWebpageObject webpage = new WXWebpageObject();
-                    webpage.webpageUrl = url;
-                    WXMediaMessage msg = new WXMediaMessage(webpage);
-                    msg.title = CacheUtil.getInstance().getUserName() + "邀请您激活超级身份";
-                    msg.description = "激活超级身份，把您在某商家的会员保障扩展至全国，超过百家顶级商户和1000+名人工客服将竭诚为您服务。";
-
-                    int WX_THUMB_SIZE = 120;
-                    Bitmap thumb = BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher);
-                    if(thumb == null){
-                        Toast.makeText(context, "图片不能为空", Toast.LENGTH_SHORT).show();
-                    }else{
-                        Bitmap thumbBmp = Bitmap.createScaledBitmap(thumb, WX_THUMB_SIZE, WX_THUMB_SIZE, true);
-                        thumb.recycle();
-                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                        thumbBmp.compress(Bitmap.CompressFormat.PNG, 100, baos);
-                        msg.thumbData = baos.toByteArray();
-                    }
-
-                    SendMessageToWX.Req req = new SendMessageToWX.Req();
-                    req.transaction = buildTransaction("webpage");
-                    req.message = msg;
-                    req.scene   = SendMessageToWX.Req.WXSceneSession;
-                    mWxApi.sendReq(req);
-                }else {
-                    DialogUtil.getInstance().showCustomToast(context, "微信发送失败，请稍后再试", 0);
+                } catch (JsonSyntaxException e) {
+                    e.printStackTrace();
                 }
             }
 

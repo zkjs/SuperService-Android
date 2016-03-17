@@ -67,11 +67,8 @@ public class KTVDealActivity extends Activity {
     private ItemShowView payTypeTsv;
     private ItemShowView invoiceTsv;
     private ItemShowView privilegeTsv;
-
-
-    private String orderNo;
-
-    private Button confirmBtn;
+    private String       orderNo;
+    private Button       confirmBtn;
     private OrderDetailForDisplay orderDetailForDisplay = null;
     private GoodInfoVo lastGoodInfoVo = null;
 
@@ -511,8 +508,8 @@ public class KTVDealActivity extends Activity {
             orderDetailForDisplay.setImgurl(imageUrl);
         }
         orderDetailForDisplay.setProductid(goodInfoVo.getId());
-        orderDetailForDisplay.setRoomtype(goodInfoVo.getRoom());
-        roomTypeTsv.setValue(goodInfoVo.getRoom());
+        orderDetailForDisplay.setRoomtype(goodInfoVo.getName());
+        roomTypeTsv.setValue(goodInfoVo.getName());
     }
 
     //确认订单

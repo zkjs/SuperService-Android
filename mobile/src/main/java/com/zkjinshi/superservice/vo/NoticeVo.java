@@ -11,56 +11,70 @@ import java.util.ArrayList;
  */
 public class NoticeVo {
 
-    private String created;
-    private String locId;
-    private String locname;
-    private ArrayList<OrderVo> orderForNotice;
-    private String phone;
+    /**
+     "locid": "区域编号",
+     "userid": "用户编号",
+     "username": "用户名称",
+     "userlevel": "用户级别",
+     "sex": "用户性别",
+     "phone": "用户电话",
+     "city": "用户所在城市",
+     "shopid": "商家编号",
+     "shopname": "商家名称",
+     "arrivetime": "到达所在区域的时间",
+     "orders": [
+     {
+     "orderno": "订单号",
+     "room": "房间类型",
+     "duration": "入住时长",
+     "indate": "入住时间"
+     }
+     ]
+     */
+
+    private String locid;
+    private String locdesc;
+    private String userid;
+    private String username;
+    private String userlevel;
     private String sex;
-    private String shopId;
-    private String shopName;
-    private int    userApplevel;
-    private String userId;
-    private String userName;
+    private String phone;
+    private String city;
+    private String shopid;
+    private String shopname;
+    private String arrivetime;
+    private ArrayList<OrderVo> orders;
 
-    public String getCreated() {
-        return created;
+    public String getLocid() {
+        return locid;
     }
 
-    public void setCreated(String created) {
-        this.created = created;
+    public void setLocid(String locid) {
+        this.locid = locid;
     }
 
-    public String getLocId() {
-        return locId;
+    public String getUserid() {
+        return userid;
     }
 
-    public void setLocId(String locId) {
-        this.locId = locId;
+    public void setUserid(String userid) {
+        this.userid = userid;
     }
 
-    public String getLocname() {
-        return locname;
+    public String getUsername() {
+        return username;
     }
 
-    public void setLocname(String locname) {
-        this.locname = locname;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    public ArrayList<OrderVo> getOrderForNotice() {
-        return orderForNotice;
+    public String getUserlevel() {
+        return userlevel;
     }
 
-    public void setOrderForNotice(ArrayList<OrderVo> orderForNotice) {
-        this.orderForNotice = orderForNotice;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public void setUserlevel(String userlevel) {
+        this.userlevel = userlevel;
     }
 
     public String getSex() {
@@ -71,43 +85,59 @@ public class NoticeVo {
         this.sex = sex;
     }
 
-    public String getShopId() {
-        return shopId;
+    public String getPhone() {
+        return phone;
     }
 
-    public void setShopId(String shopId) {
-        this.shopId = shopId;
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
-    public String getShopName() {
-        return shopName;
+    public String getCity() {
+        return city;
     }
 
-    public void setShopName(String shopName) {
-        this.shopName = shopName;
+    public void setCity(String city) {
+        this.city = city;
     }
 
-    public int getUserApplevel() {
-        return userApplevel;
+    public String getShopid() {
+        return shopid;
     }
 
-    public void setUserApplevel(int userApplevel) {
-        this.userApplevel = userApplevel;
+    public void setShopid(String shopid) {
+        this.shopid = shopid;
     }
 
-    public String getUserId() {
-        return userId;
+    public String getShopname() {
+        return shopname;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setShopname(String shopname) {
+        this.shopname = shopname;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getArrivetime() {
+        return arrivetime;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setArrivetime(String arrivetime) {
+        this.arrivetime = arrivetime;
+    }
+
+    public ArrayList<OrderVo> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(ArrayList<OrderVo> orders) {
+        this.orders = orders;
+    }
+
+    public String getLocdesc() {
+        return locdesc;
+    }
+
+    public void setLocdesc(String locdesc) {
+        this.locdesc = locdesc;
     }
 }

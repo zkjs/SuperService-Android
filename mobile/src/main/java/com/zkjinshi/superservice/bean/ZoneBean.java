@@ -9,57 +9,52 @@ package com.zkjinshi.superservice.bean;
  */
 public class ZoneBean {
 
-//    "locid": 1,  int
-//    "shopid": 120, int
-//    "sensorid": 1, int
-//    "uuid": "931ddf8e-10e4-11e5-9493-1697f925ec7b",
-//    "major": 800, int
-//    "minior": 1, int
-//    "locdesc": "迎宾",
-//    "status": 0, int  0有效,1失效
-//    "remark": "备注信息"
+/*           "locdesc" "演示区",    //区域描述
+            "locid": "1",
+            "major": "2",
+            "minor": "3",
+            "uuid": "uuid-uuid-uuid-uuid",
+            "sensorid": "sensorid",
+            "subscribed": 1 //是否已订阅: 1-已订阅, 0-未订阅*/
 
-    private int locid;
-    private int shopid;
-    private int sensorid;
-    private String uuid;
-    private int major;
-    private int minior;
     private String locdesc;
-    private int status;
-    private String remark;
-    private boolean hasAdd = false;
+    private String locid;
+    private String major;
+    private String minor;
+    private String uuid;
+    private String sensorid;
+    private int subscribed;
 
-    public boolean isHasAdd() {
-        return hasAdd;
+    public String getLocdesc() {
+        return locdesc;
     }
 
-    public void setHasAdd(boolean hasAdd) {
-        this.hasAdd = hasAdd;
+    public void setLocdesc(String locdesc) {
+        this.locdesc = locdesc;
     }
 
-    public int getLocid() {
+    public String getLocid() {
         return locid;
     }
 
-    public void setLocid(int locid) {
+    public void setLocid(String locid) {
         this.locid = locid;
     }
 
-    public int getShopid() {
-        return shopid;
+    public String getMajor() {
+        return major;
     }
 
-    public void setShopid(int shopid) {
-        this.shopid = shopid;
+    public void setMajor(String major) {
+        this.major = major;
     }
 
-    public int getSensorid() {
-        return sensorid;
+    public String getMinor() {
+        return minor;
     }
 
-    public void setSensorid(int sensorid) {
-        this.sensorid = sensorid;
+    public void setMinor(String minor) {
+        this.minor = minor;
     }
 
     public String getUuid() {
@@ -70,43 +65,19 @@ public class ZoneBean {
         this.uuid = uuid;
     }
 
-    public int getMajor() {
-        return major;
+    public String getSensorid() {
+        return sensorid;
     }
 
-    public void setMajor(int major) {
-        this.major = major;
+    public void setSensorid(String sensorid) {
+        this.sensorid = sensorid;
     }
 
-    public int getMinior() {
-        return minior;
+    public int getSubscribed() {
+        return subscribed;
     }
 
-    public void setMinior(int minior) {
-        this.minior = minior;
-    }
-
-    public String getLocdesc() {
-        return locdesc;
-    }
-
-    public void setLocdesc(String locdesc) {
-        this.locdesc = locdesc;
-    }
-
-    public int getStatus() {
-        return status;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
-    }
-
-    public String getRemark() {
-        return remark;
-    }
-
-    public void setRemark(String remark) {
-        this.remark = remark;
+    public void setSubscribed(int subscribed) {
+        this.subscribed = subscribed;
     }
 }

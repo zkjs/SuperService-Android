@@ -119,6 +119,32 @@ public class CacheUtil {
 	}
 
 	/**
+	 * 保存统一认证登录token
+	 * @param token
+	 */
+	public void setExtToken(String token) {
+		if (null == context) {
+			return;
+		}
+		SharedPreferences sp = context.getSharedPreferences(
+				SVIP_CACHE, Context.MODE_PRIVATE);
+		sp.edit().putString("extToken", token).commit();
+	}
+
+	/**
+	 * 获取统一认证登录token
+	 * @return
+	 */
+	public String getExtToken() {
+		if (null == context) {
+			return null;
+		}
+		SharedPreferences sp = context.getSharedPreferences(
+				SVIP_CACHE, Context.MODE_PRIVATE);
+		return sp.getString("extToken", null);
+	}
+
+	/**
 	 * 保存用户id
 	 * @param userId
 	 */
@@ -181,6 +207,8 @@ public class CacheUtil {
 		sp.edit().putString("userName", userName).commit();
 	}
 
+
+
 	/**
 	 * 获取用户姓名
 	 * @return
@@ -192,6 +220,32 @@ public class CacheUtil {
 		SharedPreferences sp = context.getSharedPreferences(
 				SVIP_CACHE, Context.MODE_PRIVATE);
 		return sp.getString("userName","");
+	}
+
+	/**
+	 * 保存用户姓别
+	 * @param sex
+	 */
+	public void setSex(String sex) {
+		if (null == context) {
+			return;
+		}
+		SharedPreferences sp = context.getSharedPreferences(
+				SVIP_CACHE, Context.MODE_PRIVATE);
+		sp.edit().putString("sex", sex).commit();
+	}
+
+	/**
+	 * 获取用户姓别
+	 * @return
+	 */
+	public String getSex() {
+		if (null == context) {
+			return null;
+		}
+		SharedPreferences sp = context.getSharedPreferences(
+				SVIP_CACHE, Context.MODE_PRIVATE);
+		return sp.getString("sex","0");
 	}
 
 	/**
@@ -542,14 +596,13 @@ public class CacheUtil {
 	 */
 	public <T> void saveListCache(String key,
 								  ArrayList<T> cacheList) {
-		if (null != cacheList && cacheList.size() > 0) {
+		if (null != cacheList && cacheList.size() >= 0) {
 			Gson gson = new Gson();
 			String json = gson.toJson(cacheList);
 			try {
 				String encryptedData = Base64Encoder.encode(json);// base
 				// 64加密
-				SharedPreferences sp = context.getSharedPreferences(SVIP_CACHE,
-						Context.MODE_PRIVATE);
+				SharedPreferences sp = context.getSharedPreferences(SVIP_CACHE, Context.MODE_PRIVATE);
 				sp.edit().putString(key, encryptedData).commit();
 			} catch (Exception e) {
 				e.printStackTrace();

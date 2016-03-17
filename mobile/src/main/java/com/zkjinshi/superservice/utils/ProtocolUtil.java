@@ -2,6 +2,7 @@ package com.zkjinshi.superservice.utils;
 
 import com.zkjinshi.base.config.ConfigUtil;
 import com.zkjinshi.base.util.*;
+import com.zkjinshi.base.util.Constants;
 
 /**
  * 协议接口工具类
@@ -11,30 +12,6 @@ import com.zkjinshi.base.util.*;
  * 版权所有
  */
 public class ProtocolUtil {
-
-    /**
-     * 管理员登陆
-     * @return
-     */
-    public static String getAdminLoginUrl(){
-        return ConfigUtil.getInst().getPhpDomain()+"semp/semplogin";
-    }
-
-    /**
-     * 服务员登陆
-     * @return
-     */
-    public static String getSempLoginUrl(){
-        return ConfigUtil.getInst().getPhpDomain()+"semp/login";
-    }
-
-    /**
-     * 服务员修改资料
-     * @return
-     */
-    public static String getSempupdateUrl(){
-        return ConfigUtil.getInst().getPhpDomain()+"semp/sempupdate";
-    }
 
     /**
      * 服务员获取商家整个区域列表
@@ -69,27 +46,11 @@ public class ProtocolUtil {
     }
 
     /**
-     * 会员信息 获取客人基础信息
-     * @return
-     */
-    public static String getClientBasicUrl(){
-        return ConfigUtil.getInst().getPhpDomain()+"semp/sempsuforphone";
-    }
-
-    /**
      * 会员信息 获取客人详细信息
      * @return
      */
     public static String getAddTagUrl(){
         return ConfigUtil.getInst().getPhpDomain()+"semp/addtag";
-    }
-
-    /**
-     * 会员信息 绑定会员
-     * @return
-     */
-    public static String getAddUserUrl(){
-        return ConfigUtil.getInst().getPhpDomain()+"semp/adduser";
     }
 
     /**
@@ -146,13 +107,6 @@ public class ProtocolUtil {
     }
 
     /**
-     * 管理: 批量添加服务员
-     */
-    public static String getBatchAddClientUrl(){
-        return ConfigUtil.getInst().getPhpDomain()+"shop/importsemp";
-    }
-
-    /**
      * 员工批量修改部门
      */
     public static String getChangeDeptUrl(){
@@ -198,22 +152,6 @@ public class ProtocolUtil {
     }
 
     /**
-     * POST 客户根据邀请码查询服务员
-     * @return
-     */
-    public static String getEmpByInviteCodeUrl(){
-        return ConfigUtil.getInst().getPhpDomain()+"invitation/getcode";
-    }
-
-    /**
-     * POST 超级身份输入邀请码动作
-     * @return
-     */
-    public static String getUserBindInviteCodeURrl(){
-        return ConfigUtil.getInst().getPhpDomain()+"invitation/bdcode";
-    }
-
-    /**
      * POST 超级服务生产邀请注册链接
      * @return
      */
@@ -226,7 +164,7 @@ public class ProtocolUtil {
      * @return
      */
     public static String getCodeUserListUrl(){
-        return ConfigUtil.getInst().getPhpDomain()+" invitation/codeuser";
+        return ConfigUtil.getInst().getPhpDomain()+"invitation/codeuser";
     }
 
     /**
@@ -237,13 +175,6 @@ public class ProtocolUtil {
         return ConfigUtil.getInst().getPhpDomain()+"user/logout?userid=" + userID;
     }
 
-    /**
-     * 获取用户信息
-     * @return
-     */
-    public static String getUserInfoUrl(){
-        return  ConfigUtil.getInst().getPhpDomain()+"v10/user";
-    }
 
     /**
      * 添加用户发票列表
@@ -265,11 +196,10 @@ public class ProtocolUtil {
      * 获取环信群成员
      * @return
      */
-    public static String getGroupMemberUrl(){
-        return ConfigUtil.getInst().getPhpDomain()+"hxim/member";
+    public static String getGroupMemberUrl(String groupId){
+        return ConfigUtil.getInst().getForDomain()+"res/v1/im/members/"+groupId;
     }
 
-    /** 订单操作相关 */
     /**
      * 订单处理1,商家锁定/增加订单
      * Method: POST
@@ -324,15 +254,6 @@ public class ProtocolUtil {
     }
 
     /**
-     *获取订单评论
-     * Method: GET
-     * @return
-     */
-    public static String getCommentShow(String orderNO, int page, int pageSize){
-        return ConfigUtil.getInst().getJavaDomain()+"order/evaluation/get/"+orderNO+"/"+page+"/"+pageSize;
-    }
-
-    /**
      * 查询用户(服务员)简单信息
      * @return
      */
@@ -353,11 +274,12 @@ public class ProtocolUtil {
      * 获得到店通知URL
      * @param shopId
      * @param locId
-     * @param token
+     * @param page
+     * @param page_size
      * @return
      */
-    public static String getNoticeUrl(String shopId,String locId,String token){
-        return  ConfigUtil.getInst().getJavaDomain()+"arrive/users/"+shopId+"/"+locId+"/"+token;
+    public static String getNoticeUrl(String shopId,String locId,String page,String page_size){
+        return  ConfigUtil.getInst().getPyxDomain()+"lbs/v1/loc/beacon/"+shopId+"/"+locId+"?roles=USER&page="+page+"&page_size="+page_size;
     }
 
     /**
@@ -366,7 +288,7 @@ public class ProtocolUtil {
      * @return
      */
     public static String getHostImgUrl(String apiUrl){
-        return com.zkjinshi.base.util.Constants.IMG_HOST+apiUrl;
+        return ConfigUtil.getInst().getImgDomain()+apiUrl;
     }
 
     /**
@@ -375,7 +297,7 @@ public class ProtocolUtil {
      * @return
      */
     public static String getAvatarUrl(String userid){
-        return com.zkjinshi.base.util.Constants.IMG_HOST+"uploads/users/"+userid+".jpg";
+        return ConfigUtil.getInst().getImgDomain()+"uploads/users/"+userid+".jpg";
     }
 
     /**
@@ -384,6 +306,133 @@ public class ProtocolUtil {
      */
     public static String getBindUserInfo(){
         return ConfigUtil.getInst().getPhpDomain()+"semp/aubdts";
+    }
+
+    /**
+     * 获取手机验证码
+     * @return
+     */
+    public static String ssoVcode(){
+        return ConfigUtil.getInst().getPavDomain()+"sso/vcode/v1/ss?source=login";
+    }
+
+    /**
+     * 获取手机验证码
+     * @return
+     */
+    public static String ssoToken(){
+        return  ConfigUtil.getInst().getPavDomain()+"sso/token/v1/phone/ss";
+    }
+
+    /**
+     * 使用用户名密码创建Token
+     * @return
+     */
+    public static String ssoPasswordGetToken(){
+        return  ConfigUtil.getInst().getPavDomain()+"sso/token/v1/name/ss";
+    }
+
+    /**
+     * 获取用户资料-批量，所有用户
+     * @return
+     */
+    public static String getUserInfoAll(){
+        return ConfigUtil.getInst().getForDomain()+"res/v1/query/user/all";
+    }
+
+    /**
+     * 登陆后更新用户资料
+     * @return
+     */
+    public static String updateUserInfo(){
+        return ConfigUtil.getInst().getForDomain()+"res/v1/update/user";
+    }
+
+    /**
+     * 我的客人（ss），查询销售的客人资料
+     * @return
+     */
+    public static String getClientList(){
+        return ConfigUtil.getInst().getForDomain()+"res/v1/query/sis/";
+    }
+
+    /**
+     * 批量注册SS用户
+     * @return
+     */
+    public static String registerSSusers(){
+        return ConfigUtil.getInst().getForDomain()+"res/v1/register/users";
+    }
+
+    /**
+     * 根据shopid获取客服成员-按角色区分
+     * @return
+     */
+    public static String getEmpployeeList(){
+        return ConfigUtil.getInst().getForDomain()+"res/v1/query/sss";
+    }
+
+    /**
+     * 获取当前商家Beacon列表
+     * @return
+     */
+    public static String getZoneList(){
+        return ConfigUtil.getInst().getPyxDomain()+"lbs/v1/loc/beacon/subscription";
+    }
+
+    /**
+     * 获取商家的商品
+     * @param shopid
+     * @param page
+     * @param pageSize
+     * @return
+     */
+    public static String getGoodListByCity(String shopid,int page,int pageSize){
+        return ConfigUtil.getInst().getForDomain()+"res/v1/shop/goods/"+shopid+"?page="+page+"&page_size="+pageSize;
+    }
+
+    /**
+     * 获得刷新token Url
+     * @return
+     */
+    public static String getTokenRefreshUrl(){
+        return ConfigUtil.getInst().getPavDomain()+"sso/token/v1";
+    }
+
+    /**
+     * 创建邀请码
+     * @return
+     */
+    public static String getSaleCodeUrl(){
+        return ConfigUtil.getInst().getForDomain()+"res/v1/salecode/get/salecode";
+    }
+
+    /**
+     * 获取邀请码列表
+     * @param type 1：已使用的邀请码， 0:未使用的邀请码
+     * @param pageSize 每个个数
+     * @param pageNo 第几页
+     * @return
+     */
+    public static String getSaleCodeListUrl(String type,String pageSize,String pageNo){
+        return ConfigUtil.getInst().getForDomain()+"res/v1/salecode/salecodewithsi/"+type+"?page="+pageNo+"&page_size="+pageSize;
+    }
+
+    /**
+     * 获取邀请码分享链接
+     * @return
+     */
+    public static String getSalesCodeShareUrl(){
+        return ConfigUtil.getInst().getForDomain()+"res/v1/link/joinpage";
+    }
+
+    /**
+     * 获取用户信息
+     * @param userIds
+     * @return
+     */
+    public static String getUsersInfoUrl(String userIds){
+        return ConfigUtil.getInst().getForDomain()+"res/v1/query/user/all?userids="+userIds;
     }
 
 }

@@ -1,11 +1,13 @@
 package com.zkjinshi.superservice.bean;
 
+import java.io.Serializable;
+
 /**
  * 联系人父类对象
  * 开发者：WinkyQin
  * 日期：2015/12/15
  */
-public class BaseContact {
+public class BaseContact implements Serializable{
 
     private String sortKey;    //姓名全字母显示
     private String firstLetter;//排序首字母

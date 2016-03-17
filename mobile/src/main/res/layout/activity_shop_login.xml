@@ -29,7 +29,7 @@
             android:id="@+id/et_input_phone"
             style="@style/inputStyle"
             android:hint="账号"
-            android:inputType="number"
+            android:inputType="text"
             android:maxLength="11"
             android:singleLine="true"
             />

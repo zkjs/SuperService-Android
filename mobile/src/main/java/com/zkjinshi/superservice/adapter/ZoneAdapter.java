@@ -43,8 +43,8 @@ public class ZoneAdapter extends BaseAdapter{
     public void setCheckedZone(ArrayList<ZoneBean> checkedZone){
         for(int i=0;i<checkedZone.size();i++){
             for(int j=0;j<zoneList.size();j++){
-                if(checkedZone.get(i).getLocid() == zoneList.get(j).getLocid()){
-                    zoneList.get(j).setHasAdd(true);
+                if(checkedZone.get(i).getLocid().equals(zoneList.get(j).getLocid())){
+                    zoneList.get(j).setSubscribed(1);
                 }
             }
         }
@@ -71,7 +71,7 @@ public class ZoneAdapter extends BaseAdapter{
         if(null != zoneList && !zoneList.isEmpty()){
             for(int i=0;i<zoneList.size();i++){
                 ZoneBean zoneBean = zoneList.get(i);
-                if(zoneBean.isHasAdd()){
+                if(zoneBean.getSubscribed() == 1){
                     selectZoneList.add(zoneBean);
                 }
             }
@@ -102,7 +102,7 @@ public class ZoneAdapter extends BaseAdapter{
         }
         for(int i=0;i<zoneList.size();i++){
             ZoneBean zoneBean = zoneList.get(i);
-            if(zoneBean.isHasAdd()){
+            if(zoneBean.getSubscribed() == 1){
                 if(TextUtils.isEmpty(ids)){
                     ids = ids+zoneBean.getLocid();
                 }else{
@@ -152,7 +152,7 @@ public class ZoneAdapter extends BaseAdapter{
         }
         holder.name.setText(zoneList.get(position).getLocdesc());
 
-        if(zoneList.get(position).isHasAdd()){
+        if(zoneList.get(position).getSubscribed() == 1){
             holder.check.setImageResource(R.mipmap.ic_jia_pre);
         }else{
             holder.check.setImageResource(R.mipmap.ic_jia_nor);

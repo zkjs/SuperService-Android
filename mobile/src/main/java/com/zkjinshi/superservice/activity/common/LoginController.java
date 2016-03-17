@@ -1,8 +1,11 @@
 package com.zkjinshi.superservice.activity.common;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.easemob.EMCallBack;
 import com.easemob.chat.EMChatManager;
@@ -10,24 +13,42 @@ import com.easemob.chat.EMGroupManager;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.JsonHttpResponseHandler;
 import com.zkjinshi.base.log.LogLevel;
 import com.zkjinshi.base.log.LogUtil;
+import com.zkjinshi.base.util.DialogUtil;
+import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.emchat.EMConversationHelper;
 import com.zkjinshi.superservice.emchat.EasemobIMHelper;
+import com.zkjinshi.superservice.emchat.EasemobIMManager;
 import com.zkjinshi.superservice.emchat.observer.EMessageListener;
+import com.zkjinshi.superservice.manager.SSOManager;
+import com.zkjinshi.superservice.manager.YunBaSubscribeManager;
 import com.zkjinshi.superservice.net.ExtNetRequestListener;
 import com.zkjinshi.superservice.net.MethodType;
 import com.zkjinshi.superservice.net.NetRequest;
 import com.zkjinshi.superservice.net.NetRequestTask;
 import com.zkjinshi.superservice.net.NetResponse;
+import com.zkjinshi.superservice.sqlite.DBOpenHelper;
 import com.zkjinshi.superservice.sqlite.ShopDepartmentDBUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
+import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.vo.DepartmentVo;
+import com.zkjinshi.superservice.vo.IdentityType;
+import com.zkjinshi.superservice.vo.PayloadVo;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.entity.StringEntity;
 
 /**
  * 开发者：dujiande
@@ -55,45 +76,6 @@ public class LoginController {
         this.context = context;
         this.activity = (Activity)context;
 
-    }
-
-    /**
-     * 服务员请求登录
-     * @param phone
-     */
-    public void requestLogin(final String phone, boolean isLoading, ExtNetRequestListener netRequestListener){
-        NetRequest netRequest = new NetRequest(ProtocolUtil.getSempLoginUrl());
-        HashMap<String,String> bizMap = new HashMap<String,String>();
-        bizMap.put("phone", phone);
-        netRequest.setBizParamMap(bizMap);
-        NetRequestTask netRequestTask = new NetRequestTask(activity,netRequest, NetResponse.class);
-        netRequestTask.methodType = MethodType.PUSH;
-        if(null != netRequestListener){
-            netRequestTask.setNetRequestListener(netRequestListener);
-        }
-        netRequestTask.isShowLoadingDialog = isLoading;
-        netRequestTask.execute();
-    }
-
-    /**
-     * 管理员请求登录
-     * @param phone
-     */
-    public void requestAdminLogin(final String phone, final String password, boolean isLoading, ExtNetRequestListener netRequestListener){
-        String url = ProtocolUtil.getAdminLoginUrl();
-        Log.i(TAG, url);
-        NetRequest netRequest = new NetRequest(url);
-        HashMap<String,String> bizMap = new HashMap<String,String>();
-        bizMap.put("phone",phone);
-        bizMap.put("password", password);
-        netRequest.setBizParamMap(bizMap);
-        NetRequestTask netRequestTask = new NetRequestTask(activity,netRequest, NetResponse.class);
-        netRequestTask.methodType = MethodType.PUSH;
-        if(null != netRequestListener){
-            netRequestTask.setNetRequestListener(netRequestListener);
-        }
-        netRequestTask.isShowLoadingDialog = isLoading;
-        netRequestTask.execute();
     }
 
     /**
@@ -150,33 +132,210 @@ public class LoginController {
         netRequestTask.execute();
     }
 
-    /**
-     * 登录环形IM
-     */
-    public void loginHxUser(){
-        EasemobIMHelper.getInstance().loginUser(CacheUtil.getInstance().getUserId(), "123456", new EMCallBack() {
-            @Override
-            public void onSuccess() {
-                // ** 第一次登录或者之前logout后再登录，加载所有本地群和回话
-                EMGroupManager.getInstance().loadAllGroups();
-                EMChatManager.getInstance().loadAllConversations();
-                EMessageListener.getInstance().registerEventListener();
-                EMConversationHelper.getInstance().requestGroupListTask();
-            }
 
-            @Override
-            public void onError(int i, String s) {
-                Log.i(TAG, "环信登录失败-errorCode:" + i);
-                Log.i(TAG, "环信登录失败-errorMessage:" + s);
-                LogUtil.getInstance().info(LogLevel.ERROR,"环信登录失败-errorCode:" + i);
-                LogUtil.getInstance().info(LogLevel.ERROR,"环信登录失败-errorMessage:" + s);
-            }
-
-            @Override
-            public void onProgress(int i, String s) {
-
-            }
-        });
+    public interface CallBackListener{
+        public void successCallback(JSONObject response);
     }
+
+    /**
+     * 通过验证码获取token
+     * @param mContext
+     * @param phone
+     * @param code
+     * @param callBackListener
+     */
+    public void getTokenByCode(final Context mContext,final String phone,final String code,final CallBackListener callBackListener){
+        try{
+            AsyncHttpClient client = new AsyncHttpClient();
+            client.setTimeout(Constants.OVERTIMEOUT);
+            client.addHeader("Content-Type","application/json; charset=UTF-8");
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("phone",phone);
+            jsonObject.put("code",code);
+            StringEntity stringEntity = new StringEntity(jsonObject.toString());
+            String url = ProtocolUtil.ssoToken();
+            client.post(mContext,url, stringEntity, "application/json", new JsonHttpResponseHandler(){
+                public void onStart(){
+                    super.onStart();
+                    DialogUtil.getInstance().showAvatarProgressDialog(mContext,"");
+                }
+
+                public void onFinish(){
+                    super.onFinish();
+                    DialogUtil.getInstance().cancelProgressDialog();
+                }
+
+                public void onSuccess(int statusCode, Header[] headers, JSONObject response){
+                    super.onSuccess(statusCode,headers,response);
+                    try {
+                        if(response.getInt("res") == 0){
+                            if(callBackListener != null){
+                                callBackListener.successCallback(response);
+                            }
+                        }else if(response.getInt("res") == 11){//资料不全
+                            String token = response.getString("token");
+                            CacheUtil.getInstance().setExtToken(token);
+                            PayloadVo payloadVo = SSOManager.getInstance().decodeToken(token);
+                            CacheUtil.getInstance().setUserId(payloadVo.getSub());
+                            CacheUtil.getInstance().setShopID(payloadVo.getShopid());
+                            CacheUtil.getInstance().setLoginIdentity(IdentityType.WAITER);
+                            DBOpenHelper.DB_NAME = payloadVo.getSub() + ".db";
+                            Intent intent;
+                            intent = new Intent(mContext, MoreActivity.class);
+                            mContext.startActivity(intent);
+                            if(mContext instanceof Activity){
+                                Activity activity = (Activity)mContext;
+                                activity.finish();
+                                activity.overridePendingTransition(R.anim.activity_new, R.anim.activity_out);
+                            }
+
+                        }
+                        else{
+                            Toast.makeText(mContext,response.getString("resDesc"),Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse){
+                    super.onFailure(statusCode,headers,throwable,errorResponse);
+                    Toast.makeText(mContext,"API 错误："+statusCode,Toast.LENGTH_SHORT).show();
+                }
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+    }
+
+    /**
+     * 使用用户名密码创建Token
+     * @param mContext
+     * @param name
+     * @param password
+     * @param callBackListener
+     */
+    public void getTokenByPassword(final Context mContext,final String name,final String password,final CallBackListener callBackListener){
+        try{
+            AsyncHttpClient client = new AsyncHttpClient();
+            client.setTimeout(Constants.OVERTIMEOUT);
+            client.addHeader("Content-Type","application/json; charset=UTF-8");
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("username",name);
+            jsonObject.put("password",password);
+            StringEntity stringEntity = new StringEntity(jsonObject.toString());
+            String url = ProtocolUtil.ssoPasswordGetToken();
+            client.post(mContext,url, stringEntity, "application/json", new JsonHttpResponseHandler(){
+                public void onStart(){
+                    super.onStart();
+                    DialogUtil.getInstance().showAvatarProgressDialog(mContext,"");
+                }
+
+                public void onFinish(){
+                    super.onFinish();
+                    DialogUtil.getInstance().cancelProgressDialog();
+                }
+
+                public void onSuccess(int statusCode, Header[] headers, JSONObject response){
+                    super.onSuccess(statusCode,headers,response);
+                    try {
+                        if(response.getInt("res") == 0){
+                            if(callBackListener != null){
+                                callBackListener.successCallback(response);
+                            }
+                        }else{
+                            Toast.makeText(mContext,response.getString("resDesc"),Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse){
+                    super.onFailure(statusCode,headers,throwable,errorResponse);
+                    Toast.makeText(mContext,"API 错误："+statusCode,Toast.LENGTH_SHORT).show();
+                }
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+
+    /**
+     * 获取用户资料-批量，所有用户
+     * @param mContext
+     * @param userids
+     * @param callBackListener
+     */
+    public void getUserInfo(final Context mContext,final String userids,final CallBackListener callBackListener){
+        try{
+            AsyncHttpClient client = new AsyncHttpClient();
+            client.setTimeout(Constants.OVERTIMEOUT);
+            client.addHeader("Content-Type","application/json; charset=UTF-8");
+            client.addHeader("Token",CacheUtil.getInstance().getExtToken());
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("userids",userids);
+            StringEntity stringEntity = new StringEntity(jsonObject.toString());
+            String url = ProtocolUtil.getUserInfoAll();
+            client.get(mContext,url, stringEntity, "application/json", new JsonHttpResponseHandler(){
+                public void onStart(){
+                    super.onStart();
+                    DialogUtil.getInstance().showAvatarProgressDialog(mContext,"");
+                }
+
+                public void onFinish(){
+                    super.onFinish();
+                    DialogUtil.getInstance().cancelProgressDialog();
+                }
+
+                public void onSuccess(int statusCode, Header[] headers, JSONObject response){
+                    super.onSuccess(statusCode,headers,response);
+                    try {
+                        if(response.getInt("res") == 0){
+                            JSONArray dataArr = response.getJSONArray("data");
+                            if(dataArr != null && dataArr.length() > 0){
+                                JSONObject dataJson = dataArr.getJSONObject(0);
+                                DBOpenHelper.DB_NAME = dataJson.getString("userid") + ".db";
+                                CacheUtil.getInstance().setUserId(dataJson.getString("userid"));
+                                CacheUtil.getInstance().setShopID(dataJson.getString("shopid"));
+                                CacheUtil.getInstance().setUserPhone(dataJson.getString("phone"));
+                                CacheUtil.getInstance().setUserName(dataJson.getString("username"));
+                                CacheUtil.getInstance().setShopFullName(dataJson.getString("fullname"));
+                                String imgurl = dataJson.getString("userimage");
+                                imgurl = ProtocolUtil.getHostImgUrl(imgurl);
+                                CacheUtil.getInstance().saveUserPhotoUrl(imgurl);
+                                CacheUtil.getInstance().setSex(dataJson.getString("sex"));
+
+                                EasemobIMManager.getInstance().loginHxUser();
+                                YunBaSubscribeManager.getInstance().setAlias(context);
+                                YunBaSubscribeManager.getInstance().subscribe();
+
+                                CacheUtil.getInstance().setLogin(true);
+                                if(callBackListener != null){
+                                    callBackListener.successCallback(dataJson);
+                                }
+                            }
+
+                        }else{
+                            Toast.makeText(mContext,response.getString("resDesc"),Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse){
+                    super.onFailure(statusCode,headers,throwable,errorResponse);
+                    Toast.makeText(mContext,"API 错误："+statusCode,Toast.LENGTH_SHORT).show();
+                }
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+
 
 }

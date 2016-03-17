@@ -2,6 +2,7 @@ package com.zkjinshi.superservice.activity.common;
 
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -13,8 +14,15 @@ import android.view.WindowManager;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.imagepipeline.core.ImagePipeline;
 import com.google.gson.Gson;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.zkjinshi.base.util.DialogUtil;
@@ -36,10 +44,15 @@ import com.zkjinshi.superservice.view.CircleImageView;
 import com.zkjinshi.superservice.vo.SexType;
 import com.zkjinshi.superservice.vo.UserVo;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 
+import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.entity.StringEntity;
 import me.nereo.multi_image_selector.MultiImageSelectorActivity;
 import me.nereo.multi_image_selector.MultiImageSelectorFragment;
 
@@ -54,15 +67,13 @@ public class MoreActivity extends FragmentActivity implements MultiImageSelector
 
     private final static String TAG = MoreActivity.class.getSimpleName();
 
-    private CircleImageView avatarCiv;
+    private SimpleDraweeView avatarCiv;
     private TextView nameTv;
     private EditText inputNameEt;
     private CheckBox sexCbx;
 
     public static int REQUEST_IMAGE = 1;
     private String picPath = null;
-    private UserVo userVo = null;
-    SempLoginBean sempLoginbean = null;
 
     @Override
     public void onSingleImageSelected(String path) {
@@ -112,53 +123,24 @@ public class MoreActivity extends FragmentActivity implements MultiImageSelector
     }
 
     private void initView() {
-        avatarCiv = (CircleImageView)findViewById(R.id.avatar);
+        avatarCiv = (SimpleDraweeView)findViewById(R.id.avatar);
         nameTv = (TextView)findViewById(R.id.org_username_tv);
         inputNameEt = (EditText)findViewById(R.id.new_username_et);
         sexCbx = (CheckBox)findViewById(R.id.sex_cbx);
-
-        findViewById(R.id.back_btn).setVisibility(View.GONE);
     }
 
     private void initData() {
-
-        DBOpenHelper.DB_NAME = CacheUtil.getInstance().getUserId() + ".db";
-        userVo = UserDBUtil.getInstance().queryUserById(CacheUtil.getInstance().getUserId());
-        if(getIntent().getSerializableExtra("sempLoginbean") != null){
-            sempLoginbean = (SempLoginBean)getIntent().getSerializableExtra("sempLoginbean");
+        nameTv.setText(CacheUtil.getInstance().getUserName());
+        if(CacheUtil.getInstance().getSex().equals("0")){
+            sexCbx.setChecked(false);
+        }else{
+            sexCbx.setChecked(true);
         }
-        if(null != userVo){
-            nameTv.setText(CacheUtil.getInstance().getUserName());
-            SexType sexType = userVo.getSex();
-            if(null != sexType && sexType == SexType.FEMALE){
-                sexCbx.setChecked(false);
-            }else{
-                sexCbx.setChecked(true);
-            }
-        }
-        String avatarUrl = ProtocolUtil.getAvatarUrl(userVo.getUserId());
-        DisplayImageOptions options = new DisplayImageOptions.Builder()
-            .showImageOnLoading(R.mipmap.ic_launcher)
-            .showImageForEmptyUri(R.mipmap.ic_launcher)
-            .showImageOnFail(R.mipmap.ic_launcher)
-            .cacheInMemory(true)
-            .cacheOnDisk(true)
-            .build();
-        ImageLoader.getInstance().displayImage(avatarUrl, avatarCiv, options);
+        String avatarUrl = CacheUtil.getInstance().getUserPhotoUrl();
+        avatarCiv.setImageURI(Uri.parse(avatarUrl));
     }
 
     private void initListener() {
-        findViewById(R.id.back_btn).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(!getIntent().getBooleanExtra("from_setting",false)){
-                    startActivity(new Intent(MoreActivity.this, LoginActivity.class));
-                }
-                finish();
-                overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
-            }
-        });
-
         findViewById(R.id.go_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -187,7 +169,8 @@ public class MoreActivity extends FragmentActivity implements MultiImageSelector
     * */
     private void sempupdate() {
         if(picPath == null){
-            if(sempLoginbean!= null && TextUtils.isEmpty(sempLoginbean.getUrl())){
+            String avatarUrl = CacheUtil.getInstance().getUserPhotoUrl();
+            if(!avatarUrl.contains(".png") && !avatarUrl.contains(".jpg")){
                 DialogUtil.getInstance().showToast(this,"请上传头像");
                 return;
             }
@@ -197,71 +180,81 @@ public class MoreActivity extends FragmentActivity implements MultiImageSelector
         final String name = TextUtils.isEmpty(input)? nameTv.getText().toString() : input;
         final String sex = sexCbx.isChecked() ? "1" : "0";
 
-        NetRequest netRequest = new NetRequest(ProtocolUtil.getSempupdateUrl());
-        HashMap<String,String> bizMap = new HashMap<String,String>();
-        bizMap.put("salesid", CacheUtil.getInstance().getUserId());
-        bizMap.put("token",CacheUtil.getInstance().getToken());
-        bizMap.put("name", name);
-        bizMap.put("sex", sex);
-        netRequest.setBizParamMap(bizMap);
 
-        if(picPath != null){
-            HashMap<String,File> fileMap = new HashMap<String, File>();
-            fileMap.put("file", new File(picPath));
-            netRequest.setFileMap(fileMap);
-
-            ImageLoader.getInstance().clearDiskCache();
-            ImageLoader.getInstance().clearMemoryCache();
-        }
-        NetRequestTask netRequestTask = new NetRequestTask(this,netRequest, NetResponse.class);
-        netRequestTask.methodType = MethodType.PUSH;
-        netRequestTask.setNetRequestListener(new ExtNetRequestListener(this) {
-            @Override
-            public void onNetworkRequestError(int errorCode, String errorMessage) {
-                Log.i(TAG, "errorCode:" + errorCode);
-                Log.i(TAG, "errorMessage:" + errorMessage);
+        try{
+            AsyncHttpClient client = new AsyncHttpClient();
+            client.setTimeout(Constants.OVERTIMEOUT);
+            client.addHeader("Token",CacheUtil.getInstance().getExtToken());
+            String url = ProtocolUtil.updateUserInfo();
+            RequestParams params = new RequestParams();
+            params.put("sex",sex);
+            params.put("username",name);
+            if(picPath != null){
+                params.put("image",new File(picPath));
             }
+            client.post(url, params, new JsonHttpResponseHandler(){
+                public void onStart(){
+                    super.onStart();
+                    DialogUtil.getInstance().showAvatarProgressDialog(MoreActivity.this,"");
+                }
 
-            @Override
-            public void onNetworkRequestCancelled() {
+                public void onFinish(){
+                    super.onFinish();
+                    DialogUtil.getInstance().cancelProgressDialog();
+                }
 
-            }
+                public void onSuccess(int statusCode, Header[] headers, JSONObject response){
+                    super.onSuccess(statusCode,headers,response);
+                    try {
+                        if(response.getInt("res") == 0){
+                            JSONObject dataJson = response.getJSONObject("data");
+                            String imgurl = dataJson.getString("userimage");
+                            imgurl = ProtocolUtil.getHostImgUrl(imgurl);
+                            CacheUtil.getInstance().saveUserPhotoUrl(imgurl);
+                            CacheUtil.getInstance().setUserName(name);
+                            CacheUtil.getInstance().setSex(sex);
 
-            @Override
-            public void onNetworkResponseSucceed(NetResponse result) {
-                super.onNetworkResponseSucceed(result);
-
-                Log.i(TAG, "result.rawResult:" + result.rawResult);
-                BaseBean baseBean = new Gson().fromJson(result.rawResult, BaseBean.class);
-                if (baseBean.isSet()) {
-                    String avatarUrl = ProtocolUtil.getAvatarUrl(userVo.getUserId());
-                    userVo.setSex(sexCbx.isChecked() ? SexType.MALE : SexType.FEMALE);
-                    userVo.setUserName(name);
-                    userVo.setPhotoUrl(avatarUrl);
-                    CacheUtil.getInstance().saveUserPhotoUrl(avatarUrl);
-                    CacheUtil.getInstance().setUserName(name);
-                    UserDBUtil.getInstance().addUser(userVo);
-
-                    if(!getIntent().getBooleanExtra("from_setting",false)){
-                        startActivity(new Intent(MoreActivity.this, ZoneActivity.class));
+                            if(!getIntent().getBooleanExtra("from_setting",false)){
+                                getUserInfo();
+                            }
+                            finish();
+                            overridePendingTransition(R.anim.activity_new, R.anim.activity_out);
+                        }else{
+                            Toast.makeText(MoreActivity.this,response.getString("resDesc"),Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
+                }
+
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse){
+                    super.onFailure(statusCode,headers,throwable,errorResponse);
+                    Toast.makeText(MoreActivity.this,"API 错误："+statusCode,Toast.LENGTH_SHORT).show();
+                }
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 获取详细信息
+     */
+    private void getUserInfo() {
+        LoginController.getInstance().getUserInfo(this, CacheUtil.getInstance().getUserId(), new LoginController.CallBackListener() {
+            @Override
+            public void successCallback(JSONObject response) {
+                try{
+                    Intent mainIntent = new Intent(MoreActivity.this, ZoneActivity.class);
+                    startActivity(mainIntent);
                     finish();
                     overridePendingTransition(R.anim.activity_new, R.anim.activity_out);
-                } else {
-                    DialogUtil.getInstance().showToast(MoreActivity.this, "error ");
+                }catch (Exception e){
+                    e.printStackTrace();
                 }
 
             }
-
-            @Override
-            public void beforeNetworkRequestStart() {
-
-            }
         });
-        netRequestTask.isShowLoadingDialog = true;
-        netRequestTask.execute();
-
-
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -285,10 +278,9 @@ public class MoreActivity extends FragmentActivity implements MultiImageSelector
             @Override
             public void getNewPath(String path) {
                 picPath = path;
+                avatarCiv.setImageURI(Uri.parse("file:///"+picPath));
             }
         });
        imgAsyncTask.execute();
     }
-
-
 }

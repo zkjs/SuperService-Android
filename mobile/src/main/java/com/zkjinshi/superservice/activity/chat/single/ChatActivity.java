@@ -38,7 +38,6 @@ import com.zkjinshi.superservice.activity.chat.single.actions.MoreViewPagerManag
 import com.zkjinshi.superservice.activity.chat.single.actions.NetCheckManager;
 import com.zkjinshi.superservice.activity.chat.single.actions.QuickMenuManager;
 import com.zkjinshi.superservice.activity.chat.single.actions.VoiceRecordManager;
-import com.zkjinshi.superservice.bean.BookOrderBean;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.utils.FileUtil;

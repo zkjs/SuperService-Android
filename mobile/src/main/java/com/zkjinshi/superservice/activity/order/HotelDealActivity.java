@@ -99,8 +99,8 @@ public class HotelDealActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_hotel_deal);
-
         orderNo = getIntent().getStringExtra("orderNo");
+
         initView();
         initListener();
         loadOrderInfoByOrderNo();
@@ -110,12 +110,12 @@ public class HotelDealActivity extends Activity {
         titleTv = (TextView)findViewById(R.id.header_title_tv);
         remarkTv = (TextView)findViewById(R.id.tv_remark);
 
-        orderNoIsv =  (ItemShowView)findViewById(R.id.ahb_no);
+        orderNoIsv  = (ItemShowView)findViewById(R.id.ahb_no);
         dateTimeIsv = (ItemShowView)findViewById(R.id.ahb_date);
         roomTypeTsv = (ItemShowView)findViewById(R.id.ahb_type);
         roomNumTnv = (ItemNumView)findViewById(R.id.ahb_num);
         contactTsv = (ItemShowView)findViewById(R.id.ahb_people);
-        phoneTsv = (ItemShowView)findViewById(R.id.ahb_phone);
+        phoneTsv   = (ItemShowView)findViewById(R.id.ahb_phone);
         payTypeTsv = (ItemShowView)findViewById(R.id.ahb_pay);
         invoiceTsv = (ItemShowView)findViewById(R.id.ahb_ticket);
         privilegeTsv = (ItemShowView)findViewById(R.id.ahb_privilege);
@@ -330,10 +330,7 @@ public class HotelDealActivity extends Activity {
         int index = payType % payTypes.length;
         payTypeStr = payTypes[index];
         payTypeTsv.setValue(roomRateStr+ "  " + payTypeStr);
-
     }
-
-
 
     private void initListener() {
         //返回
@@ -349,12 +346,12 @@ public class HotelDealActivity extends Activity {
         payTypeTsv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(payTypeTsv.isShowIcon){
-                    Intent intent = new Intent(HotelDealActivity.this, OrderPayActivity.class);
-                    intent.putExtra("orderDetailForDisplay", orderDetailForDisplay);
-                    startActivityForResult(intent, PAY_REQUEST_CODE);
-                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-                }
+            if(payTypeTsv.isShowIcon){
+                Intent intent = new Intent(HotelDealActivity.this, OrderPayActivity.class);
+                intent.putExtra("orderDetailForDisplay", orderDetailForDisplay);
+                startActivityForResult(intent, PAY_REQUEST_CODE);
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+            }
             }
         });
 
@@ -362,15 +359,15 @@ public class HotelDealActivity extends Activity {
         dateTimeIsv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(dateTimeIsv.isShowIcon){
-                    Intent intent = new Intent(HotelDealActivity.this, CalendarActivity.class);
-                    if (calendarList != null) {
-                        intent.putExtra("calendarList", calendarList);
-                    }
-                    startActivityForResult(intent, CalendarActivity.CALENDAR_REQUEST_CODE);
-                    overridePendingTransition(R.anim.slide_in_right,
-                            R.anim.slide_out_left);
+            if(dateTimeIsv.isShowIcon){
+                Intent intent = new Intent(HotelDealActivity.this, CalendarActivity.class);
+                if (calendarList != null) {
+                    intent.putExtra("calendarList", calendarList);
                 }
+                startActivityForResult(intent, CalendarActivity.CALENDAR_REQUEST_CODE);
+                overridePendingTransition(R.anim.slide_in_right,
+                        R.anim.slide_out_left);
+            }
 
             }
         });
@@ -393,17 +390,17 @@ public class HotelDealActivity extends Activity {
         invoiceTsv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(invoiceTsv.isShowIcon){
-                    Intent intent = new Intent(HotelDealActivity.this, AddRemarkActivity.class);
-                    intent.putExtra("remark", invoiceTsv.getValue());
-                    intent.putExtra("tips", "");
-                    intent.putExtra("title", "添加发票信息");
-                    intent.putExtra("hint", "请输入发票信息");
-                    intent.putExtra("key", "invoice");
-                    startActivityForResult(intent, TICKET_REQUEST_CODE);
-                    overridePendingTransition(R.anim.slide_in_right,
-                            R.anim.slide_out_left);
-                }
+            if(invoiceTsv.isShowIcon){
+                Intent intent = new Intent(HotelDealActivity.this, AddRemarkActivity.class);
+                intent.putExtra("remark", invoiceTsv.getValue());
+                intent.putExtra("tips", "");
+                intent.putExtra("title", "添加发票信息");
+                intent.putExtra("hint", "请输入发票信息");
+                intent.putExtra("key", "invoice");
+                startActivityForResult(intent, TICKET_REQUEST_CODE);
+                overridePendingTransition(R.anim.slide_in_right,
+                        R.anim.slide_out_left);
+            }
 
             }
         });
@@ -411,35 +408,34 @@ public class HotelDealActivity extends Activity {
         findViewById(R.id.llt_order_remark).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(invoiceTsv.isShowIcon){
-                    Intent intent = new Intent(HotelDealActivity.this, AddRemarkActivity.class);
-                    intent.putExtra("remark", remarkTv.getText());
-                    intent.putExtra("tips", "如果有其他要求，请在此说明。");
-                    intent.putExtra("title", "添加订单备注");
-                    intent.putExtra("hint", "请输入订单备注");
-                    intent.putExtra("key", "remark");
-                    startActivityForResult(intent, REMARK_REQUEST_CODE);
-                    overridePendingTransition(R.anim.slide_in_right,
-                            R.anim.slide_out_left);
-                }
-
+            if(invoiceTsv.isShowIcon){
+                Intent intent = new Intent(HotelDealActivity.this, AddRemarkActivity.class);
+                intent.putExtra("remark", remarkTv.getText());
+                intent.putExtra("tips", "如果有其他要求，请在此说明。");
+                intent.putExtra("title", "添加订单备注");
+                intent.putExtra("hint", "请输入订单备注");
+                intent.putExtra("key", "remark");
+                startActivityForResult(intent, REMARK_REQUEST_CODE);
+                overridePendingTransition(R.anim.slide_in_right,
+                        R.anim.slide_out_left);
+            }
             }
         });
         //联系人
         contactTsv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(contactTsv.isShowIcon){
-                    Intent intent = new Intent(HotelDealActivity.this, AddRemarkActivity.class);
-                    intent.putExtra("remark", contactTsv.getValue());
-                    intent.putExtra("tips", "");
-                    intent.putExtra("title", "编辑联系人");
-                    intent.putExtra("hint", "请输入姓名");
-                    intent.putExtra("key", "name");
-                    startActivityForResult(intent, PEOPLE_REQUEST_CODE);
-                    overridePendingTransition(R.anim.slide_in_right,
-                            R.anim.slide_out_left);
-                }
+            if(contactTsv.isShowIcon){
+                Intent intent = new Intent(HotelDealActivity.this, AddRemarkActivity.class);
+                intent.putExtra("remark", contactTsv.getValue());
+                intent.putExtra("tips", "");
+                intent.putExtra("title", "编辑联系人");
+                intent.putExtra("hint", "请输入姓名");
+                intent.putExtra("key", "name");
+                startActivityForResult(intent, PEOPLE_REQUEST_CODE);
+                overridePendingTransition(R.anim.slide_in_right,
+                        R.anim.slide_out_left);
+            }
 
             }
         });
@@ -611,8 +607,8 @@ public class HotelDealActivity extends Activity {
             orderDetailForDisplay.setImgurl(imageUrl);
         }
         orderDetailForDisplay.setProductid(goodInfoVo.getId());
-        orderDetailForDisplay.setRoomtype(goodInfoVo.getRoom());
-        roomTypeTsv.setValue(goodInfoVo.getRoom());
+        orderDetailForDisplay.setRoomtype(goodInfoVo.getName());
+        roomTypeTsv.setValue(goodInfoVo.getName());
     }
 
     //确认订单

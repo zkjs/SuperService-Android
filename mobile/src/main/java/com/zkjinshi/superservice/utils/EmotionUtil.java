@@ -34,7 +34,7 @@ public class EmotionUtil {
 	private static EmotionUtil instance;
 	public static final Pattern EMOTION_URL = Pattern.compile("\\[(\\S+?)\\]");
 	private Map<String, Integer> emotionMap = new LinkedHashMap<String, Integer>();
-	public static final int NUM_PAGE = 4;// 总共有多少页
+	public static final int NUM_PAGE = 2;// 总共有多少页
 	public static int NUM = 27;// 每页27个表情,还有最后一个删除button
 	public synchronized static EmotionUtil getInstance(){
 		if(null ==  instance){
@@ -49,7 +49,7 @@ public class EmotionUtil {
 	 */
 	public void initEmotion(){
 		
-		emotionMap.put("[调皮]", R.mipmap.f001);
+		/*emotionMap.put("[调皮]", R.mipmap.f001);
 		emotionMap.put("[流汗]", R.mipmap.f002);
 		emotionMap.put("[偷笑]", R.mipmap.f003);
 		emotionMap.put("[再见]", R.mipmap.f004);
@@ -160,7 +160,43 @@ public class EmotionUtil {
 
 		emotionMap.put("[右太极]", R.mipmap.f105);
 		emotionMap.put("[闭嘴]", R.mipmap.f106);
-		emotionMap.put("[呲牙]", R.mipmap.f107);
+		emotionMap.put("[呲牙]", R.mipmap.f107);*/
+
+		emotionMap.put("[):]", R.mipmap.ee_1);
+		emotionMap.put("[:D]", R.mipmap.ee_2);
+		emotionMap.put("[;)]", R.mipmap.ee_3);
+		emotionMap.put("[:-o]", R.mipmap.ee_4);
+		emotionMap.put("[:p]", R.mipmap.ee_5);
+		emotionMap.put("[(H)]", R.mipmap.ee_6);
+		emotionMap.put("[:@]", R.mipmap.ee_7);
+		emotionMap.put("[:s]", R.mipmap.ee_8);
+		emotionMap.put("[:$]", R.mipmap.ee_9);
+		emotionMap.put("[:(]", R.mipmap.ee_10);
+		emotionMap.put("[:'(]", R.mipmap.ee_11);
+		emotionMap.put("[:|]", R.mipmap.ee_12);
+		emotionMap.put("[(a)]", R.mipmap.ee_13);
+		emotionMap.put("[8o|]", R.mipmap.ee_14);
+		emotionMap.put("[8-|]", R.mipmap.ee_15);
+		emotionMap.put("[+o(]", R.mipmap.ee_16);
+		emotionMap.put("[<o)]", R.mipmap.ee_17);
+		emotionMap.put("[|-)]", R.mipmap.ee_18);
+		emotionMap.put("[*-)]", R.mipmap.ee_19);
+		emotionMap.put("[:-#]", R.mipmap.ee_20);
+		emotionMap.put("[:-*]", R.mipmap.ee_21);
+		emotionMap.put("[^o)]", R.mipmap.ee_22);
+		emotionMap.put("[8-)]", R.mipmap.ee_23);
+		emotionMap.put("[(|)]", R.mipmap.ee_24);
+		emotionMap.put("[(u)]", R.mipmap.ee_25);
+		emotionMap.put("[(S)]", R.mipmap.ee_26);
+		emotionMap.put("[(*)]", R.mipmap.ee_27);
+		emotionMap.put("[(#)]", R.mipmap.ee_28);
+		emotionMap.put("[(R)]", R.mipmap.ee_29);
+		emotionMap.put("[({)]", R.mipmap.ee_30);
+		emotionMap.put("[(})]", R.mipmap.ee_31);
+		emotionMap.put("[(k)]", R.mipmap.ee_32);
+		emotionMap.put("[(F)]", R.mipmap.ee_33);
+		emotionMap.put("[(W)]", R.mipmap.ee_34);
+		emotionMap.put("[(D)]", R.mipmap.ee_35);
 	}
 	
 	/**

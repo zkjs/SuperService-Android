@@ -106,6 +106,38 @@ public class ConfigUtil {
     }
 
     /**
+     * 获得孔雀座(认证服务)链接
+     * @return
+     */
+    public String getPavDomain(){
+        return "http://" + getConfigValue(Constants.PAV_HOST)+ "/";
+    }
+
+    /**
+     * 获得罗盘座(位置服务)链接
+     * @return
+     */
+    public String getPyxDomain(){
+        return "http://" + getConfigValue(Constants.PYX_HOST)+ "/";
+    }
+
+    /**
+     * 获得天炉座(资源服务)链接
+     * @return
+     */
+    public String getForDomain(){
+        return "http://" + getConfigValue(Constants.FOR_HOST)+ "/";
+    }
+
+    /**
+     * 获得图片链接
+     * @return
+     */
+    public String getImgDomain(){
+        return "http://" + getConfigValue(Constants.IMG_HOST)+ "/";
+    }
+
+    /**
      * 根据标签名取得配置文件中的对应的文本
      *
      * @param key 标签名

@@ -24,7 +24,7 @@ import org.xmlpull.v1.XmlPullParserException;
 import android.util.Log;
 import android.util.Xml;
 
-import com.zkjinshi.superservice.vo.ShopEmployeeVo;
+import com.zkjinshi.superservice.vo.EmployeeVo;
 
 /**
  * 解析,xls,xlsx文件 工具类
@@ -46,8 +46,8 @@ public class JxlUtil {
      * @param path
      * @return
      */
-    public static ArrayList<ShopEmployeeVo> decodeXLS(String path){
-        ArrayList<ShopEmployeeVo> employeeVos = new ArrayList<ShopEmployeeVo>();
+    public static ArrayList<EmployeeVo> decodeXLS(String path){
+        ArrayList<EmployeeVo> employeeVos = new ArrayList<EmployeeVo>();
 
         try {
             Workbook workbook = null;
@@ -57,7 +57,7 @@ public class JxlUtil {
             int columnCount = sheet.getColumns();
             int rowCount = sheet.getRows();
             for (int i = START_ROW; i < rowCount; i++) {
-                ShopEmployeeVo shopEmployeeVo = new ShopEmployeeVo();
+                EmployeeVo shopEmployeeVo = new EmployeeVo();
                 for (int j = 0; j < columnCount; j++) {
                     cell = sheet.getCell(j, i);
                     String temp2 = "";
@@ -83,11 +83,11 @@ public class JxlUtil {
 
 
 
-    private static void initInfo(ShopEmployeeVo shopEmployeeVo,int j,String temp2) {
+    private static void initInfo(EmployeeVo shopEmployeeVo,int j,String temp2) {
         if(j == 1){
-            shopEmployeeVo.setDept_name(temp2);
+            shopEmployeeVo.setRolename(temp2);
         }else if(j == 3){
-            shopEmployeeVo.setName(temp2);
+            shopEmployeeVo.setUsername(temp2);
         }else if(j == 7){
             shopEmployeeVo.setPhone(temp2);
         }else if(j == 8){
