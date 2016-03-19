@@ -180,6 +180,7 @@
             <View
                 android:layout_width="0.5dp"
                 android:layout_height="match_parent"
+                android:visibility="gone"
                 android:background="@color/divider_line_color"></View>
 
             <LinearLayout
@@ -190,6 +191,7 @@
                 android:background="@drawable/bg_white_light_gray"
                 android:clickable="true"
                 android:gravity="center"
+                android:visibility="gone"
                 android:orientation="horizontal">
 
                 <ImageView

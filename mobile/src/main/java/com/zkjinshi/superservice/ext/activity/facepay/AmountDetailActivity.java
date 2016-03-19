@@ -1,6 +1,7 @@
 package com.zkjinshi.superservice.ext.activity.facepay;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -15,6 +16,7 @@ import com.zkjinshi.base.config.ConfigUtil;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.ext.response.AmountDetailResponse;
+import com.zkjinshi.superservice.ext.util.MathUtil;
 import com.zkjinshi.superservice.ext.vo.AmountStatusVo;
 import com.zkjinshi.superservice.net.ExtNetRequestListener;
 import com.zkjinshi.superservice.net.MethodType;
@@ -22,6 +24,7 @@ import com.zkjinshi.superservice.net.NetRequest;
 import com.zkjinshi.superservice.net.NetRequestTask;
 import com.zkjinshi.superservice.net.NetResponse;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 
 /**
@@ -44,6 +47,8 @@ public class AmountDetailActivity extends Activity {
 
     private AmountStatusVo amountStatusVo;
     private int amountStatus;
+
+    private boolean isSuccess;
 
     private void initView(){
         amountFailLayout = (LinearLayout)findViewById(R.id.layout_amount_fail);
@@ -69,6 +74,7 @@ public class AmountDetailActivity extends Activity {
     }
 
     private void initData(){
+        isSuccess = getIntent().getBooleanExtra("isSuccess",false);
         backIBtn.setVisibility(View.VISIBLE);
         titleTv.setText("收款详情");
         if(null != getIntent() && null != getIntent().getSerializableExtra("amountStatusVo")){
@@ -100,11 +106,15 @@ public class AmountDetailActivity extends Activity {
                 amountSuccUserNameTv.setText(userNameStr);
                 amountWaitUserNameTv.setText(userNameStr);
             }
-            String amountPriceStr = ""+amountStatusVo.getAmount();
-            if(!TextUtils.isEmpty(amountPriceStr)){
-                amountFailAmountPriceTv.setText(amountPriceStr);
-                amountSuccAmountPriceTv.setText(amountPriceStr);
-                amountWaitAmountPriceTv.setText(amountPriceStr);
+            long totalPrice = amountStatusVo.getAmount();
+            if(totalPrice > 0){
+                BigDecimal amount = new BigDecimal(totalPrice / 100.00);
+                String amountPriceStr = ""+ MathUtil.convertBigDecimal(amount);
+                if(!TextUtils.isEmpty(amountPriceStr)){
+                    amountFailAmountPriceTv.setText(amountPriceStr);
+                    amountSuccAmountPriceTv.setText(amountPriceStr);
+                    amountWaitAmountPriceTv.setText(amountPriceStr);
+                }
             }
             String orderNoStr = amountStatusVo.getOrderno();
             if(!TextUtils.isEmpty(orderNoStr)){
@@ -147,6 +157,10 @@ public class AmountDetailActivity extends Activity {
         backIBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(isSuccess){
+                    Intent intent = new Intent(AmountDetailActivity.this,AmountRecordActivity.class);
+                    startActivity(intent);
+                }
                 finish();
             }
         });

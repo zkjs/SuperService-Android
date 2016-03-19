@@ -12,9 +12,11 @@ import android.widget.TextView;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.zkjinshi.base.config.ConfigUtil;
 import com.zkjinshi.superservice.R;
+import com.zkjinshi.superservice.ext.util.MathUtil;
 import com.zkjinshi.superservice.ext.vo.AmountStatusVo;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 
 /**
@@ -88,7 +90,9 @@ public class AmountAdapter extends BaseAdapter {
         if(!TextUtils.isEmpty(userNameStr)){
             viewHolder.userNameTv.setText(userNameStr);
         }
-        String amountPriceStr = "¥"+amountStatusVo.getAmount();
+        long totalPrice = amountStatusVo.getAmount();
+        BigDecimal amount = new BigDecimal(totalPrice / 100.00);
+        String amountPriceStr = "¥"+ MathUtil.convertBigDecimal(amount);
         if(!TextUtils.isEmpty(amountPriceStr)){
             viewHolder.amountPriceTv.setText(amountPriceStr);
         }

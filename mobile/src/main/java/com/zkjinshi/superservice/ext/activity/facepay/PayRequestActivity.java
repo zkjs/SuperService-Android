@@ -179,7 +179,9 @@ public class PayRequestActivity extends Activity {
                                 AmountStatusVo amountStatusVo = amountResponse.getData();
                                 Intent intent = new Intent(PayRequestActivity.this,AmountDetailActivity.class);
                                 intent.putExtra("amountStatusVo",amountStatusVo);
+                                intent.putExtra("isSuccess",true);
                                 startActivity(intent);
+                                finish();
                             }else {
                                 String userNameStr = nearbyUserVo.getUsername();
                                 String msgTxt = "发送成功，等待"+userNameStr+"确认";
