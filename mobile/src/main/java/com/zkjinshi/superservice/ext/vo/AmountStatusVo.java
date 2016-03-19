@@ -24,6 +24,7 @@ public class AmountStatusVo implements Serializable {
 
     private String userid;
     private String username;
+    private String userimage;
     private String createtime;
     private float amount;
     private String orderno;
@@ -102,5 +103,13 @@ public class AmountStatusVo implements Serializable {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getUserimage() {
+        return userimage;
+    }
+
+    public void setUserimage(String userimage) {
+        this.userimage = userimage;
     }
 }

@@ -34,13 +34,21 @@ public class NearbyUserVo implements Serializable {
     private String userid;
     private String username;
     private String userlevel;
-    private String usericon;
+    private String userimage;
     private String sex;
     private String phone;
     private String city;
     private String shopid;
     private String shopname;
     private String arrivetime;
+
+    public String getUserimage() {
+        return userimage;
+    }
+
+    public void setUserimage(String userimage) {
+        this.userimage = userimage;
+    }
 
     public String getLocid() {
         return locid;
@@ -72,14 +80,6 @@ public class NearbyUserVo implements Serializable {
 
     public void setUserlevel(String userlevel) {
         this.userlevel = userlevel;
-    }
-
-    public String getUsericon() {
-        return usericon;
-    }
-
-    public void setUsericon(String usericon) {
-        this.usericon = usericon;
     }
 
     public String getSex() {

@@ -10,6 +10,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.zkjinshi.base.config.ConfigUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.ext.vo.NearbyUserVo;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
@@ -73,9 +74,9 @@ public class NearbyAdapter extends BaseAdapter {
         }
 
         NearbyUserVo nearbyUserVo = nearbyUserList.get(position);
-        String userId = nearbyUserVo.getUserid();
-        if(!TextUtils.isEmpty(userId)){
-            String path = ProtocolUtil.getAvatarUrl(userId);
+        String userIcon = nearbyUserVo.getUserimage();
+        if(!TextUtils.isEmpty(userIcon)){
+            String path = ConfigUtil.getInst().getImgDomain()+userIcon;
             if(!TextUtils.isEmpty(path)){
                 viewHolder.userPhotoIv.setImageURI(Uri.parse(path));
             }

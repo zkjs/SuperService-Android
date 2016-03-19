@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
+import com.zkjinshi.base.config.ConfigUtil;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.chat.single.ChatDetailActivity;
@@ -123,7 +124,7 @@ public class CheckOutActivity extends Activity {
      */
     private void requestNearbyUserListTask(){
         String shopId = CacheUtil.getInstance().getShopID();
-        String url = "http://p.zkjinshi.com/pyx/lbs/v1/loc/beacon/"+shopId+"/1000?page=0&page_size=20";
+        String url = ConfigUtil.getInst().getPyxDomain()+"lbs/v1/loc/beacon/"+shopId+"/1000?page=0&page_size=20";
         NetRequest netRequest = new NetRequest(url);
         NetRequestTask netRequestTask = new NetRequestTask(this,netRequest, NetResponse.class);
         netRequestTask.methodType = MethodType.GET;

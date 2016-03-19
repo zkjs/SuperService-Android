@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
+import com.zkjinshi.base.config.ConfigUtil;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.ext.response.AmountDetailResponse;
@@ -164,7 +165,7 @@ public class AmountDetailActivity extends Activity {
      * 重新发送扣款请求
      */
     private void requestResendAmountTask(AmountStatusVo amountStatusVo){
-        String url = "http://p.zkjinshi.com/for/res/v1/payment";
+        String url = ConfigUtil.getInst().getForDomain()+"res/v1/payment";
         NetRequest netRequest = new NetRequest(url);
         HashMap<String,Object> bizMap = new HashMap<String,Object>();
         float amount = amountStatusVo.getAmount();

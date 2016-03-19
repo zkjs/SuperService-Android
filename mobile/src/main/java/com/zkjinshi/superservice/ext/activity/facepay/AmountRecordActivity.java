@@ -13,6 +13,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
+import com.zkjinshi.base.config.ConfigUtil;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.ext.adapter.AmountAdapter;
@@ -97,7 +98,7 @@ public class AmountRecordActivity extends Activity {
      * 获取收款记录列表
      */
     private void requestAmountRecordListTask(){
-        String url = "http://p.zkjinshi.com/for/res/v1/payment/ss";
+        String url = ConfigUtil.getInst().getForDomain()+"res/v1/payment/ss";
         NetRequest netRequest = new NetRequest(url);
         NetRequestTask netRequestTask = new NetRequestTask(this,netRequest, NetResponse.class);
         netRequestTask.methodType = MethodType.GET;

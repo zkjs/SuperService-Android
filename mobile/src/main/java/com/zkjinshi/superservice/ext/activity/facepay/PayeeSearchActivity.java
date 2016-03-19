@@ -20,6 +20,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
+import com.zkjinshi.base.config.ConfigUtil;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.base.util.SoftInputUtil;
 import com.zkjinshi.superservice.R;
@@ -160,7 +161,7 @@ public class PayeeSearchActivity extends Activity {
      *
      */
     private void requestNearbyByPhoneNumTask(String phoneNum){
-        String url = "http://p.zkjinshi.com/for/res/v1/query/si/all?phone="+phoneNum;
+        String url = ConfigUtil.getInst().getForDomain()+"res/v1/query/si/all?phone="+phoneNum;
         //String url = "http://p.zkjinshi.com/for/res/v1/query/si/all";
         NetRequest netRequest = new NetRequest(url);
         NetRequestTask netRequestTask = new NetRequestTask(this,netRequest, NetResponse.class);

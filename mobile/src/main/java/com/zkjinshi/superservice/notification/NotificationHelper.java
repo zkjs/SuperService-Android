@@ -271,8 +271,8 @@ public class NotificationHelper {
     public void showNotification(final Context context, final AmountStatusVo amountStatusVo){
         ImageSize imageSize = new ImageSize(DisplayUtil.dip2px(context, 36),
                 DisplayUtil.dip2px(context, 36));
-        String contactId = amountStatusVo.getUserid();
-        String imageUrl  = ProtocolUtil.getAvatarUrl(contactId);
+        String userimage = amountStatusVo.getUserimage();
+        String imageUrl  = ConfigUtil.getInst().getImgDomain()+userimage;
         ImageLoader.getInstance().loadImage(imageUrl,imageSize, new ImageLoadingListener() {
             @Override
             public void onLoadingStarted(String imageUri, View view) {

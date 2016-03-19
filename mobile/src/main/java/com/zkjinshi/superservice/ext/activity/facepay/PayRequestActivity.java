@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.blueware.agent.android.B;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.gson.Gson;
+import com.zkjinshi.base.config.ConfigUtil;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.ext.response.AmountDetailResponse;
@@ -77,9 +78,9 @@ public class PayRequestActivity extends Activity {
                 userNameTv.setText(userNameStr);
                 finishUserNameTv.setText(userNameStr);
             }
-            String userId = nearbyUserVo.getUserid();
-            if(!TextUtils.isEmpty(userId)){
-                String path = ProtocolUtil.getAvatarUrl(userId);
+            String userimage = nearbyUserVo.getUserimage();
+            if(!TextUtils.isEmpty(userimage)){
+                String path = ConfigUtil.getInst().getImgDomain()+userimage;
                 if(!TextUtils.isEmpty(path)){
                     userPhotoDv.setImageURI(Uri.parse(path));
                 }
@@ -132,7 +133,7 @@ public class PayRequestActivity extends Activity {
      * 请求扣款
      */
     private void requestChargeTask(NearbyUserVo nearbyUserVo,long amount){
-        String url = "http://p.zkjinshi.com/for/res/v1/payment";
+        String url = ConfigUtil.getInst().getForDomain()+"res/v1/payment";
         NetRequest netRequest = new NetRequest(url);
         HashMap<String,Object> bizMap = new HashMap<String,Object>();
         String target = nearbyUserVo.getUserid();

@@ -10,6 +10,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.zkjinshi.base.config.ConfigUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.ext.vo.AmountStatusVo;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
@@ -76,9 +77,9 @@ public class AmountAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
         AmountStatusVo amountStatusVo = amountStatusList.get(position);
-        String userIdStr = amountStatusVo.getUserid();
-        if(!TextUtils.isEmpty(userIdStr)){
-            String path = ProtocolUtil.getAvatarUrl(userIdStr);
+        String userIcon = amountStatusVo.getUserimage();
+        if(!TextUtils.isEmpty(userIcon)){
+            String path = ConfigUtil.getInst().getImgDomain()+userIcon;
             if(!TextUtils.isEmpty(path)){
                 viewHolder.userPhotoDv.setImageURI(Uri.parse(path));
             }
