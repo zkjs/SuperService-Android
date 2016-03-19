@@ -1,6 +1,7 @@
 package com.zkjinshi.superservice.ext.activity.facepay;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -20,6 +21,8 @@ import com.zkjinshi.base.config.ConfigUtil;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.ext.response.AmountDetailResponse;
+import com.zkjinshi.superservice.ext.util.MathUtil;
+import com.zkjinshi.superservice.ext.vo.AmountStatusVo;
 import com.zkjinshi.superservice.ext.vo.NearbyUserVo;
 import com.zkjinshi.superservice.net.ExtNetRequestListener;
 import com.zkjinshi.superservice.net.MethodType;
@@ -103,10 +106,20 @@ public class PayRequestActivity extends Activity {
             @Override
             public void onClick(View view) {
                 String amount = inputPriceEtv.getText().toString();
-                finishAmount.setText(amount);
-                if(!TextUtils.isEmpty(amount)){
-                    long amountL = Long.parseLong(amount);
-                    requestChargeTask(nearbyUserVo,amountL);
+                if(MathUtil.isPriceOk(amount)){
+                    if(!TextUtils.isEmpty(amount)){
+                        finishAmount.setText(amount);
+                        long amountL = MathUtil.parsePrice(amount);
+                        if(amountL > 0){
+                            requestChargeTask(nearbyUserVo,amountL);
+                        }else {
+                            DialogUtil.getInstance().showCustomToast(PayRequestActivity.this,"请输入正确金额!",Gravity.CENTER);
+                        }
+                    }else {
+                        DialogUtil.getInstance().showCustomToast(PayRequestActivity.this,"输入金额不能为空!",Gravity.CENTER);
+                    }
+                }else {
+                    DialogUtil.getInstance().showCustomToast(PayRequestActivity.this,"请输入正确金额!",Gravity.CENTER);
                 }
             }
         });
@@ -132,7 +145,7 @@ public class PayRequestActivity extends Activity {
     /**
      * 请求扣款
      */
-    private void requestChargeTask(NearbyUserVo nearbyUserVo,long amount){
+    private void requestChargeTask(final NearbyUserVo nearbyUserVo,final long amount){
         String url = ConfigUtil.getInst().getForDomain()+"res/v1/payment";
         NetRequest netRequest = new NetRequest(url);
         HashMap<String,Object> bizMap = new HashMap<String,Object>();
@@ -162,9 +175,18 @@ public class PayRequestActivity extends Activity {
                     if(null != amountResponse){
                         int resultFlag = amountResponse.getRes();
                         if(0 == resultFlag){
-                            DialogUtil.getInstance().showCustomToast(PayRequestActivity.this,"发送扣款成功", Gravity.CENTER);
-                            payRequestLayout.setVisibility(View.GONE);
-                            payRequestSuccLayout.setVisibility(View.VISIBLE);
+                            if(amount <= 10000){
+                                AmountStatusVo amountStatusVo = amountResponse.getData();
+                                Intent intent = new Intent(PayRequestActivity.this,AmountDetailActivity.class);
+                                intent.putExtra("amountStatusVo",amountStatusVo);
+                                startActivity(intent);
+                            }else {
+                                String userNameStr = nearbyUserVo.getUsername();
+                                String msgTxt = "发送成功，等待"+userNameStr+"确认";
+                                DialogUtil.getInstance().showCustomToast(PayRequestActivity.this,msgTxt, Gravity.CENTER);
+                                payRequestLayout.setVisibility(View.GONE);
+                                payRequestSuccLayout.setVisibility(View.VISIBLE);
+                            }
                         }else {
                             String errorMsg = amountResponse.getResDesc();
                             if(!TextUtils.isEmpty(errorMsg)){

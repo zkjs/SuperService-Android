@@ -217,9 +217,8 @@ public class NotificationHelper {
                 String contactName = yunBaMsgVo.getUserName();
                 String content = yunBaMsgVo.getContent();
                 if(!TextUtils.isEmpty(contactName)){
-                    notificationBuilder.setContentTitle(contactName);
+                    notificationBuilder.setContentTitle(contactName+content);
                 }
-                notificationBuilder.setContentText(content);
                 notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
                 // 2.设置点击跳转事件
                 Intent intent = new Intent(context, SplashActivity.class);
@@ -241,9 +240,8 @@ public class NotificationHelper {
                 String contactName = yunBaMsgVo.getUserName();
                 String content = yunBaMsgVo.getContent();
                 if(!TextUtils.isEmpty(contactName)){
-                    notificationBuilder.setContentTitle(contactName);
+                    notificationBuilder.setContentTitle(contactName+content);
                 }
-                notificationBuilder.setContentText(content);
                 notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
                 notificationBuilder.setLargeIcon(loadedImage);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
@@ -284,7 +282,6 @@ public class NotificationHelper {
                 NotificationCompat.Builder notificationBuilder = null;
                 // 1.设置显示信息
                 notificationBuilder = new NotificationCompat.Builder(context);
-                String contactName = amountStatusVo.getUsername();
                 int status = amountStatusVo.getStatus();
                 //0-待确认, 1-已拒绝, 2-已确认
                 String tipsMsg = null;
@@ -293,10 +290,7 @@ public class NotificationHelper {
                 }else {
                     tipsMsg = "用户已确认收款";
                 }
-                if(!TextUtils.isEmpty(contactName)){
-                    notificationBuilder.setContentTitle(contactName);
-                }
-                notificationBuilder.setContentText(tipsMsg);
+                notificationBuilder.setContentTitle(tipsMsg);
                 notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
                 ++NOTIFY_ID;
                 // 2.设置点击跳转事件
@@ -317,7 +311,6 @@ public class NotificationHelper {
                 NotificationCompat.Builder notificationBuilder = null;
                 // 1.设置显示信息
                 notificationBuilder = new NotificationCompat.Builder(context);
-                String contactName = amountStatusVo.getUsername();
                 int status = amountStatusVo.getStatus();
                 //0-待确认, 1-已拒绝, 2-已确认
                 String tipsMsg = null;
@@ -326,10 +319,7 @@ public class NotificationHelper {
                 }else {
                     tipsMsg = "用户已确认收款";
                 }
-                if(!TextUtils.isEmpty(contactName)){
-                    notificationBuilder.setContentTitle(contactName);
-                }
-                notificationBuilder.setContentText(tipsMsg);
+                notificationBuilder.setContentTitle(tipsMsg);
                 notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
                 notificationBuilder.setLargeIcon(loadedImage);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {

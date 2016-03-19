@@ -209,9 +209,7 @@ public class NoticeFragment extends Fragment {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            return;
-        }
-        if (locIds.contains(",")) {
+        }else {
             PAGE_NO = 0;
             requestNoticesTask(true);
         }

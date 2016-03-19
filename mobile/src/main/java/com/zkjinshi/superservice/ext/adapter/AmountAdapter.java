@@ -104,7 +104,7 @@ public class AmountAdapter extends BaseAdapter {
         if(0 == amountStatus){
             viewHolder.amountStatusTv.setTextColor(context.getResources().getColor(R.color.red));
         }else if(1 == amountStatus){
-            viewHolder.amountStatusTv.setTextColor(context.getResources().getColor(R.color.yellow));
+            viewHolder.amountStatusTv.setTextColor(context.getResources().getColor(R.color.dark_yellow));
         }else if(2 == amountStatus){
             viewHolder.amountStatusTv.setTextColor(context.getResources().getColor(R.color.black));
         }

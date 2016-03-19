@@ -192,11 +192,6 @@ public class PayeeSearchActivity extends Activity {
                             if(null != nearbyUserList && !nearbyUserList.isEmpty()){
                                 nearbyAdapter.setNearbyUserList(nearbyUserList);
                             }
-                        }else {
-                            String errorMsg = nearbyUserResponse.getResDesc();
-                            if(!TextUtils.isEmpty(errorMsg)){
-                                DialogUtil.getInstance().showCustomToast(PayeeSearchActivity.this,errorMsg, Gravity.CENTER);
-                            }
                         }
                     }
                 }
