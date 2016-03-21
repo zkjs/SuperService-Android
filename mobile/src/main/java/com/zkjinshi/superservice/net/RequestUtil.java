@@ -1,7 +1,10 @@
 package com.zkjinshi.superservice.net;
 
+import android.content.Context;
+import android.content.Intent;
 import android.text.TextUtils;
 
+import com.zkjinshi.superservice.activity.common.LoginActivity;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.FileUtil;
 
@@ -436,6 +439,14 @@ public class RequestUtil {
         }
         conn.disconnect();
         return result.toString();
+    }
+
+    public static void onFailure(Context context, int statusCode){
+        if(statusCode == 401){
+            CacheUtil.getInstance().setLogin(false);
+            Intent intent = new Intent(context, LoginActivity.class);
+            context.startActivity(intent);
+        }
     }
 
 

@@ -25,6 +25,7 @@ import com.zkjinshi.superservice.activity.chat.single.ChatActivity;
 import com.zkjinshi.superservice.adapter.TeamContactsAdapter;
 
 import com.zkjinshi.superservice.manager.SSOManager;
+import com.zkjinshi.superservice.net.RequestUtil;
 import com.zkjinshi.superservice.response.GetEmployeesResponse;
 import com.zkjinshi.superservice.sqlite.ShopEmployeeDBUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
@@ -188,6 +189,7 @@ public class TeamContactsActivity extends AppCompatActivity{
 
                 public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error){
                     Toast.makeText(mContext,"API 错误："+statusCode,Toast.LENGTH_SHORT).show();
+                    RequestUtil.onFailure(mContext,statusCode);
                 }
             });
         }catch (Exception e){

@@ -54,6 +54,7 @@ public abstract class ExtNetRequestListener implements NetRequestListener{
         ((Activity)context).runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                CacheUtil.getInstance().setLogin(false);
                 Intent intent = new Intent(context,LoginActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 ((Activity)context).startActivity(intent);

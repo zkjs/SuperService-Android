@@ -29,6 +29,7 @@ import com.zkjinshi.superservice.adapter.ContactsSortAdapter;
 import com.zkjinshi.superservice.factory.ClientFactory;
 import com.zkjinshi.superservice.net.ExtNetRequestListener;
 import com.zkjinshi.superservice.net.NetResponse;
+import com.zkjinshi.superservice.net.RequestUtil;
 import com.zkjinshi.superservice.response.GetClientsResponse;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.ClientComparator;
@@ -264,6 +265,7 @@ public class ClientActivity extends AppCompatActivity{
 
                 public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error){
                     Toast.makeText(mContext,"API 错误："+statusCode,Toast.LENGTH_SHORT).show();
+                    RequestUtil.onFailure(mContext,statusCode);
                 }
             });
         }catch (Exception e){
