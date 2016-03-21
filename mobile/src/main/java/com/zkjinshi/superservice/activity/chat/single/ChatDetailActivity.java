@@ -21,6 +21,7 @@ import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.chat.group.CreateGroupActivity;
 import com.zkjinshi.superservice.activity.common.MainActivity;
 import com.zkjinshi.superservice.adapter.ChatDetailAdapter;
+import com.zkjinshi.superservice.base.BaseActivity;
 import com.zkjinshi.superservice.factory.EContactFactory;
 import com.zkjinshi.superservice.sqlite.ClientDBUtil;
 import com.zkjinshi.superservice.sqlite.ShopEmployeeDBUtil;
@@ -38,7 +39,7 @@ import java.util.ArrayList;
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class ChatDetailActivity extends Activity{
+public class ChatDetailActivity extends BaseActivity{
 
     private TextView titleTv;
     private ImageButton backIBtn;

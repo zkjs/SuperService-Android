@@ -38,6 +38,7 @@ import com.zkjinshi.superservice.activity.chat.single.actions.MoreViewPagerManag
 import com.zkjinshi.superservice.activity.chat.single.actions.NetCheckManager;
 import com.zkjinshi.superservice.activity.chat.single.actions.QuickMenuManager;
 import com.zkjinshi.superservice.activity.chat.single.actions.VoiceRecordManager;
+import com.zkjinshi.superservice.base.BaseAppCompatActivity;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.utils.FileUtil;
@@ -60,7 +61,7 @@ import static android.view.View.VISIBLE;
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class ChatActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener {
+public class ChatActivity extends BaseAppCompatActivity implements CompoundButton.OnCheckedChangeListener {
 
     private final static String TAG = ChatActivity.class.getSimpleName();
 

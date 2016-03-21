@@ -15,6 +15,7 @@ import com.zkjinshi.base.log.LogUtil;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.adapter.TeamEditContactsAdapter;
+import com.zkjinshi.superservice.base.BaseActivity;
 import com.zkjinshi.superservice.bean.TeamContactBean;
 import com.zkjinshi.superservice.factory.ShopEmployeeFactory;
 import com.zkjinshi.superservice.listener.GetTeamContactsListener;
@@ -45,7 +46,7 @@ import java.util.List;
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class TeamEditActivity extends Activity {
+public class TeamEditActivity extends BaseActivity {
 
     private static final String TAG = TeamEditActivity.class.getSimpleName();
 

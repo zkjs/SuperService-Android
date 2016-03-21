@@ -8,6 +8,7 @@ import android.view.Window;
 import android.widget.Button;
 
 import com.zkjinshi.superservice.R;
+import com.zkjinshi.superservice.base.BaseActivity;
 
 import org.apache.log4j.chainsaw.Main;
 
@@ -17,7 +18,7 @@ import org.apache.log4j.chainsaw.Main;
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class ShopRegisterActivity extends Activity  implements VerifyPhoneControler.SuccessCallBack{
+public class ShopRegisterActivity extends BaseActivity implements VerifyPhoneControler.SuccessCallBack{
 
     private final static String TAG = ShopRegisterActivity.class.getSimpleName();
     private Button registerBtn;

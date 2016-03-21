@@ -22,6 +22,7 @@ import com.zkjinshi.superservice.activity.common.InviteCodesActivity;
 import com.zkjinshi.superservice.activity.common.MoreActivity;
 import com.zkjinshi.superservice.activity.common.WebViewActivity;
 import com.zkjinshi.superservice.activity.common.ZoneActivity;
+import com.zkjinshi.superservice.base.BaseActivity;
 import com.zkjinshi.superservice.bean.Head;
 import com.zkjinshi.superservice.bean.InviteCode;
 import com.zkjinshi.superservice.bean.SempCodeReturnBean;
@@ -49,7 +50,7 @@ import java.util.List;
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class SettingActivity extends Activity  {
+public class SettingActivity extends BaseActivity {
 
     private final static String TAG = SettingActivity.class.getSimpleName();
 

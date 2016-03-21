@@ -23,6 +23,7 @@ import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.filechoser.activity.FileListActivity;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.adapter.ContactsAdapter;
+import com.zkjinshi.superservice.base.BaseActivity;
 import com.zkjinshi.superservice.bean.ImportSempBean;
 import com.zkjinshi.superservice.net.ExtNetRequestListener;
 import com.zkjinshi.superservice.net.MethodType;
@@ -65,7 +66,7 @@ import cz.msebera.android.httpclient.entity.StringEntity;
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class EmployeeAddActivity extends Activity {
+public class EmployeeAddActivity extends BaseActivity {
 
     private final static String TAG = EmployeeAddActivity.class.getSimpleName();
     /**获取库Phon表字段**/

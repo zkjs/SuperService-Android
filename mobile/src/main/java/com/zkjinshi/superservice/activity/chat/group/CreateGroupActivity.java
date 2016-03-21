@@ -19,6 +19,7 @@ import com.easemob.exceptions.EaseMobException;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.adapter.CreateGroupAdapter;
+import com.zkjinshi.superservice.base.BaseActivity;
 import com.zkjinshi.superservice.factory.EContactFactory;
 import com.zkjinshi.superservice.listener.RecyclerItemClickListener;
 import com.zkjinshi.superservice.sqlite.ClientDBUtil;
@@ -40,7 +41,7 @@ import java.util.Map;
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class CreateGroupActivity extends Activity {
+public class CreateGroupActivity extends BaseActivity {
 
     public static final String TAG = CreateGroupActivity.class.getSimpleName();
 

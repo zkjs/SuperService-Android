@@ -24,6 +24,7 @@ import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.chat.single.ChatActivity;
 import com.zkjinshi.superservice.adapter.TeamContactsAdapter;
 
+import com.zkjinshi.superservice.base.BaseAppCompatActivity;
 import com.zkjinshi.superservice.manager.SSOManager;
 import com.zkjinshi.superservice.net.RequestUtil;
 import com.zkjinshi.superservice.response.GetEmployeesResponse;
@@ -53,7 +54,7 @@ import cz.msebera.android.httpclient.entity.StringEntity;
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class TeamContactsActivity extends AppCompatActivity{
+public class TeamContactsActivity extends BaseAppCompatActivity {
 
     public static final int ADD_REQUEST_CODE = 1;
 

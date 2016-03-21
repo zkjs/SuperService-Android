@@ -25,6 +25,7 @@ import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.adapter.GoodAdapter;
 
+import com.zkjinshi.superservice.base.BaseActivity;
 import com.zkjinshi.superservice.listener.OnRefreshListener;
 import com.zkjinshi.superservice.net.ExtNetRequestListener;
 import com.zkjinshi.superservice.net.MethodType;
@@ -55,7 +56,7 @@ import cz.msebera.android.httpclient.entity.StringEntity;
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class GoodListActivity extends Activity {
+public class GoodListActivity extends BaseActivity {
 
     private final static String TAG = GoodListActivity.class.getSimpleName();
 

@@ -22,6 +22,7 @@ import com.google.gson.reflect.TypeToken;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.adapter.PayAdapter;
+import com.zkjinshi.superservice.base.BaseAppCompatActivity;
 import com.zkjinshi.superservice.bean.PayBean;
 import com.zkjinshi.superservice.net.ExtNetRequestListener;
 import com.zkjinshi.superservice.net.MethodType;
@@ -40,7 +41,7 @@ import java.util.HashMap;
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class PayMethodActivity  extends AppCompatActivity implements AdapterView.OnItemClickListener{
+public class PayMethodActivity  extends BaseAppCompatActivity implements AdapterView.OnItemClickListener{
 
     private final static String TAG = PayMethodActivity.class.getSimpleName();
 

@@ -14,6 +14,7 @@ import com.andexert.calendarlistview.DatePickerController;
 import com.andexert.calendarlistview.DayPickerView;
 import com.andexert.calendarlistview.SimpleMonthAdapter;
 import com.zkjinshi.superservice.R;
+import com.zkjinshi.superservice.base.BaseActivity;
 
 
 import java.io.Serializable;
@@ -27,7 +28,7 @@ import java.util.Calendar;
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class CalendarActivity extends Activity implements DatePickerController {
+public class CalendarActivity extends BaseActivity implements DatePickerController {
 
     //private ImageButton backIBtn;
     private ImageButton backBtn;//返回

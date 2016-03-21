@@ -33,6 +33,7 @@ import com.zkjinshi.superservice.activity.set.ClientActivity;
 import com.zkjinshi.superservice.activity.set.SettingActivity;
 import com.zkjinshi.superservice.activity.set.TeamContactsActivity;
 
+import com.zkjinshi.superservice.base.BaseAppCompatActivity;
 import com.zkjinshi.superservice.emchat.EasemobIMHelper;
 import com.zkjinshi.superservice.ext.activity.facepay.CheckOutActivity;
 import com.zkjinshi.superservice.manager.SSOManager;
@@ -61,7 +62,7 @@ import org.apache.log4j.chainsaw.Main;
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends BaseAppCompatActivity {
 
     private MainActivityController mainActivityController;
 

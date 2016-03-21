@@ -20,6 +20,7 @@ import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.base.util.TimeUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.adapter.PayAdapter;
+import com.zkjinshi.superservice.base.BaseActivity;
 import com.zkjinshi.superservice.bean.NoticeBean;
 import com.zkjinshi.superservice.bean.PayBean;
 import com.zkjinshi.superservice.net.ExtNetRequestListener;
@@ -46,7 +47,7 @@ import java.util.HashMap;
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class OrderPayActivity  extends Activity implements AdapterView.OnItemClickListener{
+public class OrderPayActivity  extends BaseActivity implements AdapterView.OnItemClickListener{
     private final static String TAG = OrderPayActivity.class.getSimpleName();
 
     private OrderDetailForDisplay orderDetailForDisplay;

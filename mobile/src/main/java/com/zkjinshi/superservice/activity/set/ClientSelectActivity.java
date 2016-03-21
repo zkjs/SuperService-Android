@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
+import com.zkjinshi.superservice.base.BaseActivity;
 import com.zkjinshi.superservice.bean.ClientBaseBean;
 import com.zkjinshi.superservice.bean.ClientBindBean;
 import com.zkjinshi.superservice.net.ExtNetRequestListener;
@@ -43,7 +44,7 @@ import java.util.HashMap;
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class ClientSelectActivity extends Activity {
+public class ClientSelectActivity extends BaseActivity {
 
     private final static String TAG = ClientSelectActivity.class.getSimpleName();
 

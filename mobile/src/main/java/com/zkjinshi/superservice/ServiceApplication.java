@@ -26,6 +26,7 @@ import com.zkjinshi.base.log.LogSwitch;
 import com.zkjinshi.base.log.LogUtil;
 import com.zkjinshi.base.util.BaseContext;
 import com.zkjinshi.base.util.DeviceUtils;
+import com.zkjinshi.superservice.base.BaseApplication;
 import com.zkjinshi.superservice.emchat.EasemobIMHelper;
 import com.zkjinshi.superservice.emchat.observer.EGroupReomveListener;
 import com.zkjinshi.superservice.utils.CacheUtil;
@@ -47,7 +48,7 @@ import io.yunba.android.manager.YunBaManager;
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class ServiceApplication extends Application{
+public class ServiceApplication extends BaseApplication {
 
     public static final String TAG = ServiceApplication.class.getSimpleName();
 

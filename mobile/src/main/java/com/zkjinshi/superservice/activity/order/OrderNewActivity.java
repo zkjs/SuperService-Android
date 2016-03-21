@@ -24,6 +24,7 @@ import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.base.util.TimeUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.set.ClientActivity;
+import com.zkjinshi.superservice.base.BaseActivity;
 import com.zkjinshi.superservice.bean.AddOrderBean;
 import com.zkjinshi.superservice.bean.PayBean;
 import com.zkjinshi.superservice.emchat.EMConversationHelper;
@@ -54,7 +55,7 @@ import me.kaede.tagview.TagView;
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class OrderNewActivity extends Activity {
+public class OrderNewActivity extends BaseActivity {
 
     private final static String TAG = OrderNewActivity.class.getSimpleName();
 

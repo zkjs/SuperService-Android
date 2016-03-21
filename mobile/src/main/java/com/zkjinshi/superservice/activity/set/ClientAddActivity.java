@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
+import com.zkjinshi.superservice.base.BaseActivity;
 import com.zkjinshi.superservice.sqlite.ClientDBUtil;
 import com.zkjinshi.superservice.vo.ClientVo;
 import com.zkjinshi.superservice.vo.ContactType;
@@ -26,7 +27,7 @@ import com.zkjinshi.superservice.vo.IsBill;
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class ClientAddActivity extends Activity {
+public class ClientAddActivity extends BaseActivity {
 
     private final static String TAG = ClientAddActivity.class.getSimpleName();
 

@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.base.util.ImageUtil;
 import com.zkjinshi.superservice.R;
+import com.zkjinshi.superservice.base.BaseActivity;
 import com.zkjinshi.superservice.view.zoomview.CropImage;
 import com.zkjinshi.superservice.view.zoomview.CropImageView;
 
@@ -28,7 +29,7 @@ import com.zkjinshi.superservice.view.zoomview.CropImageView;
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class CutActivity extends Activity {
+public class CutActivity extends BaseActivity {
 
     private TextView centerTitleTv,finishCutTv;
     private ImageButton backIBtn;

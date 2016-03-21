@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import com.zkjinshi.superservice.R;
+import com.zkjinshi.superservice.base.BaseFragmentActivity;
 import com.zkjinshi.superservice.manager.YunBaSubscribeManager;
 import com.zkjinshi.superservice.view.scviewpager.DotsView;
 import com.zkjinshi.superservice.view.scviewpager.SCPositionAnimation;
@@ -22,7 +23,7 @@ import com.zkjinshi.superservice.view.scviewpager.SCViewPagerAdapter;
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class GuideActivity extends FragmentActivity {
+public class GuideActivity extends BaseFragmentActivity {
 
     private static String TAG = GuideActivity.class.getSimpleName();
 

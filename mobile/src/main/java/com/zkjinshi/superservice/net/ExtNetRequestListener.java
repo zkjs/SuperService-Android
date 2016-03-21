@@ -8,6 +8,7 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.activity.common.LoginActivity;
+import com.zkjinshi.superservice.base.BaseApplication;
 import com.zkjinshi.superservice.bean.BaseBean;
 import com.zkjinshi.superservice.utils.CacheUtil;
 
@@ -55,6 +56,7 @@ public abstract class ExtNetRequestListener implements NetRequestListener{
             @Override
             public void run() {
                 CacheUtil.getInstance().setLogin(false);
+                BaseApplication.getInst().clear();
                 Intent intent = new Intent(context,LoginActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 ((Activity)context).startActivity(intent);

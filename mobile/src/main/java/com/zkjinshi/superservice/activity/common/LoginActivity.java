@@ -15,6 +15,7 @@ import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.set.ClientController;
 import com.zkjinshi.superservice.activity.set.TeamContactsController;
+import com.zkjinshi.superservice.base.BaseActivity;
 import com.zkjinshi.superservice.bean.SempLoginBean;
 import com.zkjinshi.superservice.factory.UserFactory;
 import com.zkjinshi.superservice.manager.YunBaSubscribeManager;
@@ -38,7 +39,7 @@ import org.json.JSONObject;
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class LoginActivity extends Activity implements VerifyPhoneControler.SuccessCallBack{
+public class LoginActivity extends BaseActivity implements VerifyPhoneControler.SuccessCallBack{
 
     private final static String TAG = LoginActivity.class.getSimpleName();
 

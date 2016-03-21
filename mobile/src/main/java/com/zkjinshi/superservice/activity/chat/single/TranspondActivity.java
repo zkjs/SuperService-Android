@@ -25,6 +25,7 @@ import com.zkjinshi.base.view.CustomDialog;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.set.TeamContactsController;
 import com.zkjinshi.superservice.adapter.TranspondAdapter;
+import com.zkjinshi.superservice.base.BaseAppCompatActivity;
 import com.zkjinshi.superservice.bean.BookOrderBean;
 import com.zkjinshi.superservice.bean.TeamContactBean;
 import com.zkjinshi.superservice.factory.ShopEmployeeFactory;
@@ -47,7 +48,7 @@ import java.util.List;
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class TranspondActivity extends AppCompatActivity {
+public class TranspondActivity extends BaseAppCompatActivity {
 
     private final static String TAG = TranspondActivity.class.getSimpleName();
 

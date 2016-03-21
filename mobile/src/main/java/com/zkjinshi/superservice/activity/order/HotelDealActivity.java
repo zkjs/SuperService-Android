@@ -29,6 +29,7 @@ import com.zkjinshi.base.util.TimeUtil;
 
 import com.zkjinshi.superservice.R;
 
+import com.zkjinshi.superservice.base.BaseActivity;
 import com.zkjinshi.superservice.bean.OrderDetailBean;
 import com.zkjinshi.superservice.emchat.EMConversationHelper;
 import com.zkjinshi.superservice.net.ExtNetRequestListener;
@@ -61,7 +62,7 @@ import java.util.HashMap;
 /**
  * Created by dujiande on 2015/12/29.
  */
-public class HotelDealActivity extends Activity {
+public class HotelDealActivity extends BaseActivity {
 
     private final static String TAG = HotelDealActivity.class.getSimpleName();
 

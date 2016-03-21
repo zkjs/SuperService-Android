@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
 
+import com.zkjinshi.superservice.base.BaseActivity;
 import com.zkjinshi.superservice.utils.DepartmentDialog;
 import com.zkjinshi.superservice.utils.StringUtil;
 import com.zkjinshi.superservice.vo.DepartmentVo;
@@ -26,7 +27,7 @@ import com.zkjinshi.superservice.vo.EmployeeVo;
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class EmployeeHandAddActivity extends Activity {
+public class EmployeeHandAddActivity extends BaseActivity {
 
     private final static String TAG = EmployeeHandAddActivity.class.getSimpleName();
 

@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.zkjinshi.superservice.R;
 
+import com.zkjinshi.superservice.base.BaseActivity;
 import com.zkjinshi.superservice.utils.JxlUtil;
 
 
@@ -20,7 +21,7 @@ import com.zkjinshi.superservice.utils.JxlUtil;
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class TestActivity extends Activity{
+public class TestActivity extends BaseActivity {
 
     private final static String TAG = TestActivity.class.getSimpleName();
 

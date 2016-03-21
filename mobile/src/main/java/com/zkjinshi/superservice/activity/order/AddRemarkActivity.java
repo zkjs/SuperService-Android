@@ -16,12 +16,13 @@ import android.widget.TextView;
 
 import com.zkjinshi.base.util.DisplayUtil;
 import com.zkjinshi.superservice.R;
+import com.zkjinshi.superservice.base.BaseActivity;
 
 
 /**
  * Created by djd on 2015/8/28.
  */
-public class AddRemarkActivity extends Activity implements View.OnClickListener{
+public class AddRemarkActivity extends BaseActivity implements View.OnClickListener{
 
     private TextView titleTv;
     private ImageView backIv;

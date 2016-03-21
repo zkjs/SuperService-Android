@@ -25,6 +25,7 @@ import com.google.gson.Gson;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.adapter.InviteCodeFragmentAdapter;
+import com.zkjinshi.superservice.base.BaseAppCompatActivity;
 import com.zkjinshi.superservice.fragment.UnusedInviteCodeFragment;
 import com.zkjinshi.superservice.fragment.UsedInviteCodeFragment;
 import com.zkjinshi.superservice.net.ExtNetRequestListener;
@@ -47,7 +48,7 @@ import java.util.List;
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class InviteCodesActivity extends AppCompatActivity {
+public class InviteCodesActivity extends BaseAppCompatActivity {
 
     private final static String TAG = InviteCodesActivity.class.getSimpleName();
 

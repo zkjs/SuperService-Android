@@ -23,6 +23,7 @@ import com.zkjinshi.base.log.LogUtil;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.chat.single.ChatActivity;
+import com.zkjinshi.superservice.base.BaseActivity;
 import com.zkjinshi.superservice.bean.ClientBindBean;
 import com.zkjinshi.superservice.emchat.EMConversationHelper;
 import com.zkjinshi.superservice.net.ExtNetRequestListener;
@@ -43,7 +44,7 @@ import org.json.JSONObject;
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class ClientBindActivity extends Activity {
+public class ClientBindActivity extends BaseActivity {
 
     private final static String TAG = ClientBindActivity.class.getSimpleName();
 

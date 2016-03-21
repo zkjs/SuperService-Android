@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
 import com.zkjinshi.superservice.R;
+import com.zkjinshi.superservice.base.BaseActivity;
 
 /**
  * 开发者：dujiande
@@ -16,7 +17,7 @@ import com.zkjinshi.superservice.R;
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class ShopMoreActivity extends Activity {
+public class ShopMoreActivity extends BaseActivity {
 
     private final static String TAG = ShopMoreActivity.class.getSimpleName();
     private Spinner spinner;

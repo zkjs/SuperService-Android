@@ -16,6 +16,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.zkjinshi.base.util.TimeUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.chat.single.ChatActivity;
+import com.zkjinshi.superservice.base.BaseActivity;
 import com.zkjinshi.superservice.sqlite.ShopEmployeeDBUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.Constants;
@@ -28,7 +29,7 @@ import com.zkjinshi.superservice.vo.EmployeeVo;
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class EmployeeInfoActivity extends Activity{
+public class EmployeeInfoActivity extends BaseActivity {
 
     private String          mShopID;
     private String          mUserID;

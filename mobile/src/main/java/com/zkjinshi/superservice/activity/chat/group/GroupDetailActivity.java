@@ -35,6 +35,7 @@ import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.chat.group.controller.GroupMemberController;
 import com.zkjinshi.superservice.activity.common.MainActivity;
 import com.zkjinshi.superservice.adapter.ChatDetailAdapter;
+import com.zkjinshi.superservice.base.BaseActivity;
 import com.zkjinshi.superservice.bean.MemberBean;
 import com.zkjinshi.superservice.factory.EContactFactory;
 import com.zkjinshi.superservice.net.ExtNetRequestListener;
@@ -59,7 +60,7 @@ import java.util.List;
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class GroupDetailActivity extends Activity{
+public class GroupDetailActivity extends BaseActivity{
 
     public static final String TAG = GroupDetailActivity.class.getSimpleName();
 

@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.base.util.DisplayUtil;
 import com.zkjinshi.superservice.R;
+import com.zkjinshi.superservice.base.BaseAppCompatActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +32,7 @@ import java.util.List;
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class AddLivePersonActivity extends AppCompatActivity {
+public class AddLivePersonActivity extends BaseAppCompatActivity {
 
     private Toolbar        mToolbar;
     private TextView       mTvCenterTitle;

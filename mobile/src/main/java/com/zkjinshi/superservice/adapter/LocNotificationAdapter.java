@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.zkjinshi.base.config.ConfigUtil;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.base.util.DisplayUtil;
 import com.zkjinshi.base.util.IntentUtil;
@@ -80,7 +81,8 @@ public class LocNotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         final String userName = noticeVo.getUsername();
 
         //用户头像 和 姓名
-        String imageUrl =  ProtocolUtil.getAvatarUrl(userId);
+        String userImage = noticeVo.getUserimage();
+        String imageUrl = ConfigUtil.getInst().getImgDomain() + userImage;
         if(!TextUtils.isEmpty(imageUrl)){
             ((NoticeViewHolder) holder).civClientAvatar.setImageURI(Uri.parse(imageUrl));
             if(!TextUtils.isEmpty(userName)){

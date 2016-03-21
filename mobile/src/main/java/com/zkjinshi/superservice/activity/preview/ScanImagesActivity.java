@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.zkjinshi.superservice.R;
+import com.zkjinshi.superservice.base.BaseFragmentActivity;
 import com.zkjinshi.superservice.fragment.ImageDetailFragment;
 import com.zkjinshi.superservice.view.photoview.HackyViewPager;
 
@@ -23,7 +24,7 @@ import java.util.ArrayList;
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class ScanImagesActivity extends FragmentActivity {
+public class ScanImagesActivity extends BaseFragmentActivity {
 
     private static final String STATE_POSITION = "STATE_POSITION";
     public static final String EXTRA_IMAGE_INDEX = "image_index";

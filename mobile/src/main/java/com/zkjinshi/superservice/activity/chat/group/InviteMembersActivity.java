@@ -17,6 +17,7 @@ import com.easemob.exceptions.EaseMobException;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.adapter.InviteTeamAdapter;
+import com.zkjinshi.superservice.base.BaseActivity;
 import com.zkjinshi.superservice.factory.EContactFactory;
 import com.zkjinshi.superservice.listener.RecyclerItemClickListener;
 import com.zkjinshi.superservice.sqlite.ShopEmployeeDBUtil;
@@ -37,7 +38,7 @@ import java.util.Map;
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class InviteMembersActivity extends Activity {
+public class InviteMembersActivity extends BaseActivity {
 
     public static final String TAG = InviteMembersActivity.class.getSimpleName();
 

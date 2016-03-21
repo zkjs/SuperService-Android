@@ -12,6 +12,7 @@ import android.widget.EditText;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
 
+import com.zkjinshi.superservice.base.BaseActivity;
 import com.zkjinshi.superservice.manager.SSOManager;
 import com.zkjinshi.superservice.manager.YunBaSubscribeManager;
 
@@ -32,7 +33,7 @@ import org.json.JSONObject;
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class ShopLoginActivity extends Activity{
+public class ShopLoginActivity extends BaseActivity{
 
     private final static String TAG = ShopLoginActivity.class.getSimpleName();
 

@@ -24,6 +24,7 @@ import com.zkjinshi.base.log.LogUtil;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.mine.MineNetController;
+import com.zkjinshi.superservice.base.BaseAppCompatActivity;
 import com.zkjinshi.superservice.net.ExtNetRequestListener;
 import com.zkjinshi.superservice.net.MethodType;
 import com.zkjinshi.superservice.net.NetRequest;
@@ -39,7 +40,7 @@ import com.zkjinshi.superservice.vo.TicketVo;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class ChooseInvoiceActivity extends AppCompatActivity {
+public class ChooseInvoiceActivity extends BaseAppCompatActivity {
 
     private final static String TAG = ChooseInvoiceActivity.class.getSimpleName();
 

@@ -19,6 +19,7 @@ import com.easemob.exceptions.EaseMobException;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.adapter.ChatDetailAdapter;
+import com.zkjinshi.superservice.base.BaseActivity;
 import com.zkjinshi.superservice.utils.CacheUtil;
 
 /**
@@ -28,7 +29,7 @@ import com.zkjinshi.superservice.utils.CacheUtil;
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class ModifyGroupActivity extends Activity {
+public class ModifyGroupActivity extends BaseActivity {
 
     private TextView titleTv;
     private ImageButton backIBtn;

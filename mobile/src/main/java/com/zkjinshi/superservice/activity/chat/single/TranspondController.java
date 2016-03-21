@@ -32,7 +32,7 @@ import java.util.List;
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class TranspondController extends AppCompatActivity {
+public class TranspondController{
 
     private final static String TAG = TranspondController.class.getSimpleName();
 

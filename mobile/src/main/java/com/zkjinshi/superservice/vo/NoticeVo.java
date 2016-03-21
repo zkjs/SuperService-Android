@@ -35,6 +35,7 @@ public class NoticeVo {
     private String locid;
     private String locdesc;
     private String userid;
+    private String userimage;
     private String username;
     private String userlevel;
     private String sex;
@@ -139,5 +140,13 @@ public class NoticeVo {
 
     public void setLocdesc(String locdesc) {
         this.locdesc = locdesc;
+    }
+
+    public String getUserimage() {
+        return userimage;
+    }
+
+    public void setUserimage(String userimage) {
+        this.userimage = userimage;
     }
 }

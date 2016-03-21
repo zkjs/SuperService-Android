@@ -15,6 +15,7 @@ import com.zkjinshi.base.view.CustomDialog;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.set.TeamContactsController;
 
+import com.zkjinshi.superservice.base.BaseActivity;
 import com.zkjinshi.superservice.bean.SempLoginBean;
 import com.zkjinshi.superservice.factory.UserFactory;
 import com.zkjinshi.superservice.manager.SSOManager;
@@ -42,7 +43,7 @@ import org.json.JSONObject;
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class SplashActivity extends Activity{
+public class SplashActivity extends BaseActivity{
 
     public static final String TAG = SplashActivity.class.getSimpleName();
 

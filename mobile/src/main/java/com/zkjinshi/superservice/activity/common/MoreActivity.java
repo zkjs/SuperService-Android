@@ -27,6 +27,7 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
+import com.zkjinshi.superservice.base.BaseFragmentActivity;
 import com.zkjinshi.superservice.bean.BaseBean;
 import com.zkjinshi.superservice.bean.SempLoginBean;
 import com.zkjinshi.superservice.net.ExtNetRequestListener;
@@ -65,7 +66,7 @@ import me.nereo.multi_image_selector.MultiImageSelectorFragment;
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class MoreActivity extends FragmentActivity implements MultiImageSelectorFragment.Callback{
+public class MoreActivity extends BaseFragmentActivity implements MultiImageSelectorFragment.Callback{
 
     private final static String TAG = MoreActivity.class.getSimpleName();
 

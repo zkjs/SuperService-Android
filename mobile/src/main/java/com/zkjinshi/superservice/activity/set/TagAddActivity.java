@@ -12,6 +12,7 @@ import android.widget.EditText;
 
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
+import com.zkjinshi.superservice.base.BaseActivity;
 import com.zkjinshi.superservice.net.ExtNetRequestListener;
 import com.zkjinshi.superservice.net.MethodType;
 import com.zkjinshi.superservice.net.NetRequest;
@@ -30,7 +31,7 @@ import java.util.HashMap;
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class TagAddActivity extends Activity {
+public class TagAddActivity extends BaseActivity {
 
     private final static String TAG = TagAddActivity.class.getSimpleName();
 

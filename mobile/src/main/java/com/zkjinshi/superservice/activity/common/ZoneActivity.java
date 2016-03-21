@@ -19,6 +19,7 @@ import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.adapter.ZoneAdapter;
 
+import com.zkjinshi.superservice.base.BaseActivity;
 import com.zkjinshi.superservice.bean.ZoneBean;
 
 import com.zkjinshi.superservice.net.RequestUtil;
@@ -36,7 +37,6 @@ import java.util.ArrayList;
 
 import cz.msebera.android.httpclient.Header;
 import cz.msebera.android.httpclient.entity.StringEntity;
-;
 
 /**
  * 开发者：dujiande
@@ -44,7 +44,7 @@ import cz.msebera.android.httpclient.entity.StringEntity;
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class ZoneActivity extends Activity {
+public class ZoneActivity extends BaseActivity {
 
     private final static String TAG = ZoneActivity.class.getSimpleName();
     private String ZONE_CACHE_KEY = "zoneBeanList"+CacheUtil.getInstance().getUserId();

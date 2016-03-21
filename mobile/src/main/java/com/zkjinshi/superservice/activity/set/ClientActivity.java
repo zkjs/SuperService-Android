@@ -26,6 +26,7 @@ import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.chat.single.ChatActivity;
 import com.zkjinshi.superservice.adapter.ContactsSortAdapter;
+import com.zkjinshi.superservice.base.BaseAppCompatActivity;
 import com.zkjinshi.superservice.factory.ClientFactory;
 import com.zkjinshi.superservice.net.ExtNetRequestListener;
 import com.zkjinshi.superservice.net.NetResponse;
@@ -57,7 +58,7 @@ import cz.msebera.android.httpclient.entity.StringEntity;
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class ClientActivity extends AppCompatActivity{
+public class ClientActivity extends BaseAppCompatActivity {
 
     private final static String TAG = ClientActivity.class.getSimpleName();
 
