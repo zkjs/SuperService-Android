@@ -37,6 +37,7 @@ import com.zkjinshi.superservice.net.NetResponse;
 import com.zkjinshi.superservice.net.RequestUtil;
 import com.zkjinshi.superservice.sqlite.DBOpenHelper;
 import com.zkjinshi.superservice.sqlite.UserDBUtil;
+import com.zkjinshi.superservice.utils.AsyncHttpClientUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
@@ -231,7 +232,7 @@ public class MoreActivity extends FragmentActivity implements MultiImageSelector
                 public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse){
                     super.onFailure(statusCode,headers,throwable,errorResponse);
                     Toast.makeText(MoreActivity.this,"API 错误："+statusCode,Toast.LENGTH_SHORT).show();
-                    RequestUtil.onFailure(MoreActivity.this,statusCode);
+                    AsyncHttpClientUtil.onFailure(MoreActivity.this,statusCode);
                 }
             });
         }catch (Exception e){
