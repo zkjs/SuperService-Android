@@ -33,6 +33,7 @@ import com.zkjinshi.superservice.net.NetRequestTask;
 import com.zkjinshi.superservice.net.NetResponse;
 import com.zkjinshi.superservice.net.RequestUtil;
 import com.zkjinshi.superservice.response.GetGoodListResponse;
+import com.zkjinshi.superservice.utils.AsyncHttpClientUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
@@ -198,7 +199,7 @@ public class GoodListActivity extends Activity {
 
                 public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error){
                     Toast.makeText(mContext,"API 错误："+statusCode, Toast.LENGTH_SHORT).show();
-                    RequestUtil.onFailure(mContext,statusCode);
+                    AsyncHttpClientUtil.onFailure(mContext,statusCode);
                 }
             });
         }catch (Exception e){
