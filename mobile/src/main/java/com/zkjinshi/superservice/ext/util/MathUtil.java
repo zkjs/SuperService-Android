@@ -1,6 +1,7 @@
 package com.zkjinshi.superservice.ext.util;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -35,23 +36,12 @@ public class MathUtil {
     }
 
     /**
-     * 四舍五入，保留两位
-     * @param srcDouble
-     * @return
-     */
-    public static double convertDouble(double srcDouble){
-        double descDouble = 0.00;
-        BigDecimal bigDecimal   =   new   BigDecimal(srcDouble);
-        descDouble   =   bigDecimal.setScale(2,   BigDecimal.ROUND_HALF_UP).doubleValue();
-        return descDouble;
-    }
-
-    /**
      * 保留两位小数
-     * @param bigDecimal
+     * @param balance
      * @return
      */
-    public static BigDecimal convertBigDecimal(BigDecimal bigDecimal){
-        return bigDecimal.setScale(2,BigDecimal.ROUND_HALF_UP);
+    public static String convertStr(double balance){
+        balance = balance/100;
+        return new DecimalFormat("0.00").format(balance);
     }
 }

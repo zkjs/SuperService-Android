@@ -106,10 +106,9 @@ public class AmountDetailActivity extends Activity {
                 amountSuccUserNameTv.setText(userNameStr);
                 amountWaitUserNameTv.setText(userNameStr);
             }
-            long totalPrice = amountStatusVo.getAmount();
+            double totalPrice = amountStatusVo.getAmount();
             if(totalPrice > 0){
-                BigDecimal amount = new BigDecimal(totalPrice / 100.00);
-                String amountPriceStr = ""+ MathUtil.convertBigDecimal(amount);
+                String amountPriceStr = ""+ MathUtil.convertStr(totalPrice);
                 if(!TextUtils.isEmpty(amountPriceStr)){
                     amountFailAmountPriceTv.setText(amountPriceStr);
                     amountSuccAmountPriceTv.setText(amountPriceStr);
@@ -182,7 +181,7 @@ public class AmountDetailActivity extends Activity {
         String url = ConfigUtil.getInst().getForDomain()+"res/v1/payment";
         NetRequest netRequest = new NetRequest(url);
         HashMap<String,Object> bizMap = new HashMap<String,Object>();
-        float amount = amountStatusVo.getAmount();
+        double amount = amountStatusVo.getAmount();
         String target = amountStatusVo.getUserid();
         String orderNo = amountStatusVo.getOrderno();
         bizMap.put("amount", amount);

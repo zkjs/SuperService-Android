@@ -90,9 +90,8 @@ public class AmountAdapter extends BaseAdapter {
         if(!TextUtils.isEmpty(userNameStr)){
             viewHolder.userNameTv.setText(userNameStr);
         }
-        long totalPrice = amountStatusVo.getAmount();
-        BigDecimal amount = new BigDecimal(totalPrice / 100.00);
-        String amountPriceStr = "¥"+ MathUtil.convertBigDecimal(amount);
+        double totalPrice = amountStatusVo.getAmount();
+        String amountPriceStr = "¥"+ MathUtil.convertStr(totalPrice);
         if(!TextUtils.isEmpty(amountPriceStr)){
             viewHolder.amountPriceTv.setText(amountPriceStr);
         }

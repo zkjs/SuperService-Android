@@ -26,7 +26,7 @@ public class AmountStatusVo implements Serializable {
     private String username;
     private String userimage;
     private String createtime;
-    private long amount;
+    private double amount;
     private String orderno;
     private String paymentno;
     private int status;//订单状态码  0-待确认, 1-已拒绝, 2-已确认
@@ -41,11 +41,11 @@ public class AmountStatusVo implements Serializable {
         this.createtime = createtime;
     }
 
-    public long getAmount() {
+    public double getAmount() {
         return amount;
     }
 
-    public void setAmount(long amount) {
+    public void setAmount(double amount) {
         this.amount = amount;
     }
 
