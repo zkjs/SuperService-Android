@@ -6,11 +6,11 @@
     android:background="@android:color/white">
 
     <ImageView
-        android:layout_width="96dp"
-        android:layout_height="96dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginTop="60dp"
+        android:layout_marginBottom="30dp"
         android:src="@mipmap/ic_shibai"/>
 
     <LinearLayout
@@ -25,9 +25,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:gravity="center"
-            android:textSize="18sp"
-            android:textColor="@android:color/black"
-            android:layout_marginBottom="10dp"
+            android:textSize="16sp"
+            android:textColor="#101010"
             android:text="@null"/>
 
         <TextView
@@ -36,9 +35,8 @@
             android:layout_marginLeft="5dp"
             android:layout_gravity="center_horizontal"
             android:gravity="center"
-            android:textSize="18sp"
-            android:textColor="@android:color/black"
-            android:layout_marginBottom="10dp"
+            android:textSize="16sp"
+            android:textColor="#101010"
             android:text="收款失败"/>
 
     </LinearLayout>
@@ -48,28 +46,26 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:layout_gravity="center_horizontal"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
         android:orientation="horizontal">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="￥"
-            android:textColor="@android:color/black"
+            android:textColor="#101010"
             android:layout_gravity="center_vertical"
             android:gravity="center_vertical"
-            android:textSize="24sp"/>
+            android:textSize="30sp"/>
 
         <TextView
             android:id="@+id/amount_fail_amount_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@null"
-            android:textColor="@android:color/black"
+            android:textColor="#101010"
             android:layout_gravity="center_vertical"
             android:gravity="center_vertical"
-            android:textSize="24sp"/>
+            android:textSize="30sp"/>
 
 
     </LinearLayout>
@@ -81,25 +77,25 @@
         android:layout_marginTop="20dp"
         android:layout_gravity="center_horizontal"
         android:gravity="center"
-        android:textColor="#cccccc"
+        android:textColor="#666666"
         android:text="用户拒绝支付"/>
 
     <TextView
         android:id="@+id/amount_fail_resend_amount_request"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:layout_marginTop="50dp"
+        android:textSize="12sp"
+        android:layout_marginTop="30dp"
         android:clickable="true"
         android:layout_gravity="center_horizontal"
         android:gravity="center"
-        android:textColor="@android:color/holo_blue_dark"
+        android:textColor="#03a9f4"
         android:text="重新发送收款信息"/>
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="160dp"
+        android:layout_marginTop="124dp"
         android:orientation="horizontal">
 
         <TextView
@@ -107,7 +103,7 @@
             android:layout_height="wrap_content"
             android:textSize="14sp"
             android:textColor="#888888"
-            android:layout_marginLeft="100dp"
+            android:layout_marginLeft="84dp"
             android:text="交易单号: "/>
 
         <TextView
@@ -123,7 +119,7 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="12dp"
         android:orientation="horizontal">
 
         <TextView
@@ -131,7 +127,7 @@
             android:layout_height="wrap_content"
             android:textSize="14sp"
             android:textColor="#888888"
-            android:layout_marginLeft="100dp"
+            android:layout_marginLeft="84dp"
             android:text="收款时间: "/>
 
         <TextView

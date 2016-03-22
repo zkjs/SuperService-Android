@@ -7,11 +7,11 @@
     android:background="@android:color/white">
 
     <ImageView
-        android:layout_width="96dp"
-        android:layout_height="96dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginTop="60dp"
+        android:layout_marginBottom="30dp"
         android:src="@mipmap/ic_chenggong"/>
 
     <LinearLayout
@@ -26,9 +26,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:gravity="center"
-            android:textSize="18sp"
-            android:textColor="@android:color/black"
-            android:layout_marginBottom="10dp"
+            android:textSize="16sp"
+            android:textColor="#101010"
             android:text="@null"/>
 
         <TextView
@@ -37,9 +36,8 @@
             android:layout_marginLeft="5dp"
             android:layout_gravity="center_horizontal"
             android:gravity="center"
-            android:textSize="18sp"
-            android:textColor="@android:color/black"
-            android:layout_marginBottom="10dp"
+            android:textSize="16sp"
+            android:textColor="#101010"
             android:text="收款成功"/>
 
     </LinearLayout>
@@ -49,28 +47,26 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:layout_gravity="center_horizontal"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
         android:orientation="horizontal">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="￥"
-            android:textColor="@android:color/black"
+            android:textSize="30sp"
+            android:textColor="#101010"
             android:layout_gravity="center_vertical"
-            android:gravity="center_vertical"
-            android:textSize="24sp"/>
+            android:gravity="center_vertical" />
 
         <TextView
             android:id="@+id/amount_succ_amount_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@null"
-            android:textColor="@android:color/black"
+            android:textSize="30sp"
+            android:textColor="#101010"
             android:layout_gravity="center_vertical"
-            android:gravity="center_vertical"
-            android:textSize="24sp"/>
+            android:gravity="center_vertical"/>
 
 
     </LinearLayout>
@@ -78,22 +74,22 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="200dp"
+        android:layout_marginTop="160dp"
         android:orientation="horizontal">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="14sp"
+            android:textSize="12sp"
             android:textColor="#888888"
-            android:layout_marginLeft="100dp"
+            android:layout_marginLeft="84dp"
             android:text="交易单号: "/>
 
         <TextView
             android:id="@+id/amount_succ_order_no"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="14sp"
+            android:textSize="12sp"
             android:textColor="#888888"
             android:text="@null"/>
 
@@ -102,22 +98,22 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="12dp"
         android:orientation="horizontal">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="14sp"
+            android:textSize="12sp"
             android:textColor="#888888"
-            android:layout_marginLeft="100dp"
+            android:layout_marginLeft="84dp"
             android:text="收款时间: "/>
 
         <TextView
             android:id="@+id/amount_succ_amount_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="14sp"
+            android:textSize="12sp"
             android:textColor="#888888"
             android:text="@null"/>
 
@@ -126,22 +122,22 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="12dp"
         android:orientation="horizontal">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="14sp"
+            android:textSize="12sp"
             android:textColor="#888888"
-            android:layout_marginLeft="100dp"
+            android:layout_marginLeft="84dp"
             android:text="成功时间: "/>
 
         <TextView
             android:id="@+id/amount_succ_finish_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="14sp"
+            android:textSize="12sp"
             android:textColor="#888888"
             android:text="@null"/>
 
