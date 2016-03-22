@@ -44,7 +44,7 @@ public class PayRequestActivity extends Activity {
 
     public static final String TAG = PayRequestActivity.class.getSimpleName();
 
-    private ImageButton backIBtn;
+    private TextView backIBtn;
     private TextView titleTv;
     private LinearLayout payRequestLayout,payRequestSuccLayout;
     private SimpleDraweeView userPhotoDv;
@@ -54,7 +54,7 @@ public class PayRequestActivity extends Activity {
     private NearbyUserVo nearbyUserVo;
 
     private void initView(){
-        backIBtn = (ImageButton)findViewById(R.id.header_bar_btn_back);
+        backIBtn = (TextView)findViewById(R.id.header_bar_tv_back);
         titleTv = (TextView)findViewById(R.id.header_bar_tv_title);
         payRequestLayout = (LinearLayout)findViewById(R.id.start_request_pay_layout);
         payRequestSuccLayout = (LinearLayout)findViewById(R.id.request_pay_succ_layout);
@@ -69,7 +69,8 @@ public class PayRequestActivity extends Activity {
 
     private void initData(){
         backIBtn.setVisibility(View.VISIBLE);
-        titleTv.setText("开始收款");
+        backIBtn.setText("开始收款");
+        titleTv.setVisibility(View.GONE);
         payRequestLayout.setVisibility(View.VISIBLE);
         payRequestSuccLayout.setVisibility(View.GONE);
         if(null != getIntent() && null != getIntent().getSerializableExtra("nearbyUserVo")){

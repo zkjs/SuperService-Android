@@ -44,7 +44,8 @@ public class CheckOutActivity extends Activity {
     public static final String TAG = CheckOutActivity.class.getSimpleName();
 
     private TextView titleTv;
-    private ImageButton moreIBtn,backIBtn;
+    private ImageButton moreIBtn;
+    private TextView backIBtn;
     private LinearLayout searchLayout;
     private GridView nearbyUserGv;
     private ArrayList<NearbyUserVo> nearbyUserList;
@@ -53,7 +54,7 @@ public class CheckOutActivity extends Activity {
     private void initView(){
         titleTv = (TextView)findViewById(R.id.header_bar_tv_title);
         moreIBtn = (ImageButton)findViewById(R.id.header_bar_btn_record);
-        backIBtn = (ImageButton)findViewById(R.id.header_bar_btn_back);
+        backIBtn = (TextView) findViewById(R.id.header_bar_tv_back);
         searchLayout = (LinearLayout)findViewById(R.id.search_layout);
         nearbyUserGv = (GridView)findViewById(R.id.nearby_layout);
     }
@@ -61,7 +62,8 @@ public class CheckOutActivity extends Activity {
     private void initData(){
         moreIBtn.setVisibility(View.VISIBLE);
         backIBtn.setVisibility(View.VISIBLE);
-        titleTv.setText("收款台");
+        backIBtn.setText("收款台");
+        titleTv.setVisibility(View.GONE);
         nearbyAdapter = new NearbyAdapter(this,nearbyUserList);
         nearbyUserGv.setAdapter(nearbyAdapter);
         requestNearbyUserListTask();

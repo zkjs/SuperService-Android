@@ -21,6 +21,22 @@
             android:visibility="gone" />
 
         <TextView
+            android:id="@+id/header_bar_tv_back"
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:layout_marginLeft="5dp"
+            android:gravity="center_vertical"
+            android:layout_centerVertical="true"
+            android:background="@null"
+            android:clickable="true"
+            android:textSize="20dp"
+            android:textColor="@android:color/white"
+            android:scaleType="centerInside"
+            android:drawableLeft="@drawable/header_ibtn_back"
+            android:drawablePadding="10dp"
+            android:visibility="gone" />
+
+        <TextView
             android:id="@+id/header_bar_tv_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

@@ -14,22 +14,6 @@ import com.zkjinshi.base.util.Constants;
 public class ProtocolUtil {
 
     /**
-     * 服务员获取商家整个区域列表
-     * @return
-     */
-    public static String getZonelistUrl(){
-        return ConfigUtil.getInst().getPhpDomain()+"semp/shoplocation";
-    }
-
-    /**
-     * 服务员修改自己管辖的区域通知
-     * @return
-     */
-    public static String getSemplocationupdateUrl(){
-        return ConfigUtil.getInst().getPhpDomain()+"semp/semplocationupdate";
-    }
-
-    /**
      * 服务员获取自己的通知区域
      * @return
      */
@@ -128,46 +112,6 @@ public class ProtocolUtil {
     }
 
     /**
-     * POST 服务员随机获取一个邀请码
-     * @return
-     */
-    public static String getNewRandomInviteCodeUrl(){
-        return ConfigUtil.getInst().getPhpDomain()+"invitation/random";
-    }
-
-    /**
-     * POST 服务员查看我的邀请码列表
-     * @return
-     */
-    public static String getInviteCodeUrl(){
-        return ConfigUtil.getInst().getPhpDomain()+"invitation/sempcode";
-    }
-
-    /**
-     * POST 服务员查看我的邀请码已使用记录列表
-     * @return
-     */
-    public static String getCodeUserAllUrl(){
-        return ConfigUtil.getInst().getPhpDomain()+"invitation/codeuserall";
-    }
-
-    /**
-     * POST 超级服务生产邀请注册链接
-     * @return
-     */
-    public static String getMakeInviteCodeUrl(){
-        return ConfigUtil.getInst().getPhpDomain()+"invitation/makeurl";
-    }
-
-    /**
-     * POST
-     * @return
-     */
-    public static String getCodeUserListUrl(){
-        return ConfigUtil.getInst().getPhpDomain()+"invitation/codeuser";
-    }
-
-    /**
      * 退出appHttp连接
      * @return
      */
@@ -259,15 +203,6 @@ public class ProtocolUtil {
      */
     public static String getClientInfoUrl() {
         return ConfigUtil.getInst().getPhpDomain()+"v10/user";
-    }
-
-    /**
-     * 获取商品列表 URL
-     * @param shopId
-     * @return
-     */
-    public static String getGoodListUrl(String shopId){
-        return ConfigUtil.getInst().getJavaDomain()+"goods/get/"+shopId;
     }
 
     /**
