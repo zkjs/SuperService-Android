@@ -215,11 +215,33 @@ public class MainActivityController implements View.OnClickListener{
      * 切换侧滑栏
      */
     public void toggleDrawer() {
-        if (drawerLayout.isDrawerVisible(GravityCompat.START)) {
-            drawerLayout.closeDrawer(GravityCompat.START);
+        if (isToggleOpen()) {
+            closeToggle();
         } else {
-            drawerLayout.openDrawer(GravityCompat.START);
+            openToggle();
         }
+    }
+
+    /**
+     * 侧滑栏是否打开
+     * @return
+     */
+    public boolean isToggleOpen(){
+        return drawerLayout.isDrawerVisible(GravityCompat.START);
+    }
+
+    /**
+     * 打开侧滑栏
+     */
+    public void openToggle(){
+        drawerLayout.openDrawer(GravityCompat.START);
+    }
+
+    /**
+     * 关闭侧滑栏
+     */
+    public void closeToggle(){
+        drawerLayout.closeDrawer(GravityCompat.START);
     }
 
     /**

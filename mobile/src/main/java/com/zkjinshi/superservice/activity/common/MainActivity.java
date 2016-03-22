@@ -1,12 +1,9 @@
 package com.zkjinshi.superservice.activity.common;
 
-import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -16,27 +13,20 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
-
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.blueware.agent.android.BlueWare;
 import com.facebook.drawee.view.SimpleDraweeView;
-
 import com.zkjinshi.base.log.LogLevel;
 import com.zkjinshi.base.log.LogUtil;
-
-import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
-
 import com.zkjinshi.superservice.activity.set.ClientActivity;
 import com.zkjinshi.superservice.activity.set.SettingActivity;
 import com.zkjinshi.superservice.activity.set.TeamContactsActivity;
-
 import com.zkjinshi.superservice.base.BaseAppCompatActivity;
 import com.zkjinshi.superservice.emchat.EasemobIMHelper;
 import com.zkjinshi.superservice.ext.activity.facepay.CheckOutActivity;
-import com.zkjinshi.superservice.manager.SSOManager;
 import com.zkjinshi.superservice.manager.YunBaSubscribeManager;
 import com.zkjinshi.superservice.net.ExtNetRequestListener;
 import com.zkjinshi.superservice.net.MethodType;
@@ -44,15 +34,10 @@ import com.zkjinshi.superservice.net.NetRequest;
 import com.zkjinshi.superservice.net.NetRequestTask;
 import com.zkjinshi.superservice.net.NetResponse;
 import com.zkjinshi.superservice.sqlite.DBOpenHelper;
-import com.zkjinshi.superservice.sqlite.UserDBUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
-
 import com.zkjinshi.superservice.view.CustomExtDialog;
 import com.zkjinshi.superservice.vo.IdentityType;
-import com.zkjinshi.superservice.vo.UserVo;
-
-import org.apache.log4j.chainsaw.Main;
 
 
 /**
@@ -265,7 +250,9 @@ public class MainActivity extends BaseAppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if(mainActivityController.onBackPressed()){
+        if(mainActivityController.isToggleOpen()){
+            mainActivityController.closeToggle();
+        }else {
             super.onBackPressed();
         }
     }
