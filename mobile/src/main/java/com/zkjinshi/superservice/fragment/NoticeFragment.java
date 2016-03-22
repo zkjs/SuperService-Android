@@ -144,7 +144,7 @@ public class NoticeFragment extends Fragment {
             @Override
             public void onItemClick(View view, int position) {
                 //获取订单信息并显示基本信息
-                NoticeVo noticeVo = noticeList.get(position);
+               /* NoticeVo noticeVo = noticeList.get(position);
                 ArrayList<OrderVo> orderList = noticeVo.getOrders();
                 if(null != orderList && !orderList.isEmpty()){
                     final OrderVo orderVo = orderList.get(0);
@@ -166,7 +166,7 @@ public class NoticeFragment extends Fragment {
                             activity.startActivity(intent);
                         }
                     }
-                }
+                }*/
             }
         });
     }
