@@ -1,1 +1,1 @@
-include ':mobile', ':wear', ':ZKJinShiBaseClass', ':multi-image-selector', ':Cloud_TagView', ':CalendarListview', ':library.FileChoser'
+include ':mobile', ':wear', ':ZKJinShiBaseClass', ':multi-image-selector', ':Cloud_TagView', ':CalendarListview', ':library.FileChoser', ':library.AESJni'
