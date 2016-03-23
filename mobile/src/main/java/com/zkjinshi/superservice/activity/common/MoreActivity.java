@@ -232,7 +232,6 @@ public class MoreActivity extends BaseFragmentActivity implements MultiImageSele
 
                 public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse){
                     super.onFailure(statusCode,headers,throwable,errorResponse);
-                    Toast.makeText(MoreActivity.this,"API 错误："+statusCode,Toast.LENGTH_SHORT).show();
                     AsyncHttpClientUtil.onFailure(MoreActivity.this,statusCode);
                 }
             });

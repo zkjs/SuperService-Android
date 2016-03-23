@@ -185,12 +185,10 @@ public class TeamContactsActivity extends BaseAppCompatActivity {
 
                     } catch (Exception e) {
                         e.printStackTrace();
-                        Toast.makeText(mContext,"解析异常",Toast.LENGTH_SHORT).show();
                     }
                 }
 
                 public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error){
-                    Toast.makeText(mContext,"API 错误："+statusCode,Toast.LENGTH_SHORT).show();
                     AsyncHttpClientUtil.onFailure(mContext,statusCode);
                 }
             });
