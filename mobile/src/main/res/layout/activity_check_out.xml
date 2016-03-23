@@ -1,36 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:background="@android:color/white"
+    android:background="#F0F0F0"
     android:layout_height="match_parent">
 
     <include layout="@layout/header_bar" />
 
     <LinearLayout
-        android:id="@+id/search_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingLeft="20dp"
-        android:paddingTop="15dp"
-        android:paddingBottom="15dp"
-        android:paddingRight="20dp"
-        android:clickable="true"
-        android:focusable="true"
-
+        android:layout_height="40dp"
+        android:background="@android:color/white"
         android:gravity="center">
 
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_weight="1.0"
+            android:layout_height="match_parent">
+
+            <EditText
+                android:id="@+id/search_etv_phone_num"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingLeft="15dp"
+                android:background="@android:color/transparent"
+                android:textSize="14sp"
+                android:textColor="#666666"
+                android:textColorHint="#B8B8B8"
+                android:hint="输入手机号码进行收款"
+                android:inputType="number"
+                android:imeOptions="actionSearch"
+                android:singleLine="true"/>
+
+            <ImageButton
+                android:id="@+id/search_btn_clear"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="15dp"
+                android:background="@null"
+                android:clickable="true"
+                android:scaleType="centerInside"
+                android:src="@drawable/check_out_ibtn_clear"
+                android:visibility="gone" />
+
+        </RelativeLayout>
+
         <TextView
+            android:layout_width="1dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center_vertical"
+            android:gravity="center"
+            android:background="#E3E3E3"/>
+
+        <ImageButton
+            android:id="@+id/search_btn_search"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
-            android:textSize="16sp"
-            android:layout_marginRight="10dp"
-            android:hint="查找收款人"/>
-
-        <ImageView
-            android:layout_width="15dp"
-            android:layout_height="15dp"
-            android:src="@mipmap/search"/>
+            android:gravity="center_horizontal"
+            android:layout_marginRight="15dp"
+            android:layout_marginLeft="15dp"
+            android:layout_gravity="center"
+            android:background="@null"
+            android:clickable="true"
+            android:scaleType="centerInside"
+            android:src="@drawable/check_out_ibtn_search"
+            android:visibility="visible" />
 
     </LinearLayout>
 
@@ -46,7 +82,25 @@
         android:cacheColorHint="@android:color/transparent"
         android:gravity="center"
         android:numColumns="2"
+        android:horizontalSpacing="20dp"
+        android:verticalSpacing="20dp"
+        android:columnWidth="150dp"
+        android:layout_margin="20dp"
         android:listSelector="@android:color/transparent"
         />
+
+
+    <TextView
+        android:id="@+id/no_result"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/bg_texture"
+        android:gravity="center_horizontal"
+        android:paddingTop="100.0dip"
+        android:text="@string/no_result"
+        android:textColor="@color/skin_gray3"
+        android:textSize="15.0sp"
+        android:visibility="gone" >
+    </TextView>
 
 </LinearLayout>

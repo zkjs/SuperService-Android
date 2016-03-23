@@ -394,18 +394,12 @@
             android:name=".ext.activity.facepay.CheckOutActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize|stateHidden"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" >
 
         </activity>
         <activity
             android:name=".ext.activity.facepay.AmountDetailActivity"
-            android:label="@string/app_name"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar" >
-
-        </activity>
-        <activity
-            android:name=".ext.activity.facepay.PayeeSearchActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" >

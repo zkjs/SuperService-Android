@@ -214,10 +214,9 @@ public class NotificationHelper {
                 NotificationCompat.Builder notificationBuilder = null;
                 // 1.设置显示信息
                 notificationBuilder = new NotificationCompat.Builder(context);
-                String contactName = yunBaMsgVo.getUserName();
                 String content = yunBaMsgVo.getContent();
-                if(!TextUtils.isEmpty(contactName)){
-                    notificationBuilder.setContentTitle(contactName+content);
+                if(!TextUtils.isEmpty(content)){
+                    notificationBuilder.setContentTitle(content);
                 }
                 notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
                 // 2.设置点击跳转事件
@@ -237,10 +236,9 @@ public class NotificationHelper {
                 NotificationCompat.Builder notificationBuilder = null;
                 // 1.设置显示信息
                 notificationBuilder = new NotificationCompat.Builder(context);
-                String contactName = yunBaMsgVo.getUserName();
                 String content = yunBaMsgVo.getContent();
-                if(!TextUtils.isEmpty(contactName)){
-                    notificationBuilder.setContentTitle(contactName+content);
+                if(!TextUtils.isEmpty(content)){
+                    notificationBuilder.setContentTitle(content);
                 }
                 notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
                 notificationBuilder.setLargeIcon(loadedImage);

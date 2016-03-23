@@ -38,7 +38,7 @@ public class AmountDetailActivity extends Activity {
 
     public static final String TAG = AmountDetailActivity.class.getSimpleName();
 
-    private TextView backIBtn;
+    private ImageButton backIBtn;
     private TextView titleTv;
     private LinearLayout amountFailLayout,amountSuccLayout,waitSureLayout;
     private TextView amountFailUserNameTv,amountFailAmountPriceTv,amountFailResendRequestTv,amountFailOrderNoTv,amountFailAmountTimeTv;
@@ -69,15 +69,14 @@ public class AmountDetailActivity extends Activity {
         amountWaitResendRequestTv = (TextView)findViewById(R.id.amount_wait_sure_resend_request);
         amountWaitOrderNoTv = (TextView)findViewById(R.id.amount_wait_sure_order_no);
         amountWaitAmountTimeTv = (TextView)findViewById(R.id.amount_wait_sure_amount_time);
-        backIBtn = (TextView)findViewById(R.id.header_bar_tv_back);
+        backIBtn = (ImageButton)findViewById(R.id.header_bar_btn_back);
         titleTv = (TextView)findViewById(R.id.header_bar_tv_title);
     }
 
     private void initData(){
         isSuccess = getIntent().getBooleanExtra("isSuccess",false);
         backIBtn.setVisibility(View.VISIBLE);
-        backIBtn.setText("详情");
-        titleTv.setVisibility(View.GONE);
+        titleTv.setText("详情");
         if(null != getIntent() && null != getIntent().getSerializableExtra("amountStatusVo")){
             amountStatusVo = (AmountStatusVo) getIntent().getSerializableExtra("amountStatusVo");
         }

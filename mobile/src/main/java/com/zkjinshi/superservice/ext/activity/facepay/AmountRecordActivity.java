@@ -39,7 +39,7 @@ public class AmountRecordActivity extends Activity {
 
     public static final String TAG = AmountRecordActivity.class.getSimpleName();
 
-    private TextView backIBtn;
+    private ImageButton backIBtn;
     private TextView titleTv;
     private ListView amountRecordListView;
     private TextView amountRecordNoResultTv;
@@ -47,7 +47,7 @@ public class AmountRecordActivity extends Activity {
     private AmountAdapter amountAdapter;
 
     private void initView(){
-        backIBtn = (TextView) findViewById(R.id.header_bar_tv_back);
+        backIBtn = (ImageButton) findViewById(R.id.header_bar_btn_back);
         titleTv = (TextView)findViewById(R.id.header_bar_tv_title);
         amountRecordListView = (ListView)findViewById(R.id.amount_record_list_view);
         amountRecordNoResultTv = (TextView)findViewById(R.id.amount_record_no_result);
@@ -55,8 +55,7 @@ public class AmountRecordActivity extends Activity {
 
     private void initData(){
         backIBtn.setVisibility(View.VISIBLE);
-        backIBtn.setText("收款记录");
-        titleTv.setVisibility(View.GONE);
+        titleTv.setText("收款记录");
         amountRecordListView.setEmptyView(amountRecordNoResultTv);
         amountAdapter = new AmountAdapter(this,amountStatusList);
         amountRecordListView.setAdapter(amountAdapter);

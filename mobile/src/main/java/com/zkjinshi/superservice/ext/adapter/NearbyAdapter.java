@@ -13,9 +13,7 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.zkjinshi.base.config.ConfigUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.ext.vo.NearbyUserVo;
-import com.zkjinshi.superservice.utils.ProtocolUtil;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**
