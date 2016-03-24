@@ -20,6 +20,15 @@ public class YunBaMsgVo {
     private String userName;
     private String userImage;
     private String arrivalTime;//预计达到时间
+    private String alert;
+
+    public String getAlert() {
+        return alert;
+    }
+
+    public void setAlert(String alert) {
+        this.alert = alert;
+    }
 
     public String getTitle() {
         return title;

@@ -29,7 +29,7 @@ import com.zkjinshi.superservice.net.NetResponse;
 import java.util.ArrayList;
 
 /**
- * 支付记录页面(完成)
+ * 支付记录页面
  * 开发者：JimmyZhang
  * 日期：2016/3/7
  * Copyright (C) 2016 深圳中科金石科技有限公司

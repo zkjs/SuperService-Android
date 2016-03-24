@@ -214,7 +214,7 @@ public class NotificationHelper {
                 NotificationCompat.Builder notificationBuilder = null;
                 // 1.设置显示信息
                 notificationBuilder = new NotificationCompat.Builder(context);
-                String content = yunBaMsgVo.getContent();
+                String content = yunBaMsgVo.getAlert();
                 if(!TextUtils.isEmpty(content)){
                     notificationBuilder.setContentTitle(content);
                 }
@@ -236,7 +236,7 @@ public class NotificationHelper {
                 NotificationCompat.Builder notificationBuilder = null;
                 // 1.设置显示信息
                 notificationBuilder = new NotificationCompat.Builder(context);
-                String content = yunBaMsgVo.getContent();
+                String content = yunBaMsgVo.getAlert();
                 if(!TextUtils.isEmpty(content)){
                     notificationBuilder.setContentTitle(content);
                 }

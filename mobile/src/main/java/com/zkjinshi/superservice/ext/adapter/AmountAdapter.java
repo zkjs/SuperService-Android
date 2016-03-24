@@ -14,9 +14,7 @@ import com.zkjinshi.base.config.ConfigUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.ext.util.MathUtil;
 import com.zkjinshi.superservice.ext.vo.AmountStatusVo;
-import com.zkjinshi.superservice.utils.ProtocolUtil;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 
 /**
@@ -31,6 +29,10 @@ public class AmountAdapter extends BaseAdapter {
     private ArrayList<AmountStatusVo> amountStatusList;
     private Context context;
     private LayoutInflater inflater;
+
+    private static final int TYPE_WAIT_ITEM = 0;//待确认
+    private static final int TYPE_FAIL_ITEM = 1;//已拒绝
+    private static final int TYPE_SUCC_ITEM = 2;//已支付
 
 
     public AmountAdapter(Context context,ArrayList<AmountStatusVo> amountStatusList){
@@ -66,8 +68,22 @@ public class AmountAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder viewHolder = null;
+
+        int itemType = getItemViewType(position);
+
+
         if(null == convertView){
-            convertView = inflater.inflate(R.layout.item_record_amount,null);
+            switch (itemType){
+                case TYPE_SUCC_ITEM:
+                    convertView = inflater.inflate(R.layout.item_record_amount_succ,null);
+                    break;
+                case TYPE_FAIL_ITEM:
+                    convertView = inflater.inflate(R.layout.item_record_amount_fail,null);
+                    break;
+                case TYPE_WAIT_ITEM:
+                    convertView = inflater.inflate(R.layout.item_record_amount_wait,null);
+                    break;
+            }
             viewHolder = new ViewHolder();
             viewHolder.userPhotoDv = (SimpleDraweeView)convertView.findViewById(R.id.iv_user_photo);
             viewHolder.userNameTv = (TextView)convertView.findViewById(R.id.tv_user_name);
@@ -103,16 +119,17 @@ public class AmountAdapter extends BaseAdapter {
         if(!TextUtils.isEmpty(amountStatusStr)){
             viewHolder.amountStatusTv.setText(amountStatusStr);
         }
-        int amountStatus = amountStatusVo.getStatus(); //0-待确认, 1-已拒绝, 2-已确认
-        if(0 == amountStatus){
-            viewHolder.amountStatusTv.setTextColor(context.getResources().getColor(R.color.red));
-        }else if(1 == amountStatus){
-            viewHolder.amountStatusTv.setTextColor(context.getResources().getColor(R.color.dark_yellow));
-        }else if(2 == amountStatus){
-            viewHolder.amountStatusTv.setTextColor(context.getResources().getColor(R.color.black));
-        }
-
         return convertView;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        AmountStatusVo amountStatusVo = amountStatusList.get(position);
+        if(null != amountStatusVo){
+            int status = amountStatusVo.getStatus();
+            return status;
+        }
+        return 0;
     }
 
     class ViewHolder{

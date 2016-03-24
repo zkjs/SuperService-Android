@@ -2,22 +2,29 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:fresco="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:background="@android:color/white">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:src="@drawable/amount_record_circle_wait"
+        android:scaleType="fitXY"/>
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/iv_user_photo"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginBottom="15dp"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_marginTop="21dp"
+        android:layout_marginBottom="21dp"
         android:layout_gravity="center"
-        android:layout_marginLeft="15dp"
+        android:layout_marginLeft="28dp"
         android:layout_centerVertical="true"
         fresco:actualImageScaleType="centerCrop"
         fresco:placeholderImage="@mipmap/ic_launcher"
-        fresco:placeholderImageScaleType="centerCrop"
-        fresco:roundAsCircle="true"
-        fresco:roundedCornerRadius="0dp"/>
+        fresco:placeholderImageScaleType="centerCrop"/>
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -28,49 +35,59 @@
         android:orientation="vertical"
         android:gravity="center_vertical|left"
         >
+
         <TextView
             android:id="@+id/tv_user_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="王大锤"
+            android:text="@null"
             android:textSize="16sp"
-            android:textColor="@android:color/black"/>
+            android:textColor="#101010"/>
 
         <TextView
             android:id="@+id/tv_create_time"
             android:layout_width="wrap_content"
             android:layout_marginTop="10dp"
             android:layout_height="wrap_content"
-            android:text="2016-01-02 11:20"
-            android:textSize="14sp"
-            android:textColor="#888888"/>
+            android:text="@null"
+            android:textSize="12sp"
+            android:textColor="#666666"/>
+
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:id="@+id/item_record_status"
+        android:layout_width="110dp"
         android:layout_height="wrap_content"
-       android:layout_alignParentRight="true"
+        android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:layout_marginRight="15dp"
         android:orientation="vertical"
-        android:gravity="center"
-        >
+        android:gravity="center">
+
         <TextView
             android:id="@+id/tv_amount_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="¥102.00"
+            android:text="@null"
             android:textSize="16sp"
-            android:textColor="@android:color/black"/>
+            android:textColor="#101010"/>
 
         <TextView
             android:id="@+id/tv_amount_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:text="待确定"
+            android:text="@null"
             android:textSize="14sp"
-            android:textColor="#888888"/>
+            android:textColor="#FFC56E"/>
+
     </LinearLayout>
+
+    <TextView
+        android:layout_width="1dp"
+        android:layout_height="56dp"
+        android:layout_centerVertical="true"
+        android:background="#E3E3E3"
+        android:layout_toLeftOf="@id/item_record_status"/>
 
 </RelativeLayout>
