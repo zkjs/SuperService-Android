@@ -7,7 +7,9 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -19,6 +21,8 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.gson.Gson;
 import com.zkjinshi.base.config.ConfigUtil;
 import com.zkjinshi.base.util.DialogUtil;
+import com.zkjinshi.base.util.IntentUtil;
+import com.zkjinshi.base.util.SoftInputUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.ext.response.AmountDetailResponse;
 import com.zkjinshi.superservice.ext.util.MathUtil;
@@ -34,7 +38,7 @@ import com.zkjinshi.superservice.utils.ProtocolUtil;
 import java.util.HashMap;
 
 /**
- * 收款页面
+ * 收款页面(完成)
  * 开发者：JimmyZhang
  * 日期：2016/3/7
  * Copyright (C) 2016 深圳中科金石科技有限公司
@@ -111,6 +115,7 @@ public class PayRequestActivity extends Activity {
                         finishAmount.setText(amount);
                         long amountL = MathUtil.parsePrice(amount);
                         if(amountL > 0){
+                            SoftInputUtil.hideSoftInputMode(PayRequestActivity.this,inputPriceEtv);
                             requestChargeTask(nearbyUserVo,amountL);
                         }else {
                             DialogUtil.getInstance().showCustomToast(PayRequestActivity.this,"请输入正确金额!",Gravity.CENTER);
@@ -121,6 +126,35 @@ public class PayRequestActivity extends Activity {
                 }else {
                     DialogUtil.getInstance().showCustomToast(PayRequestActivity.this,"请输入正确金额!",Gravity.CENTER);
                 }
+            }
+        });
+
+        //搜索按钮
+        inputPriceEtv.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if(actionId == EditorInfo.IME_ACTION_SEND){
+                    String amount = inputPriceEtv.getText().toString();
+                    if(MathUtil.isPriceOk(amount)){
+                        if(!TextUtils.isEmpty(amount)){
+                            finishAmount.setText(amount);
+                            long amountL = MathUtil.parsePrice(amount);
+                            if(amountL > 0){
+                                SoftInputUtil.hideSoftInputMode(PayRequestActivity.this,inputPriceEtv);
+                                requestChargeTask(nearbyUserVo,amountL);
+                            }else {
+                                DialogUtil.getInstance().showCustomToast(PayRequestActivity.this,"请输入正确金额!",Gravity.CENTER);
+                            }
+                        }else {
+                            DialogUtil.getInstance().showCustomToast(PayRequestActivity.this,"输入金额不能为空!",Gravity.CENTER);
+                        }
+                    }else {
+                        DialogUtil.getInstance().showCustomToast(PayRequestActivity.this,"请输入正确金额!",Gravity.CENTER);
+                    }
+                    return true;
+                }
+                return false;
             }
         });
 
@@ -184,9 +218,6 @@ public class PayRequestActivity extends Activity {
                                 startActivity(intent);
                                 finish();
                             }else {
-                                String userNameStr = nearbyUserVo.getUsername();
-                                String msgTxt = "发送成功，等待"+userNameStr+"确认";
-                                DialogUtil.getInstance().showCustomToast(PayRequestActivity.this,msgTxt, Gravity.CENTER);
                                 payRequestLayout.setVisibility(View.GONE);
                                 payRequestSuccLayout.setVisibility(View.VISIBLE);
                             }

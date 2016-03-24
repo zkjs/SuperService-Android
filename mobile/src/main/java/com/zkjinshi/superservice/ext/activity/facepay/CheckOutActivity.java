@@ -80,7 +80,6 @@ public class CheckOutActivity extends Activity {
         titleTv.setText("收款台");
         nearbyAdapter = new NearbyAdapter(this,nearbyUserList);
         nearbyUserGv.setAdapter(nearbyAdapter);
-        nearbyUserGv.setEmptyView(noResultTv);
         requestNearbyUserListTask();
     }
 
@@ -233,6 +232,9 @@ public class CheckOutActivity extends Activity {
                             if(null != nearbyUserList && !nearbyUserList.isEmpty()){
                                 nearbyAdapter.setNearbyUserList(nearbyUserList);
                             }
+                            if( 30001 == resultFlag){
+                                nearbyUserGv.setEmptyView(noResultTv);
+                            }
                         }else {
                             String errorMsg = nearbyUserResponse.getResDesc();
                             if(!TextUtils.isEmpty(errorMsg)){
@@ -284,6 +286,9 @@ public class CheckOutActivity extends Activity {
                             nearbyUserGv.setNumColumns(1);
                             nearbyUserList =  nearbyUserResponse.getData();
                             nearbyAdapter.setNearbyUserList(nearbyUserList);
+                            if( 30001 == resultFlag){
+                                nearbyUserGv.setEmptyView(noResultTv);
+                            }
                         }else {
                             String errorMsg = nearbyUserResponse.getResDesc();
                             if(!TextUtils.isEmpty(errorMsg)){

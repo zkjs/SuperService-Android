@@ -66,7 +66,7 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="20dp"
-            android:background="@mipmap/ic_shoukuangjilu"
+            android:background="@drawable/nearby_ibtn_record"
             android:padding="10dp"
             android:visibility="gone" />
 

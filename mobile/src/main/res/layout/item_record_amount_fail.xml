@@ -3,7 +3,7 @@
     xmlns:fresco="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@android:color/white">
+    android:background="@drawable/bg_item_amount_record">
 
     <ImageView
         android:layout_width="wrap_content"
@@ -24,7 +24,12 @@
         android:layout_centerVertical="true"
         fresco:actualImageScaleType="centerCrop"
         fresco:placeholderImage="@mipmap/ic_launcher"
-        fresco:placeholderImageScaleType="centerCrop"/>
+        fresco:placeholderImageScaleType="centerCrop"
+        fresco:roundedCornerRadius="4dp"
+        fresco:roundTopLeft="true"
+        fresco:roundBottomLeft="true"
+        fresco:roundTopRight="true"
+        fresco:roundBottomRight="true"/>
 
     <LinearLayout
         android:layout_width="wrap_content"

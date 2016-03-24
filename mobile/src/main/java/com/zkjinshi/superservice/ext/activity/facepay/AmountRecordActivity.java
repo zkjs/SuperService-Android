@@ -56,7 +56,6 @@ public class AmountRecordActivity extends Activity {
     private void initData(){
         backIBtn.setVisibility(View.VISIBLE);
         titleTv.setText("收款记录");
-        amountRecordListView.setEmptyView(amountRecordNoResultTv);
         amountAdapter = new AmountAdapter(this,amountStatusList);
         amountRecordListView.setAdapter(amountAdapter);
         requestAmountRecordListTask();
@@ -121,10 +120,13 @@ public class AmountRecordActivity extends Activity {
                     AmountRecordResponse amountResponse = new Gson().fromJson(result.rawResult,AmountRecordResponse.class);
                     if(null != amountResponse){
                         int resultFlag = amountResponse.getRes();
-                        if(0 == resultFlag){
+                        if(0 == resultFlag || 30001 == resultFlag){
                             amountStatusList = amountResponse.getData();
                             if(null != amountStatusList && !amountStatusList.isEmpty()){
                                 amountAdapter.setAmountStatusList(amountStatusList);
+                            }
+                            if(30001 == resultFlag){
+                                amountRecordListView.setEmptyView(amountRecordNoResultTv);
                             }
                         }else {
                             String errorMsg = amountResponse.getResDesc();

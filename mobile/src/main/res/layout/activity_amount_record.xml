@@ -25,10 +25,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/bg_texture"
-        android:drawableTop="@drawable/no_result"
         android:gravity="center_horizontal"
         android:paddingTop="100.0dip"
-        android:text="@string/no_search_result"
+        android:text="@string/no_record_result"
         android:textColor="@color/skin_gray3"
         android:textSize="15.0sp"
         android:visibility="gone" >

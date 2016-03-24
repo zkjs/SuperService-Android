@@ -172,6 +172,7 @@
     <string name="miss">女士</string>
 
     <string name="no_search_result">对不起，无搜索结果</string>
+    <string name="no_record_result">暂无收款记录</string>
     <string name="no_result">未找到用户</string>
 
     <!--ListView加载-->
