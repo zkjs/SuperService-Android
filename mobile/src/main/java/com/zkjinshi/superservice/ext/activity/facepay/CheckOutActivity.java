@@ -112,6 +112,8 @@ public class CheckOutActivity extends Activity {
                 Intent intent = new Intent(CheckOutActivity.this,PayRequestActivity.class);
                 intent.putExtra("nearbyUserVo",nearbyUserVo);
                 startActivity(intent);
+                overridePendingTransition(R.anim.slide_in_bottom,
+                        R.anim.slide_out_top);
             }
         });
 
