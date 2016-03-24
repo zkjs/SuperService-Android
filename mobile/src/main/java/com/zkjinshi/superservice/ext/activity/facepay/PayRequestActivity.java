@@ -44,18 +44,16 @@ public class PayRequestActivity extends Activity {
 
     public static final String TAG = PayRequestActivity.class.getSimpleName();
 
-    private ImageButton backIBtn;
-    private TextView titleTv;
     private LinearLayout payRequestLayout,payRequestSuccLayout;
     private SimpleDraweeView userPhotoDv;
     private TextView userNameTv,finishUserNameTv,finishAmount;
     private EditText inputPriceEtv;
     private Button confirmBtn,finishConfirmBtn;
     private NearbyUserVo nearbyUserVo;
+    private ImageButton closeIBtn;
+    private TextView tipTv;
 
     private void initView(){
-        backIBtn = (ImageButton)findViewById(R.id.header_bar_btn_back);
-        titleTv = (TextView)findViewById(R.id.header_bar_tv_title);
         payRequestLayout = (LinearLayout)findViewById(R.id.start_request_pay_layout);
         payRequestSuccLayout = (LinearLayout)findViewById(R.id.request_pay_succ_layout);
         userPhotoDv = (SimpleDraweeView)findViewById(R.id.user_photo_dv);
@@ -65,11 +63,11 @@ public class PayRequestActivity extends Activity {
         finishUserNameTv = (TextView)findViewById(R.id.finish_user_name_tv);
         finishAmount = (TextView)findViewById(R.id.finish_amount_tv);
         finishConfirmBtn = (Button)findViewById(R.id.btn_finish_confirm);
+        closeIBtn = (ImageButton)findViewById(R.id.pay_request_ibtn_close);
+        tipTv = (TextView)findViewById(R.id.pay_request_tv_tips);
     }
 
     private void initData(){
-        backIBtn.setVisibility(View.VISIBLE);
-        titleTv.setText("开始收款");
         payRequestLayout.setVisibility(View.VISIBLE);
         payRequestSuccLayout.setVisibility(View.GONE);
         if(null != getIntent() && null != getIntent().getSerializableExtra("nearbyUserVo")){
@@ -93,11 +91,13 @@ public class PayRequestActivity extends Activity {
 
     private void initListeners(){
 
-        //返回
-        backIBtn.setOnClickListener(new View.OnClickListener() {
+        //关闭
+        closeIBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 finish();
+                overridePendingTransition(R.anim.slide_in_top,
+                        R.anim.slide_out_bottom);
             }
         });
 
@@ -175,6 +175,7 @@ public class PayRequestActivity extends Activity {
                     if(null != amountResponse){
                         int resultFlag = amountResponse.getRes();
                         if(0 == resultFlag){
+                            tipTv.setVisibility(View.INVISIBLE);
                             if(amount <= 10000){
                                 AmountStatusVo amountStatusVo = amountResponse.getData();
                                 Intent intent = new Intent(PayRequestActivity.this,AmountDetailActivity.class);
@@ -192,7 +193,8 @@ public class PayRequestActivity extends Activity {
                         }else {
                             String errorMsg = amountResponse.getResDesc();
                             if(!TextUtils.isEmpty(errorMsg)){
-                                DialogUtil.getInstance().showCustomToast(PayRequestActivity.this,errorMsg, Gravity.CENTER);
+                                tipTv.setText(errorMsg);
+                                tipTv.setVisibility(View.VISIBLE);
                             }
                         }
                     }
