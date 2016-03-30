@@ -9,29 +9,13 @@ package com.zkjinshi.superservice.bean;
  */
 public class ZoneBean {
 
-/*           "locdesc" "演示区",    //区域描述
-            "locid": "1",
-            "major": "2",
-            "minor": "3",
-            "uuid": "uuid-uuid-uuid-uuid",
-            "sensorid": "sensorid",
-            "subscribed": 1 //是否已订阅: 1-已订阅, 0-未订阅*/
-
-    private String locdesc;
+    private String area;
     private String locid;
     private String major;
     private String minor;
     private String uuid;
     private String sensorid;
     private int subscribed;
-
-    public String getLocdesc() {
-        return locdesc;
-    }
-
-    public void setLocdesc(String locdesc) {
-        this.locdesc = locdesc;
-    }
 
     public String getLocid() {
         return locid;
@@ -79,5 +63,13 @@ public class ZoneBean {
 
     public void setSubscribed(int subscribed) {
         this.subscribed = subscribed;
+    }
+
+    public String getArea() {
+        return area;
+    }
+
+    public void setArea(String area) {
+        this.area = area;
     }
 }

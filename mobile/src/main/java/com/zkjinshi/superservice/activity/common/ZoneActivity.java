@@ -22,6 +22,7 @@ import com.zkjinshi.superservice.adapter.ZoneAdapter;
 import com.zkjinshi.superservice.base.BaseActivity;
 import com.zkjinshi.superservice.bean.ZoneBean;
 
+import com.zkjinshi.superservice.manager.YunBaSubscribeManager;
 import com.zkjinshi.superservice.net.RequestUtil;
 import com.zkjinshi.superservice.response.GetZoneListResponse;
 import com.zkjinshi.superservice.utils.AsyncHttpClientUtil;
@@ -46,13 +47,10 @@ import cz.msebera.android.httpclient.entity.StringEntity;
  */
 public class ZoneActivity extends BaseActivity {
 
-    private final static String TAG = ZoneActivity.class.getSimpleName();
     private String ZONE_CACHE_KEY = "zoneBeanList"+CacheUtil.getInstance().getUserId();
     private ListView zoneLv;
     private ZoneAdapter zoneAdapter;
     private Context mContext;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -142,8 +140,18 @@ public class ZoneActivity extends BaseActivity {
             @Override
             public void onClick(View view) {
                 CacheUtil.getInstance().saveListCache(ZONE_CACHE_KEY, zoneAdapter.getSelectZoneBeanList());
-                CacheUtil.getInstance().setAreaInfo(zoneAdapter.getCheckedIds());
-
+                String checkedIds =  zoneAdapter.getCheckedIds();
+                if(!TextUtils.isEmpty(checkedIds)){
+                    CacheUtil.getInstance().setAreaInfo(checkedIds);
+                    String[] locIds = checkedIds.split(",");
+                    if(null != locIds && locIds.length > 0){
+                        String[] subscribes = new String[locIds.length];
+                        for(int i = 0; i<locIds.length; i++){
+                            subscribes[i] =  CacheUtil.getInstance().getShopID()+"_BLE_"+locIds[i];
+                        }
+                        YunBaSubscribeManager.getInstance().subscribe(subscribes);
+                    }
+                }
                 if (!getIntent().getBooleanExtra("from_setting", false)) {
                     startActivity(new Intent(ZoneActivity.this, MainActivity.class));
                 }

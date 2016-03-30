@@ -150,7 +150,7 @@ public class ZoneAdapter extends BaseAdapter{
         }else{
             holder = (ViewHolder)convertView.getTag();//取出ViewHolder对象
         }
-        holder.name.setText(zoneList.get(position).getLocdesc());
+        holder.name.setText(zoneList.get(position).getArea());
 
         if(zoneList.get(position).getSubscribed() == 1){
             holder.check.setImageResource(R.mipmap.ic_jia_pre);
