@@ -13,6 +13,7 @@
     <item
         android:id="@+id/menu_team_edit"
         android:title="@string/action_edit"
+        android:visible="@bool/menu_team_edit_status"
         android:icon="@mipmap/ic_pen"
         app:showAsAction="always" />
 
