@@ -110,6 +110,7 @@
         <TextView
             style="@style/leftMenuText"
             android:text="@string/invite_code"
+            android:visibility="gone"
             android:id="@+id/tv_invite_code" />
 
         <TextView
