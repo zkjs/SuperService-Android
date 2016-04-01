@@ -40,9 +40,6 @@ public class GuideActivity extends BaseFragmentActivity {
         getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_guide);
-
-        YunBaSubscribeManager.getInstance().unSubscribe(this);
-
         mViewPager = (SCViewPager) findViewById(R.id.viewpager_main_activity);
         mDotsView = (DotsView) findViewById(R.id.dotsview_main);
         mDotsView.setDotRessource(R.mipmap.ellipse_pre, R.mipmap.ellipse_nor);
