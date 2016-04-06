@@ -109,72 +109,15 @@ public class AmountAdapter extends BaseAdapter {
             }
         }
         AmountStatusVo amountStatusVo = amountStatusList.get(position);
-        String userIcon = amountStatusVo.getUserimage();
-        String userNameStr = amountStatusVo.getUsername();
-        double totalPrice = amountStatusVo.getAmount();
-        String amountPriceStr = "¥"+ MathUtil.convertStr(totalPrice);
-        String createTimeStr = amountStatusVo.getCreatetime();
-        String amountStatusStr = amountStatusVo.getStatusdesc();
         switch (itemType){
             case TYPE_SUCC_ITEM:
-                if(!TextUtils.isEmpty(userIcon)){
-                    String path = ConfigUtil.getInst().getImgDomain()+userIcon;
-                    if(!TextUtils.isEmpty(path)){
-                        succViewHolder.userPhotoDv.setImageURI(Uri.parse(path));
-                    }
-                }
-                if(!TextUtils.isEmpty(userNameStr)){
-                    succViewHolder.userNameTv.setText(userNameStr);
-                }
-                if(!TextUtils.isEmpty(amountPriceStr)){
-                    succViewHolder.amountPriceTv.setText(amountPriceStr);
-                }
-                if(!TextUtils.isEmpty(createTimeStr)){
-                    succViewHolder.createTimeTv.setText(createTimeStr);
-                }
-                if(!TextUtils.isEmpty(amountStatusStr)){
-                    succViewHolder.amountStatusTv.setText(amountStatusStr);
-                }
+                setViewValues(succViewHolder,amountStatusVo);
                 break;
             case TYPE_FAIL_ITEM:
-                if(!TextUtils.isEmpty(userIcon)){
-                    String path = ConfigUtil.getInst().getImgDomain()+userIcon;
-                    if(!TextUtils.isEmpty(path)){
-                        failViewHolder.userPhotoDv.setImageURI(Uri.parse(path));
-                    }
-                }
-                if(!TextUtils.isEmpty(userNameStr)){
-                    failViewHolder.userNameTv.setText(userNameStr);
-                }
-                if(!TextUtils.isEmpty(amountPriceStr)){
-                    failViewHolder.amountPriceTv.setText(amountPriceStr);
-                }
-                if(!TextUtils.isEmpty(createTimeStr)){
-                    failViewHolder.createTimeTv.setText(createTimeStr);
-                }
-                if(!TextUtils.isEmpty(amountStatusStr)){
-                    failViewHolder.amountStatusTv.setText(amountStatusStr);
-                }
+                setViewValues(failViewHolder,amountStatusVo);
                 break;
             case TYPE_WAIT_ITEM:
-                if(!TextUtils.isEmpty(userIcon)){
-                    String path = ConfigUtil.getInst().getImgDomain()+userIcon;
-                    if(!TextUtils.isEmpty(path)){
-                        waitViewHolder.userPhotoDv.setImageURI(Uri.parse(path));
-                    }
-                }
-                if(!TextUtils.isEmpty(userNameStr)){
-                    waitViewHolder.userNameTv.setText(userNameStr);
-                }
-                if(!TextUtils.isEmpty(amountPriceStr)){
-                    waitViewHolder.amountPriceTv.setText(amountPriceStr);
-                }
-                if(!TextUtils.isEmpty(createTimeStr)){
-                    waitViewHolder.createTimeTv.setText(createTimeStr);
-                }
-                if(!TextUtils.isEmpty(amountStatusStr)){
-                    waitViewHolder.amountStatusTv.setText(amountStatusStr);
-                }
+                setViewValues(waitViewHolder,amountStatusVo);
                 break;
         }
 
@@ -187,6 +130,33 @@ public class AmountAdapter extends BaseAdapter {
         viewHolder.amountPriceTv = (TextView)convertView.findViewById(R.id.tv_amount_price);
         viewHolder.createTimeTv = (TextView)convertView.findViewById(R.id.tv_create_time);
         viewHolder.amountStatusTv = (TextView)convertView.findViewById(R.id.tv_amount_status);
+    }
+
+    private void setViewValues(ViewHolder viewHolder,AmountStatusVo amountStatusVo){
+        String userIcon = amountStatusVo.getUserimage();
+        String userNameStr = amountStatusVo.getUsername();
+        double totalPrice = amountStatusVo.getAmount();
+        String amountPriceStr = "¥"+ MathUtil.convertStr(totalPrice);
+        String createTimeStr = amountStatusVo.getCreatetime();
+        String amountStatusStr = amountStatusVo.getStatusdesc();
+        if(!TextUtils.isEmpty(userIcon)){
+            String path = ConfigUtil.getInst().getImgDomain()+userIcon;
+            if(!TextUtils.isEmpty(path)){
+                viewHolder.userPhotoDv.setImageURI(Uri.parse(path));
+            }
+        }
+        if(!TextUtils.isEmpty(userNameStr)){
+            viewHolder.userNameTv.setText(userNameStr);
+        }
+        if(!TextUtils.isEmpty(amountPriceStr)){
+            viewHolder.amountPriceTv.setText(amountPriceStr);
+        }
+        if(!TextUtils.isEmpty(createTimeStr)){
+            viewHolder.createTimeTv.setText(createTimeStr);
+        }
+        if(!TextUtils.isEmpty(amountStatusStr)){
+            viewHolder.amountStatusTv.setText(amountStatusStr);
+        }
     }
 
     @Override
