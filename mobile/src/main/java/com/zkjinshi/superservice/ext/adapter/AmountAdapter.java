@@ -30,6 +30,7 @@ public class AmountAdapter extends BaseAdapter {
     private Context context;
     private LayoutInflater inflater;
 
+    private static final int VIEW_TYPE_COUNT = 3; // 总数
     private static final int TYPE_WAIT_ITEM = 0;//待确认
     private static final int TYPE_FAIL_ITEM = 1;//已拒绝
     private static final int TYPE_SUCC_ITEM = 2;//已支付
@@ -67,70 +68,147 @@ public class AmountAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder viewHolder = null;
 
+        SuccViewHolder succViewHolder = null;
+        FailViewHolder failViewHolder = null;
+        WaitViewHolder waitViewHolder = null;
         int itemType = getItemViewType(position);
-
-
         if(null == convertView){
             switch (itemType){
                 case TYPE_SUCC_ITEM:
-                    convertView = inflater.inflate(R.layout.item_record_amount_succ,null);
+                    convertView = inflater.inflate(R.layout.item_record_amount_succ,parent, false);
+                    succViewHolder = new SuccViewHolder();
+                    setViewHolder(succViewHolder,convertView);
+                    convertView.setTag(succViewHolder);
                     break;
                 case TYPE_FAIL_ITEM:
-                    convertView = inflater.inflate(R.layout.item_record_amount_fail,null);
+                    convertView = inflater.inflate(R.layout.item_record_amount_fail,parent, false);
+                    failViewHolder = new FailViewHolder();
+                    setViewHolder(failViewHolder,convertView);
+                    convertView.setTag(failViewHolder);
                     break;
                 case TYPE_WAIT_ITEM:
-                    convertView = inflater.inflate(R.layout.item_record_amount_wait,null);
+                    convertView = inflater.inflate(R.layout.item_record_amount_wait,parent,false);
+                    waitViewHolder = new WaitViewHolder();
+                    setViewHolder(waitViewHolder,convertView);
+                    convertView.setTag(waitViewHolder);
                     break;
             }
-            viewHolder = new ViewHolder();
-            viewHolder.userPhotoDv = (SimpleDraweeView)convertView.findViewById(R.id.iv_user_photo);
-            viewHolder.userNameTv = (TextView)convertView.findViewById(R.id.tv_user_name);
-            viewHolder.amountPriceTv = (TextView)convertView.findViewById(R.id.tv_amount_price);
-            viewHolder.createTimeTv = (TextView)convertView.findViewById(R.id.tv_create_time);
-            viewHolder.amountStatusTv = (TextView)convertView.findViewById(R.id.tv_amount_status);
-            convertView.setTag(viewHolder);
+
         }else {
-            viewHolder = (ViewHolder) convertView.getTag();
+            switch (itemType){
+                case TYPE_SUCC_ITEM:
+                    succViewHolder = (SuccViewHolder) convertView.getTag();
+                    break;
+                case TYPE_FAIL_ITEM:
+                    failViewHolder = (FailViewHolder)convertView.getTag();
+                    break;
+                case TYPE_WAIT_ITEM:
+                    waitViewHolder = (WaitViewHolder)convertView.getTag();
+                    break;
+            }
         }
         AmountStatusVo amountStatusVo = amountStatusList.get(position);
         String userIcon = amountStatusVo.getUserimage();
-        if(!TextUtils.isEmpty(userIcon)){
-            String path = ConfigUtil.getInst().getImgDomain()+userIcon;
-            if(!TextUtils.isEmpty(path)){
-                viewHolder.userPhotoDv.setImageURI(Uri.parse(path));
-            }
-        }
         String userNameStr = amountStatusVo.getUsername();
-        if(!TextUtils.isEmpty(userNameStr)){
-            viewHolder.userNameTv.setText(userNameStr);
-        }
         double totalPrice = amountStatusVo.getAmount();
         String amountPriceStr = "¥"+ MathUtil.convertStr(totalPrice);
-        if(!TextUtils.isEmpty(amountPriceStr)){
-            viewHolder.amountPriceTv.setText(amountPriceStr);
-        }
         String createTimeStr = amountStatusVo.getCreatetime();
-        if(!TextUtils.isEmpty(createTimeStr)){
-            viewHolder.createTimeTv.setText(createTimeStr);
-        }
         String amountStatusStr = amountStatusVo.getStatusdesc();
-        if(!TextUtils.isEmpty(amountStatusStr)){
-            viewHolder.amountStatusTv.setText(amountStatusStr);
+        switch (itemType){
+            case TYPE_SUCC_ITEM:
+                if(!TextUtils.isEmpty(userIcon)){
+                    String path = ConfigUtil.getInst().getImgDomain()+userIcon;
+                    if(!TextUtils.isEmpty(path)){
+                        succViewHolder.userPhotoDv.setImageURI(Uri.parse(path));
+                    }
+                }
+                if(!TextUtils.isEmpty(userNameStr)){
+                    succViewHolder.userNameTv.setText(userNameStr);
+                }
+                if(!TextUtils.isEmpty(amountPriceStr)){
+                    succViewHolder.amountPriceTv.setText(amountPriceStr);
+                }
+                if(!TextUtils.isEmpty(createTimeStr)){
+                    succViewHolder.createTimeTv.setText(createTimeStr);
+                }
+                if(!TextUtils.isEmpty(amountStatusStr)){
+                    succViewHolder.amountStatusTv.setText(amountStatusStr);
+                }
+                break;
+            case TYPE_FAIL_ITEM:
+                if(!TextUtils.isEmpty(userIcon)){
+                    String path = ConfigUtil.getInst().getImgDomain()+userIcon;
+                    if(!TextUtils.isEmpty(path)){
+                        failViewHolder.userPhotoDv.setImageURI(Uri.parse(path));
+                    }
+                }
+                if(!TextUtils.isEmpty(userNameStr)){
+                    failViewHolder.userNameTv.setText(userNameStr);
+                }
+                if(!TextUtils.isEmpty(amountPriceStr)){
+                    failViewHolder.amountPriceTv.setText(amountPriceStr);
+                }
+                if(!TextUtils.isEmpty(createTimeStr)){
+                    failViewHolder.createTimeTv.setText(createTimeStr);
+                }
+                if(!TextUtils.isEmpty(amountStatusStr)){
+                    failViewHolder.amountStatusTv.setText(amountStatusStr);
+                }
+                break;
+            case TYPE_WAIT_ITEM:
+                if(!TextUtils.isEmpty(userIcon)){
+                    String path = ConfigUtil.getInst().getImgDomain()+userIcon;
+                    if(!TextUtils.isEmpty(path)){
+                        waitViewHolder.userPhotoDv.setImageURI(Uri.parse(path));
+                    }
+                }
+                if(!TextUtils.isEmpty(userNameStr)){
+                    waitViewHolder.userNameTv.setText(userNameStr);
+                }
+                if(!TextUtils.isEmpty(amountPriceStr)){
+                    waitViewHolder.amountPriceTv.setText(amountPriceStr);
+                }
+                if(!TextUtils.isEmpty(createTimeStr)){
+                    waitViewHolder.createTimeTv.setText(createTimeStr);
+                }
+                if(!TextUtils.isEmpty(amountStatusStr)){
+                    waitViewHolder.amountStatusTv.setText(amountStatusStr);
+                }
+                break;
         }
+
         return convertView;
+    }
+
+    private void setViewHolder(ViewHolder viewHolder, View convertView) {
+        viewHolder.userPhotoDv = (SimpleDraweeView)convertView.findViewById(R.id.iv_user_photo);
+        viewHolder.userNameTv = (TextView)convertView.findViewById(R.id.tv_user_name);
+        viewHolder.amountPriceTv = (TextView)convertView.findViewById(R.id.tv_amount_price);
+        viewHolder.createTimeTv = (TextView)convertView.findViewById(R.id.tv_create_time);
+        viewHolder.amountStatusTv = (TextView)convertView.findViewById(R.id.tv_amount_status);
     }
 
     @Override
     public int getItemViewType(int position) {
         AmountStatusVo amountStatusVo = amountStatusList.get(position);
+        int status = 0;
         if(null != amountStatusVo){
-            int status = amountStatusVo.getStatus();
-            return status;
+            status = amountStatusVo.getStatus();
         }
-        return 0;
+        return status;
     }
+
+    @Override
+    public int getViewTypeCount() {
+        return VIEW_TYPE_COUNT;
+    }
+
+    class WaitViewHolder extends ViewHolder{}
+
+    class FailViewHolder extends ViewHolder{}
+
+    class SuccViewHolder extends ViewHolder{}
 
     class ViewHolder{
         SimpleDraweeView userPhotoDv;
