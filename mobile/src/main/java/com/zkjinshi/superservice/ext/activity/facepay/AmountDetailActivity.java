@@ -115,7 +115,7 @@ public class AmountDetailActivity extends Activity {
                     amountWaitAmountPriceTv.setText(amountPriceStr);
                 }
             }
-            String orderNoStr = amountStatusVo.getOrderno();
+            String orderNoStr = amountStatusVo.getPaymentno();
             if(!TextUtils.isEmpty(orderNoStr)){
                 amountFailOrderNoTv.setText(orderNoStr);
                 amountSuccOrderNoTv.setText(orderNoStr);
