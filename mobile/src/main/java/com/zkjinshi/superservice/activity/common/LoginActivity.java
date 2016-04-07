@@ -109,7 +109,13 @@ public class LoginActivity extends BaseActivity implements VerifyPhoneControler.
             public void successCallback(JSONObject response) {
                 CacheUtil.getInstance().setLogin(true);
                 Intent intent;
-                intent = new Intent(LoginActivity.this, MainActivity.class);
+                String ZONE_CACHE_KEY = "zoneBeanList"+CacheUtil.getInstance().getUserId();
+                String listStr = CacheUtil.getInstance().getListStrCache(ZONE_CACHE_KEY);
+                if(!TextUtils.isEmpty(listStr)){
+                    intent = new Intent(LoginActivity.this, MainActivity.class);
+                }else{
+                    intent = new Intent(LoginActivity.this,ZoneActivity.class);
+                }
                 startActivity(intent);
                 finish();
                 overridePendingTransition(R.anim.activity_new, R.anim.activity_out);
