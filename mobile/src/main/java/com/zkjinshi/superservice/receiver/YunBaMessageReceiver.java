@@ -16,6 +16,7 @@ import com.zkjinshi.superservice.ext.vo.AmountStatusVo;
 import com.zkjinshi.superservice.manager.SSOManager;
 import com.zkjinshi.superservice.manager.YunBaSubscribeManager;
 import com.zkjinshi.superservice.notification.NotificationHelper;
+import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.vo.ActiveCodeNoticeVo;
 import com.zkjinshi.superservice.vo.YunBaMsgVo;
 
@@ -62,12 +63,12 @@ public class YunBaMessageReceiver extends BroadcastReceiver {
                         LogUtil.getInstance().info(LogLevel.ERROR,"推送内容:"+data);
                     }
                     //是否注册接受到店通知
-                    if(YunBaSubscribeManager.getInstance().isSubscribed()){
-                        if(null != yunBaMsgVo){
-                            //弹出当前位置到达提示
-                            NotificationHelper.getInstance().showNotification(context, yunBaMsgVo);
-                        }
+                    if(null != yunBaMsgVo){
+                        //弹出当前位置到达提示
+                        NotificationHelper.getInstance().showNotification(context, yunBaMsgVo);
                     }
+
+
                     //如果是商家中心，则执行发送消息给客人
                     if(SSOManager.getInstance().isShopCenter()){//1、检测用户身份，是否为消息中心
                         if(null != yunBaMsgVo){//2、发送欢迎信息给客人

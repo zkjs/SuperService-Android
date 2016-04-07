@@ -85,8 +85,7 @@ public class EmployeeInfoActivity extends BaseActivity {
                 .build();
 
         if(null != mEmployee){
-            String empID     = mEmployee.getUserid();
-            String avatarUrl = ProtocolUtil.getAvatarUrl(empID);
+            String avatarUrl = ProtocolUtil.getHostImgUrl(mEmployee.getUserimage());
             mIvAvatar.setScaleType(ImageView.ScaleType.CENTER_CROP);
             ImageLoader.getInstance().displayImage(avatarUrl, mIvAvatar, mOptions);
 
