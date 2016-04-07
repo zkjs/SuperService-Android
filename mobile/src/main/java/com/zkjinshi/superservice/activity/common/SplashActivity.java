@@ -66,7 +66,7 @@ public class SplashActivity extends BaseActivity{
                 handler.sendEmptyMessageDelayed(GO_HOME, SPLASH_DELAY_MILLIS);
             } else  if (!CacheUtil.getInstance().isGuide()){
                 //取消云巴频道订阅
-                YunBaSubscribeManager.getInstance().unSubscribe(this);
+                YunBaSubscribeManager.getInstance().unSubscribe(this,null);
                 //取消云巴别名订阅
                 YunBaSubscribeManager.getInstance().cancelAlias(this);
                 handler.sendEmptyMessageDelayed(GO_GUIDE, SPLASH_DELAY_MILLIS);

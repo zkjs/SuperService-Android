@@ -474,6 +474,12 @@
         <service
             android:name="io.yunba.android.core.YunBaService" android:exported="true"/>
 
+        <service android:name=".service.ActiveService">
+            <intent-filter>
+                <action android:name="com.zkjinshi.superservice.ACTION_ACTIVE" />
+            </intent-filter>
+        </service>
+
         <receiver android:name="io.yunba.android.core.YunBaReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.USER_PRESENT" />

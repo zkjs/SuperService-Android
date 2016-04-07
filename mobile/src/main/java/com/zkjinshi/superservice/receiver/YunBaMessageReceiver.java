@@ -70,13 +70,13 @@ public class YunBaMessageReceiver extends BroadcastReceiver {
 
 
                     //如果是商家中心，则执行发送消息给客人
-                    if(SSOManager.getInstance().isShopCenter()){//1、检测用户身份，是否为消息中心
+                    /*if(SSOManager.getInstance().isShopCenter()){//1、检测用户身份，是否为消息中心
                         if(null != yunBaMsgVo){//2、发送欢迎信息给客人
                             String userId = yunBaMsgVo.getUserId();
                             String userName = yunBaMsgVo.getUserName();
                             EMConversationHelper.getInstance().sendWelcomeMessage(userId,userName);
                         }
-                    }
+                    }*/
                 }else if("ACTIVATESALECODE".equals(type)){//激活邀请码
                     ActiveCodeNoticeVo activeCodeNoticeVo = new Gson().fromJson(data,ActiveCodeNoticeVo.class);
                     if(null != activeCodeNoticeVo){

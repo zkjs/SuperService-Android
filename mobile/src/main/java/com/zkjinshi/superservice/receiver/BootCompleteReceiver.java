@@ -9,6 +9,7 @@ import com.zkjinshi.base.util.Constants;
 import com.zkjinshi.superservice.activity.common.LoginController;
 import com.zkjinshi.superservice.emchat.EasemobIMManager;
 import com.zkjinshi.superservice.manager.YunBaSubscribeManager;
+import com.zkjinshi.superservice.service.ActiveService;
 import com.zkjinshi.superservice.utils.CacheUtil;
 
 /**
@@ -35,6 +36,11 @@ public class BootCompleteReceiver extends BroadcastReceiver {
                 //根据角色订阅频道
                 Log.i(Constants.ZKJINSHI_BASE_TAG, "开机自动根据角色订阅云巴频道.....");
                 YunBaSubscribeManager.getInstance().subscribe();
+                //启动激活服务
+               /* Log.i(Constants.ZKJINSHI_BASE_TAG, "开机自动启动激活服务.....");
+                Intent intent = new Intent(context, ActiveService.class);
+                intent.setAction("com.zkjinshi.superservice.ACTION_ACTIVE");
+                context.startService(intent);*/
             }
         }
     }

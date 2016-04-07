@@ -120,7 +120,7 @@ public class YunBaSubscribeManager {
      * 获取订阅频道
      * @param context
      */
-    public void unSubscribe(final Context context){
+    public void unSubscribe(final Context context,final  UnSubscribeCallback callback){
         YunBaManager.getTopicList(context, new IMqttActionListener() {
             @Override
             public void onSuccess(IMqttToken iMqttToken) {
@@ -140,6 +140,9 @@ public class YunBaSubscribeManager {
                                     @Override
                                     public void onSuccess(IMqttToken asyncActionToken) {
                                         Log.i(TAG,"取消订阅云巴成功");
+                                        if(null != callback){
+                                            callback.onSuccess();
+                                        }
                                     }
 
                                     @Override
@@ -148,6 +151,9 @@ public class YunBaSubscribeManager {
                                             MqttException ex = (MqttException)exception;
                                             String msg =  "Subscribe failed with error code : " + ex.getReasonCode();
                                             Log.i(TAG,"取消订阅云巴失败:"+msg);
+                                            if(null != callback){
+                                                callback.onFailure();
+                                            }
                                         }
                                     }
                                 }
@@ -156,6 +162,9 @@ public class YunBaSubscribeManager {
 
                 } catch (JSONException e) {
                     Log.i(TAG, "获取云巴订阅频道 json解析异常:"+e.getMessage());
+                    if(null != callback){
+                        callback.onFailure();
+                    }
                 }
             }
 
@@ -165,6 +174,9 @@ public class YunBaSubscribeManager {
                     MqttException ex = (MqttException)throwable;
                     String msg = TAG + "getTopicList failed with error code : " + ex.getReasonCode();
                     Log.i(TAG, "获取云巴订阅频道失败:"+msg);
+                    if(null != callback){
+                        callback.onFailure();
+                    }
                 }
             }
         });

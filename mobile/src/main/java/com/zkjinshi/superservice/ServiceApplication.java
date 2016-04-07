@@ -3,6 +3,7 @@ package com.zkjinshi.superservice;
 import android.app.ActivityManager;
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Environment;
 import android.support.multidex.MultiDex;
@@ -29,6 +30,7 @@ import com.zkjinshi.base.util.DeviceUtils;
 import com.zkjinshi.superservice.base.BaseApplication;
 import com.zkjinshi.superservice.emchat.EasemobIMHelper;
 import com.zkjinshi.superservice.emchat.observer.EGroupReomveListener;
+import com.zkjinshi.superservice.service.ActiveService;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.EmotionUtil;
 
@@ -68,6 +70,7 @@ public class ServiceApplication extends BaseApplication {
         initFace();
         initImageLoader();
         initTest();
+        //initActive();
         Fresco.initialize(this);
     }
 
@@ -219,6 +222,15 @@ public class ServiceApplication extends BaseApplication {
      */
     private void initTest(){
         TestinAgent.init(this);
+    }
+
+    /**
+     * 启动激活服务
+     */
+    private void initActive(){
+        Intent intent = new Intent(this, ActiveService.class);
+        intent.setAction("com.zkjinshi.superservice.ACTION_ACTIVE");
+        startService(intent);
     }
 
     /**

@@ -167,7 +167,7 @@ public class MainActivity extends BaseAppCompatActivity {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             //移除云巴订阅推送
-                            YunBaSubscribeManager.getInstance().unSubscribe(MainActivity.this);
+                            YunBaSubscribeManager.getInstance().unSubscribe(MainActivity.this,null);
                             //取消订阅别名
                             YunBaSubscribeManager.getInstance().cancelAlias(MainActivity.this);
                             //环信接口退出

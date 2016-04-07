@@ -22,6 +22,7 @@ import com.zkjinshi.superservice.adapter.ZoneAdapter;
 import com.zkjinshi.superservice.base.BaseActivity;
 import com.zkjinshi.superservice.bean.ZoneBean;
 
+import com.zkjinshi.superservice.manager.UnSubscribeCallback;
 import com.zkjinshi.superservice.manager.YunBaSubscribeManager;
 import com.zkjinshi.superservice.net.RequestUtil;
 import com.zkjinshi.superservice.response.GetZoneListResponse;
@@ -145,11 +146,22 @@ public class ZoneActivity extends BaseActivity {
                     CacheUtil.getInstance().setAreaInfo(checkedIds);
                     String[] locIds = checkedIds.split(",");
                     if(null != locIds && locIds.length > 0){
-                        String[] subscribes = new String[locIds.length];
+                        final String[] subscribes = new String[locIds.length];
                         for(int i = 0; i<locIds.length; i++){
                             subscribes[i] =  CacheUtil.getInstance().getShopID()+"_BLE_"+locIds[i];
                         }
-                        YunBaSubscribeManager.getInstance().subscribe(subscribes);
+                        YunBaSubscribeManager.getInstance().unSubscribe(ZoneActivity.this, new UnSubscribeCallback() {
+                            @Override
+                            public void onSuccess() {
+                                YunBaSubscribeManager.getInstance().subscribe(subscribes);
+                            }
+
+                            @Override
+                            public void onFailure() {
+                                YunBaSubscribeManager.getInstance().subscribe(subscribes);
+                            }
+                        });
+
                     }
                 }
                 if (!getIntent().getBooleanExtra("from_setting", false)) {
