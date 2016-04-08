@@ -36,8 +36,8 @@ public class ClientDBUtil {
     public synchronized static ClientDBUtil getInstance(){
         if(instance == null){
             instance = new ClientDBUtil();
-            instance.init();
         }
+        instance.init();
         return instance;
     }
 

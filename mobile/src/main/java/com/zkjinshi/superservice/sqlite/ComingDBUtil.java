@@ -32,8 +32,8 @@ public class ComingDBUtil {
     public synchronized static ComingDBUtil getInstance(){
         if(null == instance){
             instance = new ComingDBUtil();
-            instance.init();
         }
+        instance.init();
         return instance;
     }
 
