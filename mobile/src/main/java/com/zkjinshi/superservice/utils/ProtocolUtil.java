@@ -275,12 +275,22 @@ public class ProtocolUtil {
         return ConfigUtil.getInst().getForDomain()+"res/v1/query/user/all";
     }
 
+
+
     /**
      * 登陆后更新用户资料
      * @return
      */
     public static String updateUserInfo(){
         return ConfigUtil.getInst().getForDomain()+"res/v1/update/user";
+    }
+
+    /**
+     * 注册更新用户资料
+     * @return
+     */
+    public static String registerUpdateUserInfo(){
+        return ConfigUtil.getInst().getForDomain()+"res/v1/register/update/ss";
     }
 
     /**

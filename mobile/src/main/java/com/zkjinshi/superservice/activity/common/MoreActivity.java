@@ -133,14 +133,17 @@ public class MoreActivity extends BaseFragmentActivity implements MultiImageSele
     }
 
     private void initData() {
-        nameTv.setText(CacheUtil.getInstance().getUserName());
-        if(CacheUtil.getInstance().getSex().equals("0")){
-            sexCbx.setChecked(false);
-        }else{
-            sexCbx.setChecked(true);
+        if(getIntent().getBooleanExtra("from_setting",false)) {
+            nameTv.setText(CacheUtil.getInstance().getUserName());
+            if(CacheUtil.getInstance().getSex().equals("0")){
+                sexCbx.setChecked(false);
+            }else{
+                sexCbx.setChecked(true);
+            }
+            String avatarUrl = CacheUtil.getInstance().getUserPhotoUrl();
+            avatarCiv.setImageURI(Uri.parse(avatarUrl));
         }
-        String avatarUrl = CacheUtil.getInstance().getUserPhotoUrl();
-        avatarCiv.setImageURI(Uri.parse(avatarUrl));
+
     }
 
     private void initListener() {
@@ -171,27 +174,34 @@ public class MoreActivity extends BaseFragmentActivity implements MultiImageSele
     * 资料更新
     * */
     private void sempupdate() {
-        if(picPath == null){
-            String avatarUrl = CacheUtil.getInstance().getUserPhotoUrl();
-            if(!avatarUrl.contains(".png") && !avatarUrl.contains(".jpg")){
-                DialogUtil.getInstance().showToast(this,"请上传头像");
-                return;
-            }
+
+        if(!getIntent().getBooleanExtra("from_setting",false) && picPath == null) {
+            DialogUtil.getInstance().showToast(this,"请上传头像");
+            return;
         }
 
         String input = inputNameEt.getText().toString();
         final String name = TextUtils.isEmpty(input)? nameTv.getText().toString() : input;
         final String sex = sexCbx.isChecked() ? "1" : "0";
 
+        if(TextUtils.isEmpty(name)){
+            DialogUtil.getInstance().showToast(this,"请输入昵称。");
+            return;
+        }
+
 
         try{
             AsyncHttpClient client = new AsyncHttpClient();
             client.setTimeout(Constants.OVERTIMEOUT);
             client.addHeader("Token",CacheUtil.getInstance().getExtToken());
-            String url = ProtocolUtil.updateUserInfo();
+            String url = ProtocolUtil.registerUpdateUserInfo();
+            if(getIntent().getBooleanExtra("from_setting",false)){
+                url = ProtocolUtil.updateUserInfo();
+            }
             RequestParams params = new RequestParams();
             params.put("sex",sex);
             params.put("username",name);
+            params.put("realname",name);
             if(picPath != null){
                 params.put("image",new File(picPath));
             }
