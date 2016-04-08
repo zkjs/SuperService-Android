@@ -56,19 +56,13 @@ public class YunBaMessageReceiver extends BroadcastReceiver {
                         NotificationHelper.getInstance().showNotification(context, amountStatusVo);
                     }
                 }else if("ARRIVING".equals(type)){//到店通知（GPS/蓝牙）
+                    LogUtil.getInstance().info(LogLevel.WARN,"收到到店通知内容："+data);
                     YunBaMsgVo yunBaMsgVo = new Gson().fromJson(data, YunBaMsgVo.class);
-                    String arriveType = yunBaMsgVo.getType();
-                    if("GPS".equals(arriveType)){
-                        LogUtil.getInstance().info(LogLevel.ERROR,"收到GPS分级推送");
-                        LogUtil.getInstance().info(LogLevel.ERROR,"推送内容:"+data);
-                    }
                     //是否注册接受到店通知
                     if(null != yunBaMsgVo){
                         //弹出当前位置到达提示
                         NotificationHelper.getInstance().showNotification(context, yunBaMsgVo);
                     }
-
-
                     //如果是商家中心，则执行发送消息给客人
                     /*if(SSOManager.getInstance().isShopCenter()){//1、检测用户身份，是否为消息中心
                         if(null != yunBaMsgVo){//2、发送欢迎信息给客人

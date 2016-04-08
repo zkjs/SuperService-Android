@@ -198,7 +198,7 @@ public class NotificationHelper {
      * @param context
      * @param yunBaMsgVo
      */
-    public void showNotification(final Context context, final YunBaMsgVo yunBaMsgVo){
+    public synchronized void showNotification(final Context context, final YunBaMsgVo yunBaMsgVo){
         ImageSize imageSize = new ImageSize(DisplayUtil.dip2px(context, 36),
                 DisplayUtil.dip2px(context, 36));
         String imageSuffix = yunBaMsgVo.getUserImage();
