@@ -142,8 +142,10 @@ public class ZoneActivity extends BaseActivity {
             public void onClick(View view) {
                 CacheUtil.getInstance().saveListCache(ZONE_CACHE_KEY, zoneAdapter.getSelectZoneBeanList());
                 String checkedIds =  zoneAdapter.getCheckedIds();
+                String payIds = zoneAdapter.getPeyIds();
                 if(!TextUtils.isEmpty(checkedIds)){
                     CacheUtil.getInstance().setAreaInfo(checkedIds);
+                    CacheUtil.getInstance().setPayInfo(payIds);
                     String[] locIds = checkedIds.split(",");
                     if(null != locIds && locIds.length > 0){
                         final String[] subscribes = new String[locIds.length];

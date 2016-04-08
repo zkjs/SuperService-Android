@@ -11,6 +11,7 @@ public class ZoneBean {
 
     private String area;
     private String locid;
+    private int payment_support;//0-不支持支付, 1-支持支付
     private String major;
     private String minor;
     private String uuid;
@@ -71,5 +72,13 @@ public class ZoneBean {
 
     public void setArea(String area) {
         this.area = area;
+    }
+
+    public int getPayment_support() {
+        return payment_support;
+    }
+
+    public void setPayment_support(int payment_support) {
+        this.payment_support = payment_support;
     }
 }

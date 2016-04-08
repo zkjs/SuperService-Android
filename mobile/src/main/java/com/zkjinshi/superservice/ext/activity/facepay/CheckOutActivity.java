@@ -203,7 +203,7 @@ public class CheckOutActivity extends Activity {
      */
     private void requestNearbyUserListTask(){
         String shopId = CacheUtil.getInstance().getShopID();
-        String url = ConfigUtil.getInst().getPyxDomain()+"lbs/v1/loc/beacon/"+shopId+"/1000?page=0&page_size=20";
+        String url = ConfigUtil.getInst().getPyxDomain()+"lbs/v1/loc/beacon/"+shopId+"/"+CacheUtil.getInstance().getPayInfo()+"?page=0&page_size=20";
         NetRequest netRequest = new NetRequest(url);
         NetRequestTask netRequestTask = new NetRequestTask(this,netRequest, NetResponse.class);
         netRequestTask.methodType = MethodType.GET;

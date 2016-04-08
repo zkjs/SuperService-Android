@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -15,11 +16,13 @@ import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.blueware.agent.android.BlueWare;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.zkjinshi.base.log.LogLevel;
 import com.zkjinshi.base.log.LogUtil;
+import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.set.ClientActivity;
 import com.zkjinshi.superservice.activity.set.SettingActivity;
@@ -127,8 +130,13 @@ public class MainActivity extends BaseAppCompatActivity {
         findViewById(R.id.amount_tv).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this,CheckOutActivity.class);
-                startActivity(intent);
+                String payInfo = CacheUtil.getInstance().getPayInfo();
+                if(!TextUtils.isEmpty(payInfo)){
+                    Intent intent = new Intent(MainActivity.this,CheckOutActivity.class);
+                    startActivity(intent);
+                }else {
+                    DialogUtil.getInstance().showCustomToast(view.getContext(),"暂未开通收款功能",Gravity.CENTER);
+                }
             }
         });
 
