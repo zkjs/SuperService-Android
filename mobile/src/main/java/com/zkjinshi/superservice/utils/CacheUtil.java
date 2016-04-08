@@ -514,6 +514,30 @@ public class CacheUtil {
 	}
 
 	/**
+	 * 设置收银台信息
+	 * @param payInfo
+     */
+	public void setPayInfo(String payInfo) {
+		if (null == context) {
+			return;
+		}
+		SharedPreferences sp = context.getSharedPreferences(SVIP_CACHE, Context.MODE_PRIVATE);
+		sp.edit().putString("pay_info", payInfo).commit();
+	}
+
+	/**
+	 * 获取收银台信息
+	 * @return
+	 */
+	public String getPayInfo() {
+		if (null == context) {
+			return null;
+		}
+		SharedPreferences sp = context.getSharedPreferences(SVIP_CACHE, Context.MODE_PRIVATE);
+		return sp.getString("pay_info", "");
+	}
+
+	/**
 	 * 设置密码
 	 *
 	 * @param password

@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -15,11 +16,13 @@ import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.blueware.agent.android.BlueWare;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.zkjinshi.base.log.LogLevel;
 import com.zkjinshi.base.log.LogUtil;
+import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.set.ClientActivity;
 import com.zkjinshi.superservice.activity.set.SettingActivity;
@@ -27,6 +30,7 @@ import com.zkjinshi.superservice.activity.set.TeamContactsActivity;
 import com.zkjinshi.superservice.base.BaseAppCompatActivity;
 import com.zkjinshi.superservice.emchat.EasemobIMHelper;
 import com.zkjinshi.superservice.ext.activity.facepay.CheckOutActivity;
+import com.zkjinshi.superservice.manager.SSOManager;
 import com.zkjinshi.superservice.manager.YunBaSubscribeManager;
 import com.zkjinshi.superservice.net.ExtNetRequestListener;
 import com.zkjinshi.superservice.net.MethodType;
@@ -70,7 +74,12 @@ public class MainActivity extends BaseAppCompatActivity {
     }
 
     private void initData(){
-
+        String payInfo = CacheUtil.getInstance().getPayInfo();
+        if(!TextUtils.isEmpty(payInfo) && SSOManager.getInstance().isCollection()){
+            findViewById(R.id.amount_tv).setVisibility(View.VISIBLE);
+        }else {
+            findViewById(R.id.amount_tv).setVisibility(View.GONE);
+        }
     }
 
     private void initListeners(){

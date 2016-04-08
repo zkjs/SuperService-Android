@@ -38,8 +38,8 @@ public class ShopDepartmentDBUtil {
     public synchronized static ShopDepartmentDBUtil getInstance(){
         if(instance == null){
             instance = new ShopDepartmentDBUtil();
-            instance.init();
         }
+        instance.init();
         return instance;
     }
 

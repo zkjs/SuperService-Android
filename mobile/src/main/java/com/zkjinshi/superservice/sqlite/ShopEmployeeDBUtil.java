@@ -36,8 +36,8 @@ public class ShopEmployeeDBUtil {
     public synchronized static ShopEmployeeDBUtil getInstance(){
         if(instance == null){
             instance = new ShopEmployeeDBUtil();
-            instance.init();
         }
+        instance.init();
         return instance;
     }
 

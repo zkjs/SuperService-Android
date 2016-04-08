@@ -29,8 +29,8 @@ public class UserDBUtil {
     public synchronized static UserDBUtil getInstance(){
         if(null == instance){
             instance = new UserDBUtil();
-            instance.init();
         }
+        instance.init();
         return instance;
     }
 

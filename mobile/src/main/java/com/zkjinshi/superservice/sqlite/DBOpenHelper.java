@@ -29,7 +29,7 @@ public class DBOpenHelper extends SQLiteOpenHelper {
     }
 
     public DBOpenHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
-        super(context, name, factory, version);
+        super(context, DB_NAME, factory, VERSION);
     }
 
     /**

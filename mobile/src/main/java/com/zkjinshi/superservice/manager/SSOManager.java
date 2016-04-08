@@ -90,6 +90,29 @@ public class SSOManager {
     }
 
     /**
+     * 是否有收款权限
+     * @return
+     */
+    public boolean isCollection(){
+        String token = CacheUtil.getInstance().getExtToken();
+        if(!TextUtils.isEmpty(token)){
+            PayloadVo payloadVo = decodeToken(token);
+            if(null != payloadVo){
+                String[] roles = payloadVo.getRoles();
+                if(null != roles && roles.length > 0){
+                    for (String  role: roles){
+                        //SALE —-销售 SERCENTER---服务中心
+                        if("POS".equals(role)){
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
      * 是否是商家中心
      * @return
      */
