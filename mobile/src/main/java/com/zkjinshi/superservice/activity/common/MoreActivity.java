@@ -220,18 +220,21 @@ public class MoreActivity extends BaseFragmentActivity implements MultiImageSele
                     super.onSuccess(statusCode,headers,response);
                     try {
                         if(response.getInt("res") == 0){
-                            JSONObject dataJson = response.getJSONObject("data");
-                            String imgurl = dataJson.getString("userimage");
-                            imgurl = ProtocolUtil.getHostImgUrl(imgurl);
-                            CacheUtil.getInstance().saveUserPhotoUrl(imgurl);
                             CacheUtil.getInstance().setUserName(name);
                             CacheUtil.getInstance().setSex(sex);
-
                             if(!getIntent().getBooleanExtra("from_setting",false)){
+                                String token = response.getString("token");
+                                CacheUtil.getInstance().setExtToken(token);
                                 getUserInfo();
+                            }else{
+                                JSONObject dataJson = response.getJSONObject("data");
+                                String imgurl = dataJson.getString("userimage");
+                                imgurl = ProtocolUtil.getHostImgUrl(imgurl);
+                                CacheUtil.getInstance().saveUserPhotoUrl(imgurl);
+                                finish();
+                                overridePendingTransition(R.anim.activity_new, R.anim.activity_out);
                             }
-                            finish();
-                            overridePendingTransition(R.anim.activity_new, R.anim.activity_out);
+
                         }else{
                             Toast.makeText(MoreActivity.this,response.getString("resDesc"),Toast.LENGTH_SHORT).show();
                         }
