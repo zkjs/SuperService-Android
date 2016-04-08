@@ -30,6 +30,7 @@ import com.zkjinshi.superservice.activity.set.TeamContactsActivity;
 import com.zkjinshi.superservice.base.BaseAppCompatActivity;
 import com.zkjinshi.superservice.emchat.EasemobIMHelper;
 import com.zkjinshi.superservice.ext.activity.facepay.CheckOutActivity;
+import com.zkjinshi.superservice.manager.SSOManager;
 import com.zkjinshi.superservice.manager.YunBaSubscribeManager;
 import com.zkjinshi.superservice.net.ExtNetRequestListener;
 import com.zkjinshi.superservice.net.MethodType;
@@ -73,7 +74,12 @@ public class MainActivity extends BaseAppCompatActivity {
     }
 
     private void initData(){
-
+        String payInfo = CacheUtil.getInstance().getPayInfo();
+        if(!TextUtils.isEmpty(payInfo) && SSOManager.getInstance().isCollection()){
+            findViewById(R.id.amount_tv).setVisibility(View.VISIBLE);
+        }else {
+            findViewById(R.id.amount_tv).setVisibility(View.GONE);
+        }
     }
 
     private void initListeners(){
@@ -130,13 +136,8 @@ public class MainActivity extends BaseAppCompatActivity {
         findViewById(R.id.amount_tv).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String payInfo = CacheUtil.getInstance().getPayInfo();
-                if(!TextUtils.isEmpty(payInfo)){
-                    Intent intent = new Intent(MainActivity.this,CheckOutActivity.class);
-                    startActivity(intent);
-                }else {
-                    DialogUtil.getInstance().showCustomToast(view.getContext(),"暂未开通收款功能",Gravity.CENTER);
-                }
+                Intent intent = new Intent(MainActivity.this,CheckOutActivity.class);
+                startActivity(intent);
             }
         });
 
