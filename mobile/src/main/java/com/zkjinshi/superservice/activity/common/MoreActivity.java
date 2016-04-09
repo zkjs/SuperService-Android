@@ -227,10 +227,12 @@ public class MoreActivity extends BaseFragmentActivity implements MultiImageSele
                                 CacheUtil.getInstance().setExtToken(token);
                                 getUserInfo();
                             }else{
-                                JSONObject dataJson = response.getJSONObject("data");
-                                String imgurl = dataJson.getString("userimage");
-                                imgurl = ProtocolUtil.getHostImgUrl(imgurl);
-                                CacheUtil.getInstance().saveUserPhotoUrl(imgurl);
+                                if(picPath != null){
+                                    JSONObject dataJson = response.getJSONObject("data");
+                                    String imgurl = dataJson.getString("userimage");
+                                    imgurl = ProtocolUtil.getHostImgUrl(imgurl);
+                                    CacheUtil.getInstance().saveUserPhotoUrl(imgurl);
+                                }
                                 finish();
                                 overridePendingTransition(R.anim.activity_new, R.anim.activity_out);
                             }

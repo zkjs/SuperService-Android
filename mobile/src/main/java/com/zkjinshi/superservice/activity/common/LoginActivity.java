@@ -115,6 +115,7 @@ public class LoginActivity extends BaseActivity implements VerifyPhoneControler.
                 startActivity(intent);
                 finish();
                 overridePendingTransition(R.anim.activity_new, R.anim.activity_out);
+
             }
         });
     }
