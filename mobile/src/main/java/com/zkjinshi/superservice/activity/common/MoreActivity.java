@@ -250,6 +250,7 @@ public class MoreActivity extends BaseFragmentActivity implements MultiImageSele
                     AsyncHttpClientUtil.onFailure(MoreActivity.this,statusCode);
                 }
             });
+
         }catch (Exception e){
             e.printStackTrace();
         }
