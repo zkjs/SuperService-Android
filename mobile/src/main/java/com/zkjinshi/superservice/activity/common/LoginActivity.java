@@ -43,16 +43,12 @@ import org.json.JSONObject;
  */
 public class LoginActivity extends BaseActivity implements VerifyPhoneControler.SuccessCallBack{
 
-    private final static String TAG = LoginActivity.class.getSimpleName();
-
-    private Button   loginBtn;
     private EditText inputEt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
         initView();
         initData();
         initListener();
@@ -64,12 +60,10 @@ public class LoginActivity extends BaseActivity implements VerifyPhoneControler.
     }
 
     private void initView() {
-        loginBtn = (Button)findViewById(R.id.btn_send);
         inputEt = (EditText)findViewById(R.id.et_input_phone);
     }
 
     private void initData() {
-
         //打开配置项
         SensorManagerHelper sensorHelper = new SensorManagerHelper(this);
         sensorHelper.setOnShakeListener(new SensorManagerHelper.OnShakeListener() {
@@ -81,20 +75,9 @@ public class LoginActivity extends BaseActivity implements VerifyPhoneControler.
                 overridePendingTransition(R.anim.slide_in_bottom, R.anim.slide_out_top);
             }
         });
-
         LoginController.getInstance().init(this);
         VerifyPhoneControler.getInstance().init(this);
         VerifyPhoneControler.getInstance().setSuccessCallBack(this);
-
-        //测试跳转用的
-//        inputEt.setText("");
-//        loginBtn.setEnabled(true);
-//        loginBtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                verrifySuccess();
-//            }
-//        });
     }
 
     private void initListener() {
@@ -132,6 +115,7 @@ public class LoginActivity extends BaseActivity implements VerifyPhoneControler.
                 startActivity(intent);
                 finish();
                 overridePendingTransition(R.anim.activity_new, R.anim.activity_out);
+
             }
         });
     }
