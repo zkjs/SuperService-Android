@@ -36,7 +36,6 @@ public class ShopRegisterActivity extends BaseActivity implements VerifyPhoneCon
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        VerifyPhoneControler.getInstance().unregisterSmsReceiver();
     }
 
     private void initView() {
@@ -45,7 +44,6 @@ public class ShopRegisterActivity extends BaseActivity implements VerifyPhoneCon
 
     private void initData() {
         VerifyPhoneControler.getInstance().init(this);
-        VerifyPhoneControler.getInstance().registerSmsReceiver();
         VerifyPhoneControler.getInstance().setSuccessCallBack(this);
 
         //测试跳转用的

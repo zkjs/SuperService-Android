@@ -9,6 +9,7 @@ import android.view.View;
 
 import android.widget.EditText;
 
+import com.zkjinshi.base.config.ConfigActivity;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
 
@@ -21,6 +22,7 @@ import com.zkjinshi.superservice.sqlite.DBOpenHelper;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.MD5Util;
 
+import com.zkjinshi.superservice.utils.SensorManagerHelper;
 import com.zkjinshi.superservice.vo.IdentityType;
 import com.zkjinshi.superservice.vo.PayloadVo;
 import org.json.JSONException;
@@ -56,6 +58,17 @@ public class ShopLoginActivity extends BaseActivity{
     }
 
     private void initData() {
+        //打开配置项
+        SensorManagerHelper sensorHelper = new SensorManagerHelper(this);
+        sensorHelper.setOnShakeListener(new SensorManagerHelper.OnShakeListener() {
+
+            @Override
+            public void onShake() {
+                Intent intent = new Intent(ShopLoginActivity.this, ConfigActivity.class);
+                startActivity(intent);
+                overridePendingTransition(R.anim.slide_in_bottom, R.anim.slide_out_top);
+            }
+        });
         LoginController.getInstance().init(this);
     }
 

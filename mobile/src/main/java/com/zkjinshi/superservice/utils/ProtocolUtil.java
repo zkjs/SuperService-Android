@@ -14,14 +14,6 @@ import com.zkjinshi.base.util.Constants;
 public class ProtocolUtil {
 
     /**
-     * 服务员获取自己的通知区域
-     * @return
-     */
-    public static String getMySemplocationUrl(){
-        return ConfigUtil.getInst().getPhpDomain()+"semp/semplocation";
-    }
-
-    /**
      * 订单管理 获取订单详情 超级接口
      * @return
      */

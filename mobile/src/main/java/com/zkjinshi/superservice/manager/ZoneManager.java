@@ -38,49 +38,4 @@ public class ZoneManager {
         return instance;
     }
 
-    public void requestMyZoneTask(){
-        NetRequest netRequest = new NetRequest(ProtocolUtil.getMySemplocationUrl());
-        HashMap<String,String> bizMap = new HashMap<String,String>();
-        bizMap.put("salesid", CacheUtil.getInstance().getUserId());
-        bizMap.put("token",CacheUtil.getInstance().getToken());
-        bizMap.put("shopid",CacheUtil.getInstance().getShopID());
-        netRequest.setBizParamMap(bizMap);
-        NetRequestTask netRequestTask = new NetRequestTask(BaseContext.getInstance().getContext(),netRequest, NetResponse.class);
-        netRequestTask.methodType = MethodType.PUSH;
-        netRequestTask.setNetRequestListener(new ExtNetRequestListener(BaseContext.getInstance().getContext()) {
-            @Override
-            public void onNetworkRequestError(int errorCode, String errorMessage) {
-                Log.i(TAG, "errorCode:" + errorCode);
-                Log.i(TAG, "errorMessage:" + errorMessage);
-            }
-
-            @Override
-            public void onNetworkRequestCancelled() {
-
-            }
-
-            @Override
-            public void onNetworkResponseSucceed(NetResponse result) {
-                super.onNetworkResponseSucceed(result);
-
-                Log.i(TAG, "result.rawResult:" + result.rawResult);
-                try{
-                    ArrayList<ZoneBean> zoneList = new Gson().fromJson(result.rawResult, new TypeToken< ArrayList<ZoneBean>>(){}.getType());
-                    if(null != zoneList && !zoneList.isEmpty()){
-                        CacheUtil.getInstance().saveListCache("zoneBeanList",zoneList);
-                    }
-                }catch (Exception e){
-                    Log.e(TAG,e.getMessage());
-                }
-
-            }
-
-            @Override
-            public void beforeNetworkRequestStart() {
-
-            }
-        });
-        netRequestTask.isShowLoadingDialog = false;
-        netRequestTask.execute();
-    }
 }

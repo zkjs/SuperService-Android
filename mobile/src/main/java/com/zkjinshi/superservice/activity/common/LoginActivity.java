@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.google.gson.Gson;
+import com.zkjinshi.base.config.ConfigActivity;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.set.ClientController;
@@ -28,6 +29,7 @@ import com.zkjinshi.superservice.sqlite.UserDBUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
+import com.zkjinshi.superservice.utils.SensorManagerHelper;
 import com.zkjinshi.superservice.vo.IdentityType;
 import com.zkjinshi.superservice.vo.UserVo;
 
@@ -59,7 +61,6 @@ public class LoginActivity extends BaseActivity implements VerifyPhoneControler.
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        VerifyPhoneControler.getInstance().unregisterSmsReceiver();
     }
 
     private void initView() {
@@ -68,9 +69,21 @@ public class LoginActivity extends BaseActivity implements VerifyPhoneControler.
     }
 
     private void initData() {
+
+        //打开配置项
+        SensorManagerHelper sensorHelper = new SensorManagerHelper(this);
+        sensorHelper.setOnShakeListener(new SensorManagerHelper.OnShakeListener() {
+
+            @Override
+            public void onShake() {
+                Intent intent = new Intent(LoginActivity.this, ConfigActivity.class);
+                startActivity(intent);
+                overridePendingTransition(R.anim.slide_in_bottom, R.anim.slide_out_top);
+            }
+        });
+
         LoginController.getInstance().init(this);
         VerifyPhoneControler.getInstance().init(this);
-        VerifyPhoneControler.getInstance().registerSmsReceiver();
         VerifyPhoneControler.getInstance().setSuccessCallBack(this);
 
         //测试跳转用的

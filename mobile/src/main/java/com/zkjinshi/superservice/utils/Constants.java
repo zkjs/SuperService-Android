@@ -1,7 +1,5 @@
 package com.zkjinshi.superservice.utils;
 
-import com.zkjinshi.base.config.ConfigUtil;
-
 /**
  * 常量值工具类
  * 开发者：vincent
@@ -31,17 +29,6 @@ public class Constants {
     public static final String EXTRA_SHOP_NAME = "shopName";
     public static final String EXTRA_TXT_MSG_CONTENT = "txtMsgContent";
     public static final String MSG_TXT_EXT_TYPE= "extType";
-    public static final String MESSAGE_ATTR_IS_VOICE_CALL = "is_voice_call";
-    public static final String MESSAGE_ATTR_IS_VIDEO_CALL = "is_video_call";
-
-    //协议包返回结果
-    public final static int PROTOCAL_SUCCESS = 0;
-    public final static int PROTOCAL_FAILED  = 1;
-
-    public final static String HTTP_URL = ConfigUtil.getInst().getPhpDomain();
-
-    //头像前缀
-    public final static String GET_USER_AVATAR    = HTTP_URL + "uploads/users/";
 
     public static final String EXTRA_VOICE_REPLY = "extra_voice_reply";//语音回复
 
