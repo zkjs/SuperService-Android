@@ -233,7 +233,6 @@ public class MoreActivity extends BaseFragmentActivity implements MultiImageSele
                                     imgurl = ProtocolUtil.getHostImgUrl(imgurl);
                                     CacheUtil.getInstance().saveUserPhotoUrl(imgurl);
                                 }
-
                                 finish();
                                 overridePendingTransition(R.anim.activity_new, R.anim.activity_out);
                             }
