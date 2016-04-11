@@ -101,21 +101,20 @@ public class TimeUtil {
 
 	public static String getNoticeTime(String timeStr){
 		try {
-			SimpleDateFormat timeSdf = new SimpleDateFormat("HH:mm");
-			SimpleDateFormat dateSdf = new SimpleDateFormat("MM-dd");
+			SimpleDateFormat dateSdf = new SimpleDateFormat("yyyy-MM-dd");
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			Date d = sdf.parse(timeStr);
-
-
 			Date today = new Date();
 			String todayStr = dateSdf.format(today);
 			String dateStr = dateSdf.format(d);
+			//今天
 			if(dateStr.equals(todayStr)){
+				SimpleDateFormat timeSdf = new SimpleDateFormat("HH:mm");
 				return timeSdf.format(d);
-			}else{
-				return dateStr;
+			}else{//不是今天
+				SimpleDateFormat sdf2 = new SimpleDateFormat("MM-dd HH:mm");
+				return sdf2.format(d);
 			}
-
 
 		}catch (Exception e){
 			Log.e("TimeUtil", e.getMessage());
