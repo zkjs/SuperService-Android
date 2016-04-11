@@ -18,9 +18,9 @@
             android:layout_height="180dp"
             fresco:actualImageScaleType="centerCrop"
             fresco:placeholderImage="@mipmap/url_image_loading"
-            fresco:placeholderImageScaleType="centerInside"
+            fresco:placeholderImageScaleType="fitCenter"
             fresco:failureImage="@mipmap/url_image_failed"
-            fresco:failureImageScaleType="centerInside"
+            fresco:failureImageScaleType="fitCenter"
             />
 
         <ImageView

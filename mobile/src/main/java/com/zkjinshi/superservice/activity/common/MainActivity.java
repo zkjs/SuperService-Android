@@ -60,7 +60,6 @@ public class MainActivity extends BaseAppCompatActivity {
     private SimpleDraweeView avatarIv;
     private TextView        usernameTv;
     private TextView        shopnameTv;
-    private CheckBox        onlineCbx;
     private RelativeLayout  avatarLayout;
     private ImageButton     setIbtn;
 
@@ -68,7 +67,6 @@ public class MainActivity extends BaseAppCompatActivity {
         avatarIv   = (SimpleDraweeView)findViewById(R.id.avatar_iv);
         usernameTv = (TextView)findViewById(R.id.username_tv);
         shopnameTv = (TextView)findViewById(R.id.shop_name_tv);
-        onlineCbx  = (CheckBox)findViewById(R.id.online_cbx);
         avatarLayout = (RelativeLayout)findViewById(R.id.avatar_rlt);
         setIbtn = (ImageButton)findViewById(R.id.edit_avatar_ibtn);
     }
@@ -83,13 +81,6 @@ public class MainActivity extends BaseAppCompatActivity {
     }
 
     private void initListeners(){
-        //设置在线或离线
-        onlineCbx.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                CacheUtil.getInstance().setOnline(b);
-            }
-        });
 
         //编辑头像按钮点击事件
         findViewById(R.id.edit_avatar_ibtn).setOnClickListener(new View.OnClickListener() {
@@ -229,14 +220,11 @@ public class MainActivity extends BaseAppCompatActivity {
         usernameTv.setText(userName);
         String shopName = CacheUtil.getInstance().getShopFullName();
         shopnameTv.setText(shopName);
-        onlineCbx.setChecked(CacheUtil.getInstance().getOnline());
         TextView teamTv = (TextView)findViewById(R.id.team_tv);
         if(IdentityType.BUSINESS ==  CacheUtil.getInstance().getLoginIdentity()){
-            onlineCbx.setVisibility(View.GONE);
             teamTv.setText("团队管理");
             setIbtn.setVisibility(View.GONE);
         }else{
-            onlineCbx.setVisibility(View.GONE);
             teamTv.setText("团队联系人");
             avatarIv.setImageURI(Uri.parse(CacheUtil.getInstance().getUserPhotoUrl()));
             setIbtn.setVisibility(View.VISIBLE);
