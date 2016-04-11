@@ -110,7 +110,7 @@ public class TimeUtil {
 			Date today = new Date();
 			String todayStr = dateSdf.format(today);
 			String dateStr = dateSdf.format(d);
-			if(dateSdf.equals(todayStr)){
+			if(dateStr.equals(todayStr)){
 				return timeSdf.format(d);
 			}else{
 				return dateStr;
