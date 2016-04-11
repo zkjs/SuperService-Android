@@ -158,6 +158,10 @@ public class YunBaSubscribeManager {
                                     }
                                 }
                         );
+                    }else {
+                        if(null != callback){
+                            callback.onFailure();
+                        }
                     }
 
                 } catch (JSONException e) {
