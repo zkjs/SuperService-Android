@@ -106,6 +106,7 @@ public class TimeUtil {
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			Date d = sdf.parse(timeStr);
 
+
 			Date today = new Date();
 			String todayStr = dateSdf.format(today);
 			String dateStr = dateSdf.format(d);
