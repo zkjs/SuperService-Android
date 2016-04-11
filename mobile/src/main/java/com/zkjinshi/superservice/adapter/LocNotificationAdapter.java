@@ -124,7 +124,7 @@ public class LocNotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
         String timeCreated = noticeVo.getArrivetime();
         if(!TextUtils.isEmpty(timeCreated)){
-            ((NoticeViewHolder) holder).tvTimeInfo.setText(TimeUtil.getChatTime(timeCreated));
+            ((NoticeViewHolder) holder).tvTimeInfo.setText(TimeUtil.getNoticeTime(timeCreated));
         }
 
         final String phoneNum = noticeVo.getPhone();

@@ -99,6 +99,29 @@ public class TimeUtil {
 		return getChatTime(timesamp);
 	}
 
+	public static String getNoticeTime(String timeStr){
+		try {
+			SimpleDateFormat timeSdf = new SimpleDateFormat("HH:mm");
+			SimpleDateFormat dateSdf = new SimpleDateFormat("MM-dd");
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			Date d = sdf.parse(timeStr);
+
+			Date today = new Date();
+			String todayStr = dateSdf.format(today);
+			String dateStr = dateSdf.format(d);
+			if(dateSdf.equals(todayStr)){
+				return timeSdf.format(d);
+			}else{
+				return dateStr;
+			}
+
+
+		}catch (Exception e){
+			Log.e("TimeUtil", e.getMessage());
+		}
+		return "";
+	}
+
 	/**
 	 * 计算两个日期之间相差的天数
 	 * @param smdate 较小的时间
