@@ -59,16 +59,6 @@
                     android:textStyle="bold"
                     android:id="@+id/username_tv" />
 
-                <CheckBox
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/cbx_online"
-                    android:button="@null"
-                    android:layout_marginLeft="10dp"
-                    android:checked="false"
-                    android:id="@+id/online_cbx"
-                    android:layout_alignParentRight="true"/>
-
             </RelativeLayout>
 
             <TextView
