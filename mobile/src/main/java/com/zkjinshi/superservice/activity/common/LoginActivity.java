@@ -12,6 +12,7 @@ import android.widget.EditText;
 
 import com.google.gson.Gson;
 import com.zkjinshi.base.config.ConfigActivity;
+import com.zkjinshi.base.util.ActivityManagerHelper;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.set.ClientController;
@@ -70,9 +71,11 @@ public class LoginActivity extends BaseActivity implements VerifyPhoneControler.
 
             @Override
             public void onShake() {
-                Intent intent = new Intent(LoginActivity.this, ConfigActivity.class);
-                startActivity(intent);
-                overridePendingTransition(R.anim.slide_in_bottom, R.anim.slide_out_top);
+                if(!ActivityManagerHelper.isRunningBackground(LoginActivity.this)) {
+                    Intent intent = new Intent(LoginActivity.this, ConfigActivity.class);
+                    startActivity(intent);
+                    overridePendingTransition(R.anim.slide_in_bottom, R.anim.slide_out_top);
+                }
             }
         });
         LoginController.getInstance().init(this);

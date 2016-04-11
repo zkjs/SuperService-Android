@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.zkjinshi.base.config.ConfigActivity;
+import com.zkjinshi.base.util.ActivityManagerHelper;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
 
@@ -64,9 +65,11 @@ public class ShopLoginActivity extends BaseActivity{
 
             @Override
             public void onShake() {
-                Intent intent = new Intent(ShopLoginActivity.this, ConfigActivity.class);
-                startActivity(intent);
-                overridePendingTransition(R.anim.slide_in_bottom, R.anim.slide_out_top);
+                if(!ActivityManagerHelper.isRunningBackground(ShopLoginActivity.this)) {
+                    Intent intent = new Intent(ShopLoginActivity.this, ConfigActivity.class);
+                    startActivity(intent);
+                    overridePendingTransition(R.anim.slide_in_bottom, R.anim.slide_out_top);
+                }
             }
         });
         LoginController.getInstance().init(this);
