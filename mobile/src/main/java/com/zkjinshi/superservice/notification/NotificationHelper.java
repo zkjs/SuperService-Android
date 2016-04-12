@@ -25,7 +25,10 @@ import com.facebook.imagepipeline.image.ImageInfo;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.assist.ImageSize;
+import com.nostra13.universalimageloader.core.assist.ViewScaleType;
+import com.nostra13.universalimageloader.core.imageaware.NonViewAware;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
+import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 import com.zkjinshi.base.config.ConfigUtil;
 import com.zkjinshi.base.log.LogLevel;
 import com.zkjinshi.base.log.LogUtil;
@@ -209,15 +212,16 @@ public class NotificationHelper {
                 DisplayUtil.dip2px(context, 36));
         String imageSuffix = yunBaMsgVo.getUserImage();
         String imageUrl  = ConfigUtil.getInst().getImgDomain()+imageSuffix;
-        ImageLoader.getInstance().loadImage(imageUrl,imageSize, new ImageLoadingListener() {
+        NonViewAware aware = new NonViewAware(imageSize, ViewScaleType.CROP);
+        ImageLoader.getInstance().displayImage(imageUrl,aware,new SimpleImageLoadingListener(){
             @Override
             public void onLoadingStarted(String imageUri, View view) {
-
+                super.onLoadingStarted(imageUri, view);
             }
 
             @Override
             public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-
+                super.onLoadingFailed(imageUri, view, failReason);
                 NotificationCompat.Builder notificationBuilder = null;
                 // 1.设置显示信息
                 notificationBuilder = new NotificationCompat.Builder(context);
@@ -236,11 +240,12 @@ public class NotificationHelper {
                 notificationBuilder.setDefaults(Notification.DEFAULT_ALL);
                 NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
                 notificationManager.notify(++NOTIFY_ID, notificationBuilder.build());
+                LogUtil.getInstance().info(LogLevel.WARN,"收到到店通通知加载图片失败");
             }
 
             @Override
             public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-
+                super.onLoadingComplete(imageUri, view, loadedImage);
                 NotificationCompat.Builder notificationBuilder = null;
                 // 1.设置显示信息
                 notificationBuilder = new NotificationCompat.Builder(context);
@@ -263,10 +268,12 @@ public class NotificationHelper {
                 notificationBuilder.setDefaults(Notification.DEFAULT_ALL);
                 NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
                 notificationManager.notify(++NOTIFY_ID, notificationBuilder.build());
+                LogUtil.getInstance().info(LogLevel.WARN,"收到到店通通知加载图片成功");
             }
 
             @Override
             public void onLoadingCancelled(String imageUri, View view) {
+                super.onLoadingCancelled(imageUri, view);
                 NotificationCompat.Builder notificationBuilder = null;
                 // 1.设置显示信息
                 notificationBuilder = new NotificationCompat.Builder(context);
@@ -285,6 +292,7 @@ public class NotificationHelper {
                 notificationBuilder.setDefaults(Notification.DEFAULT_ALL);
                 NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
                 notificationManager.notify(++NOTIFY_ID, notificationBuilder.build());
+                LogUtil.getInstance().info(LogLevel.WARN,"收到到店通通知加载图片取消");
             }
         });
     }
@@ -294,14 +302,16 @@ public class NotificationHelper {
                 DisplayUtil.dip2px(context, 36));
         String userimage = amountStatusVo.getUserimage();
         String imageUrl  = ConfigUtil.getInst().getImgDomain()+userimage;
-        ImageLoader.getInstance().loadImage(imageUrl,imageSize, new ImageLoadingListener() {
+        NonViewAware aware = new NonViewAware(imageSize, ViewScaleType.CROP);
+        ImageLoader.getInstance().displayImage(imageUrl,aware,new SimpleImageLoadingListener(){
             @Override
             public void onLoadingStarted(String imageUri, View view) {
-
+                super.onLoadingStarted(imageUri,view);
             }
 
             @Override
             public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+                super.onLoadingFailed(imageUri,view,failReason);
                 NotificationCompat.Builder notificationBuilder = null;
                 // 1.设置显示信息
                 notificationBuilder = new NotificationCompat.Builder(context);
@@ -331,6 +341,7 @@ public class NotificationHelper {
 
             @Override
             public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                super.onLoadingComplete(imageUri,view,loadedImage);
                 NotificationCompat.Builder notificationBuilder = null;
                 // 1.设置显示信息
                 notificationBuilder = new NotificationCompat.Builder(context);
@@ -364,6 +375,7 @@ public class NotificationHelper {
 
             @Override
             public void onLoadingCancelled(String imageUri, View view) {
+                super.onLoadingCancelled(imageUri,view);
                 NotificationCompat.Builder notificationBuilder = null;
                 // 1.设置显示信息
                 notificationBuilder = new NotificationCompat.Builder(context);
@@ -399,18 +411,19 @@ public class NotificationHelper {
      * @param activeCodeNoticeVo
      */
     public void showNotification(final Context context, final ActiveCodeNoticeVo activeCodeNoticeVo) {
-        String imageUrl = activeCodeNoticeVo.getUserimage();
-        String avatarUrl = ConfigUtil.getInst().getImgDomain()+imageUrl;
+        String imageUrl =  ConfigUtil.getInst().getImgDomain()+activeCodeNoticeVo.getUserimage();
         ImageSize imageSize = new ImageSize(DisplayUtil.dip2px(context, 36),
                 DisplayUtil.dip2px(context, 36));
-        ImageLoader.getInstance().loadImage(avatarUrl, imageSize, new ImageLoadingListener() {
+        NonViewAware aware = new NonViewAware(imageSize, ViewScaleType.CROP);
+        ImageLoader.getInstance().displayImage(imageUrl,aware,new SimpleImageLoadingListener(){
             @Override
             public void onLoadingStarted(String imageUri, View view) {
-
+                super.onLoadingStarted(imageUri,view);
             }
 
             @Override
             public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+                super.onLoadingFailed(imageUri,view,failReason);
                 long activeTime = activeCodeNoticeVo.getCreate();
                 String time = TimeUtil.getChatTime(activeTime);
                 String userName = activeCodeNoticeVo.getUsername();
@@ -436,7 +449,7 @@ public class NotificationHelper {
 
             @Override
             public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-
+                super.onLoadingComplete(imageUri,view,loadedImage);
                 long activeTime = activeCodeNoticeVo.getCreate();
                 String time = TimeUtil.getChatTime(activeTime);
                 String userName = activeCodeNoticeVo.getUsername();
@@ -463,6 +476,7 @@ public class NotificationHelper {
 
             @Override
             public void onLoadingCancelled(String imageUri, View view) {
+                super.onLoadingCancelled(imageUri,view);
                 long activeTime = activeCodeNoticeVo.getCreate();
                 String time = TimeUtil.getChatTime(activeTime);
                 String userName = activeCodeNoticeVo.getUsername();
@@ -493,25 +507,50 @@ public class NotificationHelper {
      * @param context
      */
     public void showExitAccountNotification(final Context context) {
+        ImageSize imageSize = new ImageSize(DisplayUtil.dip2px(context, 36),
+                DisplayUtil.dip2px(context, 36));
+        String imageUrl    = CacheUtil.getInstance().getUserPhotoUrl();
+        NonViewAware aware = new NonViewAware(imageSize, ViewScaleType.CROP);
+        ImageLoader.getInstance().displayImage(imageUrl,aware,new SimpleImageLoadingListener(){
+            @Override
+            public void onLoadingStarted(String imageUri, View view) {
+                super.onLoadingStarted(imageUri,view);
+            }
 
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-        NotificationCompat.Builder notificationBuilder = null;
-        // 1.设置显示信息
-        notificationBuilder = new NotificationCompat.Builder(context);
-        String content = "您的账号于" + sdf.format(new Date()) + "在另一台设备登录";
-        notificationBuilder.setContentTitle("下线通知");
-        notificationBuilder.setContentText(content);
-        notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
-        // 2.设置点击跳转事件
-        Intent intent = new Intent(context, LoginActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
-        notificationBuilder.setContentIntent(pendingIntent);
-        // 3.设置通知栏其他属性
-        notificationBuilder.setAutoCancel(true);
-        notificationBuilder.setDefaults(Notification.DEFAULT_ALL);
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-        notificationManager.notify(++NOTIFY_ID, notificationBuilder.build());
+            @Override
+            public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+                super.onLoadingFailed(imageUri,view,failReason);
+            }
+
+            @Override
+            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                super.onLoadingComplete(imageUri,view,loadedImage);
+                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+                NotificationCompat.Builder notificationBuilder = null;
+                // 1.设置显示信息
+                notificationBuilder = new NotificationCompat.Builder(context);
+                String content = "您的账号于" + sdf.format(new Date()) + "在另一台设备登录";
+                notificationBuilder.setContentTitle("下线通知");
+                notificationBuilder.setContentText(content);
+                notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
+                notificationBuilder.setLargeIcon(loadedImage);
+                // 2.设置点击跳转事件
+                Intent intent = new Intent(context, LoginActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+                notificationBuilder.setContentIntent(pendingIntent);
+                // 3.设置通知栏其他属性
+                notificationBuilder.setAutoCancel(true);
+                notificationBuilder.setDefaults(Notification.DEFAULT_ALL);
+                NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+                notificationManager.notify(++NOTIFY_ID, notificationBuilder.build());
+            }
+
+            @Override
+            public void onLoadingCancelled(String imageUri, View view) {
+                super.onLoadingCancelled(imageUri,view);
+            }
+        });
     }
 
     private NotificationCompat.WearableExtender extendWear(Context context, NotificationCompat.Builder builder, EMMessage message) {
