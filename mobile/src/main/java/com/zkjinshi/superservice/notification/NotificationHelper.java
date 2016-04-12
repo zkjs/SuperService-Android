@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Animatable;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
@@ -18,11 +19,16 @@ import com.easemob.chat.EMGroupManager;
 import com.easemob.chat.EMMessage;
 import com.easemob.chat.TextMessageBody;
 import com.easemob.exceptions.EaseMobException;
+import com.facebook.drawee.controller.BaseControllerListener;
+import com.facebook.drawee.controller.ControllerListener;
+import com.facebook.imagepipeline.image.ImageInfo;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.assist.ImageSize;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.zkjinshi.base.config.ConfigUtil;
+import com.zkjinshi.base.log.LogLevel;
+import com.zkjinshi.base.log.LogUtil;
 import com.zkjinshi.base.util.ActivityManagerHelper;
 import com.zkjinshi.base.util.DisplayUtil;
 import com.zkjinshi.base.util.TimeUtil;
@@ -211,6 +217,7 @@ public class NotificationHelper {
 
             @Override
             public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+
                 NotificationCompat.Builder notificationBuilder = null;
                 // 1.设置显示信息
                 notificationBuilder = new NotificationCompat.Builder(context);
@@ -233,6 +240,7 @@ public class NotificationHelper {
 
             @Override
             public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+
                 NotificationCompat.Builder notificationBuilder = null;
                 // 1.设置显示信息
                 notificationBuilder = new NotificationCompat.Builder(context);
@@ -259,7 +267,24 @@ public class NotificationHelper {
 
             @Override
             public void onLoadingCancelled(String imageUri, View view) {
-
+                NotificationCompat.Builder notificationBuilder = null;
+                // 1.设置显示信息
+                notificationBuilder = new NotificationCompat.Builder(context);
+                String content = yunBaMsgVo.getAlert();
+                if(!TextUtils.isEmpty(content)){
+                    notificationBuilder.setContentTitle(content);
+                }
+                notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
+                // 2.设置点击跳转事件
+                Intent intent = new Intent(context, SplashActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+                notificationBuilder.setContentIntent(pendingIntent);
+                // 3.设置通知栏其他属性
+                notificationBuilder.setAutoCancel(true);
+                notificationBuilder.setDefaults(Notification.DEFAULT_ALL);
+                NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+                notificationManager.notify(++NOTIFY_ID, notificationBuilder.build());
             }
         });
     }
@@ -339,7 +364,31 @@ public class NotificationHelper {
 
             @Override
             public void onLoadingCancelled(String imageUri, View view) {
-
+                NotificationCompat.Builder notificationBuilder = null;
+                // 1.设置显示信息
+                notificationBuilder = new NotificationCompat.Builder(context);
+                int status = amountStatusVo.getStatus();
+                //0-待确认, 1-已拒绝, 2-已确认
+                String tipsMsg = null;
+                if(1 == status){
+                    tipsMsg = "用户已拒绝收款";
+                }else {
+                    tipsMsg = "用户已确认收款";
+                }
+                notificationBuilder.setContentTitle(tipsMsg);
+                notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
+                ++NOTIFY_ID;
+                // 2.设置点击跳转事件
+                Intent intent = new Intent(context, AmountDetailActivity.class);
+                intent.putExtra("amountStatusVo",amountStatusVo);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                PendingIntent pendingIntent = PendingIntent.getActivity(context, NOTIFY_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                notificationBuilder.setContentIntent(pendingIntent);
+                // 3.设置通知栏其他属性
+                notificationBuilder.setAutoCancel(true);
+                notificationBuilder.setDefaults(Notification.DEFAULT_ALL);
+                NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+                notificationManager.notify(NOTIFY_ID, notificationBuilder.build());
             }
         });
     }
@@ -350,7 +399,6 @@ public class NotificationHelper {
      * @param activeCodeNoticeVo
      */
     public void showNotification(final Context context, final ActiveCodeNoticeVo activeCodeNoticeVo) {
-
         String imageUrl = activeCodeNoticeVo.getUserimage();
         String avatarUrl = ConfigUtil.getInst().getImgDomain()+imageUrl;
         ImageSize imageSize = new ImageSize(DisplayUtil.dip2px(context, 36),
@@ -415,7 +463,27 @@ public class NotificationHelper {
 
             @Override
             public void onLoadingCancelled(String imageUri, View view) {
-
+                long activeTime = activeCodeNoticeVo.getCreate();
+                String time = TimeUtil.getChatTime(activeTime);
+                String userName = activeCodeNoticeVo.getUsername();
+                NotificationCompat.Builder notificationBuilder = null;
+                // 1.设置显示信息
+                notificationBuilder = new NotificationCompat.Builder(context);
+                String content = context.getString(R.string.user) + " " + userName + " 于 "+ time +
+                        context.getString(R.string.use_your_invite_code);
+                notificationBuilder.setContentTitle("邀请码通知");
+                notificationBuilder.setContentText(content);
+                notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
+                // 2.设置点击跳转事件
+                Intent intent = new Intent(context, SplashActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+                notificationBuilder.setContentIntent(pendingIntent);
+                // 3.设置通知栏其他属性
+                notificationBuilder.setAutoCancel(true);
+                notificationBuilder.setDefaults(Notification.DEFAULT_ALL);
+                NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+                notificationManager.notify(++NOTIFY_ID, notificationBuilder.build());
             }
         });
     }
@@ -426,50 +494,24 @@ public class NotificationHelper {
      */
     public void showExitAccountNotification(final Context context) {
 
-        ImageSize imageSize = new ImageSize(DisplayUtil.dip2px(context, 36),
-                DisplayUtil.dip2px(context, 36));
-        String userID    = CacheUtil.getInstance().getUserId();
-        String avatarUrl = ProtocolUtil.getAvatarUrl(userID);
-        ImageLoader.getInstance().loadImage(avatarUrl, imageSize, new ImageLoadingListener() {
-            @Override
-            public void onLoadingStarted(String imageUri, View view) {
-
-            }
-
-            @Override
-            public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-
-            }
-
-            @Override
-            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-                NotificationCompat.Builder notificationBuilder = null;
-                // 1.设置显示信息
-                notificationBuilder = new NotificationCompat.Builder(context);
-                String content = "您的账号于" + sdf.format(new Date()) + "在另一台设备登录";
-                notificationBuilder.setContentTitle("下线通知");
-                notificationBuilder.setContentText(content);
-                notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
-                notificationBuilder.setLargeIcon(loadedImage);
-                // 2.设置点击跳转事件
-                Intent intent = new Intent(context, LoginActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
-                notificationBuilder.setContentIntent(pendingIntent);
-                // 3.设置通知栏其他属性
-                notificationBuilder.setAutoCancel(true);
-                notificationBuilder.setDefaults(Notification.DEFAULT_ALL);
-                NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-                notificationManager.notify(++NOTIFY_ID, notificationBuilder.build());
-            }
-
-            @Override
-            public void onLoadingCancelled(String imageUri, View view) {
-
-            }
-        });
-
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+        NotificationCompat.Builder notificationBuilder = null;
+        // 1.设置显示信息
+        notificationBuilder = new NotificationCompat.Builder(context);
+        String content = "您的账号于" + sdf.format(new Date()) + "在另一台设备登录";
+        notificationBuilder.setContentTitle("下线通知");
+        notificationBuilder.setContentText(content);
+        notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
+        // 2.设置点击跳转事件
+        Intent intent = new Intent(context, LoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+        notificationBuilder.setContentIntent(pendingIntent);
+        // 3.设置通知栏其他属性
+        notificationBuilder.setAutoCancel(true);
+        notificationBuilder.setDefaults(Notification.DEFAULT_ALL);
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+        notificationManager.notify(++NOTIFY_ID, notificationBuilder.build());
     }
 
     private NotificationCompat.WearableExtender extendWear(Context context, NotificationCompat.Builder builder, EMMessage message) {

@@ -196,7 +196,7 @@ public class ServiceApplication extends BaseApplication {
     private void initImageLoader() {
         ImageLoaderConfiguration.Builder config = new ImageLoaderConfiguration.Builder(this);
         config.memoryCacheExtraOptions(1080, 780); // maxwidth, max height，即保存的每个缓存文件的最大长宽
-        config.threadPoolSize(3);//线程池内加载的数量
+        config.threadPoolSize(8);//线程池内加载的数量
         config.defaultDisplayImageOptions(DisplayImageOptions.createSimple());
         config.threadPriority(Thread.NORM_PRIORITY - 2);
         config.denyCacheImageMultipleSizesInMemory();
