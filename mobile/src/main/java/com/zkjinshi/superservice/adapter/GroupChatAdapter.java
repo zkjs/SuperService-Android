@@ -111,7 +111,7 @@ public class GroupChatAdapter extends BaseAdapter {
         mResendListener = listener;
     }
 
-    public GroupChatAdapter(Context context, List<EMMessage> messageChatList) {
+    public GroupChatAdapter(Context context, List<EMMessage> messageList) {
         this.context = context;
         inflater = LayoutInflater.from(context);
         this.setMessageList(messageList);

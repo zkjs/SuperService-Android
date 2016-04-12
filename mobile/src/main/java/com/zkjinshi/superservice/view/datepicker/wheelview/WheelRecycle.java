@@ -131,7 +131,6 @@ public class WheelRecycle {
 			while (index < 0) {
 				index = count + index;
 			}
-			index %= count;
 			items = addView(view, items);
 		}
 	}

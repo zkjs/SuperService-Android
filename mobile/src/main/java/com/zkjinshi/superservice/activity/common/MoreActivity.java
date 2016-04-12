@@ -75,7 +75,7 @@ public class MoreActivity extends BaseFragmentActivity implements MultiImageSele
     private EditText inputNameEt;
     private CheckBox sexCbx;
 
-    public static int REQUEST_IMAGE = 1;
+    public final static int REQUEST_IMAGE = 1;
     private String picPath = null;
 
     @Override

@@ -54,7 +54,7 @@ import java.util.TimerTask;
  */
 @SuppressLint("JavascriptInterface")
 public class WebViewActivity extends BaseActivity {
-    public static String TAG = "WebViewActivity";
+    public static final String TAG = "WebViewActivity";
     private ImageView prePageIv, nextPageIv, reflushPageIv;
     private WebView webView;
     private String webViewURL;

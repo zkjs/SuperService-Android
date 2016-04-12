@@ -26,7 +26,7 @@ public class DialogUtil {
 
 	private int mLayoutResId = R.layout.view_progress_dialog;
 
-	public static int mAlertDialogIconId = android.R.drawable.ic_dialog_info;
+	public int mAlertDialogIconId = android.R.drawable.ic_dialog_info;
 
 	private DialogInterface.OnCancelListener mOnCancelListener;
 

@@ -104,7 +104,7 @@ public class ChatAdapter extends BaseAdapter {
         mResendListener = listener;
     }
 
-    public ChatAdapter(Context context, List<EMMessage> messageChatList) {
+    public ChatAdapter(Context context, List<EMMessage> messageList) {
         this.context = context;
         inflater = LayoutInflater.from(context);
         this.setMessageList(messageList);

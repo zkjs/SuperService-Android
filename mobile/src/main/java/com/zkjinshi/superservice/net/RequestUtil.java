@@ -42,8 +42,8 @@ import java.util.Map;
  */
 public class RequestUtil {
 
-    public static int CONNECT_TIMEOUT = 3*1000;//连接超时时间
-    public static int SO_TIMEOUT = 5*1000;//请求超时时间
+    public static final int CONNECT_TIMEOUT = 3*1000;//连接超时时间
+    public static final int SO_TIMEOUT = 5*1000;//请求超时时间
 
     /**
      * 发送Get请求

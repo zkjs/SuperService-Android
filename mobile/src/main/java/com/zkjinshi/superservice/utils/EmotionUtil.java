@@ -35,7 +35,7 @@ public class EmotionUtil {
 	public static final Pattern EMOTION_URL = Pattern.compile("\\[(\\S+?)\\]");
 	private Map<String, Integer> emotionMap = new LinkedHashMap<String, Integer>();
 	public static final int NUM_PAGE = 2;// 总共有多少页
-	public static int NUM = 27;// 每页27个表情,还有最后一个删除button
+	public static final int NUM = 27;// 每页27个表情,还有最后一个删除button
 	public synchronized static EmotionUtil getInstance(){
 		if(null ==  instance){
 			instance = new EmotionUtil();

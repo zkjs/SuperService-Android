@@ -8,7 +8,7 @@ package com.zkjinshi.superservice.sqlite;
  */
 public class TableOpenHelper {
 
-    public static String USER_TBL_SQL =
+    public static final String USER_TBL_SQL =
             "create table if not exists "
                     + DBOpenHelper.USER_TBL
                     + "("
@@ -55,7 +55,7 @@ public class TableOpenHelper {
                     + " ) ";
 
     /** 创建到店信息表 */
-    public static String COMING_TBL_SQL =
+    public static final String COMING_TBL_SQL =
             " create table if not exists "
                     + DBOpenHelper.COMING_TBL
                     + " ( "

@@ -17,7 +17,7 @@ import com.zkjinshi.base.log.LogUtil;
  */
 public class ActiveService extends Service{
 
-    public static String TAG = ActiveService.class.getSimpleName();
+    public static final String TAG = ActiveService.class.getSimpleName();
     public static boolean killMyself = false;
     public Intent intent;
 

@@ -21,7 +21,7 @@ import com.zkjinshi.superservice.R;
  */
 public  class SCViewPager1Fragment extends MyPageAnimation {
 
-    public static String TAG = SCViewPager1Fragment.class.getSimpleName();
+    public static final String TAG = SCViewPager1Fragment.class.getSimpleName();
     private int time = 300;
 
     public View view = null;
