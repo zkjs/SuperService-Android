@@ -2,14 +2,15 @@ apply plugin: 'com.android.application'
 apply plugin: 'oneapm'
 
 android {
+
     compileSdkVersion 22
     buildToolsVersion "22.0.0"
     defaultConfig {
         applicationId "com.zkjinshi.superservice"
         minSdkVersion 15
         targetSdkVersion 22
-        versionCode 8
-        versionName "1.14.7"
+        versionCode 9
+        versionName "1.14.8"
         multiDexEnabled true
     }
 
@@ -20,6 +21,20 @@ android {
 
         }
     }
+
+    productFlavors {
+
+        QQ {}
+        huawei {}
+        xiaomi {}
+        wandoujia {}
+
+        productFlavors.all { flavor ->
+            flavor.manifestPlaceholders = [UMENG_CHANNEL_VALUE: name]
+        }
+
+    }
+
     testOptions {
         unitTests.returnDefaultValues = true
     }
@@ -30,6 +45,7 @@ dependencies {
     wearApp project(':wear')
     compile 'com.android.support:appcompat-v7:22.2.1'
     compile 'com.android.support:multidex:1.0.0'
+    compile 'com.umeng.analytics:analytics:latest.integration'
     compile 'com.google.code.gson:gson:2.3.1'
     compile 'com.gordonwong:material-sheet-fab:1.0.4'
     compile 'com.android.support:design:22.2.1'
@@ -46,4 +62,10 @@ dependencies {
     compile 'com.facebook.fresco:fresco:0.9.0'
     compile 'com.loopj.android:android-async-http:1.4.9'
     compile project(':library.AESJni')
+}
+
+allprojects {
+    repositories {
+        mavenCentral()
+    }
 }

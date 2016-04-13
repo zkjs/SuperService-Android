@@ -3,6 +3,8 @@ package com.zkjinshi.superservice.base;
 import android.app.Activity;
 import android.os.Bundle;
 
+import com.umeng.analytics.MobclickAgent;
+
 /**
  * Activity基类
  * 开发者：JimmyZhang
@@ -27,10 +29,12 @@ public class BaseActivity extends Activity {
 
     protected void onResume(){
         super.onResume();
+        MobclickAgent.onResume(this);
     }
 
     protected void onPause(){
         super.onPause();
+        MobclickAgent.onPause(this);
     }
 
     /**

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.zkjinshi.superservice"
-    android:versionCode="8"
-    android:versionName="1.14.7">
+    android:versionCode="9"
+    android:versionName="1.14.8">
 
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.VIBRATE" />
@@ -498,6 +498,14 @@
         <meta-data
             android:name="EASEMOB_APPKEY"
             android:value="zkjs#svip" />
+
+        <!--友盟统计-->
+        <meta-data
+            android:value="570dad6067e58ecd2f00033f"
+            android:name="UMENG_APPKEY"/>
+        <meta-data
+            android:name="UMENG_CHANNEL"
+            android:value="${UMENG_CHANNEL_VALUE}" />
 
     </application>
 
