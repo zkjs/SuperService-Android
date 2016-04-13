@@ -6,7 +6,9 @@ import android.util.Log;
 import com.zkjinshi.base.util.Constants;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
+import java.io.OutputStreamWriter;
 import java.util.Date;
 
 /**
@@ -89,9 +91,9 @@ public class LogUtil {
 				String timeStr = logConfig.getTimeSdf().format(date);
 				String logFileName = level.name().toLowerCase()+"_"+dateStr + ".log";
 				File logFile = new File(logPath + logFileName);
-				FileWriter fw = new FileWriter(logFile, true);
-				fw.write("["+timeStr+"]"+logMessage + "\n");
-				fw.close();
+				OutputStreamWriter osw = new OutputStreamWriter(new FileOutputStream(logFile, true),"UTF-8");
+				osw.write("["+timeStr+"]"+logMessage + "\n");
+				osw.close();
 			} catch (Exception e) {
 				printLog(LogLevel.ERROR, e.getMessage());
 			}

@@ -46,12 +46,12 @@ public class DatePickerPopWindow extends PopupWindow{
 	private void setStartTime() {
 		// TODO Auto-generated method stub
 		timeInt=new int[6];
-		timeInt[0]=Integer.valueOf(startTime.substring(0, 4));
-		timeInt[1]=Integer.valueOf(startTime.substring(4, 6));
-		timeInt[2]=Integer.valueOf(startTime.substring(6, 8));
-		timeInt[3]=Integer.valueOf(startTime.substring(8, 10));
-		timeInt[4]=Integer.valueOf(startTime.substring(10, 12));
-		timeInt[5]=Integer.valueOf(startTime.substring(12, 14));
+		timeInt[0]=Integer.parseInt(startTime.substring(0, 4));
+		timeInt[1]=Integer.parseInt(startTime.substring(4, 6));
+		timeInt[2]=Integer.parseInt(startTime.substring(6, 8));
+		timeInt[3]=Integer.parseInt(startTime.substring(8, 10));
+		timeInt[4]=Integer.parseInt(startTime.substring(10, 12));
+		timeInt[5]=Integer.parseInt(startTime.substring(12, 14));
 	}
 	private void initWindow() {
 		// TODO Auto-generated method stub

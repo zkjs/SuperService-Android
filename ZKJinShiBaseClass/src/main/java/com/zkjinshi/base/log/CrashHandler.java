@@ -15,6 +15,7 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.lang.reflect.Field;
+import java.nio.charset.Charset;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -181,7 +182,7 @@ public class CrashHandler implements UncaughtExceptionHandler {
                 dir.mkdirs();  
             }  
             FileOutputStream fos = new FileOutputStream(path + fileName);  
-            fos.write(sb.toString().getBytes());  
+            fos.write(sb.toString().getBytes("UTF-8"));
             fos.close();  
             
             return fileName;  

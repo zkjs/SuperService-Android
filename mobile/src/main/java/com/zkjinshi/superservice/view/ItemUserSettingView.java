@@ -24,10 +24,6 @@ public class ItemUserSettingView extends RelativeLayout{
         this(context, attrs, 0);
     }
 
-    public ItemUserSettingView(Context context) {
-        this(context, null);
-    }
-
     public ItemUserSettingView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initView(context);

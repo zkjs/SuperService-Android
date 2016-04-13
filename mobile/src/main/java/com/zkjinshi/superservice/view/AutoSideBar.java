@@ -27,7 +27,7 @@ public class AutoSideBar extends View {
 	private OnTouchingLetterChangedListener onTouchingLetterChangedListener;
 
 	// 右侧选择字母
-	public static String[] sortLettArray;
+	public  String[] sortLettArray;
 	private int   choose  = -1;// 选中
 	private Paint  paint  = new Paint();
 

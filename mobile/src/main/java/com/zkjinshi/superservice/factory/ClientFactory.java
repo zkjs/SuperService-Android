@@ -251,59 +251,9 @@ public class ClientFactory {
         return values;
     }
 
-    public ClientVo convertClientDetailBean2ClientVO(ClientDetailBean clientBean) {
-        ClientVo clientVo = new ClientVo();
-        clientVo.setId(clientBean.getId());
-        clientVo.setShopid(clientBean.getShopid());
-        clientVo.setSalesid(clientBean.getSalesid());
-        clientVo.setUser_level(clientBean.getUser_level());
-        clientVo.setLevel_desc(clientBean.getLevel_desc());
-        clientVo.setCard_no(clientBean.getCard_no());
-        clientVo.setIs_special(clientBean.getIs_special());
-        clientVo.setNationality(clientBean.getNationality());
-        clientVo.setLike_desc(clientBean.getLike_desc());
-        clientVo.setTaboo_desc(clientBean.getTaboo_desc());
-        clientVo.setOther_desc(clientBean.getOther_desc());
-        clientVo.setCreated(clientBean.getCreated());
-        clientVo.setModified(clientBean.getModified());
-        clientVo.setUsername(clientBean.getUsername());
-        clientVo.setPhone(clientBean.getPhone());
-        clientVo.setCompany(clientBean.getCompany());
-        clientVo.setPosition(clientBean.getPosition());
-        clientVo.setIs_bill(clientBean.getIs_bill());
-        clientVo.setSex(getSexType(clientBean.getSex()));
-        clientVo.setOrder_count(clientBean.getOrder_count());
-        if(null != clientBean.getTags() && clientBean.getTags().size() > 0){
-            String[] tagsArray = new String[clientBean.getTags().size()];
-            clientVo.setTags(tagsArray.toString());
-        }
-        return clientVo;
-    }
-
-    public ClientVo convertClientBaseBean2ClientVO(ClientBaseBean clientBean) {
-        ClientVo clientVo = new ClientVo();
-        clientVo.setSalesid(clientBean.getFuid());
-//        clientVo.setUser_level(clientBean.getUser_level());
-//        clientVo.setLevel_desc(clientBean.getLevel_desc());
-//        clientVo.setCard_no(clientBean.getCard_no());
-        clientVo.setUsername(clientBean.getUsername());
-        clientVo.setPhone(clientBean.getPhone());
-        clientVo.setCompany(clientBean.getCompany());
-        clientVo.setPosition(clientBean.getPosition());
-//        clientVo.setIs_bill(clientBean.getIs_bill());
-        clientVo.setSex(getSexType(clientBean.getSex()));
-        clientVo.setOrder_count(clientBean.getOrder_count());
-        if(null != clientBean.getTags() && clientBean.getTags().size() > 0){
-            String[] tagsArray = new String[clientBean.getTags().size()];
-            clientVo.setTags(tagsArray.toString());
-        }
-        return clientVo;
-    }
-
     private SexType getSexType(int sexType){
         return sexType == SexType.MALE.getVlaue()? SexType.MALE : SexType.FEMALE;
     }
-
 
     private OnlineStatus getOnlineStatus(int onlineStatus) {
         return onlineStatus == OnlineStatus.OFFLINE.getValue() ? OnlineStatus.OFFLINE : OnlineStatus.ONLINE;

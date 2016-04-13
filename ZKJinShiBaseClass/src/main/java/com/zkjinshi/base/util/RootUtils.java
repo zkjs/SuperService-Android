@@ -3,6 +3,7 @@ package com.zkjinshi.base.util;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -51,10 +52,10 @@ public class RootUtils {
             BufferedOutputStream shellInput = new BufferedOutputStream(
                     process.getOutputStream());
             BufferedReader shellOutput = new BufferedReader(
-                    new InputStreamReader(process.getInputStream()));
+                    new InputStreamReader(process.getInputStream(), "UTF-8"));
 
             for (String command : commands) {
-                shellInput.write((command + " 2>&1\n").getBytes());
+                shellInput.write((command + " 2>&1\n").getBytes("UTF-8"));
             }
 
             shellInput.write("exit\n".getBytes());

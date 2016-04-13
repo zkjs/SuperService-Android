@@ -57,7 +57,7 @@ public abstract class ServiceBaseAdapter <T> extends BaseAdapter {
      */
     public void clear(){
         if(null != mDatas && !mDatas.isEmpty()){
-            mDatas.remove(mDatas);
+            mDatas.clear();
             this.notifyDataSetChanged();
         }
     }

@@ -116,7 +116,7 @@ public class RequestUtil {
             String lines;
             StringBuffer sb = new StringBuffer("");
             while ((lines = reader.readLine()) != null) {
-                lines = new String(lines.getBytes(), "utf-8");
+                lines = new String(lines.getBytes(), "UTF-8");
                 sb.append(lines);
             }
             resultInfo = sb.toString();
@@ -169,7 +169,7 @@ public class RequestUtil {
             String lines;
             StringBuffer sb = new StringBuffer("");
             while ((lines = reader.readLine()) != null) {
-                lines = new String(lines.getBytes(), "utf-8");
+                lines = new String(lines.getBytes(), "UTF-8");
                 sb.append(lines);
             }
             resultInfo = sb.toString();
@@ -223,7 +223,7 @@ public class RequestUtil {
             String lines;
             StringBuffer sb = new StringBuffer("");
             while ((lines = reader.readLine()) != null) {
-                lines = new String(lines.getBytes(), "utf-8");
+                lines = new String(lines.getBytes(), "UTF-8");
                 sb.append(lines);
             }
             resultInfo = sb.toString();
@@ -277,7 +277,7 @@ public class RequestUtil {
             String lines;
             StringBuffer sb = new StringBuffer("");
             while ((lines = reader.readLine()) != null) {
-                lines = new String(lines.getBytes(), "utf-8");
+                lines = new String(lines.getBytes(), "UTF-8");
                 sb.append(lines);
             }
             resultInfo = sb.toString();
@@ -391,7 +391,7 @@ public class RequestUtil {
         }
         DataOutputStream outStream = new DataOutputStream(conn
                 .getOutputStream());
-        outStream.write(sb.toString().getBytes());
+        outStream.write(sb.toString().getBytes("UTF-8"));
 
         if (fileMap != null)
             for (Map.Entry<String, File> file : fileMap.entrySet()) {
@@ -421,7 +421,7 @@ public class RequestUtil {
         int responseCode = conn.getResponseCode();
         if(responseCode == HttpStatus.SC_OK){
             InputStream in = conn.getInputStream();
-            InputStreamReader isReader = new InputStreamReader(in);
+            InputStreamReader isReader = new InputStreamReader(in,"UTF-8");
             BufferedReader bufReader = new BufferedReader(isReader);
             String line = null;
             result = new String();
