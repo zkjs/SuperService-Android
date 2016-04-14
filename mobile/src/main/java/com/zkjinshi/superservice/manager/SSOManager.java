@@ -148,13 +148,14 @@ public class SSOManager {
             netRequestTask.setNetRequestListener(new ExtNetRequestListener(context) {
                 @Override
                 public void onNetworkRequestError(int errorCode, String errorMessage) {
+                    super.onNetworkRequestError(errorCode,errorMessage);
                     Log.i(Constants.ZKJINSHI_BASE_TAG, "errorCode:" + errorCode);
                     Log.i(Constants.ZKJINSHI_BASE_TAG, "errorMessage:" + errorMessage);
                 }
 
                 @Override
                 public void onNetworkRequestCancelled() {
-
+                    super.onNetworkRequestCancelled();
                 }
 
                 @Override
@@ -195,7 +196,7 @@ public class SSOManager {
 
                 @Override
                 public void beforeNetworkRequestStart() {
-
+                    super.beforeNetworkRequestStart();
                 }
             });
             netRequestTask.isShowLoadingDialog = false;

@@ -6,10 +6,8 @@ import android.content.Intent;
 import android.util.Log;
 
 import com.zkjinshi.base.util.Constants;
-import com.zkjinshi.superservice.activity.common.LoginController;
 import com.zkjinshi.superservice.emchat.EasemobIMManager;
 import com.zkjinshi.superservice.manager.YunBaSubscribeManager;
-import com.zkjinshi.superservice.service.ActiveService;
 import com.zkjinshi.superservice.utils.CacheUtil;
 
 /**

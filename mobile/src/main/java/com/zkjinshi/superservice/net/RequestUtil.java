@@ -187,11 +187,11 @@ public class RequestUtil {
         JSONObject jsonObject = null;
         URL url = new URL(requestUrl);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("PUT");
         connection.setConnectTimeout(CONNECT_TIMEOUT);
         connection.setReadTimeout(SO_TIMEOUT);
         connection.setDoOutput(true);
         connection.setDoInput(true);
-        connection.setRequestMethod("PUT");
         connection.setUseCaches(false);
         connection.setInstanceFollowRedirects(true);
         connection.setRequestProperty("Content-Type","application/json; charset=UTF-8");
@@ -200,21 +200,20 @@ public class RequestUtil {
             connection.setRequestProperty("Token",token);
         }
         connection.connect();
-        // POST请求
-        DataOutputStream out = new DataOutputStream(
-                connection.getOutputStream());
-        JSONObject obj = new JSONObject();
-
         if (null != objectParamsMap) {
+            // POST请求
+            DataOutputStream out = new DataOutputStream(
+                    connection.getOutputStream());
+            JSONObject obj = new JSONObject();
             Iterator<Map.Entry<String, Object>> bizIterator = objectParamsMap.entrySet().iterator();
             while (bizIterator.hasNext()) {
                 HashMap.Entry<String, Object> bizEntry = (HashMap.Entry<String, Object>) bizIterator.next();
                 obj.put(bizEntry.getKey(),bizEntry.getValue());
             }
+            out.write(obj.toString().getBytes("UTF-8"));// 这样可以处理中文乱码问题
+            out.flush();
+            out.close();
         }
-        out.write(obj.toString().getBytes("UTF-8"));// 这样可以处理中文乱码问题
-        out.flush();
-        out.close();
         int responseCode = connection.getResponseCode();
         if(responseCode == HttpStatus.SC_OK){
             // 读取响应
