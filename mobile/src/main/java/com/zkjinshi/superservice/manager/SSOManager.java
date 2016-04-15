@@ -6,9 +6,12 @@ import android.content.Intent;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.zkjinshi.base.log.LogLevel;
 import com.zkjinshi.base.log.LogUtil;
 import com.zkjinshi.base.util.Constants;
@@ -20,12 +23,18 @@ import com.zkjinshi.superservice.net.NetRequest;
 import com.zkjinshi.superservice.net.NetRequestTask;
 import com.zkjinshi.superservice.net.NetResponse;
 import com.zkjinshi.superservice.response.BasePavoResponse;
+import com.zkjinshi.superservice.utils.AsyncHttpClientUtil;
 import com.zkjinshi.superservice.utils.Base64Decoder;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.vo.PayloadVo;
 
+import org.json.JSONObject;
+
 import java.util.HashMap;
+
+import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.entity.StringEntity;
 
 /**
  * 开发者：JimmyZhang
@@ -139,32 +148,30 @@ public class SSOManager {
      * 刷新token
      */
     public void requestRefreshToken(final Context context,final SSOCallBack ssoCallBack){
-        boolean isLogin = CacheUtil.getInstance().isLogin();
-        if(isLogin){
-            String url = ProtocolUtil.getTokenRefreshUrl();
-            NetRequest netRequest = new NetRequest(url);
-            NetRequestTask netRequestTask = new NetRequestTask(context,netRequest, NetResponse.class);
-            netRequestTask.methodType = MethodType.PUT;
-            netRequestTask.setNetRequestListener(new ExtNetRequestListener(context) {
-                @Override
-                public void onNetworkRequestError(int errorCode, String errorMessage) {
-                    super.onNetworkRequestError(errorCode,errorMessage);
-                    Log.i(Constants.ZKJINSHI_BASE_TAG, "errorCode:" + errorCode);
-                    Log.i(Constants.ZKJINSHI_BASE_TAG, "errorMessage:" + errorMessage);
+        try{
+            AsyncHttpClient client = new AsyncHttpClient();
+            client.setTimeout( com.zkjinshi.superservice.utils.Constants.OVERTIMEOUT);
+            client.addHeader("Content-Type","application/json; charset=UTF-8");
+            if(CacheUtil.getInstance().isLogin()){
+                client.addHeader("Token",CacheUtil.getInstance().getExtToken());
+            }
+            JSONObject jsonObject = new JSONObject();
+            StringEntity stringEntity = new StringEntity(jsonObject.toString());
+            final String url = ProtocolUtil.getTokenRefreshUrl();
+            client.put(context,url, stringEntity, "application/json", new AsyncHttpResponseHandler(){
+                public void onStart(){
+                    //DialogUtil.getInstance().showAvatarProgressDialog(context,"");
                 }
 
-                @Override
-                public void onNetworkRequestCancelled() {
-                    super.onNetworkRequestCancelled();
+                public void onFinish(){
+                    //DialogUtil.getInstance().cancelProgressDialog();
                 }
 
-                @Override
-                public void onNetworkResponseSucceed(NetResponse result) {
-                    super.onNetworkResponseSucceed(result);
+                public void onSuccess(int statusCode, Header[] headers, byte[] responseBody){
                     try {
-                        if(null != result && !TextUtils.isEmpty(result.rawResult)){
-                            Log.i(Constants.ZKJINSHI_BASE_TAG,"rawResult:"+result.rawResult);
-                            BasePavoResponse basePavoResponse = new Gson().fromJson(result.rawResult,BasePavoResponse.class);
+                        String response = new String(responseBody,"utf-8");
+                        BasePavoResponse basePavoResponse = new Gson().fromJson(response,BasePavoResponse.class);
+                        if(null != basePavoResponse){
                             int restult = basePavoResponse.getRes();
                             if(0 == restult){
                                 String token = basePavoResponse.getToken();
@@ -179,28 +186,20 @@ public class SSOManager {
                                 if(!TextUtils.isEmpty(errorMsg)){
                                     DialogUtil.getInstance().showCustomToast(context,errorMsg, Gravity.CENTER);
                                 }
-                                if(6 == restult){//token失效
-                                    Intent intent = new Intent(context, LoginActivity.class);
-                                    context.startActivity(intent);
-                                    if(context instanceof Activity){
-                                        Activity activity = (Activity)context;
-                                        activity.finish();
-                                    }
-                                }
                             }
                         }
-                    } catch (JsonSyntaxException e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
 
-                @Override
-                public void beforeNetworkRequestStart() {
-                    super.beforeNetworkRequestStart();
+                public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error){
+                    AsyncHttpClientUtil.onFailure( context,statusCode);
                 }
             });
-            netRequestTask.isShowLoadingDialog = false;
-            netRequestTask.execute();
+        }catch (Exception e){
+            Toast.makeText(context,"json解析错误",Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
         }
     }
 
