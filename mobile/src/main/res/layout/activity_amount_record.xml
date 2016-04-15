@@ -7,7 +7,7 @@
     <include
         layout="@layout/header_bar"/>
 
-    <ListView
+    <com.zkjinshi.superservice.view.RefreshListView
         android:id="@+id/amount_record_list_view"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"

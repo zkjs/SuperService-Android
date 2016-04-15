@@ -20,11 +20,14 @@ import com.zkjinshi.superservice.ext.adapter.AmountAdapter;
 import com.zkjinshi.superservice.ext.response.AmountDetailResponse;
 import com.zkjinshi.superservice.ext.response.AmountRecordResponse;
 import com.zkjinshi.superservice.ext.vo.AmountStatusVo;
+import com.zkjinshi.superservice.listener.OnRefreshListener;
 import com.zkjinshi.superservice.net.ExtNetRequestListener;
 import com.zkjinshi.superservice.net.MethodType;
 import com.zkjinshi.superservice.net.NetRequest;
 import com.zkjinshi.superservice.net.NetRequestTask;
 import com.zkjinshi.superservice.net.NetResponse;
+import com.zkjinshi.superservice.view.RefreshListView;
+import com.zkjinshi.superservice.vo.NoticeVo;
 
 import java.util.ArrayList;
 
@@ -41,15 +44,17 @@ public class AmountRecordActivity extends Activity {
 
     private ImageButton backIBtn;
     private TextView titleTv;
-    private ListView amountRecordListView;
+    private RefreshListView amountRecordListView;
     private TextView amountRecordNoResultTv;
     private ArrayList<AmountStatusVo> amountStatusList;
     private AmountAdapter amountAdapter;
+    public static int PAGE_NO = 0;
+    public static final int PAGE_SIZE = 10;
 
     private void initView(){
         backIBtn = (ImageButton) findViewById(R.id.header_bar_btn_back);
         titleTv = (TextView)findViewById(R.id.header_bar_tv_title);
-        amountRecordListView = (ListView)findViewById(R.id.amount_record_list_view);
+        amountRecordListView = (RefreshListView)findViewById(R.id.amount_record_list_view);
         amountRecordNoResultTv = (TextView)findViewById(R.id.amount_record_no_result);
     }
 
@@ -58,7 +63,8 @@ public class AmountRecordActivity extends Activity {
         titleTv.setText("收款记录");
         amountAdapter = new AmountAdapter(this,amountStatusList);
         amountRecordListView.setAdapter(amountAdapter);
-        requestAmountRecordListTask();
+        PAGE_NO = 0;
+        requestAmountRecordListTask(true);
     }
 
     private void initListeners(){
@@ -71,11 +77,21 @@ public class AmountRecordActivity extends Activity {
             }
         });
 
-        //单选收款记录
-        amountRecordListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        amountRecordListView.setOnRefreshListener(new OnRefreshListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view,
-                                    int position, long id) {
+            public void onRefreshing() {
+                amountStatusList = new ArrayList<AmountStatusVo>();
+                PAGE_NO = 0;
+                requestAmountRecordListTask(true);
+            }
+
+            @Override
+            public void onLoadingMore() {
+                requestAmountRecordListTask(false);
+            }
+
+            @Override
+            public void implOnItemClickListener(AdapterView<?> parent, View view, int position, long id) {
                 AmountStatusVo amountStatusVo = (AmountStatusVo) amountAdapter.getItem(position) ;
                 Intent intent = new Intent(AmountRecordActivity.this,AmountDetailActivity.class);
                 intent.putExtra("amountStatusVo",amountStatusVo);
@@ -96,8 +112,8 @@ public class AmountRecordActivity extends Activity {
     /**
      * 获取收款记录列表
      */
-    private void requestAmountRecordListTask(){
-        String url = ConfigUtil.getInst().getForDomain()+"res/v1/payment/ss";
+    private void requestAmountRecordListTask(final boolean isRefresh){
+        String url = ConfigUtil.getInst().getForDomain()+"res/v1/payment/ss?page="+PAGE_NO+"&page_size="+PAGE_SIZE;
         NetRequest netRequest = new NetRequest(url);
         NetRequestTask netRequestTask = new NetRequestTask(this,netRequest, NetResponse.class);
         netRequestTask.methodType = MethodType.GET;
@@ -117,15 +133,20 @@ public class AmountRecordActivity extends Activity {
             @Override
             public void onNetworkResponseSucceed(NetResponse result) {
                 super.onNetworkResponseSucceed(result);
+                amountRecordListView.refreshFinish();
                 if(null != result && !TextUtils.isEmpty(result.rawResult)){
                     AmountRecordResponse amountResponse = new Gson().fromJson(result.rawResult,AmountRecordResponse.class);
                     if(null != amountResponse){
                         int resultFlag = amountResponse.getRes();
                         if(0 == resultFlag || 30001 == resultFlag){
-                            amountStatusList = amountResponse.getData();
-                            if(null != amountStatusList && !amountStatusList.isEmpty()){
-                                amountAdapter.setAmountStatusList(amountStatusList);
+                            if(isRefresh){
+                                amountStatusList = amountResponse.getData();
+                            }else {
+                                ArrayList<AmountStatusVo>  requestNoticeList = amountResponse.getData();
+                                amountStatusList.addAll(requestNoticeList);
                             }
+                            PAGE_NO++;
+                            amountAdapter.setAmountStatusList(amountStatusList);
                             if(30001 == resultFlag){
                                 amountRecordListView.setEmptyView(amountRecordNoResultTv);
                             }

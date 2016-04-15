@@ -240,7 +240,25 @@ public class NotificationHelper {
                 notificationBuilder.setDefaults(Notification.DEFAULT_ALL);
                 NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
                 notificationManager.notify(++NOTIFY_ID, notificationBuilder.build());
-                LogUtil.getInstance().info(LogLevel.WARN,"收到到店通通知加载图片失败");
+                String reason = null;
+                switch (failReason.getType()) {
+                    case IO_ERROR:// 文件I/O错误
+                        reason = "文件I/O错误";
+                        break;
+                    case DECODING_ERROR:// 解码错误
+                        reason = "解码错误";
+                        break;
+                    case NETWORK_DENIED:// 网络延迟
+                        reason = "网络延迟";
+                        break;
+                    case OUT_OF_MEMORY:// 内存不足
+                        reason = "内存不足";
+                        break;
+                    case UNKNOWN:// 原因不明
+                        reason = "原因不明";
+                        break;
+                }
+                LogUtil.getInstance().info(LogLevel.WARN,"收到到店通通知加载图片失败:"+reason);
             }
 
             @Override
