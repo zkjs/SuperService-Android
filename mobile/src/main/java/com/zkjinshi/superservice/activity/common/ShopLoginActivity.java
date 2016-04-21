@@ -42,6 +42,7 @@ public class ShopLoginActivity extends BaseActivity{
 
     private EditText nameEt;
     private EditText pwdEt;
+    private SensorManagerHelper sensorHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +54,14 @@ public class ShopLoginActivity extends BaseActivity{
         initListener();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(null != sensorHelper){
+            sensorHelper.stop();
+        }
+    }
+
     private void initView() {
         nameEt = (EditText)findViewById(R.id.et_input_phone);
         pwdEt = (EditText)findViewById(R.id.et_password);
@@ -60,7 +69,7 @@ public class ShopLoginActivity extends BaseActivity{
 
     private void initData() {
         //打开配置项
-        SensorManagerHelper sensorHelper = new SensorManagerHelper(this);
+        sensorHelper = new SensorManagerHelper(this);
         sensorHelper.setOnShakeListener(new SensorManagerHelper.OnShakeListener() {
 
             @Override

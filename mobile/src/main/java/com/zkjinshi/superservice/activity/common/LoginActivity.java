@@ -45,6 +45,7 @@ import org.json.JSONObject;
 public class LoginActivity extends BaseActivity implements VerifyPhoneControler.SuccessCallBack{
 
     private EditText inputEt;
+    private SensorManagerHelper sensorHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +59,9 @@ public class LoginActivity extends BaseActivity implements VerifyPhoneControler.
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if(null != sensorHelper){
+            sensorHelper.stop();
+        }
     }
 
     private void initView() {
@@ -66,7 +70,7 @@ public class LoginActivity extends BaseActivity implements VerifyPhoneControler.
 
     private void initData() {
         //打开配置项
-        SensorManagerHelper sensorHelper = new SensorManagerHelper(this);
+        sensorHelper = new SensorManagerHelper(this);
         sensorHelper.setOnShakeListener(new SensorManagerHelper.OnShakeListener() {
 
             @Override
