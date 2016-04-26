@@ -92,27 +92,22 @@
 #---根据 Android Dependencies 配置library工程包start---#
 
  #1 自定义日期选择器
--libraryjars ..\\CalendarListview
--dontwarn com.andexert.calendarlistview.calendarlistview.**
--keep class com.andexert.calendarlistview.calendarlistview.** { *; }
+-dontwarn com.andexert.calendarlistview.**
+-keep class com.andexert.calendarlistview.** { *; }
 
  #2 自定义标签控件
--libraryjars ..\\Cloud_TagView
 -dontwarn me.kaede.tagviewr.**
 -keep class me.kaede.tagview.** { *; }
 
  #3 自定义文件选择器
--libraryjars ..\\library.FileChoser
 -dontwarn com.zkjinshi.filechoser.**
 -keep class com.zkjinshi.filechoser.** { *; }
 
  #4 自定义图片选择器
--libraryjars ..\\multi-image-selector
 -dontwarn me.nereo.multi_image_selector.**
 -keep class me.nereo.multi_image_selector.** { *; }
 
  #5 中科金石基类
--libraryjars ..\\ZKJinShiBaseClass
 -dontwarn com.zkjinshi.base.**
 -keep class com.zkjinshi.base.** { *; }
 
