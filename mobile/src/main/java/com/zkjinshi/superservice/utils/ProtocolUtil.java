@@ -363,4 +363,12 @@ public class ProtocolUtil {
         return ConfigUtil.getInst().getForDomain()+"res/v1/query/user/all?userids="+userIds;
     }
 
+    /**
+     * 登陆后更新用户资料
+     * @return
+     */
+    public static String loginUpdateSs(){
+        return ConfigUtil.getInst().getForDomain()+"res/v1/update/user";
+    }
+
 }

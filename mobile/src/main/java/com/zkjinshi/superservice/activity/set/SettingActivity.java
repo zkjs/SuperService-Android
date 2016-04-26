@@ -22,6 +22,8 @@ import com.zkjinshi.superservice.activity.common.InviteCodesActivity;
 import com.zkjinshi.superservice.activity.common.MoreActivity;
 import com.zkjinshi.superservice.activity.common.WebViewActivity;
 import com.zkjinshi.superservice.activity.common.ZoneActivity;
+import com.zkjinshi.superservice.activity.mine.MineNetController;
+import com.zkjinshi.superservice.activity.mine.MineUiController;
 import com.zkjinshi.superservice.base.BaseActivity;
 import com.zkjinshi.superservice.bean.Head;
 import com.zkjinshi.superservice.bean.InviteCode;
@@ -101,6 +103,8 @@ public class SettingActivity extends BaseActivity {
     }
 
     private void initData() {
+        MineUiController.getInstance().init(this);
+        MineNetController.getInstance().init(this);
         usernameTv.setText(CacheUtil.getInstance().getUserName());
         shopNameIusv.setTextContent2(CacheUtil.getInstance().getShopFullName());
         phoneIusv.setTextContent2(CacheUtil.getInstance().getUserPhone());
@@ -114,10 +118,7 @@ public class SettingActivity extends BaseActivity {
         findViewById(R.id.rl_user_icon_img).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(SettingActivity.this, MoreActivity.class);
-                intent.putExtra("from_setting",true);
-                startActivity(intent);
-                overridePendingTransition(R.anim.activity_new, R.anim.activity_out);
+                MineUiController.getInstance().showChoosePhotoDialog();
             }
         });
         //设置区域
@@ -150,6 +151,12 @@ public class SettingActivity extends BaseActivity {
             }
         });
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        MineUiController.getInstance().onActivityResult(requestCode,resultCode,data,iconCiv);
     }
 
 }
