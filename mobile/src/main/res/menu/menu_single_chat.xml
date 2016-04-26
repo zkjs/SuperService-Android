@@ -8,6 +8,7 @@
         android:id="@+id/menu_single_chat_info"
         android:icon="@mipmap/ic_danliao"
         android:title="聊天详情"
+        android:visible="false"
         app:showAsAction="always" />
 
 </menu>
