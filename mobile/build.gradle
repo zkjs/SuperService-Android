@@ -54,7 +54,6 @@ dependencies {
     wearApp project(':wear')
     compile 'com.android.support:appcompat-v7:22.2.1'
     compile 'com.android.support:multidex:1.0.0'
-    compile 'com.umeng.analytics:analytics:latest.integration'
     compile 'com.google.code.gson:gson:2.3.1'
     compile 'com.gordonwong:material-sheet-fab:1.0.4'
     compile 'com.android.support:design:22.2.1'
