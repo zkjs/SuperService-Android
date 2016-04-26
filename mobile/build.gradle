@@ -14,6 +14,10 @@ android {
         multiDexEnabled true
     }
 
+    lintOptions {
+        abortOnError false
+    }
+
     signingConfigs {
         myConfig {
             storeFile file("android_key.jks")
@@ -29,19 +33,6 @@ android {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
-    }
-
-    productFlavors {
-
-        QQ {}
-        huawei {}
-        xiaomi {}
-        wandoujia {}
-
-        productFlavors.all { flavor ->
-            flavor.manifestPlaceholders = [UMENG_CHANNEL_VALUE: name]
-        }
-
     }
 
     testOptions {
