@@ -104,15 +104,6 @@ public class ProtocolUtil {
     }
 
     /**
-     * 退出appHttp连接
-     * @return
-     */
-    public static String getLogoutUrl(String userID) {
-        return ConfigUtil.getInst().getPhpDomain()+"user/logout?userid=" + userID;
-    }
-
-
-    /**
      * 添加用户发票列表
      * @return
      */

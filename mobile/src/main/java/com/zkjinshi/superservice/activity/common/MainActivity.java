@@ -172,9 +172,6 @@ public class MainActivity extends BaseAppCompatActivity {
                             YunBaSubscribeManager.getInstance().cancelAlias(MainActivity.this);
                             //环信接口退出
                             EasemobIMHelper.getInstance().logout();
-                            //http接口退出
-                            String userID = CacheUtil.getInstance().getUserId();
-                            logoutHttp(userID);
                             //修改登录状态
                             CacheUtil.getInstance().setLogin(false);
                             startActivity(new Intent(MainActivity.this, LoginActivity.class));
@@ -270,44 +267,6 @@ public class MainActivity extends BaseAppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-
-    /**
-     * 断开用户登录连接
-     */
-    private void logoutHttp(String userID) {
-        String logoutUrl = ProtocolUtil.getLogoutUrl(userID);
-        Log.i(TAG, logoutUrl);
-        NetRequest netRequest = new NetRequest(logoutUrl);
-        NetRequestTask netRequestTask = new NetRequestTask(MainActivity.this, netRequest, NetResponse.class);
-        netRequestTask.methodType = MethodType.GET;
-        netRequestTask.setNetRequestListener(new ExtNetRequestListener(MainActivity.this) {
-            @Override
-            public void onNetworkRequestError(int errorCode, String errorMessage) {
-                Log.i(TAG, "errorCode:" + errorCode);
-                Log.i(TAG, "errorMessage:" + errorMessage);
-                LogUtil.getInstance().info(LogLevel.ERROR, "http退出失败");
-            }
-
-            @Override
-            public void onNetworkRequestCancelled() {
-            }
-
-            @Override
-            public void onNetworkResponseSucceed(NetResponse result) {
-                super.onNetworkResponseSucceed(result);
-
-                Log.i(TAG, "result.rawResult:" + result.rawResult);
-                LogUtil.getInstance().info(LogLevel.ERROR, "http退出成功");
-            }
-
-            @Override
-            public void beforeNetworkRequestStart() {
-
-            }
-        });
-        netRequestTask.isShowLoadingDialog = false;
-        netRequestTask.execute();
     }
 
 }
