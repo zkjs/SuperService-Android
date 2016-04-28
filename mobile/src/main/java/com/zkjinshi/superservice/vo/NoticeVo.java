@@ -1,5 +1,6 @@
 package com.zkjinshi.superservice.vo;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
@@ -9,7 +10,7 @@ import java.util.ArrayList;
  * Copyright (C) 2016 深圳中科金石科技有限公司
  * 版权所有
  */
-public class NoticeVo {
+public class NoticeVo implements Serializable {
 
     /**
      "locid": "区域编号",
@@ -38,7 +39,7 @@ public class NoticeVo {
     private String userimage;
     private String username;
     private String userlevel;
-    private String sex;
+    private int sex;
     private String phone;
     private String city;
     private String shopid;
@@ -76,14 +77,6 @@ public class NoticeVo {
 
     public void setUserlevel(String userlevel) {
         this.userlevel = userlevel;
-    }
-
-    public String getSex() {
-        return sex;
-    }
-
-    public void setSex(String sex) {
-        this.sex = sex;
     }
 
     public String getPhone() {
@@ -148,5 +141,13 @@ public class NoticeVo {
 
     public void setUserimage(String userimage) {
         this.userimage = userimage;
+    }
+
+    public int getSex() {
+        return sex;
+    }
+
+    public void setSex(int sex) {
+        this.sex = sex;
     }
 }

@@ -371,4 +371,21 @@ public class ProtocolUtil {
         return ConfigUtil.getInst().getForDomain()+"res/v1/update/user";
     }
 
+    /**
+     * 获取用户标签集合信息
+     * @param clientId
+     * @return
+     */
+    public static String getClientTagsUrl(String clientId){
+        return ConfigUtil.getInst().getForDomain()+"res/v1/query/user/tags?si_id="+clientId;
+    }
+
+    /**
+     * 更新用户标签信息
+     * @return
+     */
+    public static String getUpdateClientTagsUrl(){
+        return ConfigUtil.getInst().getForDomain()+"res/v1/update/user/tags";
+    }
+
 }

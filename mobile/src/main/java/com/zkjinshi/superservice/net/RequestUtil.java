@@ -2,6 +2,8 @@ package com.zkjinshi.superservice.net;
 
 import android.text.TextUtils;
 
+import com.zkjinshi.base.log.LogLevel;
+import com.zkjinshi.base.log.LogUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.FileUtil;
 
@@ -159,6 +161,7 @@ public class RequestUtil {
                 obj.put(bizEntry.getKey(),bizEntry.getValue());
             }
         }
+        LogUtil.getInstance().info(LogLevel.DEBUG,"标签实体:"+obj.toString());
         out.write(obj.toString().getBytes("UTF-8"));// 这样可以处理中文乱码问题
         out.flush();
         out.close();

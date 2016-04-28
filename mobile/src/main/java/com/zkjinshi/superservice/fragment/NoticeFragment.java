@@ -21,6 +21,7 @@ import com.google.gson.reflect.TypeToken;
 import com.zkjinshi.base.config.ConfigUtil;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
+import com.zkjinshi.superservice.activity.label.ClientLabelActivity;
 import com.zkjinshi.superservice.activity.order.HotelDealActivity;
 import com.zkjinshi.superservice.activity.order.KTVDealActivity;
 import com.zkjinshi.superservice.activity.order.NormalDealActivity;
@@ -167,6 +168,12 @@ public class NoticeFragment extends Fragment {
                         }
                     }
                 }*/
+                //跳转到用户详情页面
+                NoticeVo noticeVo = noticeList.get(position);
+                Intent intent = new Intent(getActivity(),ClientLabelActivity.class);
+                intent.putExtra("noticeVo",noticeVo);
+                startActivity(intent);
+
             }
         });
     }

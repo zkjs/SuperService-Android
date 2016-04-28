@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    xmlns:progress="http://schemas.android.com/apk/res-auto"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/content_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.zkjinshi.superservice.view.RoundProgressBar
+            android:id="@+id/client_label_progress"
+            android:layout_width="94dp"
+            android:layout_height="94dp"
+            progress:valueTextSize="14sp"
+            progress:roundColor="@color/round_color"
+            progress:roundProgressColor="@color/round_progress_color"
+            progress:valueTextColor="#666666"
+            progress:circleStrokeWidth="6dp"/>
+
+        <ImageView
+            android:id="@+id/client_label_iv"
+            android:layout_width="94dp"
+            android:layout_height="94dp"
+            android:src="@mipmap/ic_gouxuan_white"/>
+
+    </RelativeLayout>
+
+</RelativeLayout>
