@@ -56,17 +56,11 @@ public class SettingActivity extends BaseActivity {
 
     private final static String TAG = SettingActivity.class.getSimpleName();
 
-
-
     private TextView usernameTv;
     private SimpleDraweeView iconCiv;
     private ItemUserSettingView shopNameIusv;
     private ItemUserSettingView zoneIusv;
     private ItemUserSettingView phoneIusv;
-    private ItemUserSettingView authIusv;
-    private ItemUserSettingView jobIusv;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,17 +88,10 @@ public class SettingActivity extends BaseActivity {
         shopNameIusv = (ItemUserSettingView)findViewById(R.id.shopname_iusv);
         zoneIusv = (ItemUserSettingView)findViewById(R.id.zone_iusv);
         phoneIusv = (ItemUserSettingView)findViewById(R.id.phone_iusv);
-        authIusv = (ItemUserSettingView)findViewById(R.id.autho_iusv);
-        jobIusv = (ItemUserSettingView)findViewById(R.id.job_iusv);
-
         addRightIcon(zoneIusv);
-
-
     }
 
     private void initData() {
-        MineUiController.getInstance().init(this);
-        MineNetController.getInstance().init(this);
         usernameTv.setText(CacheUtil.getInstance().getUserName());
         shopNameIusv.setTextContent2(CacheUtil.getInstance().getShopFullName());
         phoneIusv.setTextContent2(CacheUtil.getInstance().getUserPhone());
@@ -118,7 +105,10 @@ public class SettingActivity extends BaseActivity {
         findViewById(R.id.rl_user_icon_img).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                MineUiController.getInstance().showChoosePhotoDialog();
+                Intent intent = new Intent(SettingActivity.this, MoreActivity.class);
+                intent.putExtra("from_setting",true);
+                startActivity(intent);
+                overridePendingTransition(R.anim.activity_new, R.anim.activity_out);
             }
         });
         //设置区域
@@ -151,12 +141,6 @@ public class SettingActivity extends BaseActivity {
             }
         });
 
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        MineUiController.getInstance().onActivityResult(requestCode,resultCode,data,iconCiv);
     }
 
 }

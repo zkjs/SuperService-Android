@@ -77,12 +77,6 @@
                 android:hint="获取个新昵称" />
         </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/image_grid"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="10dp"
-            android:orientation="vertical"></LinearLayout>
     </LinearLayout>
 
     <RelativeLayout

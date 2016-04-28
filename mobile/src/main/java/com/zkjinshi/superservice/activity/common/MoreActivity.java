@@ -1,63 +1,41 @@
 package com.zkjinshi.superservice.activity.common;
 
-
+import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.facebook.imagepipeline.core.ImagePipeline;
-import com.google.gson.Gson;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
+import com.zkjinshi.superservice.activity.mine.MineNetController;
+import com.zkjinshi.superservice.activity.mine.MineUiController;
 import com.zkjinshi.superservice.base.BaseFragmentActivity;
-import com.zkjinshi.superservice.bean.BaseBean;
-import com.zkjinshi.superservice.bean.SempLoginBean;
-import com.zkjinshi.superservice.net.ExtNetRequestListener;
-import com.zkjinshi.superservice.net.MethodType;
-import com.zkjinshi.superservice.net.NetRequest;
-import com.zkjinshi.superservice.net.NetRequestTask;
-import com.zkjinshi.superservice.net.NetResponse;
-import com.zkjinshi.superservice.net.RequestUtil;
-import com.zkjinshi.superservice.sqlite.DBOpenHelper;
-import com.zkjinshi.superservice.sqlite.UserDBUtil;
 import com.zkjinshi.superservice.utils.AsyncHttpClientUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.Constants;
+import com.zkjinshi.superservice.utils.FileUtil;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.utils.task.ImgAsyncTask;
-import com.zkjinshi.superservice.view.CircleImageView;
-import com.zkjinshi.superservice.vo.SexType;
-import com.zkjinshi.superservice.vo.UserVo;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.util.HashMap;
 import java.util.List;
 
 import cz.msebera.android.httpclient.Header;
-import cz.msebera.android.httpclient.entity.StringEntity;
 import me.nereo.multi_image_selector.MultiImageSelectorActivity;
-import me.nereo.multi_image_selector.MultiImageSelectorFragment;
 
 /**
  * 客服注册完善信息页面
@@ -66,63 +44,23 @@ import me.nereo.multi_image_selector.MultiImageSelectorFragment;
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class MoreActivity extends BaseFragmentActivity implements MultiImageSelectorFragment.Callback{
-
-    private final static String TAG = MoreActivity.class.getSimpleName();
+public class MoreActivity extends BaseFragmentActivity{
 
     private SimpleDraweeView avatarCiv;
     private TextView nameTv;
     private EditText inputNameEt;
     private CheckBox sexCbx;
-
-    public final static int REQUEST_IMAGE = 1;
     private String picPath = null;
-
-    @Override
-    public void onSingleImageSelected(String path) {
-        // 当选择模式设定为 单选/MODE_SINGLE, 这个方法就会接受到Fragment返回的数据
-        setAvatar(path);
-    }
-
-    @Override
-    public void onImageSelected(String path) {
-        // 一个图片被选择是触发，这里可以自定义的自己的Actionbar行为
-    }
-
-    @Override
-    public void onImageUnselected(String path) {
-        // 一个图片被反选是触发，这里可以自定义的自己的Actionbar行为
-    }
-
-    @Override
-    public void onCameraShot(File imageFile) {
-        // 当设置了使用摄像头，用户拍照后会返回照片文件
-        if(imageFile != null) {
-           setAvatar(imageFile.getAbsolutePath());
-        }
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //屏蔽输入法自动弹出
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-
         setContentView(R.layout.activity_more);
-        initFragment();
         initView();
         initData();
         initListener();
-    }
-
-    private void initFragment() {
-        Bundle bundle = new Bundle();
-        bundle.putInt(MultiImageSelectorFragment.EXTRA_SELECT_COUNT, 1);
-        bundle.putInt(MultiImageSelectorFragment.EXTRA_SELECT_MODE, MultiImageSelectorActivity.MODE_SINGLE);
-        bundle.putBoolean(MultiImageSelectorActivity.EXTRA_SHOW_CAMERA, true);
-        getSupportFragmentManager().beginTransaction()
-                .add(R.id.image_grid, Fragment.instantiate(this, MultiImageSelectorFragment.class.getName(), bundle))
-                .commit();
     }
 
     private void initView() {
@@ -133,6 +71,7 @@ public class MoreActivity extends BaseFragmentActivity implements MultiImageSele
     }
 
     private void initData() {
+        MineUiController.getInstance().init(this);
         if(getIntent().getBooleanExtra("from_setting",false)) {
             nameTv.setText(CacheUtil.getInstance().getUserName());
             if(CacheUtil.getInstance().getSex().equals("0")){
@@ -158,14 +97,7 @@ public class MoreActivity extends BaseFragmentActivity implements MultiImageSele
         avatarCiv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MoreActivity.this, MultiImageSelectorActivity.class);
-                // 是否显示调用相机拍照
-                intent.putExtra(MultiImageSelectorActivity.EXTRA_SHOW_CAMERA, true);
-                // 最大图片选择数量
-                intent.putExtra(MultiImageSelectorActivity.EXTRA_SELECT_COUNT, 1);
-                // 设置模式 (支持 单选/MultiImageSelectorActivity.MODE_SINGLE 或者 多选/MultiImageSelectorActivity.MODE_MULTI)
-                intent.putExtra(MultiImageSelectorActivity.EXTRA_SELECT_MODE, MultiImageSelectorActivity.MODE_SINGLE);
-                startActivityForResult(intent, REQUEST_IMAGE);
+                MineUiController.getInstance().showChoosePhotoDialog();
             }
         });
     }
@@ -174,22 +106,17 @@ public class MoreActivity extends BaseFragmentActivity implements MultiImageSele
     * 资料更新
     * */
     private void sempupdate() {
-
         if(!getIntent().getBooleanExtra("from_setting",false) && picPath == null) {
             DialogUtil.getInstance().showToast(this,"请上传头像");
             return;
         }
-
         String input = inputNameEt.getText().toString();
         final String name = TextUtils.isEmpty(input)? nameTv.getText().toString() : input;
         final String sex = sexCbx.isChecked() ? "1" : "0";
-
         if(TextUtils.isEmpty(name)){
             DialogUtil.getInstance().showToast(this,"请输入昵称。");
             return;
         }
-
-
         try{
             AsyncHttpClient client = new AsyncHttpClient();
             client.setTimeout(Constants.OVERTIMEOUT);
@@ -276,30 +203,20 @@ public class MoreActivity extends BaseFragmentActivity implements MultiImageSele
         });
     }
 
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == REQUEST_IMAGE){
-            if(resultCode == RESULT_OK){
-                // 获取返回的图片列表
-                List<String> path = data.getStringArrayListExtra(MultiImageSelectorActivity.EXTRA_RESULT);
-                Log.e(TAG,path.toString());
+        MineUiController.getInstance().onActivityResult(requestCode,resultCode,data,avatarCiv);
+        if (resultCode == Activity.RESULT_OK) {
+            switch (requestCode) {
+                case Constants.FLAG_MODIFY_FINISH:// 修改完成
+                    picPath = CacheUtil.getInstance().getPicPath();
+                    break;
 
-                String photoFilePath = path.get(0);
-                setAvatar(photoFilePath);
-
+                default:
+                    break;
             }
         }
     }
 
-    private void setAvatar(String photoFilePath){
-       ImgAsyncTask imgAsyncTask = new ImgAsyncTask(this,photoFilePath,avatarCiv,
-        new ImgAsyncTask.CallBack() {
-            @Override
-            public void getNewPath(String path) {
-                picPath = path;
-                avatarCiv.setImageURI(Uri.parse("file:///"+picPath));
-            }
-        });
-       imgAsyncTask.execute();
-    }
 }

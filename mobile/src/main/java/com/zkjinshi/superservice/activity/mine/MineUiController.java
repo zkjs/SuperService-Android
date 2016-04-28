@@ -21,6 +21,7 @@ import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.utils.FileUtil;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
+import com.zkjinshi.superservice.utils.task.ImgAsyncTask;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -154,23 +155,8 @@ public class MineUiController {
                         photoFilePath =  FileUtil.getInstance().getImageTempPath() + CacheUtil.getInstance().getPicName();
                     }
                     CacheUtil.getInstance().savePicPath(photoFilePath);
-                    MineNetController.getInstance().submitInfo(context, "image", photoFilePath, new MineNetController.CallBackListener() {
-                        @Override
-                        public void successCallback(JSONObject response) {
-                            String imgurl = null;
-                            try {
-                                imgurl = response.getString("userimage");
-                                imgurl = ProtocolUtil.getHostImgUrl(imgurl);
-                                CacheUtil.getInstance().saveUserPhotoUrl(imgurl);
-                                simpleDraweeView.setImageURI(Uri.parse(imgurl));
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                        public void failCallBack(){
-
-                        }
-                    });
+                    simpleDraweeView.setImageURI(Uri.parse("file:///"+photoFilePath));
+                    simpleDraweeView.invalidate();
                     break;
 
                 default:
