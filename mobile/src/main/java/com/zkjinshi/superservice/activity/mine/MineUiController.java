@@ -155,7 +155,7 @@ public class MineUiController {
                         photoFilePath =  FileUtil.getInstance().getImageTempPath() + CacheUtil.getInstance().getPicName();
                     }
                     CacheUtil.getInstance().savePicPath(photoFilePath);
-                    simpleDraweeView.setImageURI(Uri.parse("file:///"+photoFilePath));
+                    simpleDraweeView.setImageURI(Uri.parse("file://"+photoFilePath));
                     simpleDraweeView.invalidate();
                     break;
 
