@@ -20,6 +20,7 @@ import com.easemob.exceptions.EaseMobException;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.zkjinshi.base.config.ConfigUtil;
 import com.zkjinshi.base.util.TimeUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.listener.RecyclerItemClickListener;
@@ -29,6 +30,7 @@ import com.zkjinshi.superservice.utils.EmotionType;
 import com.zkjinshi.superservice.utils.EmotionUtil;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.view.CircleImageView;
+import com.zkjinshi.superservice.vo.MemberVo;
 import com.zkjinshi.superservice.vo.TxtExtType;
 
 import java.util.ArrayList;
@@ -43,6 +45,7 @@ import java.util.ArrayList;
 public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
     private ArrayList<EMConversation> conversationList;
+    private ArrayList<MemberVo> memberList;
     private Context context;
     private LayoutInflater inflater;
     private RecyclerItemClickListener itemClickListener;
@@ -56,7 +59,16 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         notifyDataSetChanged();
     }
 
-    public MessageAdapter(Context context,ArrayList<EMConversation> conversationList){
+    public void setMemberList(ArrayList<MemberVo> memberList) {
+        if(null == memberList){
+            this.memberList = new ArrayList<MemberVo>();
+        }else {
+            this.memberList = memberList;
+        }
+        notifyDataSetChanged();
+    }
+
+    public MessageAdapter(Context context, ArrayList<EMConversation> conversationList){
         this.context = context;
         this.inflater = LayoutInflater.from(context);
         this.setConversationList(conversationList);
@@ -106,16 +118,12 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             String userId = message.getUserName();
             if(chatType == EMConversation.EMConversationType.Chat){
                 if(!TextUtils.isEmpty(userId)){
-                    String userIconUrl = ProtocolUtil.getAvatarUrl(userId);
-                    ((ViewHolder)holder).photoImageView.setImageURI(Uri.parse(userIconUrl));
-                }else {
-                    ((ViewHolder)holder).photoImageView.setImageResource(R.mipmap.logo_round);
+                    String userImg = getUserImg(userId);
+                    if(!TextUtils.isEmpty(userImg)){
+                        ((ViewHolder)holder).photoImageView.setImageURI(Uri.parse(ConfigUtil.getInst().getImgDomain()+userImg));
+                    }
                 }
-
-            }else {
-                ((ViewHolder)holder).photoImageView.setImageResource(R.mipmap.logo_round);
             }
-
             ((ViewHolder)holder).sendTimeTv.setText(TimeUtil.getChatTime(sendTime));
             if (conversation.getType() == EMConversation.EMConversationType.GroupChat) {
                 EMGroup group = EMGroupManager.getInstance().getGroup(username);
@@ -182,5 +190,19 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     public void setOnItemClickListener(RecyclerItemClickListener itemClickListener) {
         this.itemClickListener = itemClickListener;
+    }
+
+    private String getUserImg(String userId){
+        String userImg = null;
+        if(null != memberList && !memberList.isEmpty()){
+            String mUserId = null;
+            for(MemberVo memberVo : memberList){
+                mUserId = memberVo.getUserid();
+                if(userId.equals(mUserId)){
+                    userImg = memberVo.getUserimage();
+                }
+            }
+        }
+        return userImg;
     }
 }

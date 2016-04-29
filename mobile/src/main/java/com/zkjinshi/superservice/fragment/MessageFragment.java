@@ -9,6 +9,8 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,17 +20,26 @@ import com.easemob.EMNotifierEvent;
 import com.easemob.chat.EMConversation;
 import com.easemob.chat.EMMessage;
 import com.easemob.exceptions.EaseMobException;
+import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
+import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.chat.group.ChatGroupActivity;
 import com.zkjinshi.superservice.activity.chat.single.ChatActivity;
+import com.zkjinshi.superservice.activity.chat.single.controller.ChatMemberController;
 import com.zkjinshi.superservice.activity.common.MainActivity;
 import com.zkjinshi.superservice.adapter.MessageAdapter;
+import com.zkjinshi.superservice.bean.ZoneBean;
 import com.zkjinshi.superservice.emchat.EMConversationHelper;
 import com.zkjinshi.superservice.emchat.observer.EMessageSubject;
 import com.zkjinshi.superservice.emchat.observer.IEMessageObserver;
 import com.zkjinshi.superservice.listener.RecyclerItemClickListener;
+import com.zkjinshi.superservice.net.ExtNetRequestListener;
+import com.zkjinshi.superservice.net.NetResponse;
+import com.zkjinshi.superservice.response.MembersResponse;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.Constants;
+import com.zkjinshi.superservice.vo.MemberVo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +60,7 @@ public class MessageFragment extends Fragment implements IEMessageObserver {
     private SwipeRefreshLayout swipeRefreshLayout;
     private View emptyLayout;
     private TextView emptyTips;
+    private ArrayList<MemberVo> memberList;
 
     public static MessageFragment newInstance() {
         return new MessageFragment();
@@ -157,6 +169,7 @@ public class MessageFragment extends Fragment implements IEMessageObserver {
         conversationList = (ArrayList<EMConversation>) EMConversationHelper.getInstance().loadConversationList();
         messageAdapter.setConversationList(conversationList);
         if(conversationList.size() > 0){
+            requestUserListTask(conversationList);
             emptyLayout.setVisibility(View.GONE);
         }else{
             emptyLayout.setVisibility(View.VISIBLE);
@@ -234,5 +247,55 @@ public class MessageFragment extends Fragment implements IEMessageObserver {
             default:
                 break;
         }
+    }
+
+    private void requestUserListTask(ArrayList<EMConversation> conversationList){
+
+        ChatMemberController.getInstance().requestChatMembersTask(getMemberIds(conversationList), new ExtNetRequestListener(getActivity()) {
+            @Override
+            public void onNetworkRequestError(int errorCode, String errorMessage) {
+                super.onNetworkRequestError(errorCode, errorMessage);
+                Log.i(TAG, "errorCode:" + errorCode);
+                Log.i(TAG, "errorMessage:" + errorMessage);
+            };
+
+            @Override
+            public void onNetworkResponseSucceed(NetResponse result) {
+                super.onNetworkResponseSucceed(result);
+                if(null != result && !TextUtils.isEmpty(result.rawResult)){
+                    try {
+                        Log.i(TAG, "result:" + result.rawResult);
+                        MembersResponse membersResponse = new Gson().fromJson(result.rawResult,MembersResponse.class);
+                        if(null != membersResponse) {
+                            int resultCode = membersResponse.getRes();
+                            if (0 == resultCode) {
+                                memberList = membersResponse.getData();
+                                messageAdapter.setMemberList(memberList);
+                            }else {
+                                String resultMsg = membersResponse.getResDesc();
+                                if(!TextUtils.isEmpty(resultMsg)){
+                                   Log.i(com.zkjinshi.base.util.Constants.ZKJINSHI_BASE_TAG,"errorMsg:"+resultMsg);
+                                }
+                            }
+                        }
+
+                    } catch (JsonSyntaxException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        },getActivity());
+    }
+
+    public String getMemberIds(ArrayList<EMConversation> conversationList){
+        StringBuffer memberSb = new StringBuffer();
+        if(null != conversationList && !conversationList.isEmpty()){
+            for(int i=0;i<conversationList.size();i++){
+                EMConversation conversation = conversationList.get(i);
+                memberSb.append(conversation.getUserName()).append(",");
+            }
+            memberSb.substring(0,memberSb.length()-1);
+        }
+        return  memberSb.toString();
     }
 }
