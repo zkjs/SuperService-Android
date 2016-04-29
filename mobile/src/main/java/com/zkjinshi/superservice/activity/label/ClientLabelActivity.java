@@ -10,6 +10,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -25,6 +26,7 @@ import com.zkjinshi.superservice.net.NetResponse;
 import com.zkjinshi.superservice.response.BaseResponse;
 import com.zkjinshi.superservice.response.ClientTagResponse;
 import com.zkjinshi.superservice.test.TagBiz;
+import com.zkjinshi.superservice.view.LabelGridView;
 import com.zkjinshi.superservice.vo.ClientTagVo;
 import com.zkjinshi.superservice.vo.ItemTagVo;
 import com.zkjinshi.superservice.vo.NoticeVo;
@@ -50,7 +52,7 @@ public class ClientLabelActivity extends BaseActivity {
     private String clientId;
     private int canoptcnt;
     private ArrayList<ItemTagVo> tagList;
-    private GridView labelGridView;
+    private LabelGridView labelGridView;
     private ClientLabelAdapter clientLabelAdapter;
     private Map<Integer, Boolean> mSelectMap;
     private ImageButton backIBtn;
@@ -60,7 +62,7 @@ public class ClientLabelActivity extends BaseActivity {
     private Button sureBtn;
 
     private void initView(){
-        labelGridView = (GridView) findViewById(R.id.client_label_gv);
+        labelGridView = (LabelGridView) findViewById(R.id.client_label_gv);
         backIBtn = (ImageButton)findViewById(R.id.header_bar_btn_back);
         titleTv = (TextView)findViewById(R.id.header_bar_tv_title);
         clientPhotoView = (SimpleDraweeView)findViewById(R.id.client_user_photo_dv);
