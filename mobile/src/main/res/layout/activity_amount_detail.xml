@@ -6,14 +6,23 @@
 
     <include
         layout="@layout/header_bar"/>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <include
+                layout="@layout/layout_detail_amount_wait_sure"/>
 
-    <include
-        layout="@layout/layout_detail_amount_wait_sure"/>
+            <include
+                layout="@layout/layout_detail_amount_succ"/>
 
-    <include
-        layout="@layout/layout_detail_amount_succ"/>
+            <include
+                layout="@layout/layout_detail_amount_fail"/>
 
-    <include
-        layout="@layout/layout_detail_amount_fail"/>
+        </LinearLayout>
+    </ScrollView>
 
 </LinearLayout>

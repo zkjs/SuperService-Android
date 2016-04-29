@@ -14,33 +14,29 @@
         android:layout_marginBottom="30dp"
         android:src="@mipmap/ic_chenggong"/>
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/amount_succ_user_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:orientation="horizontal">
+        android:gravity="center"
+        android:textSize="16sp"
+        android:textColor="#101010"
+        android:text="这是我要填写的名字hahahahahahahahahahga"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:singleLine="true"
+        android:ellipsize="end"/>
 
-        <TextView
-            android:id="@+id/amount_succ_user_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:gravity="center"
-            android:textSize="16sp"
-            android:textColor="#101010"
-            android:text="@null"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:layout_gravity="center_horizontal"
-            android:gravity="center"
-            android:textSize="16sp"
-            android:textColor="#101010"
-            android:text="收款成功"/>
-
-    </LinearLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center"
+        android:textSize="16sp"
+        android:textColor="#101010"
+        android:text="收款成功"/>
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -71,10 +67,12 @@
 
     </LinearLayout>
 
+
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="160dp"
+        android:layout_marginTop="80dp"
         android:orientation="horizontal">
 
         <TextView
