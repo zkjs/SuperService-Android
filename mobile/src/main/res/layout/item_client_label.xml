@@ -23,7 +23,9 @@
             android:id="@+id/client_label_iv"
             android:layout_width="94dp"
             android:layout_height="94dp"
-            android:src="@mipmap/ic_gouxuan_white"/>
+            android:background="@mipmap/ic_yuan_blue"
+            android:scaleType="centerInside"
+            android:src="@mipmap/ic_gou_white"/>
 
     </RelativeLayout>
 
