@@ -31,7 +31,6 @@ public class ClientLabelAdapter extends BaseAdapter {
     private Context context;
     private LayoutInflater inflater;
     private Map<Integer, Boolean> mSelectMap;
-    private Map<Integer, Boolean> mEnabledMap;
 
     public ClientLabelAdapter(Context context, ArrayList<ItemTagVo> tagList){
         this.context = context;
@@ -50,10 +49,6 @@ public class ClientLabelAdapter extends BaseAdapter {
 
     public void setSelectMap(Map<Integer, Boolean> selectMap) {
         mSelectMap = selectMap;
-    }
-
-    public void setEnabledMap(Map<Integer, Boolean> enabledMap) {
-        mEnabledMap = enabledMap;
     }
 
     @Override

@@ -92,6 +92,7 @@ public class MessageListViewManager extends Handler implements MsgListView.IXLis
     private void initData() {
         if(!TextUtils.isEmpty(userId)){
             conversation = EMChatManager.getInstance().getConversation(userId);
+            requestChatMembersTask();
         }
         clearChatRoomBadgeNum();
         setOverScrollMode(messageListView);

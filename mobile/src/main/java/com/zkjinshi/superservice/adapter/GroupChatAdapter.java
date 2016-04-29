@@ -315,9 +315,11 @@ public class GroupChatAdapter extends BaseAdapter {
         boolean isShowDate = (message.getMsgTime() - lastSendDate) > 5 * 60 * 1000;
         vh.date.setVisibility(isShowDate ? View.VISIBLE : View.GONE);
         String userId = message.getFrom();
-        String userPhotoUrl = ConfigUtil.getInst().getImgDomain()+getUserPhoto(userId);
-        vh.head.setImageURI(Uri.parse(userPhotoUrl));
-
+        String userImg = getUserPhoto(userId);
+        if(!TextUtils.isEmpty(userImg)){
+            String userPhotoUrl = ConfigUtil.getInst().getImgDomain()+userImg;
+            vh.head.setImageURI(Uri.parse(userPhotoUrl));
+        }
         EMMessage.Type mimeType = message.getType();
         if (mimeType.equals(EMMessage.Type.TXT)) {// 文本消息
             try {

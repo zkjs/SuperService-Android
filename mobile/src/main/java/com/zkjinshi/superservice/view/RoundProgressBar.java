@@ -6,12 +6,17 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.RectF;
+import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.BounceInterpolator;
 import android.view.animation.Interpolator;
 
+import com.zkjinshi.base.util.Constants;
+import com.zkjinshi.base.util.DisplayUtil;
 import com.zkjinshi.superservice.R;
 
 
@@ -165,8 +170,26 @@ public class RoundProgressBar extends View {
 		}
 
 		if (valueTextIsDisplayable) {
+			/*canvas.drawText(valueText, 0, valueText.length(),
+					mCircleXY, mCircleXY - (valueTextSize / 5), valuePaint);*/
+			/*canvas.drawText(valueText, 0, valueText.length(),
+					mCircleXY, mCircleXY - (valueTextSize), valuePaint);
 			canvas.drawText(valueText, 0, valueText.length(),
-					mCircleXY, mCircleXY - (valueTextSize / 5), valuePaint);
+					mCircleXY, mCircleXY + (valueTextSize), valuePaint);*/
+
+			if(!TextUtils.isEmpty(valueText) && valueText.length() <= 5){//文字小于5个单行显示
+				Paint.FontMetricsInt fontMetrics = valuePaint.getFontMetricsInt();
+				int baseline = (getMeasuredHeight() - fontMetrics.bottom + fontMetrics.top) / 2 - fontMetrics.top;
+				canvas.drawText(valueText,mCircleXY, baseline, valuePaint);
+			}else {//两行显示文本
+				String firstLineStr = valueText.substring(0,2);
+				String secondLineStr = valueText.substring(2,valueText.length());
+				Paint.FontMetricsInt fontMetrics = valuePaint.getFontMetricsInt();
+				int firstBaseline = (getMeasuredHeight() - fontMetrics.bottom + fontMetrics.top) / 2 - fontMetrics.top/2-DisplayUtil.dip2px(getContext(),3) ;
+				int secondBaseline = (getMeasuredHeight() - fontMetrics.bottom + fontMetrics.top) / 2 - fontMetrics.top*3/2+DisplayUtil.dip2px(getContext(),3);
+				canvas.drawText(firstLineStr,mCircleXY, firstBaseline, valuePaint);
+				canvas.drawText(secondLineStr,mCircleXY, secondBaseline, valuePaint);
+			}
 		}
 	}
 

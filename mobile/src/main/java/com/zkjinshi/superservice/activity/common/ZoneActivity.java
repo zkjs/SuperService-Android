@@ -1,11 +1,9 @@
 package com.zkjinshi.superservice.activity.common;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -18,13 +16,10 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.adapter.ZoneAdapter;
-
 import com.zkjinshi.superservice.base.BaseActivity;
 import com.zkjinshi.superservice.bean.ZoneBean;
-
 import com.zkjinshi.superservice.manager.UnSubscribeCallback;
 import com.zkjinshi.superservice.manager.YunBaSubscribeManager;
-import com.zkjinshi.superservice.net.RequestUtil;
 import com.zkjinshi.superservice.response.GetZoneListResponse;
 import com.zkjinshi.superservice.utils.AsyncHttpClientUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
@@ -35,7 +30,6 @@ import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-
 
 import cz.msebera.android.httpclient.Header;
 import cz.msebera.android.httpclient.entity.StringEntity;
