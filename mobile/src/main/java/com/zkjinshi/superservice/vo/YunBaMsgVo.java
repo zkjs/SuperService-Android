@@ -1,12 +1,15 @@
 package com.zkjinshi.superservice.vo;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+
 /**
  * 开发者：JimmyZhang
  * 日期：2016/2/26
  * Copyright (C) 2016 深圳中科金石科技有限公司
  * 版权所有
  */
-public class YunBaMsgVo {
+public class YunBaMsgVo implements Serializable {
 
     /**
      {"arrivalTime":"98","userName":"李嘉诚","type":"GPS","userId":"c_192541b79e79a49e","content":"客人李嘉诚距离您还有500米"}
@@ -21,6 +24,15 @@ public class YunBaMsgVo {
     private String userImage;
     private String arrivalTime;//预计达到时间
     private String alert;
+    private ArrayList<ItemTagVo> tags;
+
+    public ArrayList<ItemTagVo> getTags() {
+        return tags;
+    }
+
+    public void setTags(ArrayList<ItemTagVo> tags) {
+        this.tags = tags;
+    }
 
     public String getAlert() {
         return alert;

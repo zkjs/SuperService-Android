@@ -53,10 +53,12 @@ import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.utils.MediaPlayerUtil;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.vo.ActiveCodeNoticeVo;
+import com.zkjinshi.superservice.vo.ItemTagVo;
 import com.zkjinshi.superservice.vo.TxtExtType;
 import com.zkjinshi.superservice.vo.YunBaMsgVo;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 import ytx.org.apache.http.impl.auth.SPNegoScheme;
@@ -225,9 +227,23 @@ public class NotificationHelper {
                 NotificationCompat.Builder notificationBuilder = null;
                 // 1.设置显示信息
                 notificationBuilder = new NotificationCompat.Builder(context);
-                String content = yunBaMsgVo.getAlert();
-                if(!TextUtils.isEmpty(content)){
-                    notificationBuilder.setContentTitle(content);
+                String title = yunBaMsgVo.getAlert();
+                if(!TextUtils.isEmpty(title)){
+                    notificationBuilder.setContentTitle(title);
+                }
+                ArrayList<ItemTagVo> tagList =  yunBaMsgVo.getTags();
+                StringBuffer contentSb = new StringBuffer();
+                String contentStr = null;
+                if(null != tagList && !tagList.isEmpty()){
+                    String tagName = null;
+                    for(ItemTagVo itemTagVo : tagList){
+                        tagName = itemTagVo.getTagname();
+                        if(!TextUtils.isEmpty(tagName)){
+                            contentSb.append(tagName).append("、");
+                        }
+                    }
+                    contentStr = contentSb.substring(0,contentSb.length()-1);
+                    notificationBuilder.setContentText(contentStr);
                 }
                 notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
                 // 2.设置点击跳转事件
@@ -271,6 +287,20 @@ public class NotificationHelper {
                 if(!TextUtils.isEmpty(content)){
                     notificationBuilder.setContentTitle(content);
                 }
+                ArrayList<ItemTagVo> tagList =  yunBaMsgVo.getTags();
+                StringBuffer contentSb = new StringBuffer();
+                String contentStr = null;
+                if(null != tagList && !tagList.isEmpty()){
+                    String tagName = null;
+                    for(ItemTagVo itemTagVo : tagList){
+                        tagName = itemTagVo.getTagname();
+                        if(!TextUtils.isEmpty(tagName)){
+                            contentSb.append(tagName).append("、");
+                        }
+                    }
+                    contentStr = contentSb.substring(0,contentSb.length()-1);
+                    notificationBuilder.setContentText(contentStr);
+                }
                 notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
                 notificationBuilder.setLargeIcon(loadedImage);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
@@ -298,6 +328,20 @@ public class NotificationHelper {
                 String content = yunBaMsgVo.getAlert();
                 if(!TextUtils.isEmpty(content)){
                     notificationBuilder.setContentTitle(content);
+                }
+                ArrayList<ItemTagVo> tagList =  yunBaMsgVo.getTags();
+                StringBuffer contentSb = new StringBuffer();
+                String contentStr = null;
+                if(null != tagList && !tagList.isEmpty()){
+                    String tagName = null;
+                    for(ItemTagVo itemTagVo : tagList){
+                        tagName = itemTagVo.getTagname();
+                        if(!TextUtils.isEmpty(tagName)){
+                            contentSb.append(tagName).append("、");
+                        }
+                    }
+                    contentStr = contentSb.substring(0,contentSb.length()-1);
+                    notificationBuilder.setContentText(contentStr);
                 }
                 notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
                 // 2.设置点击跳转事件

@@ -288,14 +288,15 @@ public class MessageFragment extends Fragment implements IEMessageObserver {
     }
 
     public String getMemberIds(ArrayList<EMConversation> conversationList){
+        String memberStr = null;
         StringBuffer memberSb = new StringBuffer();
         if(null != conversationList && !conversationList.isEmpty()){
             for(int i=0;i<conversationList.size();i++){
                 EMConversation conversation = conversationList.get(i);
                 memberSb.append(conversation.getUserName()).append(",");
             }
-            memberSb.substring(0,memberSb.length()-1);
+            memberStr = memberSb.substring(0,memberSb.length()-1);
         }
-        return  memberSb.toString();
+        return  memberStr;
     }
 }
