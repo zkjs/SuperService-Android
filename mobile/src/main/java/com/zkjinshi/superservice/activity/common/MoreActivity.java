@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -50,6 +51,7 @@ public class MoreActivity extends BaseFragmentActivity{
     private TextView nameTv;
     private EditText inputNameEt;
     private CheckBox sexCbx;
+    private ImageButton backIBtn;
     private String picPath = null;
 
     @Override
@@ -64,6 +66,7 @@ public class MoreActivity extends BaseFragmentActivity{
     }
 
     private void initView() {
+        backIBtn = (ImageButton)findViewById(R.id.header_bar_btn_back);
         avatarCiv = (SimpleDraweeView)findViewById(R.id.avatar);
         nameTv = (TextView)findViewById(R.id.org_username_tv);
         inputNameEt = (EditText)findViewById(R.id.new_username_et);
@@ -73,6 +76,7 @@ public class MoreActivity extends BaseFragmentActivity{
     private void initData() {
         MineUiController.getInstance().init(this);
         if(getIntent().getBooleanExtra("from_setting",false)) {
+            backIBtn.setVisibility(View.VISIBLE);
             nameTv.setText(CacheUtil.getInstance().getUserName());
             if(CacheUtil.getInstance().getSex().equals("0")){
                 sexCbx.setChecked(false);
@@ -86,6 +90,16 @@ public class MoreActivity extends BaseFragmentActivity{
     }
 
     private void initListener() {
+
+        //返回
+        backIBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+                overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
+            }
+        });
+
         findViewById(R.id.go_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
