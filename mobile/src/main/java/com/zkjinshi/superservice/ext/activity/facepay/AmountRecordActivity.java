@@ -92,7 +92,8 @@ public class AmountRecordActivity extends Activity {
 
             @Override
             public void implOnItemClickListener(AdapterView<?> parent, View view, int position, long id) {
-                AmountStatusVo amountStatusVo = (AmountStatusVo) amountAdapter.getItem(position) ;
+                int realPostion = position - 1;
+                AmountStatusVo amountStatusVo = (AmountStatusVo) amountAdapter.getItem(realPostion) ;
                 Intent intent = new Intent(AmountRecordActivity.this,AmountDetailActivity.class);
                 intent.putExtra("amountStatusVo",amountStatusVo);
                 startActivity(intent);
