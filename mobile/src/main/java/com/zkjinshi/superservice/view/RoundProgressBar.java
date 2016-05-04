@@ -29,252 +29,252 @@ import com.zkjinshi.superservice.R;
  */
 public class RoundProgressBar extends View {
 
-	//Color
-	public static final int DEFAULT_ROUND_COLOR = Color.parseColor("#2E666666");
-	public static final int DEFAULT_ROUND_PROGRESS_COLOR = Color.parseColor("#FFFF0000");
-	public static final int DEFAULT_VALUE_TEXT_COLOR = Color.parseColor("#FFFF0000");
+    //Color
+    public static final int DEFAULT_ROUND_COLOR = Color.parseColor("#2E666666");
+    public static final int DEFAULT_ROUND_PROGRESS_COLOR = Color.parseColor("#FFFF0000");
+    public static final int DEFAULT_VALUE_TEXT_COLOR = Color.parseColor("#FFFF0000");
 
-	//Number
-	public static final int DEFAULT_CIRCLE_STROKE_WIDTH = 5;
-	public static final int DEFAULT_VALUE_TEXT_SIZE = 25;
-	public static final int DEFAULT_ANIM_DURATION = 1000 * 2;
+    //Number
+    public static final int DEFAULT_CIRCLE_STROKE_WIDTH = 5;
+    public static final int DEFAULT_VALUE_TEXT_SIZE = 25;
+    public static final int DEFAULT_ANIM_DURATION = 1000 * 2;
 
-	//Style
-	public static final int STYLE_STROKE = 0;
-	public static final int STYLE_FILL = 1;
+    //Style
+    public static final int STYLE_STROKE = 0;
+    public static final int STYLE_FILL = 1;
 
-	//boolean
-	public static final boolean DEFAULT_VALUE_TEXT_IS_DISPLAYABLE = true;
+    //boolean
+    public static final boolean DEFAULT_VALUE_TEXT_IS_DISPLAYABLE = true;
 
-	//String
-	public static final String DEFAULT_VALUE_TEXT = "";
-
-
-	private int mMeasureHeight;
-	private int mMeasureWidth;
-
-	private Paint valuePaint;
-	private String valueText;
-	private int valueTextColor;
-	private int valueTextSize;
-
-	private int despTextColor;
-	private int despTextSize;
-
-	private Paint mCirclePaint;
-	private float mCircleXY;
-	private float mRadius;
-
-	private Paint mArcPaint;
-	private RectF mArcRectF;
-	private float sweepValue = 0;
-	private float sweepAngle;
-	private int circleStrokeWidth;
-
-	private int roundColor;
-	private int roundProgressColor;
-	private float max = 100;
-	private boolean valueTextIsDisplayable;
-	private int circleStyle;
-
-	private ValueAnimator mValueAnimator;
-	private Interpolator interpolator  = new BounceInterpolator();
-	private int animDuration = DEFAULT_ANIM_DURATION;
-
-	public RoundProgressBar(Context context) {
-		super(context);
-	}
-
-	public RoundProgressBar(Context context, AttributeSet attrs) {
-		super(context, attrs);
-
-		TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.CircleProgress);
-		roundColor = typedArray.getColor(R.styleable.CircleProgress_roundColor, DEFAULT_ROUND_COLOR);
-		roundProgressColor = typedArray.getColor(R.styleable.CircleProgress_roundProgressColor, DEFAULT_ROUND_PROGRESS_COLOR);
-		circleStrokeWidth = (int) typedArray.getDimension(R.styleable.CircleProgress_circleStrokeWidth, DEFAULT_CIRCLE_STROKE_WIDTH);
-		valueText = typedArray.getString(R.styleable.CircleProgress_valueText);
-		valueTextColor = typedArray.getColor(R.styleable.CircleProgress_valueTextColor, DEFAULT_VALUE_TEXT_COLOR);
-		valueTextSize = (int) typedArray.getDimension(R.styleable.CircleProgress_valueTextSize, DEFAULT_VALUE_TEXT_SIZE);
-		if (valueText == null) {
-			valueText = DEFAULT_VALUE_TEXT;
-		}
-		valueTextIsDisplayable = typedArray.getBoolean(R.styleable.CircleProgress_valueTextIsDisplayable, DEFAULT_VALUE_TEXT_IS_DISPLAYABLE);
-		circleStyle = typedArray.getInt(R.styleable.CircleProgress_roundStyle, STYLE_STROKE);
-		typedArray.recycle();
-
-	}
-
-	public RoundProgressBar(Context context, AttributeSet attrs, int defStyleAttr) {
-		super(context, attrs, defStyleAttr);
-	}
-
-	@Override
-	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-		mMeasureWidth = MeasureSpec.getSize(widthMeasureSpec);
-		mMeasureHeight = MeasureSpec.getSize(heightMeasureSpec);
-		setMeasuredDimension(mMeasureWidth, mMeasureHeight);
-
-		init();
-	}
-
-	private void init() {
-		float length;
-		if (mMeasureHeight >= getMeasuredWidth()) {
-			length = mMeasureWidth;
-		} else {
-			length = mMeasureHeight;
-		}
-
-		mCircleXY = length / 2;
-		mRadius = length * 18 / 40;
-
-		mCirclePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-		mCirclePaint.setColor(roundColor);
-		mCirclePaint.setStrokeWidth(circleStrokeWidth);
-
-		mArcRectF = new RectF(
-				mCircleXY - mRadius,
-				mCircleXY - mRadius,
-				mCircleXY + mRadius,
-				mCircleXY + mRadius);
-		sweepAngle = value2Angle(sweepValue);
-		mArcPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-		mArcPaint.setColor(roundProgressColor);
-		mArcPaint.setStrokeWidth(circleStrokeWidth);
-
-		//设置空心或实心
-		if (circleStyle == STYLE_STROKE) {
-			mArcPaint.setStyle(Paint.Style.STROKE);
-			mCirclePaint.setStyle(Paint.Style.STROKE);
-		} else {
-			mArcPaint.setStyle(Paint.Style.FILL);
-			mCirclePaint.setStyle(Paint.Style.FILL);
-		}
-
-		valuePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-		valuePaint.setColor(valueTextColor);
-		valuePaint.setTextSize(valueTextSize);
-		valuePaint.setTextAlign(Paint.Align.CENTER);
-	}
+    //String
+    public static final String DEFAULT_VALUE_TEXT = "";
 
 
-	@Override
-	protected void onDraw(Canvas canvas) {
-		super.onDraw(canvas);
-		canvas.drawCircle(mCircleXY, mCircleXY, mRadius, mCirclePaint);
+    private int mMeasureHeight;
+    private int mMeasureWidth;
 
-		if (circleStyle == STYLE_STROKE) {
-			canvas.drawArc(mArcRectF, 270, sweepAngle, false, mArcPaint);
-		} else {
-			canvas.drawArc(mArcRectF, 270, sweepAngle, true, mArcPaint);
-		}
+    private Paint valuePaint;
+    private String valueText;
+    private int valueTextColor;
+    private int valueTextSize;
 
-		if (valueTextIsDisplayable) {
-			if(!TextUtils.isEmpty(valueText) && valueText.length() <= 5){//文字小于5个单行显示
-				Paint.FontMetricsInt fontMetrics = valuePaint.getFontMetricsInt();
-				int baseline = (getMeasuredHeight() - fontMetrics.bottom + fontMetrics.top) / 2 - fontMetrics.top;
-				canvas.drawText(valueText,mCircleXY, baseline, valuePaint);
-			}else {//两行显示文本
-				String firstLineStr = valueText.substring(0,2);
-				String secondLineStr = valueText.substring(2,valueText.length());
-				Paint.FontMetricsInt fontMetrics = valuePaint.getFontMetricsInt();
-				int firstBaseline = (getMeasuredHeight() - fontMetrics.bottom + fontMetrics.top) / 2 - fontMetrics.top/2-DisplayUtil.dip2px(getContext(),3) ;
-				int secondBaseline = (getMeasuredHeight() - fontMetrics.bottom + fontMetrics.top) / 2 - fontMetrics.top*3/2+DisplayUtil.dip2px(getContext(),3);
-				canvas.drawText(firstLineStr,mCircleXY, firstBaseline, valuePaint);
-				canvas.drawText(secondLineStr,mCircleXY, secondBaseline, valuePaint);
-			}
-		}
-	}
+    private int despTextColor;
+    private int despTextSize;
 
-	@Override
-	protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-		super.onLayout(changed, left, top, right, bottom);
-		anim();
-	}
+    private Paint mCirclePaint;
+    private float mCircleXY;
+    private float mRadius;
 
-	public void anim() {
-		mValueAnimator = ValueAnimator.ofFloat(0, sweepValue);
-		mValueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-			public void onAnimationUpdate(ValueAnimator animation) {
-				setSweepValue((Float) animation.getAnimatedValue());
-			}
-		});
-		mValueAnimator.setInterpolator(interpolator);
-		mValueAnimator.setDuration(animDuration);
-		mValueAnimator.start();
-	}
+    private Paint mArcPaint;
+    private RectF mArcRectF;
+    private float sweepValue = 0;
+    private float sweepAngle;
+    private int circleStrokeWidth;
 
-	public void setValueText(String value) {
-		valueText = value;
-		forceInvalidate();
-	}
+    private int roundColor;
+    private int roundProgressColor;
+    private float max = 100;
+    private boolean valueTextIsDisplayable;
+    private int circleStyle;
 
-	public void setValueTextColor(int color) {
-		valueTextColor = color;
-		forceInvalidate();
-	}
+    private ValueAnimator mValueAnimator;
+    private Interpolator interpolator = new BounceInterpolator();
+    private int animDuration = DEFAULT_ANIM_DURATION;
 
-	public void setValueTextSize(int size) {
-		valueTextSize = size;
-		forceInvalidate();
-	}
+    public RoundProgressBar(Context context) {
+        super(context);
+    }
 
-	public void setValueTextIsDisplayable(boolean valueTextIsDisplayable) {
-		this.valueTextIsDisplayable = valueTextIsDisplayable;
-		forceInvalidate();
-	}
+    public RoundProgressBar(Context context, AttributeSet attrs) {
+        super(context, attrs);
 
-	public void setRoundColor(int roundColor) {
-		this.roundColor = roundColor;
-		forceInvalidate();
-	}
+        TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.CircleProgress);
+        roundColor = typedArray.getColor(R.styleable.CircleProgress_roundColor, DEFAULT_ROUND_COLOR);
+        roundProgressColor = typedArray.getColor(R.styleable.CircleProgress_roundProgressColor, DEFAULT_ROUND_PROGRESS_COLOR);
+        circleStrokeWidth = (int) typedArray.getDimension(R.styleable.CircleProgress_circleStrokeWidth, DEFAULT_CIRCLE_STROKE_WIDTH);
+        valueText = typedArray.getString(R.styleable.CircleProgress_valueText);
+        valueTextColor = typedArray.getColor(R.styleable.CircleProgress_valueTextColor, DEFAULT_VALUE_TEXT_COLOR);
+        valueTextSize = (int) typedArray.getDimension(R.styleable.CircleProgress_valueTextSize, DEFAULT_VALUE_TEXT_SIZE);
+        if (valueText == null) {
+            valueText = DEFAULT_VALUE_TEXT;
+        }
+        valueTextIsDisplayable = typedArray.getBoolean(R.styleable.CircleProgress_valueTextIsDisplayable, DEFAULT_VALUE_TEXT_IS_DISPLAYABLE);
+        circleStyle = typedArray.getInt(R.styleable.CircleProgress_roundStyle, STYLE_STROKE);
+        typedArray.recycle();
 
-	public void setRoundProgressColor(int roundProgressColor) {
-		this.roundProgressColor = roundProgressColor;
-		forceInvalidate();
-	}
+    }
+
+    public RoundProgressBar(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        mMeasureWidth = MeasureSpec.getSize(widthMeasureSpec);
+        mMeasureHeight = MeasureSpec.getSize(heightMeasureSpec);
+        setMeasuredDimension(mMeasureWidth, mMeasureHeight);
+
+        init();
+    }
+
+    private void init() {
+        float length;
+        if (mMeasureHeight >= getMeasuredWidth()) {
+            length = mMeasureWidth;
+        } else {
+            length = mMeasureHeight;
+        }
+
+        mCircleXY = length / 2;
+        mRadius = length * 18 / 40;
+
+        mCirclePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        mCirclePaint.setColor(roundColor);
+        mCirclePaint.setStrokeWidth(circleStrokeWidth);
+
+        mArcRectF = new RectF(
+                mCircleXY - mRadius,
+                mCircleXY - mRadius,
+                mCircleXY + mRadius,
+                mCircleXY + mRadius);
+        sweepAngle = value2Angle(sweepValue);
+        mArcPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        mArcPaint.setColor(roundProgressColor);
+        mArcPaint.setStrokeWidth(circleStrokeWidth);
+
+        //设置空心或实心
+        if (circleStyle == STYLE_STROKE) {
+            mArcPaint.setStyle(Paint.Style.STROKE);
+            mCirclePaint.setStyle(Paint.Style.STROKE);
+        } else {
+            mArcPaint.setStyle(Paint.Style.FILL);
+            mCirclePaint.setStyle(Paint.Style.FILL);
+        }
+
+        valuePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        valuePaint.setColor(valueTextColor);
+        valuePaint.setTextSize(valueTextSize);
+        valuePaint.setTextAlign(Paint.Align.CENTER);
+    }
 
 
-	public void setCircleStrokeWidth(int width) {
-		mCirclePaint.setStrokeWidth(width);
-		mArcPaint.setStrokeWidth(width);
-		forceInvalidate();
-	}
+    @Override
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+        canvas.drawCircle(mCircleXY, mCircleXY, mRadius, mCirclePaint);
 
-	public void setCircleStyle(int circleStyle) {
-		this.circleStyle = circleStyle;
-		forceInvalidate();
-	}
+        if (circleStyle == STYLE_STROKE) {
+            canvas.drawArc(mArcRectF, 270, sweepAngle, false, mArcPaint);
+        } else {
+            canvas.drawArc(mArcRectF, 270, sweepAngle, true, mArcPaint);
+        }
 
-	public void setSweepAngle(float sweepAngle) {
-		this.sweepAngle = sweepAngle;
-		forceInvalidate();
-	}
+        if (valueTextIsDisplayable) {
+            if (!TextUtils.isEmpty(valueText) && valueText.length() <= 5) {//文字小于5个单行显示
+                Paint.FontMetricsInt fontMetrics = valuePaint.getFontMetricsInt();
+                int baseline = (getMeasuredHeight() - fontMetrics.bottom + fontMetrics.top) / 2 - fontMetrics.top;
+                canvas.drawText(valueText, mCircleXY, baseline, valuePaint);
+            } else {//两行显示文本
+                String firstLineStr = valueText.substring(0, 2);
+                String secondLineStr = valueText.substring(2, valueText.length());
+                Paint.FontMetricsInt fontMetrics = valuePaint.getFontMetricsInt();
+                int firstBaseline = (getMeasuredHeight() - fontMetrics.bottom + fontMetrics.top) / 2 - fontMetrics.top / 2 - DisplayUtil.dip2px(getContext(), 3);
+                int secondBaseline = (getMeasuredHeight() - fontMetrics.bottom + fontMetrics.top) / 2 - fontMetrics.top * 3 / 2 + DisplayUtil.dip2px(getContext(), 3);
+                canvas.drawText(firstLineStr, mCircleXY, firstBaseline, valuePaint);
+                canvas.drawText(secondLineStr, mCircleXY, secondBaseline, valuePaint);
+            }
+        }
+    }
 
-	public void setInterpolator(Interpolator interpolator) {
-		this.interpolator = interpolator;
-	}
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
+        anim();
+    }
 
-	public void setAnimDuration(int animDuration) {
-		this.animDuration = animDuration;
-	}
+    public void anim() {
+        mValueAnimator = ValueAnimator.ofFloat(0, sweepValue);
+        mValueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            public void onAnimationUpdate(ValueAnimator animation) {
+                setSweepValue((Float) animation.getAnimatedValue());
+            }
+        });
+        mValueAnimator.setInterpolator(interpolator);
+        mValueAnimator.setDuration(animDuration);
+        mValueAnimator.start();
+    }
 
-	public void forceInvalidate() {
-		this.invalidate();
-	}
+    public void setValueText(String value) {
+        valueText = value;
+        forceInvalidate();
+    }
 
-	public void setSweepValue(float sweepValue) {
-		if (sweepValue > 0) {
-			this.sweepValue = sweepValue;
-		}else if(sweepValue > 100){
-			this.sweepValue = 100;
-		}
-		sweepAngle = value2Angle(sweepValue);
-		this.invalidate();
-	}
+    public void setValueTextColor(int color) {
+        valueTextColor = color;
+        forceInvalidate();
+    }
 
-	private float value2Angle(float value) {
-		return (value / max * 360f);
-	}
+    public void setValueTextSize(int size) {
+        valueTextSize = size;
+        forceInvalidate();
+    }
+
+    public void setValueTextIsDisplayable(boolean valueTextIsDisplayable) {
+        this.valueTextIsDisplayable = valueTextIsDisplayable;
+        forceInvalidate();
+    }
+
+    public void setRoundColor(int roundColor) {
+        this.roundColor = roundColor;
+        forceInvalidate();
+    }
+
+    public void setRoundProgressColor(int roundProgressColor) {
+        this.roundProgressColor = roundProgressColor;
+        forceInvalidate();
+    }
+
+
+    public void setCircleStrokeWidth(int width) {
+        mCirclePaint.setStrokeWidth(width);
+        mArcPaint.setStrokeWidth(width);
+        forceInvalidate();
+    }
+
+    public void setCircleStyle(int circleStyle) {
+        this.circleStyle = circleStyle;
+        forceInvalidate();
+    }
+
+    public void setSweepAngle(float sweepAngle) {
+        this.sweepAngle = sweepAngle;
+        forceInvalidate();
+    }
+
+    public void setInterpolator(Interpolator interpolator) {
+        this.interpolator = interpolator;
+    }
+
+    public void setAnimDuration(int animDuration) {
+        this.animDuration = animDuration;
+    }
+
+    public void forceInvalidate() {
+        this.invalidate();
+    }
+
+    public void setSweepValue(float sweepValue) {
+        if (sweepValue > 0) {
+            this.sweepValue = sweepValue;
+        } else if (sweepValue > 100) {
+            this.sweepValue = 100;
+        }
+        sweepAngle = value2Angle(sweepValue);
+        this.invalidate();
+    }
+
+    private float value2Angle(float value) {
+        return (value / max * 360f);
+    }
 
 }
