@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+﻿﻿<?xml version="1.0" encoding="UTF-8"?>
 <config>
 
     <!--测试环境-->
@@ -10,7 +10,9 @@
     <pyx-host>api.zkjinshi.com/dev/pyx</pyx-host>
     <!--天炉座(资源服务)-->
     <for-host>api.zkjinshi.com/dev/for</for-host>
-    <!--图片(资源服务)-->
-    <img-host>cdn.zkjinshi.com</img-host>
+    <!--cdn图片(资源服务)-->
+    <cdn-host>cdn.zkjinshi.com</cdn-host>
+    <!--pcm图片(资源服务)-->
+    <pcd-host>pcd.zkjinshi.com</pcd-host>
 
 </config>

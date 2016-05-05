@@ -140,7 +140,7 @@ public class AmountAdapter extends BaseAdapter {
         String createTimeStr = amountStatusVo.getCreatetime();
         String amountStatusStr = amountStatusVo.getStatusdesc();
         if(!TextUtils.isEmpty(userIcon)){
-            String path = ConfigUtil.getInst().getImgDomain()+userIcon;
+            String path = ConfigUtil.getInst().getCdnDomain()+userIcon;
             if(!TextUtils.isEmpty(path)){
                 viewHolder.userPhotoDv.setImageURI(Uri.parse(path));
             }

@@ -85,7 +85,7 @@ public class PayRequestActivity extends Activity {
             }
             String userimage = nearbyUserVo.getUserimage();
             if(!TextUtils.isEmpty(userimage)){
-                String path = ConfigUtil.getInst().getImgDomain()+userimage;
+                String path = ConfigUtil.getInst().getCdnDomain()+userimage;
                 if(!TextUtils.isEmpty(path)){
                     userPhotoDv.setImageURI(Uri.parse(path));
                 }

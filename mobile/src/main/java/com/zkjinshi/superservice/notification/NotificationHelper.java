@@ -210,11 +210,14 @@ public class NotificationHelper {
      * @param yunBaMsgVo
      */
     public synchronized void showNotification(final Context context, final YunBaMsgVo yunBaMsgVo){
-        ImageSize imageSize = new ImageSize(DisplayUtil.dip2px(context, 36),
-                DisplayUtil.dip2px(context, 36));
+        ImageSize imageSize = new ImageSize(DisplayUtil.dip2px(context, 256),
+                DisplayUtil.dip2px(context, 256));
         String imageSuffix = yunBaMsgVo.getUserImage();
-        String imageUrl  = ConfigUtil.getInst().getImgDomain()+imageSuffix;
-        NonViewAware aware = new NonViewAware(imageSize, ViewScaleType.CROP);
+        //按宽度进行缩放
+        int width = DisplayUtil.dip2px(context,256);
+        String imageUrl = ConfigUtil.getInst().getPcdDomain()+imageSuffix+"@"+width+"w.png";
+        //String imageUrl  = ConfigUtil.getInst().getCdnDomain()+imageSuffix;
+        NonViewAware aware = new NonViewAware(imageSize, ViewScaleType.FIT_INSIDE);
         ImageLoader.getInstance().displayImage(imageUrl,aware,new SimpleImageLoadingListener(){
             @Override
             public void onLoadingStarted(String imageUri, View view) {
@@ -302,7 +305,7 @@ public class NotificationHelper {
                     notificationBuilder.setContentText(contentStr);
                 }
                 notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
-                notificationBuilder.setLargeIcon(loadedImage);
+                //notificationBuilder.setLargeIcon(loadedImage);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                     notificationBuilder.setStyle(new NotificationCompat.BigPictureStyle().bigPicture(loadedImage));
                 }
@@ -363,7 +366,7 @@ public class NotificationHelper {
         ImageSize imageSize = new ImageSize(DisplayUtil.dip2px(context, 36),
                 DisplayUtil.dip2px(context, 36));
         String userimage = amountStatusVo.getUserimage();
-        String imageUrl  = ConfigUtil.getInst().getImgDomain()+userimage;
+        String imageUrl  = ConfigUtil.getInst().getCdnDomain()+userimage;
         NonViewAware aware = new NonViewAware(imageSize, ViewScaleType.CROP);
         ImageLoader.getInstance().displayImage(imageUrl,aware,new SimpleImageLoadingListener(){
             @Override
@@ -473,7 +476,7 @@ public class NotificationHelper {
      * @param activeCodeNoticeVo
      */
     public void showNotification(final Context context, final ActiveCodeNoticeVo activeCodeNoticeVo) {
-        String imageUrl =  ConfigUtil.getInst().getImgDomain()+activeCodeNoticeVo.getUserimage();
+        String imageUrl =  ConfigUtil.getInst().getCdnDomain()+activeCodeNoticeVo.getUserimage();
         ImageSize imageSize = new ImageSize(DisplayUtil.dip2px(context, 36),
                 DisplayUtil.dip2px(context, 36));
         NonViewAware aware = new NonViewAware(imageSize, ViewScaleType.CROP);

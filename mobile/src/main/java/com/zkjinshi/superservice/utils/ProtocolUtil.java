@@ -206,7 +206,7 @@ public class ProtocolUtil {
      * @return
      */
     public static String getHostImgUrl(String apiUrl){
-        return ConfigUtil.getInst().getImgDomain()+apiUrl;
+        return ConfigUtil.getInst().getCdnDomain()+apiUrl;
     }
 
     /**
@@ -215,7 +215,7 @@ public class ProtocolUtil {
      * @return
      */
     public static String getAvatarUrl(String userid){
-        return ConfigUtil.getInst().getImgDomain()+"uploads/users/"+userid+".jpg";
+        return ConfigUtil.getInst().getCdnDomain()+"uploads/users/"+userid+".jpg";
     }
 
     /**
