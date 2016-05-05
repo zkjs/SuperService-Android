@@ -317,7 +317,7 @@ public class GroupChatAdapter extends BaseAdapter {
         String userId = message.getFrom();
         String userImg = getUserPhoto(userId);
         if(!TextUtils.isEmpty(userImg)){
-            String userPhotoUrl = ConfigUtil.getInst().getCdnDomain()+userImg;
+            String userPhotoUrl = ProtocolUtil.getAvatarUrl(context,userImg);
             vh.head.setImageURI(Uri.parse(userPhotoUrl));
         }
         EMMessage.Type mimeType = message.getType();
