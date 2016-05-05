@@ -47,9 +47,11 @@ public class AmountRecordActivity extends Activity {
     private RefreshListView amountRecordListView;
     private TextView amountRecordNoResultTv;
     private ArrayList<AmountStatusVo> amountStatusList;
+    private ArrayList<AmountStatusVo> requestAmountStatusList;
     private AmountAdapter amountAdapter;
     public static int PAGE_NO = 0;
     public static final int PAGE_SIZE = 10;
+    private boolean isLoadMoreAble = true;
 
     private void initView(){
         backIBtn = (ImageButton) findViewById(R.id.header_bar_btn_back);
@@ -63,8 +65,6 @@ public class AmountRecordActivity extends Activity {
         titleTv.setText("收款记录");
         amountAdapter = new AmountAdapter(this,amountStatusList);
         amountRecordListView.setAdapter(amountAdapter);
-        PAGE_NO = 0;
-        requestAmountRecordListTask(true);
     }
 
     private void initListeners(){
@@ -87,7 +87,10 @@ public class AmountRecordActivity extends Activity {
 
             @Override
             public void onLoadingMore() {
-                requestAmountRecordListTask(false);
+                if(isLoadMoreAble){
+                    isLoadMoreAble = false;
+                    requestAmountRecordListTask(false);
+                }
             }
 
             @Override
@@ -110,6 +113,13 @@ public class AmountRecordActivity extends Activity {
         initListeners();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        PAGE_NO = 0;
+        requestAmountRecordListTask(true);
+    }
+
     /**
      * 获取收款记录列表
      */
@@ -123,30 +133,36 @@ public class AmountRecordActivity extends Activity {
             public void onNetworkRequestError(int errorCode, String errorMessage) {
                 Log.i(TAG, "errorCode:" + errorCode);
                 Log.i(TAG, "errorMessage:" + errorMessage);
+                isLoadMoreAble = true;
             }
 
 
             @Override
             public void onNetworkRequestCancelled() {
-
+                isLoadMoreAble = true;
             }
 
             @Override
             public void onNetworkResponseSucceed(NetResponse result) {
                 super.onNetworkResponseSucceed(result);
+                isLoadMoreAble = true;
                 amountRecordListView.refreshFinish();
                 if(null != result && !TextUtils.isEmpty(result.rawResult)){
                     AmountRecordResponse amountResponse = new Gson().fromJson(result.rawResult,AmountRecordResponse.class);
                     if(null != amountResponse){
                         int resultFlag = amountResponse.getRes();
                         if(0 == resultFlag || 30001 == resultFlag){
+                            requestAmountStatusList = amountResponse.getData();
                             if(isRefresh){
-                                amountStatusList = amountResponse.getData();
+                                amountStatusList = requestAmountStatusList;
                             }else {
-                                ArrayList<AmountStatusVo>  requestNoticeList = amountResponse.getData();
-                                amountStatusList.addAll(requestNoticeList);
+                                amountStatusList.addAll(requestAmountStatusList);
                             }
-                            PAGE_NO++;
+                            if(null != requestAmountStatusList && !requestAmountStatusList.isEmpty()){
+                                PAGE_NO++;
+                            }else {
+                                DialogUtil.getInstance().showCustomToast(AmountRecordActivity.this,"再无更多数据",Gravity.CENTER);
+                            }
                             amountAdapter.setAmountStatusList(amountStatusList);
                             if(30001 == resultFlag){
                                 amountRecordListView.setEmptyView(amountRecordNoResultTv);
