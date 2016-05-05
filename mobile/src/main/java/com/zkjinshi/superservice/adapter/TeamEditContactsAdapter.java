@@ -115,7 +115,7 @@ public class TeamEditContactsAdapter extends RecyclerView.Adapter<RecyclerView.V
 
         //根据url显示图片
         int bgColorRes = RandomDrawbleUtil.getDrawableByIndex(position);
-        String empAvatarUrl = ProtocolUtil.getHostImgUrl(employeeVo.getUserimage());
+        String empAvatarUrl = ProtocolUtil.getAvatarUrl(mContext,employeeVo.getUserimage());
         ((ContactViewHolder) holder).civContactAvatar.setImageURI( Uri.parse(empAvatarUrl));
         ((ContactViewHolder) holder).tvContactAvatar.setBackgroundResource(bgColorRes);
         ((ContactViewHolder) holder).tvContactAvatar.setVisibility(View.VISIBLE);
