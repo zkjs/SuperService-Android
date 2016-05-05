@@ -74,7 +74,7 @@ public class NearbyAdapter extends BaseAdapter {
         NearbyUserVo nearbyUserVo = nearbyUserList.get(position);
         String userIcon = nearbyUserVo.getUserimage();
         if(!TextUtils.isEmpty(userIcon)){
-            String path = ConfigUtil.getInst().getImgDomain()+userIcon;
+            String path = ConfigUtil.getInst().getCdnDomain()+userIcon;
             if(!TextUtils.isEmpty(path)){
                 viewHolder.userPhotoIv.setImageURI(Uri.parse(path));
             }

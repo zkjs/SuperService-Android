@@ -164,9 +164,9 @@ public class RoundProgressBar extends View {
 		canvas.drawCircle(mCircleXY, mCircleXY, mRadius, mCirclePaint);
 
 		if (circleStyle == STYLE_STROKE) {
-			canvas.drawArc(mArcRectF, 0, sweepAngle, false, mArcPaint);
+			canvas.drawArc(mArcRectF, 270, sweepAngle, false, mArcPaint);
 		} else {
-			canvas.drawArc(mArcRectF, 0, sweepAngle, true, mArcPaint);
+			canvas.drawArc(mArcRectF, 270, sweepAngle, true, mArcPaint);
 		}
 
 		if (valueTextIsDisplayable) {

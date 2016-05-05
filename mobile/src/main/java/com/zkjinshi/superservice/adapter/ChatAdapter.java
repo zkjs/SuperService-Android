@@ -310,7 +310,7 @@ public class ChatAdapter extends BaseAdapter {
         if(isComMsg){
             if(null != memberList && !memberList.isEmpty()){
                 MemberVo memberVo = memberList.get(0);
-                vh.head.setImageURI(Uri.parse(ConfigUtil.getInst().getImgDomain()+ memberVo.getUserimage()));
+                vh.head.setImageURI(Uri.parse(ConfigUtil.getInst().getCdnDomain()+ memberVo.getUserimage()));
             }
         }else {
             vh.head.setImageURI(Uri.parse(CacheUtil.getInstance().getUserPhotoUrl()));

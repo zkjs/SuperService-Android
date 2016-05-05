@@ -66,7 +66,7 @@ public class InviteCodeUserAdapter extends RecyclerView.Adapter<InviteCodeUserAd
         String userName   = inviteCodeUser.getUsername();
         String userPhone  = inviteCodeUser.getPhone();
 
-        String userPhotoUrl = ConfigUtil.getInst().getImgDomain()+imageUrl;
+        String userPhotoUrl = ConfigUtil.getInst().getCdnDomain()+imageUrl;
         holder.civContactAvatar.setImageURI(Uri.parse(userPhotoUrl));
 
         if (!TextUtils.isEmpty(inviteCode)) {
