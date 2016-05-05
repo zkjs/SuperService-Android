@@ -26,6 +26,7 @@ import com.zkjinshi.superservice.net.NetResponse;
 import com.zkjinshi.superservice.response.BaseResponse;
 import com.zkjinshi.superservice.response.ClientTagResponse;
 import com.zkjinshi.superservice.test.TagBiz;
+import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.view.LabelGridView;
 import com.zkjinshi.superservice.vo.ClientTagVo;
 import com.zkjinshi.superservice.vo.ItemTagVo;
@@ -88,7 +89,7 @@ public class ClientLabelActivity extends BaseActivity {
                 sureBtn.setTag(clientId);
                 String userImg = noticeVo.getUserimage();
                 if(!TextUtils.isEmpty(userImg)){
-                    Uri userImgUri = Uri.parse(ConfigUtil.getInst().getImgDomain()+userImg);
+                    Uri userImgUri = Uri.parse(ProtocolUtil.getImageUrlByScale(ClientLabelActivity.this,userImg,90,90));
                     clientPhotoView.setImageURI(userImgUri);
                 }
                 String userName = noticeVo.getUsername();

@@ -213,7 +213,7 @@ public class NotificationHelper {
         ImageSize imageSize = new ImageSize(DisplayUtil.dip2px(context, 36),
                 DisplayUtil.dip2px(context, 36));
         String imageSuffix = yunBaMsgVo.getUserImage();
-        String imageUrl  = ConfigUtil.getInst().getImgDomain()+imageSuffix;
+        String imageUrl  = ProtocolUtil.getAvatarUrl(context,imageSuffix);
         NonViewAware aware = new NonViewAware(imageSize, ViewScaleType.CROP);
         ImageLoader.getInstance().displayImage(imageUrl,aware,new SimpleImageLoadingListener(){
             @Override
@@ -363,7 +363,7 @@ public class NotificationHelper {
         ImageSize imageSize = new ImageSize(DisplayUtil.dip2px(context, 36),
                 DisplayUtil.dip2px(context, 36));
         String userimage = amountStatusVo.getUserimage();
-        String imageUrl  = ConfigUtil.getInst().getImgDomain()+userimage;
+        String imageUrl  = ProtocolUtil.getAvatarUrl(context,userimage);
         NonViewAware aware = new NonViewAware(imageSize, ViewScaleType.CROP);
         ImageLoader.getInstance().displayImage(imageUrl,aware,new SimpleImageLoadingListener(){
             @Override
@@ -473,7 +473,7 @@ public class NotificationHelper {
      * @param activeCodeNoticeVo
      */
     public void showNotification(final Context context, final ActiveCodeNoticeVo activeCodeNoticeVo) {
-        String imageUrl =  ConfigUtil.getInst().getImgDomain()+activeCodeNoticeVo.getUserimage();
+        String imageUrl = ProtocolUtil.getAvatarUrl(context,activeCodeNoticeVo.getUserimage());
         ImageSize imageSize = new ImageSize(DisplayUtil.dip2px(context, 36),
                 DisplayUtil.dip2px(context, 36));
         NonViewAware aware = new NonViewAware(imageSize, ViewScaleType.CROP);
