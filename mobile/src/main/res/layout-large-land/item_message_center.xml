@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:background="@android:color/white"
+    android:layout_height="181dp">
+
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/message_notice_photo_iv"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginBottom="30dp"
+        fresco:actualImageScaleType="centerInside"
+        fresco:placeholderImage="@mipmap/logo_round"
+        fresco:placeholderImageScaleType="fitCenter"
+        fresco:roundTopLeft="true"
+        fresco:roundTopRight="true"
+        fresco:roundBottomLeft="true"
+        fresco:roundBottomRight="true"
+        fresco:roundedCornerRadius="6dp"/>
+    
+    <RelativeLayout
+        android:id="@+id/message_notice_center_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@id/message_notice_photo_iv">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/message_notice_title"
+                android:layout_width="wrap_content"
+                android:textColor="#101010"
+                android:singleLine="true"
+                android:ellipsize="end"
+                android:textSize="32sp"
+                android:text="@null"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/message_notice_content"
+                android:layout_width="wrap_content"
+                android:layout_below="@id/message_notice_title"
+                android:layout_marginTop="20dp"
+                android:textColor="#666666"
+                android:textSize="28sp"
+                android:singleLine="true"
+                android:ellipsize="end"
+                android:text=""
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/message_notice_send_time"
+        android:layout_width="wrap_content"
+        android:textColor="#666666"
+        android:textSize="24sp"
+        android:text="@null"
+        android:layout_marginRight="30dp"
+       android:layout_marginTop="30dp"
+        android:layout_alignParentRight="true"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/message_notice_notice_count"
+        android:layout_below="@id/message_notice_send_time"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:text="@null"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="30dp"
+        android:gravity="center"
+        android:textColor="#FFFFFF"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/blue_round_select"
+        android:textSize="32sp"
+        android:visibility="visible"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:background="#e8e8e8"
+        android:layout_below="@id/message_notice_photo_iv"
+        android:layout_marginLeft="30dp"
+        android:layout_height="1dp" />
+
+</RelativeLayout>

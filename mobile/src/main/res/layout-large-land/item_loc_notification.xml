@@ -66,8 +66,8 @@
                     fresco:placeholderImageScaleType="fitCenter"
                     fresco:roundTopLeft="true"
                     fresco:roundTopRight="true"
-                    fresco:roundBottomLeft="false"
-                    fresco:roundBottomRight="false"
+                    fresco:roundBottomLeft="true"
+                    fresco:roundBottomRight="true"
                     fresco:roundedCornerRadius="6dp"/>
 
             </RelativeLayout>
