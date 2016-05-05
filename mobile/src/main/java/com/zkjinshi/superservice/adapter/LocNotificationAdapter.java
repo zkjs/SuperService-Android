@@ -74,15 +74,11 @@ public class LocNotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
 
-       // holder.setIsRecyclable(false);
-
         NoticeVo noticeVo = noticeList.get(position);
         final String userId   = noticeVo.getUserid();
         final String userName = noticeVo.getUsername();
-
-        //用户头像 和 姓名
         String userImage = noticeVo.getUserimage();
-        String imageUrl = ProtocolUtil.getImageUrlByHeight(context,userImage,194);
+        String imageUrl = ProtocolUtil.getImageUrlByScale(context,userImage,194,194);
         if(!TextUtils.isEmpty(imageUrl)){
             ((NoticeViewHolder) holder).civClientAvatar.setImageURI(Uri.parse(imageUrl));
             if(!TextUtils.isEmpty(userName)){

@@ -120,7 +120,8 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 if(!TextUtils.isEmpty(userId)){
                     String userImg = getUserImg(userId);
                     if(!TextUtils.isEmpty(userImg)){
-                        ((ViewHolder)holder).photoImageView.setImageURI(Uri.parse(ProtocolUtil.getAvatarUrl(context,userImg)));
+                        String imageUrl = ProtocolUtil.getImageUrlByScale(context,userImg,120,120);
+                        ((ViewHolder)holder).photoImageView.setImageURI(Uri.parse(imageUrl));
                     }
                 }
             }
