@@ -19,6 +19,8 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.zkjinshi.base.config.ConfigUtil;
+import com.zkjinshi.base.log.LogLevel;
+import com.zkjinshi.base.log.LogUtil;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.label.ClientLabelActivity;
@@ -63,7 +65,9 @@ public class NoticeFragment extends Fragment {
     private LocNotificationAdapter notificationAdapter;
     private SwipeRefreshLayout     swipeRefreshLayout;
     private ArrayList<NoticeVo>  noticeList = new ArrayList<NoticeVo>();
+    private ArrayList<NoticeVo> requestNoticeList;
     private TextView emptyTips;
+    private boolean isLoadMoreAble = true;
 
     public static NoticeFragment newInstance() {
         return new NoticeFragment();
@@ -93,7 +97,6 @@ public class NoticeFragment extends Fragment {
         notifyLayoutManager = new LinearLayoutManager(activity);
         notifyLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         notityRecyclerView.setLayoutManager(notifyLayoutManager);
-        initNoticesData();
     }
 
     private void initListeners() {
@@ -120,9 +123,12 @@ public class NoticeFragment extends Fragment {
                     int lastVisibleItem = linearLayoutManager.findLastCompletelyVisibleItemPosition();
                     int totalItemCount = linearLayoutManager.getItemCount();
                     if (lastVisibleItem == (totalItemCount -1) && isSlidingToLast) {
-                        //加载更多功能的代码
-                        swipeRefreshLayout.setRefreshing(true);
-                        requestNoticesTask(false);
+                        if(isLoadMoreAble){
+                            //加载更多功能的代码
+                            isLoadMoreAble = false;
+                            swipeRefreshLayout.setRefreshing(true);
+                            requestNoticesTask(false);
+                        }
                     }
                 }
             }
@@ -207,15 +213,11 @@ public class NoticeFragment extends Fragment {
     private void initNoticesData() {
         String locIds = CacheUtil.getInstance().getAreaInfo();
         if (TextUtils.isEmpty(locIds)) {
-            try {
-                if (null != swipeRefreshLayout) {
-                    swipeRefreshLayout.setRefreshing(false);
-                }
-                noticeList = new ArrayList<NoticeVo>();
-                notificationAdapter.setNoticeList(noticeList);
-            } catch (Exception e) {
-                e.printStackTrace();
+            if (null != swipeRefreshLayout) {
+                swipeRefreshLayout.setRefreshing(false);
             }
+            noticeList = new ArrayList<NoticeVo>();
+            notificationAdapter.setNoticeList(noticeList);
         }else {
             PAGE_NO = 0;
             requestNoticesTask(true);
@@ -240,10 +242,12 @@ public class NoticeFragment extends Fragment {
                 if (null != swipeRefreshLayout) {
                     swipeRefreshLayout.setRefreshing(false);
                 }
+                isLoadMoreAble = true;
             }
 
             @Override
             public void onNetworkRequestCancelled() {
+                isLoadMoreAble = true;
             }
 
             @Override
@@ -251,6 +255,7 @@ public class NoticeFragment extends Fragment {
                 super.onNetworkResponseSucceed(result);
                 try {
                     Log.i(TAG, "result.rawResult:" + result.rawResult);
+                    isLoadMoreAble = true;
                     if (null != swipeRefreshLayout) {
                         swipeRefreshLayout.setRefreshing(false);
                     }
@@ -258,13 +263,17 @@ public class NoticeFragment extends Fragment {
                     if(null != noticeResponse){
                         int resultCode = noticeResponse.getRes();
                         if(0 == resultCode){
+                            requestNoticeList = noticeResponse.getData();
                             if(isRefresh){
-                                noticeList = noticeResponse.getData();
+                                noticeList = requestNoticeList;
                             }else {
-                                ArrayList<NoticeVo>  requestNoticeList = noticeResponse.getData();
                                 noticeList.addAll(requestNoticeList);
                             }
-                            PAGE_NO++;
+                            if(null != requestNoticeList && !requestNoticeList.isEmpty()){
+                                PAGE_NO++;
+                            }else {
+                                DialogUtil.getInstance().showCustomToast(getActivity(),"再无更多数据",Gravity.CENTER);
+                            }
                             notificationAdapter.setNoticeList(noticeList);
                         }else {
                             String resultMsg = noticeResponse.getResDesc();

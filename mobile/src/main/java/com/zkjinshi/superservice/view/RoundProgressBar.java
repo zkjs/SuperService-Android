@@ -78,7 +78,7 @@ public class RoundProgressBar extends View {
     private int circleStyle;
 
     private ValueAnimator mValueAnimator;
-    private Interpolator interpolator = new BounceInterpolator();
+    private Interpolator interpolator  = new BounceInterpolator();
     private int animDuration = DEFAULT_ANIM_DURATION;
 
     public RoundProgressBar(Context context) {
@@ -170,18 +170,19 @@ public class RoundProgressBar extends View {
         }
 
         if (valueTextIsDisplayable) {
-            if (!TextUtils.isEmpty(valueText) && valueText.length() <= 5) {//文字小于5个单行显示
+
+            if(!TextUtils.isEmpty(valueText) && valueText.length() <= 5){//文字小于5个单行显示
                 Paint.FontMetricsInt fontMetrics = valuePaint.getFontMetricsInt();
                 int baseline = (getMeasuredHeight() - fontMetrics.bottom + fontMetrics.top) / 2 - fontMetrics.top;
-                canvas.drawText(valueText, mCircleXY, baseline, valuePaint);
-            } else {//两行显示文本
-                String firstLineStr = valueText.substring(0, 2);
-                String secondLineStr = valueText.substring(2, valueText.length());
+                canvas.drawText(valueText,mCircleXY, baseline, valuePaint);
+            }else {//两行显示文本
+                String firstLineStr = valueText.substring(0,2);
+                String secondLineStr = valueText.substring(2,valueText.length());
                 Paint.FontMetricsInt fontMetrics = valuePaint.getFontMetricsInt();
-                int firstBaseline = (getMeasuredHeight() - fontMetrics.bottom + fontMetrics.top) / 2 - fontMetrics.top / 2 - DisplayUtil.dip2px(getContext(), 3);
-                int secondBaseline = (getMeasuredHeight() - fontMetrics.bottom + fontMetrics.top) / 2 - fontMetrics.top * 3 / 2 + DisplayUtil.dip2px(getContext(), 3);
-                canvas.drawText(firstLineStr, mCircleXY, firstBaseline, valuePaint);
-                canvas.drawText(secondLineStr, mCircleXY, secondBaseline, valuePaint);
+                int firstBaseline = (getMeasuredHeight() - fontMetrics.bottom + fontMetrics.top) / 2 - fontMetrics.top/2-DisplayUtil.dip2px(getContext(),3) ;
+                int secondBaseline = (getMeasuredHeight() - fontMetrics.bottom + fontMetrics.top) / 2 - fontMetrics.top*3/2+DisplayUtil.dip2px(getContext(),3);
+                canvas.drawText(firstLineStr,mCircleXY, firstBaseline, valuePaint);
+                canvas.drawText(secondLineStr,mCircleXY, secondBaseline, valuePaint);
             }
         }
     }
@@ -266,7 +267,7 @@ public class RoundProgressBar extends View {
     public void setSweepValue(float sweepValue) {
         if (sweepValue > 0) {
             this.sweepValue = sweepValue;
-        } else if (sweepValue > 100) {
+        }else if(sweepValue > 100){
             this.sweepValue = 100;
         }
         sweepAngle = value2Angle(sweepValue);
