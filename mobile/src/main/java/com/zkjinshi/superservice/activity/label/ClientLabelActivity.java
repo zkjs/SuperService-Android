@@ -89,7 +89,9 @@ public class ClientLabelActivity extends BaseActivity {
                 sureBtn.setTag(clientId);
                 String userImg = noticeVo.getUserimage();
                 if(!TextUtils.isEmpty(userImg)){
-                    Uri userImgUri = Uri.parse(ProtocolUtil.getImageUrlByScale(ClientLabelActivity.this,userImg,90,90));
+                    int width = (int)getResources().getDimension(R.dimen.label_user_photo_size);
+                    String imageUrl = ProtocolUtil.getImageUrlByWidth(this,userImg,width);
+                    Uri userImgUri = Uri.parse(imageUrl);
                     clientPhotoView.setImageURI(userImgUri);
                 }
                 String userName = noticeVo.getUsername();

@@ -34,28 +34,31 @@
                 android:id="@+id/client_info_layout"
                 android:layout_width="match_parent"
                 android:background="#03A9F4"
-                android:layout_height="160dp">
+                android:layout_height="290dp">
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
+                    android:gravity="center_horizontal"
                     android:orientation="vertical">
 
                     <com.facebook.drawee.view.SimpleDraweeView
                         android:id="@+id/client_user_photo_dv"
                         android:layout_width="@dimen/label_user_photo_size"
                         android:layout_height="@dimen/label_user_photo_size"
+                        android:layout_marginTop="30dp"
+                        android:layout_marginBottom="30dp"
                         fresco:actualImageScaleType="fitCenter"
                         fresco:roundAsCircle="true"
                         fresco:roundedCornerRadius="0dp"
                         fresco:placeholderImage="@mipmap/ic_launcher"
                         fresco:placeholderImageScaleType="centerCrop" />
 
-                    <LinearLayout
-                        android:layout_width="wrap_content"
+                    <RelativeLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="15dp"
+                        android:layout_marginBottom="40dp"
                         android:orientation="horizontal">
 
                         <TextView
@@ -64,7 +67,7 @@
                             android:layout_height="wrap_content"
                             android:layout_centerHorizontal="true"
                             android:textColor="@android:color/white"
-                            android:textSize="18sp"
+                            android:textSize="26sp"
                             android:text="田宝强"
                             />
 
@@ -72,14 +75,14 @@
                             android:id="@+id/client_user_sex_tv"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_centerHorizontal="true"
-                            android:layout_marginLeft="15dp"
+                            android:layout_toRightOf="@id/client_user_name_tv"
+                            android:layout_marginLeft="30dp"
                             android:textColor="@android:color/white"
-                            android:textSize="18sp"
+                            android:textSize="26sp"
                             android:text="男"
                             />
 
-                    </LinearLayout>
+                    </RelativeLayout>
 
                 </LinearLayout>
 
@@ -93,11 +96,15 @@
                 android:cacheColorHint="@android:color/transparent"
                 android:gravity="center"
                 android:scrollbars="none"
-                android:numColumns="3"
-                android:horizontalSpacing="20dp"
-                android:verticalSpacing="20dp"
-                android:columnWidth="150dp"
-                android:layout_margin="20dp"
+                android:numColumns="4"
+                android:layout_centerHorizontal="true"
+                android:horizontalSpacing="56dp"
+                android:verticalSpacing="56dp"
+                android:columnWidth="180dp"
+                android:layout_marginLeft="112dp"
+                android:layout_marginRight="112dp"
+                android:layout_marginTop="50dp"
+                android:layout_marginBottom="50dp"
                 android:listSelector="@android:color/transparent"
                 />
 
