@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#f5f5f5"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/title_layout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@android:color/holo_blue_light">
+
+        <ImageButton
+            android:id="@+id/header_bar_btn_back"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_marginLeft="5dp"
+            android:gravity="center_horizontal"
+            android:layout_centerVertical="true"
+            android:background="@null"
+            android:clickable="true"
+            android:scaleType="centerInside"
+            android:src="@drawable/header_ibtn_back"
+            android:visibility="gone" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="完善资料"
+            android:textColor="@android:color/white"
+            android:textSize="18sp" />
+
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/scrollView">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:layout_width="400dp"
+                android:layout_height="match_parent"
+                android:layout_centerHorizontal="true"
+                android:orientation="vertical"
+                android:id="@+id/content_rlt">
+
+                <com.facebook.drawee.view.SimpleDraweeView
+                    android:id="@+id/avatar"
+                    android:layout_width="140dp"
+                    android:layout_height="140dp"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="65dp"
+                    fresco:actualImageScaleType="centerCrop"
+                    fresco:placeholderImage="@mipmap/ic_launcher"
+                    fresco:placeholderImageScaleType="centerCrop"
+                    fresco:roundAsCircle="true"
+                    fresco:roundedCornerRadius="0dp"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="30dp">
+
+                        <TextView
+                            android:id="@+id/org_username_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_centerVertical="true"
+                            android:textColor="#000000"
+                            android:textSize="28sp" />
+
+                        <CheckBox
+                            android:id="@+id/sex_cbx"
+                            android:layout_width="84dp"
+                            android:layout_height="36dp"
+                            android:layout_alignParentRight="true"
+                            android:background="@drawable/cbx_sex"
+                            android:button="@null"
+                            android:checked="false" />
+
+                    </RelativeLayout>
+
+                    <EditText
+                        android:id="@+id/new_username_et"
+                        style="@style/inputStyle"
+                        android:gravity="center_vertical"
+                        android:layout_marginTop="48dp"
+                        android:hint="获取个新昵称" />
+                </LinearLayout>
+
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="68dp"
+                    android:layout_marginTop="40dp">
+                    <ImageButton
+                        android:id="@+id/go_btn"
+                        android:layout_width="match_parent"
+                        android:layout_height="68dp"
+                        android:background="@drawable/selector_go" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:text="确定"
+                        android:textColor="#ffffff"
+                        android:textSize="24sp"/>
+                </RelativeLayout>
+
+
+            </LinearLayout>
+        </RelativeLayout>
+
+
+    </ScrollView>
+</LinearLayout>

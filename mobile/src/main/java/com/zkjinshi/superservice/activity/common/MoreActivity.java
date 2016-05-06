@@ -10,6 +10,7 @@ import android.view.WindowManager;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,7 +18,10 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+import com.nineoldandroids.view.ViewHelper;
+import com.nineoldandroids.view.ViewPropertyAnimator;
 import com.zkjinshi.base.util.DialogUtil;
+import com.zkjinshi.base.util.DisplayUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.mine.MineNetController;
 import com.zkjinshi.superservice.activity.mine.MineUiController;
@@ -53,6 +57,7 @@ public class MoreActivity extends BaseFragmentActivity{
     private CheckBox sexCbx;
     private ImageButton backIBtn;
     private String picPath = null;
+    private View contentRlt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +76,7 @@ public class MoreActivity extends BaseFragmentActivity{
         nameTv = (TextView)findViewById(R.id.org_username_tv);
         inputNameEt = (EditText)findViewById(R.id.new_username_et);
         sexCbx = (CheckBox)findViewById(R.id.sex_cbx);
+        contentRlt = findViewById(R.id.content_rlt);
     }
 
     private void initData() {
@@ -114,6 +120,35 @@ public class MoreActivity extends BaseFragmentActivity{
                 MineUiController.getInstance().showChoosePhotoDialog();
             }
         });
+
+        //添加layout大小发生改变监听器
+        findViewById(R.id.scrollView).addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+            @Override
+            public void onLayoutChange(View v, int left, int top, int right,
+                                       int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                if(oldBottom != 0 && bottom != 0 &&(oldBottom - bottom > 0)){
+                    //Toast.makeText(mContext, "监听到软键盘弹起...", Toast.LENGTH_SHORT).show();
+                    moveUp();
+                }else if(oldBottom != 0 && bottom != 0 &&(bottom - oldBottom > 0)){
+                    //Toast.makeText(mContext, "监听到软件盘关闭...", Toast.LENGTH_SHORT).show();
+                    moveDown();
+                }
+            }
+        });
+    }
+
+    private void moveUp(){
+        ViewHelper.setTranslationY(contentRlt,0);
+        int offsetY = DisplayUtil.dip2px(this,120);
+        long time = 300;
+        ViewPropertyAnimator.animate(contentRlt).translationYBy(-offsetY).setDuration(time);
+    }
+
+    private void moveDown(){
+        int offsetY = DisplayUtil.dip2px(this,120);
+        long time = 300;
+        ViewHelper.setTranslationY(contentRlt,-offsetY);
+        ViewPropertyAnimator.animate(contentRlt).translationYBy(offsetY).setDuration(time);
     }
 
     /*
