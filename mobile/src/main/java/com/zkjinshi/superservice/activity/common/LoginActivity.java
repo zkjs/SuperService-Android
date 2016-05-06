@@ -9,11 +9,17 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 
 import com.google.gson.Gson;
+import com.nineoldandroids.view.ViewHelper;
+import com.nineoldandroids.view.ViewPropertyAnimator;
 import com.zkjinshi.base.config.ConfigActivity;
 import com.zkjinshi.base.util.ActivityManagerHelper;
 import com.zkjinshi.base.util.DialogUtil;
+import com.zkjinshi.base.util.DisplayUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.set.ClientController;
 import com.zkjinshi.superservice.activity.set.TeamContactsController;
@@ -46,6 +52,8 @@ public class LoginActivity extends BaseActivity implements VerifyPhoneControler.
 
     private EditText inputEt;
     private SensorManagerHelper sensorHelper;
+    private RelativeLayout contentLlt;
+    private ScrollView scrollView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +74,8 @@ public class LoginActivity extends BaseActivity implements VerifyPhoneControler.
 
     private void initView() {
         inputEt = (EditText)findViewById(R.id.et_input_phone);
+        contentLlt = (RelativeLayout) findViewById(R.id.content_layout_rl);
+        scrollView = (ScrollView)findViewById(R.id.content_body_sv);
     }
 
     private void initData() {
@@ -98,7 +108,32 @@ public class LoginActivity extends BaseActivity implements VerifyPhoneControler.
             }
         });
 
+        scrollView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+            @Override
+            public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                if(oldBottom != 0 && bottom != 0 &&(oldBottom - bottom > 0)){
+                    moveUp();
+                }else if(oldBottom != 0 && bottom != 0 &&(bottom - oldBottom > 0)){
+                    moveDown();
+                }
+            }
+        });
     }
+
+    private void moveUp(){
+        ViewHelper.setTranslationY(contentLlt,0);
+        int offsetY = DisplayUtil.dip2px(this,248);
+        long time = 300;
+        ViewPropertyAnimator.animate(contentLlt).translationYBy(-offsetY).setDuration(time);
+    }
+
+    private void moveDown(){
+        int offsetY = DisplayUtil.dip2px(this,248);
+        long time = 300;
+        ViewHelper.setTranslationY(contentLlt,-offsetY);
+        ViewPropertyAnimator.animate(contentLlt).translationYBy(offsetY).setDuration(time);
+    }
+
 
     @Override
     public void verrifySuccess() {

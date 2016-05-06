@@ -20,8 +20,8 @@
     
     <com.zkjinshi.superservice.view.CircleImageView
         android:id="@+id/hotel_avatar"
-        android:layout_width="96dp"
-        android:layout_height="96dp"
+        android:layout_width="@dimen/login_logo_size"
+        android:layout_height="@dimen/login_logo_size"
         android:layout_centerHorizontal="true"
         android:scaleType="center"
         android:clickable="true"
