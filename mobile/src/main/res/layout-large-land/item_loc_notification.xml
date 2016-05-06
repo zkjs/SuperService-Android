@@ -61,7 +61,7 @@
                     android:layout_marginLeft="30dp"
                     android:layout_marginRight="30dp"
                     android:layout_centerVertical="true"
-                    fresco:actualImageScaleType="centerInside"
+                    fresco:actualImageScaleType="centerCrop"
                     fresco:placeholderImage="@mipmap/logo_round"
                     fresco:placeholderImageScaleType="fitCenter"
                     fresco:roundTopLeft="true"
