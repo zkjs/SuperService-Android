@@ -139,13 +139,13 @@ public class MoreActivity extends BaseFragmentActivity{
 
     private void moveUp(){
         ViewHelper.setTranslationY(contentRlt,0);
-        int offsetY = DisplayUtil.dip2px(this,120);
+        int offsetY = DisplayUtil.dip2px(this,150);
         long time = 300;
         ViewPropertyAnimator.animate(contentRlt).translationYBy(-offsetY).setDuration(time);
     }
 
     private void moveDown(){
-        int offsetY = DisplayUtil.dip2px(this,120);
+        int offsetY = DisplayUtil.dip2px(this,150);
         long time = 300;
         ViewHelper.setTranslationY(contentRlt,-offsetY);
         ViewPropertyAnimator.animate(contentRlt).translationYBy(offsetY).setDuration(time);
