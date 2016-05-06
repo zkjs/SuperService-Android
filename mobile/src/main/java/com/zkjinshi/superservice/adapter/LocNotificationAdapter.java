@@ -78,7 +78,8 @@ public class LocNotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         final String userId   = noticeVo.getUserid();
         final String userName = noticeVo.getUsername();
         String userImage = noticeVo.getUserimage();
-        String imageUrl = ProtocolUtil.getImageUrlByScale(context,userImage,194,194);
+        int width = (int)context.getResources().getDimension(R.dimen.normal_avatar_size);
+        String imageUrl = ProtocolUtil.getImageUrlByWidth(context,userImage,width);
         if(!TextUtils.isEmpty(imageUrl)){
             ((NoticeViewHolder) holder).civClientAvatar.setImageURI(Uri.parse(imageUrl));
             if(!TextUtils.isEmpty(userName)){
