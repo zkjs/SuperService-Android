@@ -97,7 +97,8 @@ public class TeamContactsAdapter extends ServiceBaseAdapter<EmployeeVo> implemen
             }
         });
 
-        String empAvatarUrl = ProtocolUtil.getAvatarUrl(mActivity,employeeVo.getUserimage());
+        int width = (int)mActivity.getResources().getDimension(R.dimen.normal_avatar_size);
+        String empAvatarUrl = ProtocolUtil.getImageUrlByWidth(mActivity,employeeVo.getUserimage(),width);
         holder.civContactAvatar.setImageURI( Uri.parse(empAvatarUrl));
 
         if(!TextUtils.isEmpty(empName)){
