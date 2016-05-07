@@ -30,6 +30,10 @@
 
     <dimen name="normal_avatar_size">194dp</dimen>
 
+    <dimen name="item_message_avatar_size">140dp</dimen>
+
     <dimen name="login_logo_size">140dp</dimen>
+    
+    <dimen name="label_user_photo_size">160dp</dimen>
 
 </resources>
