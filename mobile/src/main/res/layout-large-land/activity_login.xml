@@ -40,8 +40,7 @@
                 android:clickable="true"
                 android:src="@mipmap/ic_launcher"
                 android:layout_marginTop="65dp"
-                android:layout_marginBottom="65dp"
-                android:layout_below="@+id/title">
+                android:layout_marginBottom="65dp">
             </com.zkjinshi.superservice.view.CircleImageView>
 
             <LinearLayout

@@ -29,7 +29,6 @@
             style="@style/inputStyle"
             android:hint="账号"
             android:inputType="text"
-            android:maxLength="11"
             android:singleLine="true"
             />
 
@@ -39,7 +38,6 @@
             style="@style/inputStyle"
             android:hint="密码"
             android:inputType="textPassword"
-            android:maxLength="20"
             android:singleLine="true"
             />
 
