@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.os.Environment;
 import android.support.multidex.MultiDex;
 import android.util.Log;
+import android.view.Gravity;
 
 import com.easemob.chat.EMChat;
 import com.easemob.chat.EMChatManager;
@@ -22,10 +23,12 @@ import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.testin.agent.TestinAgent;
 import com.zkjinshi.base.config.ConfigUtil;
 import com.zkjinshi.base.log.LogConfig;
+import com.zkjinshi.base.log.LogLevel;
 import com.zkjinshi.base.log.LogSwitch;
 import com.zkjinshi.base.log.LogUtil;
 import com.zkjinshi.base.util.BaseContext;
 import com.zkjinshi.base.util.DeviceUtils;
+import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.base.BaseApplication;
 import com.zkjinshi.superservice.emchat.EasemobIMHelper;
 import com.zkjinshi.superservice.emchat.observer.EGroupReomveListener;
@@ -53,6 +56,8 @@ public class ServiceApplication extends BaseApplication {
 
     public static final String TAG = ServiceApplication.class.getSimpleName();
 
+    public int currentNetConfigVersion = 1;//网络配置项
+
     private static Context mContext;
 
     @Override
@@ -62,8 +67,8 @@ public class ServiceApplication extends BaseApplication {
         initContext();
         initYunBa();
         initEmchat();
-        saveConfig();
         initCache();
+        saveConfig();
         initLog();
         initDevice();
         initFace();
@@ -154,9 +159,19 @@ public class ServiceApplication extends BaseApplication {
         try {
             File f = new File(this.getFilesDir(), "config.xml");
             InputStream is;
+            int netConfigVersion = CacheUtil.getInstance().getNetConfigVersion();
             if (f.exists()) {
-                is = new FileInputStream(f);
-                ConfigUtil.getInst(is);
+                if(netConfigVersion != currentNetConfigVersion){
+                    f.delete();
+                    is = this.getResources().getAssets()
+                            .open("config.xml");
+                    ConfigUtil.getInst(is);
+                    ConfigUtil.getInst().save(this);
+                    CacheUtil.getInstance().setNetConfigVersion(currentNetConfigVersion);
+                }else {
+                    is = new FileInputStream(f);
+                    ConfigUtil.getInst(is);
+                }
             } else {
                 is = this.getResources().getAssets()
                         .open("config.xml");
