@@ -1,6 +1,8 @@
 package com.zkjinshi.superservice.fragment;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -37,6 +39,7 @@ import com.zkjinshi.superservice.net.NetRequestTask;
 import com.zkjinshi.superservice.net.NetResponse;
 import com.zkjinshi.superservice.response.NoticeResponse;
 import com.zkjinshi.superservice.utils.CacheUtil;
+import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.vo.NoticeVo;
 import com.zkjinshi.superservice.vo.OrderVo;
@@ -294,6 +297,25 @@ public class NoticeFragment extends Fragment {
         });
         netRequestTask.isShowLoadingDialog = false;
         netRequestTask.execute();
+    }
+
+    /**
+     * 到店通知自动刷新
+     *
+     */
+    class NoticeReceiver extends BroadcastReceiver{
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if(null != intent){
+                String action = intent.getAction();
+                if(!TextUtils.isEmpty(action) && action.equals(Constants.ACTION_NOTICE)){
+                    noticeList = new ArrayList<NoticeVo>();
+                    PAGE_NO = 0;
+                    requestNoticesTask(true);
+                }
+            }
+        }
     }
 
 }
