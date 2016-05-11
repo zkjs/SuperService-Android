@@ -1,4 +1,4 @@
-package com.zkjinshi.base.view;
+package com.zkjinshi.superservice.view;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -9,6 +9,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -17,18 +18,18 @@ import com.zkjinshi.base.R;
 
 /**
  * 自定义提示对话框
- * 开发者：JimmyZhang
- * 日期：2015/7/24
+ * 开发者：杜健德
+ * 日期：2016/5/11
  * Copyright (C) 2015 深圳中科金石科技有限公司
  * 版权所有
  */
-public class CustomDialog extends Dialog {
+public class CustomInputDialog extends Dialog {
 
-	public CustomDialog(Context context, int theme) {
+	public CustomInputDialog(Context context, int theme) {
 		super(context, theme);
 	}
 
-	public CustomDialog(Context context) {
+	public CustomInputDialog(Context context) {
 		super(context);
 	}
 
@@ -37,11 +38,12 @@ public class CustomDialog extends Dialog {
 		private Context context;
 		private String title;
 		private String message;
-		private Uri imagePath;
 		private int gravity = -1;
 		private int visibility = -1;
 		private String positiveButtonText;
 		private String negativeButtonText;
+
+		public EditText inputEt;
 
 		private OnClickListener positiveButtonClickListener,
 				negativeButtonClickListener;
@@ -60,20 +62,14 @@ public class CustomDialog extends Dialog {
 			return this;
 		}
 
-		public Builder setMessageIcon(Uri imagePath) {
-			this.imagePath = imagePath;
-			return this;
-		}
+
 
 		public Builder setGravity(int gravity) {
 			this.gravity = gravity;
 			return this;
 		}
 
-		public Builder setIconVisibility(int visibility) {
-			this.visibility = visibility;
-			return this;
-		}
+
 
 		public Builder setTitle(int title) {
 			this.title = (String) context.getText(title);
@@ -86,7 +82,7 @@ public class CustomDialog extends Dialog {
 		}
 
 		public Builder setPositiveButton(int positiveButtonText,
-				OnClickListener listener) {
+										 OnClickListener listener) {
 			this.positiveButtonText = (String) context
 					.getText(positiveButtonText);
 			this.positiveButtonClickListener = listener;
@@ -94,14 +90,14 @@ public class CustomDialog extends Dialog {
 		}
 
 		public Builder setPositiveButton(String positiveButtonText,
-				OnClickListener listener) {
+										 OnClickListener listener) {
 			this.positiveButtonText = positiveButtonText;
 			this.positiveButtonClickListener = listener;
 			return this;
 		}
 
 		public Builder setNegativeButton(int negativeButtonText,
-				OnClickListener listener) {
+										 OnClickListener listener) {
 			this.negativeButtonText = (String) context
 					.getText(negativeButtonText);
 			this.negativeButtonClickListener = listener;
@@ -109,18 +105,18 @@ public class CustomDialog extends Dialog {
 		}
 
 		public Builder setNegativeButton(String negativeButtonText,
-				OnClickListener listener) {
+										 OnClickListener listener) {
 			this.negativeButtonText = negativeButtonText;
 			this.negativeButtonClickListener = listener;
 			return this;
 		}
 
-		public CustomDialog create() {
+		public CustomInputDialog create() {
 			LayoutInflater inflater = (LayoutInflater) context
 					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			final CustomDialog dialog = new CustomDialog(context,
+			final CustomInputDialog dialog = new CustomInputDialog(context,
 					R.style.customDialog);
-			View layout = inflater.inflate(R.layout.custom_dialog, null);
+			View layout = inflater.inflate(R.layout.custom_input_dialog, null);
 			dialog.addContentView(layout, new LayoutParams(
 					LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 			if(TextUtils.isEmpty(title)){
@@ -128,7 +124,6 @@ public class CustomDialog extends Dialog {
 			}else{
 				((TextView) layout.findViewById(R.id.dialogTitle)).setText(title);
 			}
-
 			if (positiveButtonText != null) {
 				((TextView) layout.findViewById(R.id.dialogRightBtn))
 						.setText(positiveButtonText);
@@ -162,36 +157,18 @@ public class CustomDialog extends Dialog {
 						.setVisibility(View.GONE);
 			}
 			if (message != null) {
-				((ImageView) layout.findViewById(R.id.dialogIcon))
-						.setVisibility(View.GONE);
 				((TextView) layout.findViewById(R.id.dialogContent))
 						.setVisibility(View.VISIBLE);
 				((TextView) layout.findViewById(R.id.dialogContent))
 						.setText(message);
-			} else if (imagePath != null) {
-				((ImageView) layout.findViewById(R.id.dialogIcon))
-						.setVisibility(View.VISIBLE);
-				((TextView) layout.findViewById(R.id.dialogContent))
-						.setVisibility(View.GONE);
-				((ImageView) layout.findViewById(R.id.dialogIcon))
-						.setImageURI(imagePath);
-				((LinearLayout) layout.findViewById(R.id.dialogText))
-						.setGravity(Gravity.CENTER);
 			}
 			if (gravity != -1) {
 				((LinearLayout) layout.findViewById(R.id.dialogText))
 						.setGravity(gravity);
 			}
-			if (visibility != -1) {
-				((ImageView) layout.findViewById(R.id.dialogIcon))
-						.setVisibility(View.VISIBLE);
-				LayoutParams layoutParams = ((ImageView) layout
-						.findViewById(R.id.dialogIcon)).getLayoutParams();
-				layoutParams.width = LayoutParams.WRAP_CONTENT;
-				layoutParams.height = LayoutParams.WRAP_CONTENT;
-				((ImageView) layout
-						.findViewById(R.id.dialogIcon)).setLayoutParams(layoutParams);
-			}
+
+			inputEt = (EditText)layout.findViewById(R.id.input_et);
+
 			dialog.setContentView(layout);
 			return dialog;
 		}

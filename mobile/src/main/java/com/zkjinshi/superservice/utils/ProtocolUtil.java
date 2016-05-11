@@ -422,4 +422,20 @@ public class ProtocolUtil {
         return ConfigUtil.getInst().getForDomain()+"res/v1/update/user/tags";
     }
 
+    /**
+     * 验证原始密码是否正确
+     * @return
+     */
+    public static String verifyLoginpassword(){
+        return ConfigUtil.getInst().getForDomain()+"res/v1/verify/ss/loginpassword";
+    }
+
+    /**
+     * 修改密码接口
+     * @return
+     */
+    public static String updateLoginpassword(){
+        return ConfigUtil.getInst().getForDomain()+"res/v1/update/ss/loginpassword";
+    }
+
 }
