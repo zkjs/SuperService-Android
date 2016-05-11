@@ -6,20 +6,13 @@ import android.content.Intent;
 import android.util.Log;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
 import com.zkjinshi.base.log.LogLevel;
 import com.zkjinshi.base.log.LogUtil;
-import com.zkjinshi.base.util.ActivityManagerHelper;
-import com.zkjinshi.superservice.ServiceApplication;
-import com.zkjinshi.superservice.emchat.EMConversationHelper;
 import com.zkjinshi.superservice.ext.vo.AmountStatusVo;
-import com.zkjinshi.superservice.manager.SSOManager;
-import com.zkjinshi.superservice.manager.YunBaSubscribeManager;
 import com.zkjinshi.superservice.notification.NotificationHelper;
-import com.zkjinshi.superservice.utils.CacheUtil;
+import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.vo.ActiveCodeNoticeVo;
 import com.zkjinshi.superservice.vo.YunBaMsgVo;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -63,6 +56,9 @@ public class YunBaMessageReceiver extends BroadcastReceiver {
                         //弹出当前位置到达提示
                         NotificationHelper.getInstance().showNotification(context, yunBaMsgVo);
                     }
+                    Intent noticeIntent = new Intent();
+                    noticeIntent.setAction(Constants.ACTION_NOTICE);
+                    context.sendBroadcast(intent);
                     //如果是商家中心，则执行发送消息给客人
                     /*if(SSOManager.getInstance().isShopCenter()){//1、检测用户身份，是否为消息中心
                         if(null != yunBaMsgVo){//2、发送欢迎信息给客人
