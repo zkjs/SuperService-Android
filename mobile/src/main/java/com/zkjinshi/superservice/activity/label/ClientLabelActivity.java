@@ -26,6 +26,7 @@ import com.zkjinshi.superservice.net.NetResponse;
 import com.zkjinshi.superservice.response.BaseResponse;
 import com.zkjinshi.superservice.response.ClientTagResponse;
 import com.zkjinshi.superservice.test.TagBiz;
+import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.view.LabelGridView;
 import com.zkjinshi.superservice.vo.ClientTagVo;
 import com.zkjinshi.superservice.vo.ItemTagVo;
@@ -88,7 +89,7 @@ public class ClientLabelActivity extends BaseActivity {
                 sureBtn.setTag(clientId);
                 String userImg = noticeVo.getUserimage();
                 if(!TextUtils.isEmpty(userImg)){
-                    Uri userImgUri = Uri.parse(ConfigUtil.getInst().getImgDomain()+userImg);
+                    Uri userImgUri = Uri.parse(ProtocolUtil.getImageUrlByScale(ClientLabelActivity.this,userImg,90,90));
                     clientPhotoView.setImageURI(userImgUri);
                 }
                 String userName = noticeVo.getUsername();
@@ -178,6 +179,17 @@ public class ClientLabelActivity extends BaseActivity {
                                 int resultCode = baseResponse.getRes();
                                 if(0 == resultCode){
                                     DialogUtil.getInstance().showCustomToast(ClientLabelActivity.this,"打标签成功",Gravity.CENTER);
+                                    for(int i=0;i<tagList.size();i++){
+                                        int tagid = tagList.get(i).getTagid();
+                                        if(mSelectMap.containsKey(tagid) && mSelectMap.get(tagid)){
+                                            int count = tagList.get(i).getCount() + 1;
+                                            tagList.get(i).setCount(count);
+                                        }
+                                    }
+
+                                    labelGridView.setTag(tagList);
+                                    labelGridView.setTag(R.id.client_label_gv,canoptcnt);
+
                                     mSelectMap.clear();
                                     clientLabelAdapter.setSelectMap(mSelectMap);
                                     if(isSelectedLabel()){
@@ -185,7 +197,7 @@ public class ClientLabelActivity extends BaseActivity {
                                     }else {
                                         sureBtn.setVisibility(View.GONE);
                                     }
-                                    requestLabelListTask();
+                                    clientLabelAdapter.setTagList(tagList);
                                 }else {
                                     String errorMsg = baseResponse.getResDesc();
                                     if(!TextUtils.isEmpty(errorMsg)){
@@ -199,6 +211,8 @@ public class ClientLabelActivity extends BaseActivity {
             }
         });
     }
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

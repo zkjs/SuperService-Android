@@ -70,7 +70,7 @@ public class ConfigUtil {
      * @return FrameworkConfig
      */
     public static ConfigUtil getInst() {
-        if(configUtil == null){
+        if (configUtil == null) {
             configUtil = new ConfigUtil();
         }
         return configUtil;
@@ -132,11 +132,19 @@ public class ConfigUtil {
     }
 
     /**
-     * 获得图片链接
+     * 获得cdn图片链接
      * @return
      */
-    public String getImgDomain(){
-        return "http://" + getConfigValue(Constants.IMG_HOST)+ "/";
+    public String getCdnDomain(){
+        return "http://" + getConfigValue(Constants.CDN_HOST)+ "/";
+    }
+
+    /**
+     * 获得pcm图片链接
+     * @return
+     */
+    public String getPcdDomain(){
+        return "http://" + getConfigValue(Constants.PCD_HOST)+ "/";
     }
 
     /**

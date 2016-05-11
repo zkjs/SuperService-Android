@@ -83,7 +83,7 @@
                 android:clickable="true"
                 zkjinshi:itemSettingTitle="组织" />
 
-            <View style="@style/GrayLineBorder"></View>
+            <View style="@style/GrayLineBorder"  android:visibility="gone"></View>
 
             <com.zkjinshi.superservice.view.ItemUserSettingView
                 android:id="@+id/autho_iusv"
@@ -107,7 +107,7 @@
                 android:clickable="true"
                 zkjinshi:itemSettingTitle="区域" />
 
-            <View style="@style/GrayLineBorder"></View>
+            <View style="@style/GrayLineBorder" android:visibility="gone"></View>
 
             <com.zkjinshi.superservice.view.ItemUserSettingView
                 android:id="@+id/job_iusv"
@@ -120,7 +120,7 @@
                 zkjinshi:itemSettingContent2=""
                 zkjinshi:itemSettingTitle="业务信息" />
 
-            <View style="@style/GrayLineBorder"></View>
+            <View style="@style/GrayLineBorder" android:visibility="gone"></View>
 
             <com.zkjinshi.superservice.view.ItemUserSettingView
                 android:id="@+id/phone_iusv"
@@ -133,10 +133,22 @@
                 zkjinshi:itemSettingContent2=""
                 zkjinshi:itemSettingTitle="账号" />
 
-            <View style="@style/GrayLineBorder"></View>
-
             <View
+                android:id="@+id/border_psw_line"
                 style="@style/GrayLineBorder"
+                android:layout_marginTop="10dp"></View>
+
+            <com.zkjinshi.superservice.view.ItemUserSettingView
+                android:id="@+id/password_iusv"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:background="#ffffff"
+                android:clickable="true"
+                zkjinshi:itemSettingContent2=""
+                zkjinshi:itemSettingTitle="修改密码" />
+
+            <View style="@style/GrayLineBorder"
                 android:layout_marginTop="10dp"></View>
 
             <com.zkjinshi.superservice.view.ItemUserSettingView
@@ -148,6 +160,8 @@
                 android:clickable="true"
                 zkjinshi:itemSettingContent2=""
                 zkjinshi:itemSettingTitle="关于我们" />
+
+
 
             <View style="@style/GrayLineBorder"></View>
 

@@ -1,5 +1,7 @@
 package com.zkjinshi.superservice.utils;
 
+import android.content.Context;
+
 import com.zkjinshi.base.config.ConfigUtil;
 import com.zkjinshi.base.util.*;
 import com.zkjinshi.base.util.Constants;
@@ -206,8 +208,40 @@ public class ProtocolUtil {
      * @return
      */
     public static String getHostImgUrl(String apiUrl){
-        return ConfigUtil.getInst().getImgDomain()+apiUrl;
+        return ConfigUtil.getInst().getCdnDomain()+apiUrl;
     }
+
+    /**
+     * 根据尺寸获取图片路径
+     * @param context
+     * @param apiUrl
+     * @param w
+     * @param h
+     * @return
+     */
+    public static String getImageUrlByScale(Context context, String apiUrl, int w, int h){
+        w = DisplayUtil.dip2px(context,w);
+        h = DisplayUtil.dip2px(context,h);
+        String domain =  ConfigUtil.getInst().getPcdDomain();
+        return domain+apiUrl+"@"+w+"w_"+h+"h";
+    }
+
+    public static String getImageUrlByWidth(Context context, String apiUrl, int w){
+        w = DisplayUtil.dip2px(context,w);
+        String domain =  ConfigUtil.getInst().getPcdDomain();
+        return domain+apiUrl+"@"+w+"w";
+    }
+
+    public static String getImageUrlByHeight(Context context, String apiUrl, int h){
+        h = DisplayUtil.dip2px(context,h);
+        String domain =  ConfigUtil.getInst().getPcdDomain();
+        return domain+apiUrl+"@"+h+"h";
+    }
+
+    public static String getAvatarUrl(Context context, String apiUrl){
+        return getImageUrlByScale(context,apiUrl,60,60);
+    }
+
 
     /**
      * 获得用户头像
@@ -215,7 +249,7 @@ public class ProtocolUtil {
      * @return
      */
     public static String getAvatarUrl(String userid){
-        return ConfigUtil.getInst().getImgDomain()+"uploads/users/"+userid+".jpg";
+        return ConfigUtil.getInst().getCdnDomain()+"uploads/users/"+userid+".jpg";
     }
 
     /**
@@ -386,6 +420,22 @@ public class ProtocolUtil {
      */
     public static String getUpdateClientTagsUrl(){
         return ConfigUtil.getInst().getForDomain()+"res/v1/update/user/tags";
+    }
+
+    /**
+     * 验证原始密码是否正确
+     * @return
+     */
+    public static String verifyLoginpassword(){
+        return ConfigUtil.getInst().getForDomain()+"res/v1/verify/ss/loginpassword";
+    }
+
+    /**
+     * 修改密码接口
+     * @return
+     */
+    public static String updateLoginpassword(){
+        return ConfigUtil.getInst().getForDomain()+"res/v1/update/ss/loginpassword";
     }
 
 }

@@ -14,6 +14,7 @@ import com.zkjinshi.base.config.ConfigUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.ext.util.MathUtil;
 import com.zkjinshi.superservice.ext.vo.AmountStatusVo;
+import com.zkjinshi.superservice.utils.ProtocolUtil;
 
 import java.util.ArrayList;
 
@@ -140,7 +141,7 @@ public class AmountAdapter extends BaseAdapter {
         String createTimeStr = amountStatusVo.getCreatetime();
         String amountStatusStr = amountStatusVo.getStatusdesc();
         if(!TextUtils.isEmpty(userIcon)){
-            String path = ConfigUtil.getInst().getImgDomain()+userIcon;
+            String path = ProtocolUtil.getAvatarUrl(context,userIcon);
             if(!TextUtils.isEmpty(path)){
                 viewHolder.userPhotoDv.setImageURI(Uri.parse(path));
             }

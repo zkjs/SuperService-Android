@@ -314,6 +314,12 @@
             android:theme="@android:style/Theme.Translucent.NoTitleBar">
         </activity>
         <activity
+            android:name=".activity.set.UpdatePasswordActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar">
+        </activity>
+        <activity
             android:name=".activity.order.AddRemarkActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
