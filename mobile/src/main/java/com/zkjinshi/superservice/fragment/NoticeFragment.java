@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -19,19 +20,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import com.zkjinshi.base.config.ConfigUtil;
-import com.zkjinshi.base.log.LogLevel;
-import com.zkjinshi.base.log.LogUtil;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.label.ClientLabelActivity;
-import com.zkjinshi.superservice.activity.order.HotelDealActivity;
-import com.zkjinshi.superservice.activity.order.KTVDealActivity;
-import com.zkjinshi.superservice.activity.order.NormalDealActivity;
 import com.zkjinshi.superservice.adapter.LocNotificationAdapter;
 import com.zkjinshi.superservice.listener.RecyclerItemClickListener;
-import com.zkjinshi.superservice.manager.SSOManager;
 import com.zkjinshi.superservice.net.ExtNetRequestListener;
 import com.zkjinshi.superservice.net.MethodType;
 import com.zkjinshi.superservice.net.NetRequest;
@@ -42,13 +35,8 @@ import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.vo.NoticeVo;
-import com.zkjinshi.superservice.vo.OrderVo;
-import com.zkjinshi.superservice.vo.PayloadVo;
-
-import org.jivesoftware.smack.util.Base64Encoder;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * 到店通知Fragment页面
@@ -71,6 +59,8 @@ public class NoticeFragment extends Fragment {
     private ArrayList<NoticeVo> requestNoticeList;
     private TextView emptyTips;
     private boolean isLoadMoreAble = true;
+    private NoticeReceiver noticeReceiver;
+    private IntentFilter noticeFilter;
 
     public static NoticeFragment newInstance() {
         return new NoticeFragment();
@@ -100,6 +90,10 @@ public class NoticeFragment extends Fragment {
         notifyLayoutManager = new LinearLayoutManager(activity);
         notifyLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         notityRecyclerView.setLayoutManager(notifyLayoutManager);
+        noticeReceiver = new NoticeReceiver();
+        noticeFilter = new IntentFilter();
+        noticeFilter.addAction(Constants.ACTION_NOTICE);
+        getActivity().registerReceiver(noticeReceiver,noticeFilter);
     }
 
     private void initListeners() {
@@ -208,6 +202,9 @@ public class NoticeFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        if(null != noticeReceiver){
+            getActivity().unregisterReceiver(noticeReceiver);
+        }
     }
 
     /**
