@@ -203,7 +203,7 @@ public class SettingActivity extends BaseActivity {
 
     private void vertifyPassword(String inputStr) {
         if(StringUtil.isEmpty(inputStr)){
-            Toast.makeText(SettingActivity.this,"密码错误！",Toast.LENGTH_SHORT).show();
+            showDialogMsg("密码错误，请重新输入。");
             return;
         }
 
