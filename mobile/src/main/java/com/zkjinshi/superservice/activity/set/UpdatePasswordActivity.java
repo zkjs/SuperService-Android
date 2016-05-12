@@ -162,28 +162,30 @@ public class UpdatePasswordActivity extends BaseActivity {
             showDialogMsg("两次填写的密码不一致");
             return;
         }
-        if(inputStr1.length() <8 || !(isContainNumber(inputStr1) && isContainAlphabet(inputStr1))){
-            showDialogMsg("密码必须是8位以上的英文字母和数组的组合。");
-            return;
-        }
+
         String newpasswrd = MD5Util.MD5(inputStr1);
         if(newpasswrd.equals(orgPassword)){
             showDialogMsg("原密码和新密码不能重复");
             return;
         }
 
-        LoginController.getInstance().updateLoginPassword(mContext, orgPassword, newpasswrd, new LoginController.CallBackExtListener() {
-            @Override
-            public void successCallback(JSONObject response) {
-                //showDialogMsg("设置成功");
-                showSuccessDialog();
-            }
+        if(inputStr1.length() >= 8 && isContainNumber(inputStr1) && isContainAlphabet(inputStr1)){
+            LoginController.getInstance().updateLoginPassword(mContext, orgPassword, newpasswrd, new LoginController.CallBackExtListener() {
+                @Override
+                public void successCallback(JSONObject response) {               ;
+                    showSuccessDialog();
+                }
+                @Override
+                public void failCallback(JSONObject response) {
+                    showDialogMsg("设置失败");
+                }
+            });
 
-            @Override
-            public void failCallback(JSONObject response) {
-                showDialogMsg("设置失败");
-            }
-        });
+        }else{
+            showDialogMsg("密码必须是8位以上的英文字母和数组的组合。");
+        }
+
+
     }
 
     private void showDialogMsg(String msg){
