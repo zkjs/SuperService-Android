@@ -56,7 +56,7 @@ public class ServiceApplication extends BaseApplication {
 
     public static final String TAG = ServiceApplication.class.getSimpleName();
 
-    public int currentNetConfigVersion = 1;//网络配置项
+    public int currentNetConfigVersion = 2;//网络配置项
 
     private static Context mContext;
 
