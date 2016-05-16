@@ -1,7 +1,10 @@
 package com.zkjinshi.superservice.activity.common;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -59,12 +62,15 @@ public class MoreActivity extends BaseFragmentActivity{
     private String picPath = null;
     private View contentRlt;
 
+    private Context mContext;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //屏蔽输入法自动弹出
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         setContentView(R.layout.activity_more);
+
+        mContext = this;
         initView();
         initData();
         initListener();
@@ -266,6 +272,18 @@ public class MoreActivity extends BaseFragmentActivity{
                     break;
             }
         }
+    }
+
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if(newConfig.orientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
+        {
+            moveDown();
+        }
+        else{
+
+        }
+        super.onConfigurationChanged(newConfig);
     }
 
 }

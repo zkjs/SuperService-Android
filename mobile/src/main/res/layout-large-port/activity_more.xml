@@ -40,9 +40,11 @@
         android:layout_height="match_parent"
         android:id="@+id/scrollView">
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center">
             <LinearLayout
                 android:layout_width="400dp"
                 android:layout_height="match_parent"
@@ -55,7 +57,7 @@
                     android:layout_width="140dp"
                     android:layout_height="140dp"
                     android:layout_gravity="center"
-                    android:layout_marginTop="65dp"
+                    android:layout_marginTop="160dp"
                     fresco:actualImageScaleType="centerCrop"
                     fresco:placeholderImage="@mipmap/ic_launcher"
                     fresco:placeholderImageScaleType="centerCrop"
@@ -120,7 +122,10 @@
 
 
             </LinearLayout>
-        </RelativeLayout>
+
+        </LinearLayout>
+
+
 
 
     </ScrollView>
