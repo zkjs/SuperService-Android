@@ -4,6 +4,11 @@
     android:versionCode="12"
     android:versionName="1.14.11">
 
+    <supports-screens
+        android:largeScreens="true"
+        android:anyDensity="true"
+        android:resizeable="true"/>
+
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.CAMERA" />
@@ -47,7 +52,7 @@
         <activity
             android:name=".activity.common.SplashActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"
+            android:screenOrientation="landscape"
             android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen">
 
             <intent-filter>
@@ -61,25 +66,25 @@
         <activity
             android:name=".activity.label.ClientLabelActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"
+            android:screenOrientation="landscape"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
         <activity
             android:name=".activity.common.WebViewActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"
+            android:screenOrientation="landscape"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
         <activity
             android:name="com.zkjinshi.base.config.ConfigActivity"
-            android:screenOrientation="portrait"
+            android:screenOrientation="landscape"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"
             android:launchMode="singleTask"/>
 
         <activity
             android:name="com.zkjinshi.filechoser.activity.FileListActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"
+            android:screenOrientation="landscape"
             android:theme="@android:style/Theme.Translucent.NoTitleBar">
         </activity>
 
@@ -87,7 +92,7 @@
             android:name=".activity.common.MainActivity"
             android:label="@string/app_name"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait"
+            android:screenOrientation="landscape"
             android:theme="@style/Theme.MaterialSheetFab">
 
         </activity>
@@ -95,7 +100,7 @@
         <activity
             android:name=".activity.set.ClientActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"
+            android:screenOrientation="landscape"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
 
         </activity>
@@ -103,14 +108,14 @@
         <activity
             android:name=".activity.common.MoreActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"
+            android:screenOrientation="landscape"
             android:theme="@android:style/Theme.Translucent.NoTitleBar">
         </activity>
 
         <activity
             android:name=".activity.common.ZoneActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"
+            android:screenOrientation="landscape"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
 
         </activity>
@@ -118,20 +123,20 @@
         <activity
             android:name=".activity.common.ShopRegisterActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"
+            android:screenOrientation="landscape"
             android:theme="@android:style/Theme.Translucent.NoTitleBar">
         </activity>
         <activity
             android:name=".activity.common.ShopMoreActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"
+            android:screenOrientation="landscape"
             android:theme="@android:style/Theme.Translucent.NoTitleBar">
         </activity>
 
         <activity
             android:name=".activity.set.ClientAddActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"
+            android:screenOrientation="landscape"
             android:theme="@android:style/Theme.Translucent.NoTitleBar">
 
         </activity>
@@ -139,7 +144,7 @@
         <activity
             android:name=".activity.common.TestActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"
+            android:screenOrientation="landscape"
             android:theme="@android:style/Theme.Translucent.NoTitleBar">
 
         </activity>
@@ -148,7 +153,7 @@
         <activity
             android:name=".activity.common.LoginActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"
+            android:screenOrientation="landscape"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
 
         </activity>
@@ -157,7 +162,7 @@
         <activity
             android:name=".activity.chat.single.ChatActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"
+            android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustResize|stateHidden"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <intent-filter>
@@ -169,7 +174,7 @@
         <activity
             android:name=".activity.chat.group.ChatGroupActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"
+            android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustResize|stateHidden"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <intent-filter>
@@ -180,38 +185,38 @@
         <activity
             android:name=".activity.common.CutActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"
+            android:screenOrientation="landscape"
             android:theme="@android:style/Theme.Translucent.NoTitleBar">
         </activity>
 
         <activity
             android:configChanges="orientation|screenSize"
-            android:screenOrientation="portrait"
+            android:screenOrientation="landscape"
             android:name="me.nereo.multi_image_selector.MultiImageSelectorActivity" />
 
         <activity
             android:name=".activity.order.HotelDealActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"
+            android:screenOrientation="landscape"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         </activity>
         <activity
             android:name=".activity.order.KTVDealActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"
+            android:screenOrientation="landscape"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         </activity>
         <activity
             android:name=".activity.order.NormalDealActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"
+            android:screenOrientation="landscape"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         </activity>
 
         <activity
             android:name=".activity.order.OrderPayActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"
+            android:screenOrientation="landscape"
             android:theme="@android:style/Theme.Translucent.NoTitleBar">
 
         </activity>
@@ -219,14 +224,14 @@
         <activity
             android:name=".activity.order.CalendarActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"
+            android:screenOrientation="landscape"
             android:theme="@android:style/Theme.Translucent.NoTitleBar">
         </activity>
 
         <activity
             android:name=".activity.set.EmployeeAddActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"
+            android:screenOrientation="landscape"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
 
         </activity>
@@ -234,83 +239,83 @@
         <activity
             android:name=".activity.set.ClientDetailActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"
+            android:screenOrientation="landscape"
             android:theme="@android:style/Theme.Translucent.NoTitleBar">
         </activity>
 
         <activity
             android:name=".activity.set.TagAddActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"
+            android:screenOrientation="landscape"
             android:theme="@style/window_dialog_style">
         </activity>
 
         <activity
             android:name=".activity.set.TeamContactsActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"
+            android:screenOrientation="landscape"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" >
         </activity>
 
         <activity
             android:name=".activity.set.TeamEditActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"
+            android:screenOrientation="landscape"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" >
         </activity>
 
         <activity
             android:name=".activity.set.ClientSelectActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"
+            android:screenOrientation="landscape"
             android:theme="@android:style/Theme.Translucent.NoTitleBar">
         </activity>
 
         <activity
             android:name=".activity.set.ClientBindActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"
+            android:screenOrientation="landscape"
             android:theme="@android:style/Theme.Translucent.NoTitleBar">
         </activity>
         <activity
             android:name=".activity.common.ShopLoginActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"
+            android:screenOrientation="landscape"
             android:launchMode="singleTask"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         </activity>
         <activity
             android:name=".activity.set.EmployeeHandAddActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"
+            android:screenOrientation="landscape"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         </activity>
 
         <activity
             android:name=".activity.common.GuideActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"
+            android:screenOrientation="landscape"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         </activity>
 
         <activity
             android:name=".activity.set.EmployeeInfoActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"
+            android:screenOrientation="landscape"
             android:theme="@android:style/Theme.Translucent.NoTitleBar">
         </activity>
 
         <activity
             android:name=".activity.common.InviteCodesActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"
+            android:screenOrientation="landscape"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         </activity>
 
         <activity
             android:name=".activity.set.SettingActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"
+            android:screenOrientation="landscape"
             android:theme="@android:style/Theme.Translucent.NoTitleBar">
         </activity>
         <activity
@@ -322,63 +327,63 @@
         <activity
             android:name=".activity.order.AddRemarkActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"
+            android:screenOrientation="landscape"
             android:theme="@android:style/Theme.Translucent.NoTitleBar">
         </activity>
 
         <activity
             android:name=".activity.order.OrderNewActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"
+            android:screenOrientation="landscape"
             android:theme="@android:style/Theme.Translucent.NoTitleBar">
         </activity>
 
         <activity
             android:name=".activity.order.GoodListActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"
+            android:screenOrientation="landscape"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         </activity>
 
         <activity
             android:name=".activity.order.AddLivePersonActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"
+            android:screenOrientation="landscape"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         </activity>
 
         <activity
             android:name=".activity.chat.single.TranspondActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"
+            android:screenOrientation="landscape"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" >
         </activity>
 
         <activity
             android:name=".activity.chat.group.CreateGroupActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"
+            android:screenOrientation="landscape"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" >
         </activity>
 
         <activity
             android:name=".activity.chat.group.ModifyGroupActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"
+            android:screenOrientation="landscape"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" >
         </activity>
 
         <activity
             android:name=".activity.chat.group.InviteMembersActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"
+            android:screenOrientation="landscape"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" >
         </activity>
 
         <activity
             android:name=".activity.preview.ScanImagesActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"
+            android:screenOrientation="landscape"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" >
         </activity>
 
@@ -386,7 +391,7 @@
         <activity
             android:name=".activity.chat.single.ChatDetailActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"
+            android:screenOrientation="landscape"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" >
 
         </activity>
@@ -395,7 +400,7 @@
         <activity
             android:name=".ext.activity.facepay.CheckOutActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"
+            android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustResize|stateHidden"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" >
 
@@ -403,7 +408,7 @@
         <activity
             android:name=".ext.activity.facepay.AmountDetailActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"
+            android:screenOrientation="landscape"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" >
 
         </activity>
@@ -411,7 +416,7 @@
         <activity
             android:name=".ext.activity.facepay.AmountRecordActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"
+            android:screenOrientation="landscape"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" >
 
         </activity>
@@ -419,7 +424,7 @@
         <activity
             android:name=".ext.activity.facepay.PayRequestActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"
+            android:screenOrientation="landscape"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" >
 
         </activity>
@@ -428,7 +433,7 @@
         <activity
             android:name=".activity.order.PayMethodActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"
+            android:screenOrientation="landscape"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" >
 
         </activity>
@@ -437,7 +442,7 @@
         <activity
             android:name=".activity.chat.group.GroupDetailActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"
+            android:screenOrientation="landscape"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" >
         </activity>
 
