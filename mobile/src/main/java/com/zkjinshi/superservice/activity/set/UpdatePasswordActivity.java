@@ -165,14 +165,14 @@ public class UpdatePasswordActivity extends BaseActivity {
 
         String newpasswrd = MD5Util.MD5(inputStr1);
         if(newpasswrd.equals(orgPassword)){
-            showDialogMsg("原密码和新密码不能重复");
+            showDialogMsg("新密码和原密码不能重复");
             return;
         }
 
         if(inputStr1.length() >= 8 && isContainNumber(inputStr1) && isContainAlphabet(inputStr1)){
             LoginController.getInstance().updateLoginPassword(mContext, orgPassword, newpasswrd, new LoginController.CallBackExtListener() {
                 @Override
-                public void successCallback(JSONObject response) {               ;
+                public void successCallback(JSONObject response) {
                     showSuccessDialog();
                 }
                 @Override
@@ -182,7 +182,7 @@ public class UpdatePasswordActivity extends BaseActivity {
             });
 
         }else{
-            showDialogMsg("密码必须是8位以上的英文字母和数组的组合。");
+            showDialogMsg("密码必须是8位以上的英文字母和数字的组合。");
         }
 
 
