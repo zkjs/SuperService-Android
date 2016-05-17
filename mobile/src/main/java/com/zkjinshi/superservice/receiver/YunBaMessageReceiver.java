@@ -55,10 +55,10 @@ public class YunBaMessageReceiver extends BroadcastReceiver {
                     if(null != yunBaMsgVo){
                         //弹出当前位置到达提示
                         NotificationHelper.getInstance().showNotification(context, yunBaMsgVo);
+                        Intent noticeIntent = new Intent();
+                        noticeIntent.setAction(Constants.ACTION_NOTICE);
+                        context.sendBroadcast(noticeIntent);
                     }
-                    Intent noticeIntent = new Intent();
-                    noticeIntent.setAction(Constants.ACTION_NOTICE);
-                    context.sendBroadcast(intent);
                     //如果是商家中心，则执行发送消息给客人
                     /*if(SSOManager.getInstance().isShopCenter()){//1、检测用户身份，是否为消息中心
                         if(null != yunBaMsgVo){//2、发送欢迎信息给客人
