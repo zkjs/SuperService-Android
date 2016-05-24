@@ -1,16 +1,21 @@
 package com.zkjinshi.superservice.activity.set;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -33,7 +38,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Created by dujiande on 2016/5/11.
+ * 密码修改
+ * 开发者：dujiande
+ * 更新者：JimmyZhang
+ * 日期：2016/05/24
+ * Copyright (C) 2015 深圳中科金石科技有限公司
+ * 版权所有
  */
 public class UpdatePasswordActivity extends BaseActivity {
     private final static String TAG = UpdatePasswordActivity.class.getSimpleName();
@@ -45,8 +55,11 @@ public class UpdatePasswordActivity extends BaseActivity {
     private Button confirmBtn;
     private LinearLayout imgllt1,imgllt2;
     private TextView nameTv;
+    private CheckBox keepCb;
 
     private String orgPassword = "";
+    private Handler handler;
+    private Dialog dialog;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,10 +78,11 @@ public class UpdatePasswordActivity extends BaseActivity {
         imgllt1 = (LinearLayout)findViewById(R.id.clear_llt1);
         imgllt2 = (LinearLayout)findViewById(R.id.clear_llt2);
         nameTv = (TextView)findViewById(R.id.nameTv);
-
+        keepCb = (CheckBox)findViewById(R.id.keep_pwd_cb);
     }
 
     private void intData() {
+        handler = new Handler();
         imgllt1.setVisibility(View.GONE);
         imgllt2.setVisibility(View.GONE);
         nameTv.setText(CacheUtil.getInstance().getUserName());
@@ -148,6 +162,19 @@ public class UpdatePasswordActivity extends BaseActivity {
             }
         });
 
+        keepCb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+                    inputEt1.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                    inputEt2.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                }else {
+                    inputEt1.setInputType(InputType.TYPE_CLASS_TEXT|InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                    inputEt2.setInputType(InputType.TYPE_CLASS_TEXT|InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                }
+            }
+        });
+
     }
 
     private void updatePassword() {
@@ -173,7 +200,7 @@ public class UpdatePasswordActivity extends BaseActivity {
             LoginController.getInstance().updateLoginPassword(mContext, orgPassword, newpasswrd, new LoginController.CallBackExtListener() {
                 @Override
                 public void successCallback(JSONObject response) {
-                    showSuccessDialog();
+                    updateSuccessStatus();
                 }
                 @Override
                 public void failCallback(JSONObject response) {
@@ -212,7 +239,19 @@ public class UpdatePasswordActivity extends BaseActivity {
                 overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
             }
         });
-        customBuilder.create().show();
+        dialog = customBuilder.create();
+        dialog.show();
+    }
+
+    private void updateSuccessStatus(){
+        showSuccessDialog();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                dialog.dismiss();
+                finish();
+            }
+        },1000);
     }
 
     /**
