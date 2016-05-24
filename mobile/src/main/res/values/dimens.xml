@@ -28,4 +28,7 @@
     <dimen name="note_textsize">14sp</dimen>
     <dimen name="note_title_textsize">24sp</dimen>
 
+    <!--会员列表页面-->
+    <dimen name="user_photo_width">50dp</dimen>
+
 </resources>

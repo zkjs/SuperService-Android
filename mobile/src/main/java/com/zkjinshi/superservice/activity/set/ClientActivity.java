@@ -1,134 +1,140 @@
 package com.zkjinshi.superservice.activity.set;
 
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.baoyz.swipemenulistview.SwipeMenu;
+import com.baoyz.swipemenulistview.SwipeMenuCreator;
+import com.baoyz.swipemenulistview.SwipeMenuItem;
+import com.baoyz.swipemenulistview.SwipeMenuListView;
 import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
-import com.google.gson.reflect.TypeToken;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
-import com.loopj.android.http.JsonHttpResponseHandler;
 import com.zkjinshi.base.util.DialogUtil;
+import com.zkjinshi.base.util.DisplayUtil;
 import com.zkjinshi.superservice.R;
-import com.zkjinshi.superservice.activity.chat.single.ChatActivity;
-import com.zkjinshi.superservice.adapter.ContactsSortAdapter;
+import com.zkjinshi.superservice.adapter.VipUserAdapter;
 import com.zkjinshi.superservice.base.BaseAppCompatActivity;
-import com.zkjinshi.superservice.factory.ClientFactory;
-import com.zkjinshi.superservice.net.ExtNetRequestListener;
-import com.zkjinshi.superservice.net.NetResponse;
-import com.zkjinshi.superservice.net.RequestUtil;
-import com.zkjinshi.superservice.response.GetClientsResponse;
+import com.zkjinshi.superservice.listener.OnRefreshListener;
+import com.zkjinshi.superservice.response.WhiteUserListResponse;
+import com.zkjinshi.superservice.test.VIPUserBiz;
 import com.zkjinshi.superservice.utils.AsyncHttpClientUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
-import com.zkjinshi.superservice.utils.ClientComparator;
 import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
-import com.zkjinshi.superservice.view.CustomExtDialog;
-import com.zkjinshi.superservice.view.SideBar;
-import com.zkjinshi.superservice.vo.ClientContactVo;
+import com.zkjinshi.superservice.view.SwipeRefreshListView;
+import com.zkjinshi.superservice.vo.WhiteUserVo;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.HashMap;
 
 import cz.msebera.android.httpclient.Header;
 import cz.msebera.android.httpclient.entity.StringEntity;
 
 /**
- * 联系人列表显示
- * 开发者：vincent
- * 日期：2015/9/24
- * Copyright (C) 2015 深圳中科金石科技有限公司
+ * 会员管理列表
+ * 开发者：JimmyZhang
+ * 日期：2016/05/23
+ * Copyright (C) 2016 深圳中科金石科技有限公司
  * 版权所有
  */
 public class ClientActivity extends BaseAppCompatActivity {
 
-    private final static String TAG = ClientActivity.class.getSimpleName();
+    public static final int DELETE_MENU_ITEM = 0;
+    public static int PAGE_NO = 0;
+    public static final int PAGE_SIZE = 10;
+    private boolean isLoadMoreAble = true;
 
-    private boolean     mChooseOrderPerson;
-    private String      mShopID;
-    private Toolbar     mToolbar;
-    private TextView    mTvCenterTitle;
-    private SideBar     mSideBar;
-    private TextView    mTvDialog;
-    private ListView    mRcvContacts;
-    private Context mContext;
-
-    private List<ClientContactVo>   mAllContactsList;
-//    private Map<String, ContactVo>  mLocalClientMap;
-    private ClientComparator        mClientCompatator;
-    private ContactsSortAdapter     mContactsAdapter;
+    private Toolbar toolbar;
+    private TextView centerTitleTv;
+    private SwipeRefreshListView swipeRefreshListView;
+    private ArrayList<WhiteUserVo> whiteUserList,requestWhiteUserList;
+    private VipUserAdapter vipUserAdapter;
+    private HashMap<String,Boolean> selectMap = new HashMap<String, Boolean>();
+    private TextView noResultTv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_client);
-
-        mContext = this;
         initView();
         initData();
         initListener();
     }
 
     private void initView() {
-        mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        mToolbar.setTitle("");
-        mToolbar.setNavigationIcon(R.mipmap.ic_fanhui);
-        setSupportActionBar(mToolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("");
+        toolbar.setNavigationIcon(R.mipmap.ic_fanhui);
+        setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        mTvCenterTitle = (TextView) findViewById(R.id.tv_center_title);
-        mTvCenterTitle.setText(getString(R.string.my_clients));
-
-        mSideBar     = (SideBar)  findViewById(R.id.sb_sidebar);
-        mTvDialog    = (TextView) findViewById(R.id.tv_dialog);
-        mRcvContacts = (ListView) findViewById(R.id.rcv_contacts);
+        noResultTv = (TextView) findViewById(R.id.member_no_result);
+        centerTitleTv = (TextView) findViewById(R.id.tv_center_title);
+        centerTitleTv.setText(getString(R.string.my_member));
+        swipeRefreshListView = (SwipeRefreshListView) findViewById(R.id.member_list_view);
     }
 
     private void initData() {
+        SwipeMenuCreator creator = new SwipeMenuCreator() {
 
-        mChooseOrderPerson = getIntent().getBooleanExtra("choose_order_person", false);
-        mShopID = CacheUtil.getInstance().getShopID();
-
-        /** 给ListView设置adapter **/
-        mSideBar.setTextView(mTvDialog);
-
-//        mLocalClientMap  = new HashMap<>();
-        mAllContactsList  = new ArrayList<>();
-        mClientCompatator = new ClientComparator();
-        mContactsAdapter  = new ContactsSortAdapter(this, mAllContactsList);
-
-        mRcvContacts.setAdapter(mContactsAdapter);
-        showMyClientList();
+            @Override
+            public void create(SwipeMenu menu) {
+                SwipeMenuItem openItem = new SwipeMenuItem(
+                        getApplicationContext());
+                openItem.setBackground(new ColorDrawable(Color.rgb(0xF9,
+                        0x3F, 0x25)));
+                openItem.setWidth(DisplayUtil.dip2px(ClientActivity.this,90));
+                openItem.setTitle("删除");
+                openItem.setTitleSize(16);
+                openItem.setTitleColor(Color.WHITE);
+                menu.addMenuItem(openItem);
+            }
+        };
+        swipeRefreshListView.setMenuCreator(creator);
+        vipUserAdapter = new VipUserAdapter(this, whiteUserList);
+        swipeRefreshListView.setAdapter(vipUserAdapter);
+        vipUserAdapter.setSelectMap(selectMap);
     }
 
     private void initListener() {
 
-        /** 后退界面 */
-        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+        swipeRefreshListView.setOnMenuItemClickListener(new SwipeMenuListView.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
+                switch (index) {
+                    case DELETE_MENU_ITEM://打开删除按钮
+
+                        break;
+                }
+                return false;
+            }
+        });
+
+        /**
+         * 返回
+         */
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ClientActivity.this.finish();
             }
         });
 
-        mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+        /**
+         * 菜单
+         */
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(android.view.MenuItem item) {
                 switch (item.getItemId()) {
@@ -145,68 +151,39 @@ public class ClientActivity extends BaseAppCompatActivity {
             }
         });
 
-        //设置右侧[A-Z]快速导航栏触摸监听
-        mSideBar.setOnTouchingLetterChangedListener(new SideBar.OnTouchingLetterChangedListener() {
+        /**
+         * 下拉刷新、上拉加载、单选item
+         */
+        swipeRefreshListView.setOnRefreshListener(new OnRefreshListener() {
             @Override
-            public void onTouchingLetterChanged(String s) {
-                int position = mContactsAdapter.getPositionForSection(s.charAt(0));
-                if (position != -1) {
-                    mRcvContacts.setSelection(position);
+            public void onRefreshing() {
+                whiteUserList = new ArrayList<WhiteUserVo>();
+                PAGE_NO = 0;
+                requestWhiteUserListTask(true);
+            }
+
+            @Override
+            public void onLoadingMore() {
+                if(isLoadMoreAble){
+                    isLoadMoreAble = false;
+                    requestWhiteUserListTask(false);
                 }
+            }
+
+            @Override
+            public void implOnItemClickListener(AdapterView<?> parent, View view, int position, long id) {
+                Boolean isSelect = true;
+                WhiteUserVo userVo = (WhiteUserVo) vipUserAdapter.getItem(position-1);
+                String userId = userVo.getUserid();
+                if (selectMap != null
+                        && selectMap.containsKey(userId)){
+                    isSelect = !selectMap.get(userId);
+                }
+                selectMap.put(userId, isSelect);
+                vipUserAdapter.setSelectMap(selectMap);
             }
         });
 
-        /** 我的客人条目点击事件 */
-        mRcvContacts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ClientContactVo contact = mAllContactsList.get(position);
-                final String clientId = contact.getUserid();
-                final String clientName = contact.getUsername();
-                final String clientPhone = contact.getPhone();
-
-                if (mChooseOrderPerson) {
-                    final CustomExtDialog.Builder customExtBuilder = new CustomExtDialog.Builder(ClientActivity.this);
-                    customExtBuilder.setTitle(getString(R.string.add_order_person));
-                    customExtBuilder.setMessage(getString(R.string.add_client) + clientName + getString(R.string.order_person) + "?");
-                    customExtBuilder.setGravity(Gravity.CENTER);
-                    customExtBuilder.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    });
-
-                    customExtBuilder.setPositiveButton(getString(R.string.confirm), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            Intent data = new Intent();
-                            data.putExtra("client_id", clientId);
-                            data.putExtra("client_name", clientName);
-                            data.putExtra("client_phone", clientPhone);
-
-                            dialog.dismiss();
-                            ClientActivity.this.setResult(RESULT_OK, data);
-                            ClientActivity.this.finish();
-                            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-                        }
-                    });
-                    customExtBuilder.create().show();
-                } else {
-                    Intent intent = new Intent(ClientActivity.this, ChatActivity.class);
-                    intent.putExtra(Constants.EXTRA_USER_ID, clientId);
-                    if (!TextUtils.isEmpty(mShopID)) {
-                        intent.putExtra(Constants.EXTRA_SHOP_ID, mShopID);
-                    }
-                    intent.putExtra(Constants.EXTRA_SHOP_NAME, CacheUtil.getInstance().getShopFullName());
-                    if (!TextUtils.isEmpty(clientName)) {
-                        intent.putExtra(Constants.EXTRA_TO_NAME, clientName);
-                    }
-                    intent.putExtra(Constants.EXTRA_FROM_NAME, CacheUtil.getInstance().getUserName());
-                    startActivity(intent);
-                }
-            }
-        });
     }
 
     @Override
@@ -216,9 +193,9 @@ public class ClientActivity extends BaseAppCompatActivity {
     }
 
     /**
-     * 获取我的客户列表
+     * 获取白名单列表
      */
-    public void showMyClientList() {
+    public void requestWhiteUserListTask(final boolean isRefresh) {
 
         try{
             AsyncHttpClient client = new AsyncHttpClient();
@@ -227,45 +204,60 @@ public class ClientActivity extends BaseAppCompatActivity {
             client.addHeader("Token",CacheUtil.getInstance().getExtToken());
             JSONObject jsonObject = new JSONObject();
             StringEntity stringEntity = new StringEntity(jsonObject.toString());
-            String url = ProtocolUtil.getClientList();
-            client.get(mContext,url, stringEntity, "application/json", new AsyncHttpResponseHandler(){
+            String url = ProtocolUtil.getWhiteUserListUrl(""+PAGE_NO,""+PAGE_SIZE);
+            client.get(ClientActivity.this,url, stringEntity, "application/json", new AsyncHttpResponseHandler(){
                 public void onStart(){
                     super.onStart();
-                    DialogUtil.getInstance().showAvatarProgressDialog(mContext,"");
+                    DialogUtil.getInstance().showAvatarProgressDialog(ClientActivity.this,"");
                 }
 
                 public void onFinish(){
                     super.onFinish();
                     DialogUtil.getInstance().cancelProgressDialog();
+                    isLoadMoreAble = true;
+                    if (null != swipeRefreshListView) {
+                        swipeRefreshListView.refreshFinish();
+                    }
                 }
 
                 public void onSuccess(int statusCode, Header[] headers, byte[] responseBody){
                     try {
                         String response = new String(responseBody,"utf-8");
-                        GetClientsResponse getClientsResponse = new Gson().fromJson(response,GetClientsResponse.class);
-                        if(getClientsResponse == null){
-                            return;
-                        }
-                        if(getClientsResponse.getRes() == 0){
-                            mAllContactsList = getClientsResponse.getData();
-                            if (null != mAllContactsList && !mAllContactsList.isEmpty()) {
-                                mTvDialog.setVisibility(View.GONE);
-                                mAllContactsList = ClientFactory.getInstance().
-                                        buildSortContactList(mAllContactsList);
-                                Collections.sort(mAllContactsList, mClientCompatator);
-                                mContactsAdapter.setData(mAllContactsList);
+                        WhiteUserListResponse whiteUserListResponse = new Gson().fromJson(response,WhiteUserListResponse.class);
+                        int resultFlag = whiteUserListResponse.getRes();
+                        if(0 == resultFlag || 30001 == resultFlag){
+                            requestWhiteUserList = whiteUserListResponse.getData();
+                            if(isRefresh){
+                                whiteUserList = requestWhiteUserList;
+                            }else {
+                                whiteUserList.addAll(requestWhiteUserList);
                             }
-                        }else{
-                            Toast.makeText(mContext,getClientsResponse.getResDesc(),Toast.LENGTH_SHORT).show();
+                            if(null != whiteUserList && !whiteUserList.isEmpty()){
+                                PAGE_NO++;
+                            }else {
+                                DialogUtil.getInstance().showCustomToast(ClientActivity.this,"再无更多数据", Gravity.CENTER);
+                            }
+                            vipUserAdapter.setVipUserList(whiteUserList);
+                            if(30001 == resultFlag){
+                                swipeRefreshListView.setEmptyView(noResultTv);
+                            }
+                        }else {
+                            String errorMsg = whiteUserListResponse.getResDesc();
+                            if(!TextUtils.isEmpty(errorMsg)){
+                                DialogUtil.getInstance().showCustomToast(ClientActivity.this,errorMsg, Gravity.CENTER);
+                            }
                         }
-
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
 
                 public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error){
-                    AsyncHttpClientUtil.onFailure(mContext,statusCode);
+                    isLoadMoreAble = true;
+                    if (null != swipeRefreshListView) {
+                        swipeRefreshListView.refreshFinish();
+                    }
+                    AsyncHttpClientUtil.onFailure(ClientActivity.this,statusCode);
                 }
             });
         }catch (Exception e){
@@ -276,7 +268,8 @@ public class ClientActivity extends BaseAppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        showMyClientList();
+        PAGE_NO = 0;
+        requestWhiteUserListTask(true);
     }
 
     @Override

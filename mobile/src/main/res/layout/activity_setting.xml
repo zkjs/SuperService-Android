@@ -149,6 +149,7 @@
                 zkjinshi:itemSettingTitle="修改密码" />
 
             <View style="@style/GrayLineBorder"
+                android:visibility="gone"
                 android:layout_marginTop="10dp"></View>
 
             <com.zkjinshi.superservice.view.ItemUserSettingView
@@ -157,13 +158,15 @@
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:background="#ffffff"
+                android:visibility="gone"
                 android:clickable="true"
                 zkjinshi:itemSettingContent2=""
                 zkjinshi:itemSettingTitle="关于我们" />
 
 
 
-            <View style="@style/GrayLineBorder"></View>
+            <View style="@style/GrayLineBorder"
+                android:visibility="gone"></View>
 
             <com.zkjinshi.superservice.view.ItemUserSettingView
                 android:id="@+id/update_iusv"
@@ -176,7 +179,8 @@
                 zkjinshi:itemSettingContent2=""
                 zkjinshi:itemSettingTitle="更新" />
 
-            <View style="@style/GrayLineBorder"></View>
+            <View style="@style/GrayLineBorder"
+                android:visibility="gone"></View>
 
         </LinearLayout>
     </ScrollView>

@@ -381,6 +381,16 @@ public class ProtocolUtil {
     }
 
     /**
+     * 获取白名单列表
+     * @param pageSize
+     * @param pageNo
+     * @return
+     */
+    public static String getWhiteUserListUrl(String pageNo,String pageSize){
+        return ConfigUtil.getInst().getForDomain()+"res/v1/whiteuser/info?page="+pageNo+"&page_size="+pageSize;
+    }
+
+    /**
      * 获取邀请码分享链接
      * @return
      */
