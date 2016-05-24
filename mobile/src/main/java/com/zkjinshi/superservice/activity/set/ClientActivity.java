@@ -6,11 +6,13 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.baoyz.swipemenulistview.SwipeMenu;
 import com.baoyz.swipemenulistview.SwipeMenuCreator;
@@ -25,6 +27,13 @@ import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.adapter.VipUserAdapter;
 import com.zkjinshi.superservice.base.BaseAppCompatActivity;
 import com.zkjinshi.superservice.listener.OnRefreshListener;
+import com.zkjinshi.superservice.net.ExtNetRequestListener;
+import com.zkjinshi.superservice.net.MethodType;
+import com.zkjinshi.superservice.net.NetRequest;
+import com.zkjinshi.superservice.net.NetRequestTask;
+import com.zkjinshi.superservice.net.NetResponse;
+import com.zkjinshi.superservice.response.BaseResponse;
+import com.zkjinshi.superservice.response.NoticeResponse;
 import com.zkjinshi.superservice.response.WhiteUserListResponse;
 import com.zkjinshi.superservice.test.VIPUserBiz;
 import com.zkjinshi.superservice.utils.AsyncHttpClientUtil;
@@ -114,7 +123,10 @@ public class ClientActivity extends BaseAppCompatActivity {
             public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
                 switch (index) {
                     case DELETE_MENU_ITEM://打开删除按钮
-
+                        WhiteUserVo whiteUserVo = (WhiteUserVo) vipUserAdapter.getItem(position);
+                        String userId = whiteUserVo.getUserid();
+                        String phone = whiteUserVo.getPhone();
+                        requestDeleteWhiteUserTask(userId,phone);
                         break;
                 }
                 return false;
@@ -193,10 +205,71 @@ public class ClientActivity extends BaseAppCompatActivity {
     }
 
     /**
-     * 获取白名单列表
+     * 删除白名单用户
+     * @param userid
+     * @param phone
      */
-    public void requestWhiteUserListTask(final boolean isRefresh) {
+    private void requestDeleteWhiteUserTask(String userid,String phone){
+        try{
+            AsyncHttpClient client = new AsyncHttpClient();
+            client.setTimeout(Constants.OVERTIMEOUT);
+            client.addHeader("Content-Type","application/json; charset=UTF-8");
+            if(CacheUtil.getInstance().isLogin()){
+                client.addHeader("Token",CacheUtil.getInstance().getExtToken());
+            }
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("userid", userid);
+            jsonObject.put("phone", phone);
+            StringEntity stringEntity = new StringEntity(jsonObject.toString());
+            final String url = ProtocolUtil.getDeleteWhiteUserUrl();
+            client.delete(ClientActivity.this,url, stringEntity, "application/json", new AsyncHttpResponseHandler(){
+                public void onStart(){
+                    super.onStart();
+                    DialogUtil.getInstance().showAvatarProgressDialog(ClientActivity.this,"");
+                }
 
+                public void onFinish(){
+                    super.onFinish();
+                    DialogUtil.getInstance().cancelProgressDialog();
+                }
+
+                public void onSuccess(int statusCode, Header[] headers, byte[] responseBody){
+                    try {
+                        String response = new String(responseBody,"utf-8");
+                        BaseResponse deleteWhiteUserResponse = new Gson().fromJson(response,BaseResponse.class);
+                        if(null != deleteWhiteUserResponse) {
+                            int resultCode = deleteWhiteUserResponse.getRes();
+                            if (0 == resultCode) {
+                                DialogUtil.getInstance().showCustomToast(ClientActivity.this, "删除白名单成员成功", Gravity.CENTER);
+                                PAGE_NO = 0;
+                                requestWhiteUserListTask(true);
+                            } else {
+                                String resultMsg = deleteWhiteUserResponse.getResDesc();
+                                if (!TextUtils.isEmpty(resultMsg)) {
+                                    DialogUtil.getInstance().showCustomToast(ClientActivity.this, resultMsg, Gravity.CENTER);
+                                }
+                            }
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error){
+                    AsyncHttpClientUtil.onFailure(ClientActivity.this,statusCode);
+                }
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+
+    /**
+     * 获取白名单列表
+     * @param isRefresh
+     */
+    private void requestWhiteUserListTask(final boolean isRefresh) {
         try{
             AsyncHttpClient client = new AsyncHttpClient();
             client.setTimeout(Constants.OVERTIMEOUT);
@@ -232,7 +305,7 @@ public class ClientActivity extends BaseAppCompatActivity {
                             }else {
                                 whiteUserList.addAll(requestWhiteUserList);
                             }
-                            if(null != whiteUserList && !whiteUserList.isEmpty()){
+                            if(null != requestWhiteUserList && !requestWhiteUserList.isEmpty()){
                                 PAGE_NO++;
                             }else {
                                 DialogUtil.getInstance().showCustomToast(ClientActivity.this,"再无更多数据", Gravity.CENTER);

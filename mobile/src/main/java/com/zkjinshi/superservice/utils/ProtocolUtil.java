@@ -448,4 +448,12 @@ public class ProtocolUtil {
         return ConfigUtil.getInst().getForDomain()+"res/v1/update/ss/loginpassword";
     }
 
+    /**
+     * 删除白名单用户
+     * @return
+     */
+    public static String getDeleteWhiteUserUrl(){
+        return ConfigUtil.getInst().getForDomain()+"res/v1/whiteuser";
+    }
+
 }
