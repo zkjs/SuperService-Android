@@ -29,10 +29,11 @@
         <TextView
             android:id="@+id/svip_user_name_tv"
             android:layout_toRightOf="@id/svip_user_photo_sv"
-            android:layout_width="wrap_content"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:text="@null"
-            android:maxLength="6"
+            android:ellipsize="end"
+            android:maxLines="1"
             android:layout_marginTop="15dp"
             android:textColor="#101010"
             android:textSize="16sp"/>
