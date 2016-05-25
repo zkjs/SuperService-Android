@@ -3,8 +3,7 @@ package com.zkjinshi.superservice.utils;
 import android.content.Context;
 
 import com.zkjinshi.base.config.ConfigUtil;
-import com.zkjinshi.base.util.*;
-import com.zkjinshi.base.util.Constants;
+import com.zkjinshi.base.util.DisplayUtil;
 
 /**
  * 协议接口工具类
@@ -453,6 +452,14 @@ public class ProtocolUtil {
      * @return
      */
     public static String getDeleteWhiteUserUrl(){
+        return ConfigUtil.getInst().getForDomain()+"res/v1/whiteuser";
+    }
+
+    /**
+     * 新增白名单
+     * @return
+     */
+    public static String getAddWhiteUserUrl(){
         return ConfigUtil.getInst().getForDomain()+"res/v1/whiteuser";
     }
 

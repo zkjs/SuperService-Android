@@ -6,13 +6,11 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.baoyz.swipemenulistview.SwipeMenu;
 import com.baoyz.swipemenulistview.SwipeMenuCreator;
@@ -27,15 +25,8 @@ import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.adapter.VipUserAdapter;
 import com.zkjinshi.superservice.base.BaseAppCompatActivity;
 import com.zkjinshi.superservice.listener.OnRefreshListener;
-import com.zkjinshi.superservice.net.ExtNetRequestListener;
-import com.zkjinshi.superservice.net.MethodType;
-import com.zkjinshi.superservice.net.NetRequest;
-import com.zkjinshi.superservice.net.NetRequestTask;
-import com.zkjinshi.superservice.net.NetResponse;
 import com.zkjinshi.superservice.response.BaseResponse;
-import com.zkjinshi.superservice.response.NoticeResponse;
 import com.zkjinshi.superservice.response.WhiteUserListResponse;
-import com.zkjinshi.superservice.test.VIPUserBiz;
 import com.zkjinshi.superservice.utils.AsyncHttpClientUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.Constants;
@@ -155,7 +146,7 @@ public class ClientActivity extends BaseAppCompatActivity {
                         break;
 
                     case R.id.menu_client_jia:
-                        Intent clientSelect = new Intent(ClientActivity.this, ClientSelectActivity.class);
+                        Intent clientSelect = new Intent(ClientActivity.this, AddWhiteUserActivity.class);
                         ClientActivity.this.startActivity(clientSelect);
                         break;
                 }
@@ -204,7 +195,7 @@ public class ClientActivity extends BaseAppCompatActivity {
         return true;
     }
 
-    /**
+    /**放
      * 删除白名单用户
      * @param userid
      * @param phone
@@ -240,7 +231,6 @@ public class ClientActivity extends BaseAppCompatActivity {
                         if(null != deleteWhiteUserResponse) {
                             int resultCode = deleteWhiteUserResponse.getRes();
                             if (0 == resultCode) {
-                                DialogUtil.getInstance().showCustomToast(ClientActivity.this, "删除白名单成员成功", Gravity.CENTER);
                                 PAGE_NO = 0;
                                 requestWhiteUserListTask(true);
                             } else {

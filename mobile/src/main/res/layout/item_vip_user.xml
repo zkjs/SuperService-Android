@@ -31,7 +31,8 @@
             android:layout_toRightOf="@id/svip_user_photo_sv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="吕坤原"
+            android:text="@null"
+            android:maxLength="6"
             android:layout_marginTop="15dp"
             android:textColor="#101010"
             android:textSize="16sp"/>
@@ -101,7 +102,7 @@
             android:id="@+id/remark_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="你好，周杰伦"
+            android:text="@null"
             android:layout_marginRight="15dp"
             android:textSize="14sp"
             android:layout_marginBottom="15dp"
