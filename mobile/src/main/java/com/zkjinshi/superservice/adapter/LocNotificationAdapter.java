@@ -157,8 +157,8 @@ public class LocNotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         LinearLayout.LayoutParams contentLayoutParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT);
-        int rightDp = DisplayUtil.dip2px(context, 30);
-        int topdp   = DisplayUtil.dip2px(context, 15);
+        int rightDp = DisplayUtil.dip2px(context, context.getResources().getDimension(R.dimen.item_notice_right_padding_size));
+        int topdp   = DisplayUtil.dip2px(context, context.getResources().getDimension(R.dimen.item_notice_top_padding_size));
 
         if(position == 0){
             ((NoticeViewHolder) holder).upCutLineView.setVisibility(View.INVISIBLE);

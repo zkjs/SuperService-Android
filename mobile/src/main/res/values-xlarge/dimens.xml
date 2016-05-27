@@ -36,4 +36,8 @@
     
     <dimen name="label_user_photo_size">160dp</dimen>
 
+    <dimen name="item_notice_top_padding_size">15dp</dimen>
+
+    <dimen name="item_notice_right_padding_size">30dp</dimen>
+
 </resources>

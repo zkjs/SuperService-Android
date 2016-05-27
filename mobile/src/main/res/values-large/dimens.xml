@@ -28,12 +28,16 @@
     <dimen name="note_textsize">14sp</dimen>
     <dimen name="note_title_textsize">24sp</dimen>
 
-    <dimen name="normal_avatar_size">194dp</dimen>
+    <dimen name="normal_avatar_size">140dp</dimen>
 
-    <dimen name="item_message_avatar_size">140dp</dimen>
+    <dimen name="item_message_avatar_size">100dp</dimen>
 
-    <dimen name="login_logo_size">140dp</dimen>
+    <dimen name="login_logo_size">100dp</dimen>
     
-    <dimen name="label_user_photo_size">160dp</dimen>
+    <dimen name="label_user_photo_size">120dp</dimen>
+
+    <dimen name="item_notice_top_padding_size">5dp</dimen>
+
+    <dimen name="item_notice_right_padding_size">10dp</dimen>
 
 </resources>
