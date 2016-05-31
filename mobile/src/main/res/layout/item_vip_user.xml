@@ -45,7 +45,7 @@
             android:layout_marginLeft="10dp"
             android:layout_height="wrap_content"
             android:text="15919805819"
-            android:layout_marginTop="20dp"
+            android:layout_alignBottom="@id/svip_user_name_tv"
             android:textColor="#666666"
             android:textSize="14sp"/>
 
