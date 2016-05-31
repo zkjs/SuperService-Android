@@ -46,6 +46,7 @@ public class ZoneActivity extends BaseActivity {
     private ListView zoneLv;
     private ZoneAdapter zoneAdapter;
     private Context mContext;
+    private ArrayList<ZoneBean> zoneList,requestZoneList,payZoneList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,9 +97,12 @@ public class ZoneActivity extends BaseActivity {
                             return;
                         }
                         if(getZoneListResponse.getRes() == 0){
-                            ArrayList<ZoneBean> zoneListAll = getZoneListResponse.getData();
-                            if(!zoneListAll.isEmpty()){
-                                zoneAdapter.setZoneList(zoneListAll);
+                            requestZoneList= getZoneListResponse.getData();
+                            if(!requestZoneList.isEmpty()){
+                                zoneList = getZoneList(requestZoneList);
+                                payZoneList = getPayZoneList(requestZoneList);
+                                zoneAdapter.setZoneList(zoneList);
+                                //设置缓存的选择记录
                                 String listStr = CacheUtil.getInstance().getListStrCache(ZONE_CACHE_KEY);
                                 if(!TextUtils.isEmpty(listStr)){
                                     Type listType = new TypeToken<ArrayList<ZoneBean>>(){}.getType();
@@ -136,7 +140,7 @@ public class ZoneActivity extends BaseActivity {
             public void onClick(View view) {
                 CacheUtil.getInstance().saveListCache(ZONE_CACHE_KEY, zoneAdapter.getSelectZoneBeanList());
                 String checkedIds =  zoneAdapter.getCheckedIds();
-                String payIds = zoneAdapter.getPeyIds();
+                String payIds = getPeyIds(payZoneList);
                 if(!TextUtils.isEmpty(checkedIds)){
                     CacheUtil.getInstance().setAreaInfo(checkedIds);
                     CacheUtil.getInstance().setPayInfo(payIds);
@@ -183,6 +187,62 @@ public class ZoneActivity extends BaseActivity {
         });
 
 
+    }
+
+    /**
+     * 获取区域选择列表
+     * @return
+     */
+    private ArrayList<ZoneBean> getZoneList(ArrayList<ZoneBean> resultZoneList){
+        ArrayList<ZoneBean> zoneList = new ArrayList<ZoneBean>();
+        int supportStatus = 0;// 0、不支持支付, 1、支持支付
+        for(ZoneBean zoneBean : resultZoneList){
+            supportStatus = zoneBean.getPayment_support();
+            if(0 == supportStatus){
+                zoneList.add(zoneBean);
+            }
+        }
+        return zoneList;
+    }
+
+    /**
+     * 获取收银台列表
+     * @param resultZoneList
+     * @return
+     */
+    private ArrayList<ZoneBean> getPayZoneList(ArrayList<ZoneBean> resultZoneList){
+        ArrayList<ZoneBean> payZoneList = new ArrayList<ZoneBean>();
+        int supportStatus = 1;// 0、不支持支付, 1、支持支付
+        for(ZoneBean zoneBean : resultZoneList){
+            supportStatus = zoneBean.getPayment_support();
+            if(1 == supportStatus){
+                payZoneList.add(zoneBean);
+            }
+        }
+        return payZoneList;
+    }
+
+    /**
+     * 获取收银台locId
+     * @return
+     */
+    public String getPeyIds(ArrayList<ZoneBean> payZoneList){
+        String ids = "";
+        if(payZoneList == null){
+            return  ids;
+        }
+        for(int i=0;i<payZoneList.size();i++){
+            ZoneBean zoneBean = payZoneList.get(i);
+            if(zoneBean.getPayment_support() == 1){
+                if(TextUtils.isEmpty(ids)){
+                    ids = ids+zoneBean.getLocid();
+                }else{
+                    ids = ids+","+zoneBean.getLocid();
+                }
+            }
+
+        }
+        return  ids;
     }
 
 }

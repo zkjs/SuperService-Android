@@ -114,29 +114,6 @@ public class ZoneAdapter extends BaseAdapter{
         return  ids;
     }
 
-    /**
-     * 获取收银台locId
-     * @return
-     */
-    public String getPeyIds(){
-        String ids = "";
-        if(zoneList == null){
-            return  ids;
-        }
-        for(int i=0;i<zoneList.size();i++){
-            ZoneBean zoneBean = zoneList.get(i);
-            if(zoneBean.getPayment_support() == 1){
-                if(TextUtils.isEmpty(ids)){
-                    ids = ids+zoneBean.getLocid();
-                }else{
-                    ids = ids+","+zoneBean.getLocid();
-                }
-            }
-
-        }
-        return  ids;
-    }
-
     public ArrayList<ZoneBean> getZoneList() {
         return zoneList;
     }
