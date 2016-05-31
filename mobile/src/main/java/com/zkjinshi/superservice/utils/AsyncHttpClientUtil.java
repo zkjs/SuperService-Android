@@ -6,6 +6,8 @@ import android.widget.Toast;
 
 import com.zkjinshi.superservice.activity.common.LoginActivity;
 import com.zkjinshi.superservice.base.BaseApplication;
+import com.zkjinshi.superservice.emchat.EasemobIMHelper;
+import com.zkjinshi.superservice.manager.YunBaSubscribeManager;
 
 
 /**
@@ -15,6 +17,12 @@ public class AsyncHttpClientUtil {
 
     public static void onFailure(Context context, int statusCode){
         if(statusCode == 401){
+            //移除云巴订阅推送
+            YunBaSubscribeManager.getInstance().unSubscribe(context,null);
+            //取消订阅别名
+            YunBaSubscribeManager.getInstance().cancelAlias(context);
+            //环信接口退出
+            EasemobIMHelper.getInstance().logout();
             BaseApplication.getInst().clear();
             CacheUtil.getInstance().setLogin(false);
             Intent intent = new Intent(context, LoginActivity.class);

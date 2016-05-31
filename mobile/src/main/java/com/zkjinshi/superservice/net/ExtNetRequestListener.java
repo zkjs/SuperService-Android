@@ -10,6 +10,8 @@ import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.activity.common.LoginActivity;
 import com.zkjinshi.superservice.base.BaseApplication;
 import com.zkjinshi.superservice.bean.BaseBean;
+import com.zkjinshi.superservice.emchat.EasemobIMHelper;
+import com.zkjinshi.superservice.manager.YunBaSubscribeManager;
 import com.zkjinshi.superservice.utils.CacheUtil;
 
 /**
@@ -55,6 +57,12 @@ public abstract class ExtNetRequestListener implements NetRequestListener{
         ((Activity)context).runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                //移除云巴订阅推送
+                YunBaSubscribeManager.getInstance().unSubscribe(context,null);
+                //取消订阅别名
+                YunBaSubscribeManager.getInstance().cancelAlias(context);
+                //环信接口退出
+                EasemobIMHelper.getInstance().logout();
                 CacheUtil.getInstance().setLogin(false);
                 BaseApplication.getInst().clear();
                 Intent intent = new Intent(context,LoginActivity.class);
