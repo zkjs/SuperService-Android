@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content" >
+    <RelativeLayout
+        android:id="@+id/dialogRoot"
+        android:layout_width="270dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/common_alert_bg" >
+
+        <LinearLayout
+            android:id="@+id/dialogText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/dialogTitle"
+            android:layout_marginBottom="@dimen/dialogBase_body_marginBottom"
+            android:layout_marginLeft="@dimen/dialogBase_title_marginLeft"
+            android:layout_marginRight="@dimen/dialogBase_title_marginRight"
+            android:layout_marginTop="@dimen/dialogBase_body_marginTop"
+            android:gravity="center_vertical"
+            android:orientation="vertical" >
+
+
+            <TextView
+                android:id="@+id/dialogContent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:maxLines="2"
+                android:textColor="#101010"
+                android:textSize="14sp"
+                android:visibility="visible"
+                android:text="内容"/>
+
+            <EditText
+                android:id="@+id/input_et"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/bg_input_shade"
+                android:layout_marginTop="20dp"
+                android:paddingLeft="15dp"
+                android:text=""
+                android:textColor="#101010"
+                android:textSize="14sp"
+                android:inputType="textPassword"/>
+        </LinearLayout>
+
+        <TextView
+            android:id="@id/dialogTitle"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@id/dialogText"
+            android:layout_alignParentTop="true"
+            android:layout_alignRight="@id/dialogText"
+            android:layout_marginTop="@dimen/dialogBase_title_marginTop"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:singleLine="true"
+            android:textColor="#101010"
+            android:textSize="16sp"
+            android:text="标题"
+            android:textStyle="bold"/>
+
+        <View
+            android:id="@+id/dialogDivider"
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/dialogBase_divider_width"
+            android:layout_below="@id/dialogText"
+            android:background="@color/dialog_gray" />
+
+        <LinearLayout
+            android:id="@+id/btnLayout"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/dialogDivider"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/dialogLeftBtn"
+                android:layout_width="fill_parent"
+                android:layout_height="@dimen/dialogBase_btnHeight"
+                android:layout_weight="1.0"
+                android:background="@drawable/common_dialog_btn_left"
+                android:gravity="center"
+                android:singleLine="true"
+                android:textColor="@color/dialog_blue"
+                android:textSize="16sp" />
+
+            <View
+                android:layout_width="@dimen/dialogBase_divider_width"
+                android:layout_height="fill_parent"
+                android:background="@color/dialog_gray" />
+
+            <TextView
+                android:id="@+id/dialogRightBtn"
+                android:layout_width="fill_parent"
+                android:layout_height="@dimen/dialogBase_btnHeight"
+                android:layout_weight="1.0"
+                android:background="@drawable/common_dialog_btn_right"
+                android:gravity="center"
+                android:singleLine="true"
+                android:textColor="@color/dialog_blue"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+    </RelativeLayout>
+    </RelativeLayout>

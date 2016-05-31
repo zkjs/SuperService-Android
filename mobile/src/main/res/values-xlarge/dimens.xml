@@ -40,4 +40,8 @@
 
     <dimen name="item_notice_right_padding_size">30dp</dimen>
 
+    <dimen name="key_up_login_height">248dp</dimen>
+
+    <dimen name="key_up_more_height">148dp</dimen>
+
 </resources>

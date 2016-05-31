@@ -61,6 +61,7 @@ public class MoreActivity extends BaseFragmentActivity{
     private ImageButton backIBtn;
     private String picPath = null;
     private View contentRlt;
+    private float offsetY;
 
     private Context mContext;
     @Override
@@ -98,6 +99,7 @@ public class MoreActivity extends BaseFragmentActivity{
             String avatarUrl = CacheUtil.getInstance().getUserPhotoUrl();
             avatarCiv.setImageURI(Uri.parse(avatarUrl));
         }
+        offsetY = getResources().getDimension(R.dimen.key_up_more_height);
 
     }
 
@@ -145,13 +147,11 @@ public class MoreActivity extends BaseFragmentActivity{
 
     private void moveUp(){
         ViewHelper.setTranslationY(contentRlt,0);
-        int offsetY = DisplayUtil.dip2px(this,150);
         long time = 300;
         ViewPropertyAnimator.animate(contentRlt).translationYBy(-offsetY).setDuration(time);
     }
 
     private void moveDown(){
-        int offsetY = DisplayUtil.dip2px(this,150);
         long time = 300;
         ViewHelper.setTranslationY(contentRlt,-offsetY);
         ViewPropertyAnimator.animate(contentRlt).translationYBy(offsetY).setDuration(time);

@@ -54,6 +54,7 @@ public class LoginActivity extends BaseActivity implements VerifyPhoneControler.
     private SensorManagerHelper sensorHelper;
     private RelativeLayout contentLlt;
     private ScrollView scrollView;
+    private float offsetY;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,6 +96,7 @@ public class LoginActivity extends BaseActivity implements VerifyPhoneControler.
         LoginController.getInstance().init(this);
         VerifyPhoneControler.getInstance().init(this);
         VerifyPhoneControler.getInstance().setSuccessCallBack(this);
+        offsetY =  getResources().getDimension(R.dimen.key_up_login_height);
     }
 
     private void initListener() {
@@ -121,14 +123,12 @@ public class LoginActivity extends BaseActivity implements VerifyPhoneControler.
     }
 
     private void moveUp(){
-        ViewHelper.setTranslationY(contentLlt,0);
-        int offsetY = DisplayUtil.dip2px(this,248);
         long time = 300;
+        ViewHelper.setTranslationY(contentLlt,0);
         ViewPropertyAnimator.animate(contentLlt).translationYBy(-offsetY).setDuration(time);
     }
 
     private void moveDown(){
-        int offsetY = DisplayUtil.dip2px(this,248);
         long time = 300;
         ViewHelper.setTranslationY(contentLlt,-offsetY);
         ViewPropertyAnimator.animate(contentLlt).translationYBy(offsetY).setDuration(time);

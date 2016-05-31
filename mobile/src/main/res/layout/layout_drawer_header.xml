@@ -93,12 +93,6 @@
 
         <TextView
             style="@style/leftMenuText"
-            android:text="我的客人"
-            android:visibility="gone"
-            android:id="@+id/client_tv" />
-
-        <TextView
-            style="@style/leftMenuText"
             android:text="@string/invite_code"
             android:visibility="gone"
             android:id="@+id/tv_invite_code" />
@@ -107,6 +101,12 @@
             style="@style/leftMenuText"
             android:text="收款台"
             android:id="@+id/amount_tv" />
+
+        <TextView
+            style="@style/leftMenuText"
+            android:text="会员"
+            android:visibility="visible"
+            android:id="@+id/client_tv" />
 
         <TextView
             style="@style/leftMenuText"

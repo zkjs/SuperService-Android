@@ -6,6 +6,8 @@ import android.widget.Toast;
 
 import com.zkjinshi.superservice.activity.common.LoginActivity;
 import com.zkjinshi.superservice.base.BaseApplication;
+import com.zkjinshi.superservice.emchat.EasemobIMHelper;
+import com.zkjinshi.superservice.manager.YunBaSubscribeManager;
 
 
 /**
@@ -17,6 +19,12 @@ public class AsyncHttpClientUtil {
         if(statusCode == 401){
             BaseApplication.getInst().clear();
             CacheUtil.getInstance().setLogin(false);
+            //移除云巴订阅推送
+            YunBaSubscribeManager.getInstance().unSubscribe(context,null);
+            //取消订阅别名
+            YunBaSubscribeManager.getInstance().cancelAlias(context);
+            //环信接口退出
+            EasemobIMHelper.getInstance().logout();
             Intent intent = new Intent(context, LoginActivity.class);
             context.startActivity(intent);
             Toast.makeText(context,"Token 失效，请重新登录",Toast.LENGTH_SHORT).show();

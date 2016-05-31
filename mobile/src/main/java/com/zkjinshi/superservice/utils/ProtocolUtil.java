@@ -381,6 +381,16 @@ public class ProtocolUtil {
     }
 
     /**
+     * 获取白名单列表
+     * @param pageSize
+     * @param pageNo
+     * @return
+     */
+    public static String getWhiteUserListUrl(String pageNo,String pageSize){
+        return ConfigUtil.getInst().getForDomain()+"res/v1/whiteuser/info?page="+pageNo+"&page_size="+pageSize;
+    }
+
+    /**
      * 获取邀请码分享链接
      * @return
      */
@@ -420,6 +430,38 @@ public class ProtocolUtil {
      */
     public static String getUpdateClientTagsUrl(){
         return ConfigUtil.getInst().getForDomain()+"res/v1/update/user/tags";
+    }
+
+    /**
+     * 验证原始密码是否正确
+     * @return
+     */
+    public static String verifyLoginpassword(){
+        return ConfigUtil.getInst().getForDomain()+"res/v1/verify/ss/loginpassword";
+    }
+
+    /**
+     * 修改密码接口
+     * @return
+     */
+    public static String updateLoginpassword(){
+        return ConfigUtil.getInst().getForDomain()+"res/v1/update/ss/loginpassword";
+    }
+
+    /**
+     * 删除白名单用户
+     * @return
+     */
+    public static String getDeleteWhiteUserUrl(){
+        return ConfigUtil.getInst().getForDomain()+"res/v1/whiteuser";
+    }
+
+    /**
+     * 新增白名单
+     * @return
+     */
+    public static String getAddWhiteUserUrl(){
+        return ConfigUtil.getInst().getForDomain()+"res/v1/whiteuser";
     }
 
 }

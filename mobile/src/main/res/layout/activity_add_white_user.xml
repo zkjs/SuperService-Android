@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#f1f1f1">
+
+    <RelativeLayout
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@android:color/holo_blue_light">
+
+        <ImageButton
+            android:id="@+id/header_back_btn"
+            style="@style/backBtn"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="添加会员"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            android:layout_centerInParent="true"/>
+
+    </RelativeLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_marginTop="20dp"
+        android:paddingLeft="30dp"
+        android:paddingRight="30dp">
+
+        <EditText
+            android:id="@+id/et_input_name"
+            style="@style/addWhiteInputStyle"
+            android:hint="姓名"
+            android:inputType="text"
+            android:maxLines="1"
+            />
+
+        <EditText
+            android:layout_marginTop="20dp"
+            android:id="@+id/et_input_phone"
+            style="@style/addWhiteInputStyle"
+            android:hint="手机号码"
+            android:inputType="number"
+            android:maxLength="11"
+            android:maxLines="1"
+            />
+
+        <EditText
+            android:id="@+id/et_remark"
+            android:layout_marginTop="20dp"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:paddingTop="12dp"
+            android:paddingBottom="12dp"
+            android:gravity="left|top"
+            android:maxLength="30"
+            android:layout_width="match_parent"
+            android:layout_height="130dp"
+            style="@style/addWhiteInputStyle"
+            android:inputType="textMultiLine"
+            android:hint="备注" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="30dp"
+            android:text="确定"
+            style="@style/blueButton"
+            android:id="@+id/btn_save"/>
+
+    </LinearLayout>
+
+
+</LinearLayout>

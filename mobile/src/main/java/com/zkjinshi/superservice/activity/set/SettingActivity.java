@@ -1,6 +1,7 @@
 package com.zkjinshi.superservice.activity.set;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -10,15 +11,21 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.easemob.chat.EMChatManager;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.gson.Gson;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.zkjinshi.base.util.DialogUtil;
+import com.zkjinshi.base.view.CustomDialog;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.common.InviteCodesActivity;
+import com.zkjinshi.superservice.activity.common.LoginController;
+import com.zkjinshi.superservice.activity.common.MainActivity;
 import com.zkjinshi.superservice.activity.common.MoreActivity;
 import com.zkjinshi.superservice.activity.common.WebViewActivity;
 import com.zkjinshi.superservice.activity.common.ZoneActivity;
@@ -35,9 +42,13 @@ import com.zkjinshi.superservice.net.NetRequestTask;
 import com.zkjinshi.superservice.net.NetResponse;
 import com.zkjinshi.superservice.sqlite.UserDBUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
+import com.zkjinshi.superservice.utils.MD5Util;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
+import com.zkjinshi.superservice.utils.StringUtil;
 import com.zkjinshi.superservice.view.CircleImageView;
+import com.zkjinshi.superservice.view.CustomInputDialog;
 import com.zkjinshi.superservice.view.ItemUserSettingView;
+import com.zkjinshi.superservice.vo.IdentityType;
 import com.zkjinshi.superservice.vo.UserVo;
 
 import org.json.JSONException;
@@ -61,6 +72,8 @@ public class SettingActivity extends BaseActivity {
     private ItemUserSettingView shopNameIusv;
     private ItemUserSettingView zoneIusv;
     private ItemUserSettingView phoneIusv;
+    private ItemUserSettingView passwordIusv;
+    private ItemUserSettingView aboutusIusv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,7 +101,11 @@ public class SettingActivity extends BaseActivity {
         shopNameIusv = (ItemUserSettingView)findViewById(R.id.shopname_iusv);
         zoneIusv = (ItemUserSettingView)findViewById(R.id.zone_iusv);
         phoneIusv = (ItemUserSettingView)findViewById(R.id.phone_iusv);
+        passwordIusv = (ItemUserSettingView)findViewById(R.id.password_iusv);
+        aboutusIusv = (ItemUserSettingView)findViewById(R.id.about_iusv);
         addRightIcon(zoneIusv);
+        addRightIcon(passwordIusv);
+        addRightIcon(aboutusIusv);
     }
 
     private void initData() {
@@ -97,6 +114,14 @@ public class SettingActivity extends BaseActivity {
         phoneIusv.setTextContent2(CacheUtil.getInstance().getUserPhone());
         String avatarUrl = CacheUtil.getInstance().getUserPhotoUrl();
         iconCiv.setImageURI(Uri.parse(avatarUrl));
+
+        if(IdentityType.BUSINESS ==  CacheUtil.getInstance().getLoginIdentity()){
+            passwordIusv.setVisibility(View.VISIBLE);
+            findViewById(R.id.border_psw_line).setVisibility(View.VISIBLE);
+        }else{
+            passwordIusv.setVisibility(View.GONE);
+            findViewById(R.id.border_psw_line).setVisibility(View.GONE);
+        }
     }
 
     private void initListener() {
@@ -130,7 +155,7 @@ public class SettingActivity extends BaseActivity {
             }
         });
         //关于我们
-        findViewById(R.id.about_iusv).setOnClickListener(new View.OnClickListener() {
+        aboutusIusv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(SettingActivity.this, WebViewActivity.class);
@@ -141,6 +166,75 @@ public class SettingActivity extends BaseActivity {
             }
         });
 
+        //修改密码
+        passwordIusv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showInputDialog();
+            }
+        });
+
+    }
+
+    private void showInputDialog() {
+        final CustomInputDialog.Builder customBuilder = new CustomInputDialog.Builder(this);
+        customBuilder.setTitle("验证原密码");
+        customBuilder.setMessage("为保障您的数据安全，修改密码请填写原密码。");
+        customBuilder.setGravity(Gravity.CENTER);
+        customBuilder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        customBuilder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                EditText inputEt = customBuilder.inputEt;
+                String inputStr = inputEt.getText().toString();
+                vertifyPassword(inputStr);
+            }
+        });
+        customBuilder.create().show();
+    }
+
+    private void vertifyPassword(String inputStr) {
+        if(StringUtil.isEmpty(inputStr)){
+            showDialogMsg("密码错误，请重新输入。");
+            return;
+        }
+
+        final String passwrdMd5 =  MD5Util.MD5(inputStr);
+        LoginController.getInstance().vertifyLoginPassword(this, passwrdMd5, new LoginController.CallBackExtListener() {
+            @Override
+            public void successCallback(JSONObject response) {
+                Intent intent = new Intent(SettingActivity.this, UpdatePasswordActivity.class);
+                intent.putExtra("passwrdMd5",passwrdMd5);
+                startActivity(intent);
+                overridePendingTransition(R.anim.activity_new, R.anim.activity_out);
+            }
+
+            @Override
+            public void failCallback(JSONObject response) {
+                showDialogMsg("密码错误，请重新输入。");
+            }
+        });
+    }
+
+    private void showDialogMsg(String msg){
+        CustomDialog.Builder customBuilder = new CustomDialog.Builder(this);
+        customBuilder.setMessage(msg);
+        customBuilder.setGravity(Gravity.CENTER);
+        customBuilder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        customBuilder.create().show();
     }
 
 }

@@ -36,4 +36,6 @@
 
     <dimen name="label_user_photo_size">88dp</dimen>
 
+    <dimen name="user_photo_width">50dp</dimen>
+
 </resources>

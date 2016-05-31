@@ -139,6 +139,11 @@ public class LoginController {
         public void successCallback(JSONObject response);
     }
 
+    public interface CallBackExtListener{
+        public void successCallback(JSONObject response);
+        public void failCallback(JSONObject response);
+    }
+
     /**
      * 通过验证码获取token
      * @param mContext
@@ -256,6 +261,134 @@ public class LoginController {
 
                 public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse){
                     super.onFailure(statusCode,headers,throwable,errorResponse);
+                    AsyncHttpClientUtil.onFailure(mContext,statusCode);
+                }
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+
+    /**
+     * 验证原始密码是否正确
+     * @param mContext
+     * @param originalpassword
+     * @param callBackExtListener
+     */
+    public void vertifyLoginPassword(final Context mContext,final String originalpassword,final CallBackExtListener callBackExtListener){
+        try{
+            AsyncHttpClient client = new AsyncHttpClient();
+            client.setTimeout(Constants.OVERTIMEOUT);
+            client.addHeader("Content-Type","application/json; charset=UTF-8");
+            if(CacheUtil.getInstance().isLogin()){
+                client.addHeader("Token",CacheUtil.getInstance().getExtToken());
+            }
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("originalpassword",originalpassword);
+            StringEntity stringEntity = new StringEntity(jsonObject.toString());
+            String url = ProtocolUtil.verifyLoginpassword();
+            client.post(mContext,url, stringEntity, "application/json", new JsonHttpResponseHandler(){
+                public void onStart(){
+                    super.onStart();
+                    DialogUtil.getInstance().showAvatarProgressDialog(mContext,"");
+                }
+
+                public void onFinish(){
+                    super.onFinish();
+                    DialogUtil.getInstance().cancelProgressDialog();
+                }
+
+                public void onSuccess(int statusCode, Header[] headers, JSONObject response){
+                    super.onSuccess(statusCode,headers,response);
+                    try {
+                        if(response.getInt("res") == 0){
+                            if(callBackExtListener != null){
+                                callBackExtListener.successCallback(response);
+                            }
+                        }else{
+                            callBackExtListener.failCallback(response);
+                            //Toast.makeText(mContext,response.getString("resDesc"),Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse){
+                    super.onFailure(statusCode,headers,throwable,errorResponse);
+                    try {
+                        JSONObject response = new JSONObject();
+                        response.put("statusCode",statusCode);
+                        //callBackExtListener.failCallback(response);
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                    AsyncHttpClientUtil.onFailure(mContext,statusCode);
+                }
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+
+    /**
+     * 修改密码接口
+     * @param mContext
+     * @param oldpassword
+     * @param newpassword
+     * @param callBackExtListener
+     */
+    public void updateLoginPassword(final Context mContext,final String oldpassword,final String newpassword,final CallBackExtListener callBackExtListener){
+        try{
+            AsyncHttpClient client = new AsyncHttpClient();
+            client.setTimeout(Constants.OVERTIMEOUT);
+            client.addHeader("Content-Type","application/json; charset=UTF-8");
+            if(CacheUtil.getInstance().isLogin()){
+                client.addHeader("Token",CacheUtil.getInstance().getExtToken());
+            }
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("oldpassword",oldpassword);
+            jsonObject.put("newpassword",newpassword);
+            StringEntity stringEntity = new StringEntity(jsonObject.toString());
+            String url = ProtocolUtil.updateLoginpassword();
+            client.post(mContext,url, stringEntity, "application/json", new JsonHttpResponseHandler(){
+                public void onStart(){
+                    super.onStart();
+                    DialogUtil.getInstance().showAvatarProgressDialog(mContext,"");
+                }
+
+                public void onFinish(){
+                    super.onFinish();
+                    DialogUtil.getInstance().cancelProgressDialog();
+                }
+
+                public void onSuccess(int statusCode, Header[] headers, JSONObject response){
+                    super.onSuccess(statusCode,headers,response);
+                    try {
+                        if(response.getInt("res") == 0){
+                            if(callBackExtListener != null){
+                                callBackExtListener.successCallback(response);
+                            }
+                        }else{
+                            callBackExtListener.failCallback(response);
+                            //Toast.makeText(mContext,response.getString("resDesc"),Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse){
+                    super.onFailure(statusCode,headers,throwable,errorResponse);
+                    try {
+                        JSONObject response = new JSONObject();
+                        response.put("statusCode",statusCode);
+                        callBackExtListener.failCallback(response);
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
                     AsyncHttpClientUtil.onFailure(mContext,statusCode);
                 }
             });

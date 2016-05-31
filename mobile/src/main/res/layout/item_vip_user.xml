@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    android:background="@android:color/white"
+    android:id="@+id/vip_user_layout"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/svip_user_photo_sv"
+            android:layout_width="@dimen/user_photo_width"
+            android:layout_height="@dimen/user_photo_width"
+            android:layout_margin="15dp"
+            android:layout_gravity="center"
+            android:layout_centerVertical="true"
+            fresco:actualImageScaleType="centerCrop"
+            fresco:placeholderImage="@mipmap/ic_launcher"
+            fresco:placeholderImageScaleType="centerCrop"
+            fresco:roundedCornerRadius="4dp"
+            fresco:roundTopLeft="true"
+            fresco:roundBottomLeft="true"
+            fresco:roundTopRight="true"
+            fresco:roundBottomRight="true"/>
+
+        <TextView
+            android:id="@+id/svip_user_name_tv"
+            android:layout_toRightOf="@id/svip_user_photo_sv"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:text="@null"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:layout_marginTop="15dp"
+            android:textColor="#101010"
+            android:textSize="16sp"/>
+
+        <TextView
+            android:id="@+id/tel_phone_tv"
+            android:layout_toRightOf="@id/svip_user_name_tv"
+            android:layout_width="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_height="wrap_content"
+            android:text="15919805819"
+            android:layout_alignBottom="@id/svip_user_name_tv"
+            android:textColor="#666666"
+            android:textSize="14sp"/>
+
+        <TextView
+            android:id="@+id/login_status_tv"
+            android:layout_width="wrap_content"
+            android:layout_marginRight="15dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:text="未登录"
+            android:layout_alignBaseline="@id/svip_user_name_tv"
+            android:textColor="@color/light_red"
+            android:textSize="14sp"/>
+
+        <TextView
+            android:id="@+id/visit_time_tip_tv"
+            android:layout_below="@id/svip_user_name_tv"
+            android:layout_toRightOf="@id/svip_user_photo_sv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="上次到访："
+            android:layout_marginTop="16dp"
+            android:textColor="#101010"
+            android:textSize="12sp"/>
+
+        <TextView
+            android:id="@+id/visit_time_tv"
+            android:layout_below="@id/svip_user_name_tv"
+            android:layout_toRightOf="@id/visit_time_tip_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="无记录"
+            android:layout_marginTop="16dp"
+            android:textColor="#101010"
+            android:textSize="12sp"/>
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/remark_layout"
+        android:layout_width="match_parent"
+        android:visibility="gone"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="备注："
+            android:layout_marginLeft="15dp"
+            android:textSize="16sp"
+            android:textColor="#101010"/>
+
+        <TextView
+            android:id="@+id/remark_tv"
+            android:layout_width="0dp"
+            android:layout_weight="1.0"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:layout_marginRight="15dp"
+            android:textSize="14sp"
+            android:layout_marginBottom="15dp"
+            android:maxLines="2"
+            android:textColor="#666666"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="15dp"
+        android:background="#e3e3e3"/>
+
+</LinearLayout>
