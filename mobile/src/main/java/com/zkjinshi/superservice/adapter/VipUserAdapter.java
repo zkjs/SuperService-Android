@@ -75,7 +75,7 @@ public class VipUserAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder viewHolder = null;
         if(null == convertView){
-            convertView = inflater.inflate(R.layout.item_vip_user,parent,false);
+            convertView = inflater.inflate(R.layout.item_vip_user,null);
             viewHolder = new ViewHolder();
             viewHolder.userPhotoDv = (SimpleDraweeView)convertView.findViewById(R.id.svip_user_photo_sv);
             viewHolder.userNameTv = (TextView)convertView.findViewById(R.id.svip_user_name_tv);
@@ -114,10 +114,14 @@ public class VipUserAdapter extends BaseAdapter {
         String remark = userVo.getRmk();
         if(!TextUtils.isEmpty(remark)){
             viewHolder.remarkTv.setText(remark);
+        }else {
+            viewHolder.remarkTv.setText("暂无备注");
         }
-        String lastvisit = userVo.getLastvisit();
-        if(!TextUtils.isEmpty(lastvisit)){
-            viewHolder.visitTv.setText(lastvisit);
+        String lastVisit = userVo.getLastvisit();
+        if(!TextUtils.isEmpty(lastVisit)){
+            viewHolder.visitTv.setText(lastVisit);
+        }else {
+            viewHolder.visitTv.setText("无记录");
         }
         String userId = userVo.getUserid();
         if (selectMap != null

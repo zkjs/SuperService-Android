@@ -103,7 +103,7 @@
             android:id="@+id/remark_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@null"
+            android:text="暂无备注"
             android:layout_marginRight="15dp"
             android:textSize="14sp"
             android:layout_marginBottom="15dp"

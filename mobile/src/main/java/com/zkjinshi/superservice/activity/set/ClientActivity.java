@@ -195,7 +195,7 @@ public class ClientActivity extends BaseAppCompatActivity {
         return true;
     }
 
-    /**放
+    /**
      * 删除白名单用户
      * @param userid
      * @param phone

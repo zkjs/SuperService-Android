@@ -38,8 +38,7 @@
             android:maxLines="2"
             android:textColor="@color/color_hei"
             android:textSize="@dimen/font_size_middle"
-            android:visibility="visible"
-            android:text="内容"/>
+            android:visibility="visible" />
     </LinearLayout>
 
     <TextView
@@ -54,8 +53,7 @@
         android:gravity="center"
         android:singleLine="true"
         android:textColor="@color/color_hei"
-        android:textSize="@dimen/textSize20sp"
-        android:text="标题"/>
+        android:textSize="@dimen/textSize20sp" />
 
     <View
         android:id="@+id/dialogDivider"
