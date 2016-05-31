@@ -23,7 +23,7 @@
     <string name="finish">完成</string>
     <string name="choose">选取</string>
     <string name="my_clients">我的客人</string>
-    <string name="my_member">我的会员</string>
+    <string name="my_member">会员</string>
 
     <string name="snackbar_shared_msg">Gordon Wong shared a note with you.</string>
     <string name="view">View</string>

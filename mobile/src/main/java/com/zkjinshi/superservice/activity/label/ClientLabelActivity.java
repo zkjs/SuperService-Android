@@ -179,17 +179,6 @@ public class ClientLabelActivity extends BaseActivity {
                                 int resultCode = baseResponse.getRes();
                                 if(0 == resultCode){
                                     DialogUtil.getInstance().showCustomToast(ClientLabelActivity.this,"打标签成功",Gravity.CENTER);
-                                    for(int i=0;i<tagList.size();i++){
-                                        int tagid = tagList.get(i).getTagid();
-                                        if(mSelectMap.containsKey(tagid) && mSelectMap.get(tagid)){
-                                            int count = tagList.get(i).getCount() + 1;
-                                            tagList.get(i).setCount(count);
-                                        }
-                                    }
-
-                                    labelGridView.setTag(tagList);
-                                    labelGridView.setTag(R.id.client_label_gv,canoptcnt);
-
                                     mSelectMap.clear();
                                     clientLabelAdapter.setSelectMap(mSelectMap);
                                     if(isSelectedLabel()){
@@ -197,7 +186,7 @@ public class ClientLabelActivity extends BaseActivity {
                                     }else {
                                         sureBtn.setVisibility(View.GONE);
                                     }
-                                    clientLabelAdapter.setTagList(tagList);
+                                    requestLabelListTask();
                                 }else {
                                     String errorMsg = baseResponse.getResDesc();
                                     if(!TextUtils.isEmpty(errorMsg)){
@@ -211,8 +200,6 @@ public class ClientLabelActivity extends BaseActivity {
             }
         });
     }
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
