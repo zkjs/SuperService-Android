@@ -115,7 +115,7 @@ public class VipUserAdapter extends BaseAdapter {
         if(!TextUtils.isEmpty(remark)){
             viewHolder.remarkTv.setText(remark);
         }else {
-            viewHolder.remarkTv.setText("暂无备注");
+            viewHolder.remarkTv.setText("");
         }
         String lastVisit = userVo.getLastvisit();
         if(!TextUtils.isEmpty(lastVisit)){
