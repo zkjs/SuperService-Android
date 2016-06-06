@@ -1,4 +1,4 @@
-package com.zkjinshi.superservice.view;
+package com.zkjinshi.superservice.pad.view;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -18,7 +18,7 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.widget.ImageView;
 
-import com.zkjinshi.superservice.R;
+import com.zkjinshi.superservice.pad.R;
 
 
 public class HoverImageView extends ImageView {

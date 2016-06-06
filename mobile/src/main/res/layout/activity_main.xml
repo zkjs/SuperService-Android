@@ -43,7 +43,7 @@
         </android.support.design.widget.CoordinatorLayout>
 
         <!-- 悬浮圆角快捷按钮-->
-        <com.zkjinshi.superservice.view.Fab
+        <com.zkjinshi.superservice.pad.view.Fab
             android:id="@+id/fab"
             style="@style/Widget.MaterialSheetFab.Fab"
             android:layout_alignParentBottom="true"

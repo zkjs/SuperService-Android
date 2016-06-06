@@ -60,7 +60,7 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_gravity="center"
-            class="com.zkjinshi.superservice.view.zoomview.CropImageView" />
+            class="com.zkjinshi.superservice.pad.view.zoomview.CropImageView" />
     </RelativeLayout>
 
 </LinearLayout>

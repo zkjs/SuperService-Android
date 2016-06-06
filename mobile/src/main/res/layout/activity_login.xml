@@ -18,7 +18,7 @@
 
     </RelativeLayout>
     
-    <com.zkjinshi.superservice.view.CircleImageView
+    <com.zkjinshi.superservice.pad.view.CircleImageView
         android:id="@+id/hotel_avatar"
         android:layout_width="@dimen/login_logo_size"
         android:layout_height="@dimen/login_logo_size"
@@ -28,7 +28,7 @@
         android:src="@mipmap/ic_launcher"
         android:layout_margin="30dp"
         android:layout_below="@+id/title">
-    </com.zkjinshi.superservice.view.CircleImageView>
+    </com.zkjinshi.superservice.pad.view.CircleImageView>
     
   <LinearLayout
       android:layout_width="match_parent"

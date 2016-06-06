@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.zkjinshi.superservice"
-    android:versionCode="12"
-    android:versionName="1.14.11">
+    package="com.zkjinshi.superservice.pad"
+    android:versionCode="100"
+    android:versionName="2.0">
 
     <supports-screens
         android:largeScreens="true"
@@ -166,7 +166,7 @@
             android:windowSoftInputMode="adjustResize|stateHidden"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <intent-filter>
-                <action android:name="com.zkjinshi.superservice.intent.action.RELAY"/>
+                <action android:name="com.zkjinshi.superservice.pad.intent.action.RELAY"/>
             </intent-filter>
         </activity>
 
@@ -178,7 +178,7 @@
             android:windowSoftInputMode="adjustResize|stateHidden"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <intent-filter>
-                <action android:name="com.zkjinshi.superservice.intent.action.RELAY"/>
+                <action android:name="com.zkjinshi.superservice.pad.intent.action.RELAY"/>
             </intent-filter>
         </activity>
 
@@ -469,9 +469,9 @@
 
         <receiver android:name=".receiver.EMessageReceiver">
             <intent-filter>
-                <action android:name="com.zkjinshi.superservice.ACTION_INVITE"/>
-                <action android:name="com.zkjinshi.superservice.AddSales" />
-                <action android:name="com.zkjinshi.superservice.CONNECTION_CONFLICT"/>
+                <action android:name="com.zkjinshi.superservice.pad.ACTION_INVITE"/>
+                <action android:name="com.zkjinshi.superservice.pad.AddSales" />
+                <action android:name="com.zkjinshi.superservice.pad.CONNECTION_CONFLICT"/>
             </intent-filter>
         </receiver>
 
@@ -490,7 +490,7 @@
 
         <service android:name=".service.ActiveService">
             <intent-filter>
-                <action android:name="com.zkjinshi.superservice.ACTION_ACTIVE" />
+                <action android:name="com.zkjinshi.superservice.pad.ACTION_ACTIVE" />
             </intent-filter>
         </service>
 
@@ -501,11 +501,11 @@
             </intent-filter>
         </receiver>
 
-        <receiver android:name="com.zkjinshi.superservice.receiver.YunBaMessageReceiver">
+        <receiver android:name=".receiver.YunBaMessageReceiver">
             <intent-filter>
                 <action android:name="io.yunba.android.MESSAGE_RECEIVED_ACTION" />
                 <action android:name="io.yunba.android.PRESENCE_RECEIVED_ACTION" />
-                <category android:name="com.zkjinshi.superservice" />
+                <category android:name="com.zkjinshi.superservice.pad" />
             </intent-filter>
         </receiver>
 
@@ -534,6 +534,6 @@
     </application>
 
     <instrumentation android:name="android.test.InstrumentationTestRunner"
-        android:targetPackage="com.zkjinshi.superservice" />
+        android:targetPackage="com.zkjinshi.superservice.pad" />
 
 </manifest>

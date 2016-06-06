@@ -6,11 +6,11 @@
     android:clipToPadding="true"
     tools:context=".MainActivity">
 
-    <com.zkjinshi.superservice.view.scviewpager.SCViewPager
+    <com.zkjinshi.superservice.pad.view.scviewpager.SCViewPager
         android:id="@+id/viewpager_main_activity"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-    </com.zkjinshi.superservice.view.scviewpager.SCViewPager>
+    </com.zkjinshi.superservice.pad.view.scviewpager.SCViewPager>
 
     <ImageView
         android:layout_width="wrap_content"
@@ -29,7 +29,7 @@
         android:id="@+id/page0_name"/>
 
 
-    <com.zkjinshi.superservice.view.scviewpager.DotsView
+    <com.zkjinshi.superservice.pad.view.scviewpager.DotsView
         android:orientation="horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

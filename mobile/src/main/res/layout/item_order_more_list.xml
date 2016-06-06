@@ -4,7 +4,7 @@
     android:id="@+id/more_layout"
     android:layout_height="match_parent">
 
-    <com.zkjinshi.superservice.view.CircleImageView
+    <com.zkjinshi.superservice.pad.view.CircleImageView
         android:id="@+id/order_more_cv_photo"
         android:src="@mipmap/img_hotel_zhanwei"
         android:scaleType="fitXY"

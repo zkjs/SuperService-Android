@@ -8,7 +8,7 @@
 
     <include layout="@layout/title_toolbar"/>
 
-    <com.zkjinshi.superservice.view.SwipeRefreshListView
+    <com.zkjinshi.superservice.pad.view.SwipeRefreshListView
         android:id="@+id/member_list_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

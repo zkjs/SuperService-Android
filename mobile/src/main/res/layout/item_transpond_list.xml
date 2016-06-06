@@ -36,7 +36,7 @@
                 android:textColor="@color/white"
                 android:gravity="center" />
 
-            <com.zkjinshi.superservice.view.CircleImageView
+            <com.zkjinshi.superservice.pad.view.CircleImageView
                 android:id="@+id/civ_contact_avatar"
                 android:layout_width="48dp"
                 android:layout_height="48dp"

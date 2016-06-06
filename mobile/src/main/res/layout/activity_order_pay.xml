@@ -51,7 +51,7 @@
                 android:layout_height="100dp"
                 android:orientation="horizontal"
                 android:background="@drawable/frame_bg">
-                <com.zkjinshi.superservice.view.CircleImageView
+                <com.zkjinshi.superservice.pad.view.CircleImageView
                     android:layout_width="60dp"
                     android:layout_height="60dp"
                     android:layout_gravity="center"
@@ -60,7 +60,7 @@
                     android:background="@mipmap/img_hotel_zhanwei"
                     android:layout_margin="20dp"
                     android:id="@+id/avatar">
-                </com.zkjinshi.superservice.view.CircleImageView>
+                </com.zkjinshi.superservice.pad.view.CircleImageView>
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"

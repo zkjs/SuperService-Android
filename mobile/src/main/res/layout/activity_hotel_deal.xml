@@ -51,7 +51,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <com.zkjinshi.superservice.view.ItemShowView
+            <com.zkjinshi.superservice.pad.view.ItemShowView
                 android:id="@+id/ahb_no"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -62,7 +62,7 @@
                 zkjinshi:isvTitle="订单号"
                 zkjinshi:isvValue="" />
 
-            <com.zkjinshi.superservice.view.ItemShowView
+            <com.zkjinshi.superservice.pad.view.ItemShowView
                 android:id="@+id/ahb_type"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -73,7 +73,7 @@
                 zkjinshi:isvTitle="房间类型"
                 zkjinshi:isvValue="" />
 
-            <com.zkjinshi.superservice.view.ItemNumView
+            <com.zkjinshi.superservice.pad.view.ItemNumView
                 android:id="@+id/ahb_num"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -83,7 +83,7 @@
                 zkjinshi:invTitle="房间数量"
                 zkjinshi:invValue="1" />
 
-            <com.zkjinshi.superservice.view.ItemShowView
+            <com.zkjinshi.superservice.pad.view.ItemShowView
                 android:id="@+id/ahb_date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -93,7 +93,7 @@
                 zkjinshi:isvTitle="到店/离店日期"
                 zkjinshi:isvValue="" />
 
-            <com.zkjinshi.superservice.view.ItemShowView
+            <com.zkjinshi.superservice.pad.view.ItemShowView
                 android:id="@+id/ahb_people"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -104,7 +104,7 @@
                 zkjinshi:isvTitle="联系人"
                 zkjinshi:isvValue="" />
 
-            <com.zkjinshi.superservice.view.ItemShowView
+            <com.zkjinshi.superservice.pad.view.ItemShowView
                 android:id="@+id/ahb_phone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -114,7 +114,7 @@
                 zkjinshi:isvTitle="手机号码"
                 zkjinshi:isvValue="" />
 
-            <com.zkjinshi.superservice.view.ItemShowView
+            <com.zkjinshi.superservice.pad.view.ItemShowView
                 android:id="@+id/ahb_pay"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -127,7 +127,7 @@
                 zkjinshi:isvTitle="支付方式"
                 zkjinshi:isvValue="未设置" />
 
-            <com.zkjinshi.superservice.view.ItemShowView
+            <com.zkjinshi.superservice.pad.view.ItemShowView
                 android:id="@+id/ahb_ticket"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -137,7 +137,7 @@
                 zkjinshi:isvTitle="发票"
                 zkjinshi:isvValue="" />
 
-            <com.zkjinshi.superservice.view.ItemCbxView
+            <com.zkjinshi.superservice.pad.view.ItemCbxView
                 android:id="@+id/ahb_breakfast"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -147,7 +147,7 @@
                 zkjinshi:icvTitle="双份早餐"
                 zkjinshi:icvValue="true" />
 
-            <com.zkjinshi.superservice.view.ItemCbxView
+            <com.zkjinshi.superservice.pad.view.ItemCbxView
                 android:id="@+id/ahb_nosmoking"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -156,7 +156,7 @@
                 zkjinshi:icvTitle="无烟房间"
                 zkjinshi:icvValue="true" />
 
-            <com.zkjinshi.superservice.view.ItemShowView
+            <com.zkjinshi.superservice.pad.view.ItemShowView
                 android:id="@+id/ahb_privilege"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

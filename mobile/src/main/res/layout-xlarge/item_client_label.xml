@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.zkjinshi.superservice.view.RoundProgressBar
+        <com.zkjinshi.superservice.pad.view.RoundProgressBar
             android:id="@+id/client_label_progress"
             android:layout_width="180dp"
             android:layout_height="180dp"

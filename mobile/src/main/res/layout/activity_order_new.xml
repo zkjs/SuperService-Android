@@ -281,7 +281,7 @@
                     android:text="@string/room_number"
                     android:textSize="16sp" />
 
-                <com.zkjinshi.superservice.view.AmountInDecreaseView
+                <com.zkjinshi.superservice.pad.view.AmountInDecreaseView
                     android:id="@+id/aiv_room_count"
                     android:layout_alignParentRight="true"
                     android:layout_marginRight="10dp"
@@ -290,7 +290,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true" >
 
-                </com.zkjinshi.superservice.view.AmountInDecreaseView>
+                </com.zkjinshi.superservice.pad.view.AmountInDecreaseView>
 
             </RelativeLayout>
 

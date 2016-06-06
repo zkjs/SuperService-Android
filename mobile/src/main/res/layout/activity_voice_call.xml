@@ -28,7 +28,7 @@
             android:paddingRight="12dp"
             android:visibility="visible" />
 
-        <com.zkjinshi.superservice.widget.MyChronometer
+        <com.zkjinshi.superservice.pad.widget.MyChronometer
             android:visibility="invisible"
             android:id="@+id/chronometer"
             android:layout_width="wrap_content"
@@ -59,7 +59,7 @@
         android:orientation="vertical"
         android:layout_weight="2" >
 
-        <com.zkjinshi.superservice.view.CircleImageView
+        <com.zkjinshi.superservice.pad.view.CircleImageView
             android:id="@+id/swing_card"
             android:layout_width="60dp"
             android:layout_height="60dp"

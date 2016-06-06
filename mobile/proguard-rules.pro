@@ -75,15 +75,15 @@
 }
 
 #保留网络请求的实体不被混淆
--keep class com.zkjinshi.superservice.bean.** { *; }
--keep class com.zkjinshi.superservice.entity.** { *; }
--keep class com.zkjinshi.superservice.vo.** { *; }
--keep class com.zkjinshi.superservice.response.** { *; }
--keep class com.zkjinshi.superservice.net.** { *; }
--keep class com.zkjinshi.superservice.fragment.**{ *; }
--keep class com.zkjinshi.superservice.activity.**{ *; }
+-keep class com.zkjinshi.superservice.pad.bean.** { *; }
+-keep class com.zkjinshi.superservice.pad.entity.** { *; }
+-keep class com.zkjinshi.superservice.pad.vo.** { *; }
+-keep class com.zkjinshi.superservice.pad.response.** { *; }
+-keep class com.zkjinshi.superservice.pad.net.** { *; }
+-keep class com.zkjinshi.superservice.pad.fragment.**{ *; }
+-keep class com.zkjinshi.superservice.pad.activity.**{ *; }
 -keep class io.codetail.animation.arcanimator.** { *; }
--keep class com.zkjinshi.superservice.ext.**{ *; }
+-keep class com.zkjinshi.superservice.pad.ext.**{ *; }
 
 #保留扩展控件不被混淆
 -keep class android.support.**{ *; }

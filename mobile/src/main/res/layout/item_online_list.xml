@@ -18,7 +18,7 @@
             android:layout_weight="1.0">
         </View>
 
-        <com.zkjinshi.superservice.view.CircleStatusView
+        <com.zkjinshi.superservice.pad.view.CircleStatusView
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_gravity="center"/>
@@ -48,7 +48,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <com.zkjinshi.superservice.view.CircleImageView
+            <com.zkjinshi.superservice.pad.view.CircleImageView
                 android:id="@+id/online_civ_photo"
                 android:layout_centerVertical="true"
                 android:clickable="true"

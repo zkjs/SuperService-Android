@@ -26,7 +26,7 @@
                 android:gravity="center"
                 android:padding="20dp">
 
-                <com.zkjinshi.superservice.view.CircleImageView
+                <com.zkjinshi.superservice.pad.view.CircleImageView
                     android:id="@+id/civ_member_avatar"
                     android:layout_width="72dp"
                     android:layout_height="72dp"

@@ -6,7 +6,7 @@
     android:orientation="vertical"
     android:paddingTop="10dp">
 
-    <com.zkjinshi.superservice.view.CircleImageView
+    <com.zkjinshi.superservice.pad.view.CircleImageView
         android:id="@+id/more_iv_icon"
         android:layout_width="48dp"
         android:layout_height="48dp"

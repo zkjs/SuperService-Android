@@ -30,7 +30,7 @@
                 android:layout_weight="1.0"
                 android:background="@color/gray"></View>
 
-            <com.zkjinshi.superservice.view.CircleStatusView
+            <com.zkjinshi.superservice.pad.view.CircleStatusView
                 android:id="@+id/csv_more"
                 android:layout_width="20dp"
                 android:layout_height="20dp" />

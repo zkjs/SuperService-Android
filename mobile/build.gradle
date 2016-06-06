@@ -6,11 +6,11 @@ android {
     compileSdkVersion 22
     buildToolsVersion "22.0.0"
     defaultConfig {
-        applicationId "com.zkjinshi.superservice"
+        applicationId "com.zkjinshi.superservice.pad"
         minSdkVersion 15
         targetSdkVersion 22
-        versionCode 12
-        versionName "1.14.11"
+        versionCode 100
+        versionName "2.0"
         multiDexEnabled true
     }
 

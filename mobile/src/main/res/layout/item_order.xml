@@ -20,7 +20,7 @@
             android:layout_weight="1.0">
         </View>
 
-        <com.zkjinshi.superservice.view.CircleStatusView
+        <com.zkjinshi.superservice.pad.view.CircleStatusView
             android:id="@+id/civ_left_icon"
             android:layout_width="20dp"
             android:layout_height="20dp"

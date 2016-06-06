@@ -40,7 +40,7 @@
             <!--订单号-->
             <View style="@style/GrayLineBorder"></View>
 
-            <com.zkjinshi.superservice.view.ItemUserSettingView
+            <com.zkjinshi.superservice.pad.view.ItemUserSettingView
                 android:id="@+id/order_no"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -150,7 +150,7 @@
                 style="@style/GrayLineBorder"
                 android:layout_marginTop="20dp"></View>
 
-            <com.zkjinshi.superservice.view.ItemUserSettingView
+            <com.zkjinshi.superservice.pad.view.ItemUserSettingView
                 android:id="@+id/aod_room_number"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -185,7 +185,7 @@
                     android:textColor="@color/black"
                     android:textSize="16sp" />
 
-                <com.zkjinshi.superservice.view.ItemUserSettingView
+                <com.zkjinshi.superservice.pad.view.ItemUserSettingView
                     android:id="@+id/pay_type"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
@@ -229,7 +229,7 @@
                 android:orientation="vertical"
                 android:visibility="visible">
 
-                <com.zkjinshi.superservice.view.ItemUserSettingView
+                <com.zkjinshi.superservice.pad.view.ItemUserSettingView
                     android:id="@+id/aod_customer1"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
@@ -238,7 +238,7 @@
                     android:clickable="true"
                     order:itemSettingTitle="入住人1" />
 
-                <com.zkjinshi.superservice.view.ItemUserSettingView
+                <com.zkjinshi.superservice.pad.view.ItemUserSettingView
                     android:id="@+id/aod_customer2"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
@@ -247,7 +247,7 @@
                     android:clickable="true"
                     order:itemSettingTitle="入住人2" />
 
-                <com.zkjinshi.superservice.view.ItemUserSettingView
+                <com.zkjinshi.superservice.pad.view.ItemUserSettingView
                     android:id="@+id/aod_customer3"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"

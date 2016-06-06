@@ -1,11 +1,11 @@
-package com.zkjinshi.superservice.activity;
+package com.zkjinshi.superservice.pad.activity;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.wearable.view.WatchViewStub;
 import android.widget.TextView;
 
-import com.zkjinshi.superservice.R;
+import com.zkjinshi.superservice.pad.R;
 
 public class MainActivity extends Activity {
 

@@ -74,7 +74,7 @@
 
             <View style="@style/GrayLineBorder"></View>
 
-            <com.zkjinshi.superservice.view.ItemUserSettingView
+            <com.zkjinshi.superservice.pad.view.ItemUserSettingView
                 android:id="@+id/shopname_iusv"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -85,7 +85,7 @@
 
             <View style="@style/GrayLineBorder"  android:visibility="gone"></View>
 
-            <com.zkjinshi.superservice.view.ItemUserSettingView
+            <com.zkjinshi.superservice.pad.view.ItemUserSettingView
                 android:id="@+id/autho_iusv"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -98,7 +98,7 @@
 
             <View style="@style/GrayLineBorder"></View>
 
-            <com.zkjinshi.superservice.view.ItemUserSettingView
+            <com.zkjinshi.superservice.pad.view.ItemUserSettingView
                 android:id="@+id/zone_iusv"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -109,7 +109,7 @@
 
             <View style="@style/GrayLineBorder" android:visibility="gone"></View>
 
-            <com.zkjinshi.superservice.view.ItemUserSettingView
+            <com.zkjinshi.superservice.pad.view.ItemUserSettingView
                 android:id="@+id/job_iusv"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -122,7 +122,7 @@
 
             <View style="@style/GrayLineBorder" android:visibility="gone"></View>
 
-            <com.zkjinshi.superservice.view.ItemUserSettingView
+            <com.zkjinshi.superservice.pad.view.ItemUserSettingView
                 android:id="@+id/phone_iusv"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -138,7 +138,7 @@
                 style="@style/GrayLineBorder"
                 android:layout_marginTop="10dp"></View>
 
-            <com.zkjinshi.superservice.view.ItemUserSettingView
+            <com.zkjinshi.superservice.pad.view.ItemUserSettingView
                 android:id="@+id/password_iusv"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -152,7 +152,7 @@
                 android:visibility="gone"
                 android:layout_marginTop="10dp"></View>
 
-            <com.zkjinshi.superservice.view.ItemUserSettingView
+            <com.zkjinshi.superservice.pad.view.ItemUserSettingView
                 android:id="@+id/about_iusv"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -168,7 +168,7 @@
             <View style="@style/GrayLineBorder"
                 android:visibility="gone"></View>
 
-            <com.zkjinshi.superservice.view.ItemUserSettingView
+            <com.zkjinshi.superservice.pad.view.ItemUserSettingView
                 android:id="@+id/update_iusv"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"

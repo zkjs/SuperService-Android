@@ -47,7 +47,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <com.zkjinshi.superservice.view.ItemShowView
+            <com.zkjinshi.superservice.pad.view.ItemShowView
                 android:id="@+id/ahb_no"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -58,7 +58,7 @@
                 zkjinshi:haveDownLine="true"
                 zkjinshi:isShowIcon="false"/>
 
-            <com.zkjinshi.superservice.view.ItemShowView
+            <com.zkjinshi.superservice.pad.view.ItemShowView
                 android:layout_marginTop="20dp"
                 android:id="@+id/ahb_date"
                 android:layout_width="match_parent"
@@ -69,7 +69,7 @@
                 zkjinshi:isMust="true"
                 zkjinshi:haveDownLine="true"/>
 
-            <com.zkjinshi.superservice.view.ItemNumView
+            <com.zkjinshi.superservice.pad.view.ItemNumView
                 android:id="@+id/ahb_num"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -79,7 +79,7 @@
                 zkjinshi:invIsMust="true"
                 zkjinshi:invDownLine="true"/>
 
-            <com.zkjinshi.superservice.view.ItemShowView
+            <com.zkjinshi.superservice.pad.view.ItemShowView
                 android:layout_marginTop="20dp"
                 android:id="@+id/ahb_people"
                 android:layout_width="match_parent"
@@ -90,7 +90,7 @@
                 zkjinshi:isMust="false"
                 zkjinshi:haveDownLine="true"/>
 
-            <com.zkjinshi.superservice.view.ItemShowView
+            <com.zkjinshi.superservice.pad.view.ItemShowView
                 android:id="@+id/ahb_phone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -102,7 +102,7 @@
 
 
 
-            <com.zkjinshi.superservice.view.ItemShowView
+            <com.zkjinshi.superservice.pad.view.ItemShowView
                 android:id="@+id/ahb_ticket"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -112,7 +112,7 @@
                 zkjinshi:isMust="false"
                 zkjinshi:haveDownLine="true"/>
 
-            <com.zkjinshi.superservice.view.ItemShowView
+            <com.zkjinshi.superservice.pad.view.ItemShowView
                 android:layout_marginTop="20dp"
                 android:id="@+id/ahb_privilege"
                 android:layout_width="match_parent"

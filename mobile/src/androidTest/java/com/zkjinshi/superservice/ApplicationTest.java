@@ -1,4 +1,4 @@
-package com.zkjinshi.superservice;
+package com.zkjinshi.superservice.pad;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
