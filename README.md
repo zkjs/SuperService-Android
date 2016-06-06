@@ -1,4 +1,6 @@
 # 超级服务pad版本
 
-### 1.主要包含员工聊天、到店通知、消息通知
-### 2.页面支持横竖屏
+## 1.云巴相关信息:
+### 应用名称  superservice
+### 包名  com.zkjinshi.superservice|com.zkjinshi.superservice.pad
+### AppKey  566563014407a3cd028aa72f
