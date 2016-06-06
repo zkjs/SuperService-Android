@@ -163,6 +163,30 @@ public class ShopEmployeeDBUtil {
         return delResult;
     }
 
+    /**
+     * 删除数据库员工
+     * @return
+     */
+    public long deleteAllShopEmployee() {
+        SQLiteDatabase db = null;
+        long delResult = 0;
+        try {
+            db = helper.getWritableDatabase();
+            db.beginTransaction();
+            delResult += db.delete(DBOpenHelper.SHOP_EMPLOYEE_TBL, null, null);
+        } catch (Exception e) {
+            LogUtil.getInstance().info(LogLevel.ERROR,TAG+".deleteAllShopEmployee->"+e.getMessage());
+            e.printStackTrace();
+        }finally{
+            if(null != db) {
+                db.setTransactionSuccessful();
+                db.endTransaction();
+                db.close();
+            }
+        }
+        return delResult;
+    }
+
     public EmployeeVo queryEmployeeById( String empId) {
         EmployeeVo EmployeeVo = null;
         SQLiteDatabase db = null;

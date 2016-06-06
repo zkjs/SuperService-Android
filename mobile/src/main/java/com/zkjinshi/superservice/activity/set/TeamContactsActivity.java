@@ -147,6 +147,7 @@ public class TeamContactsActivity extends BaseAppCompatActivity {
                         if(getEmployeesResponse.getRes() == 0){
                             ArrayList<EmployeeVo> employeeVos = getEmployeesResponse.getData();
                             if (null != employeeVos && !employeeVos.isEmpty()) {
+                                ShopEmployeeDBUtil.getInstance().deleteAllShopEmployee();
                                 ShopEmployeeDBUtil.getInstance().batchAddShopEmployees(employeeVos);
                                 employeeVos = ShopEmployeeDBUtil.getInstance().queryAllExceptUser(CacheUtil.getInstance().getUserId());
                                 List<String> strLetters = new ArrayList<>();//首字母显示数组
