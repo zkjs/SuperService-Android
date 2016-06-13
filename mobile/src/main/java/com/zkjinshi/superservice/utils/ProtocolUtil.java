@@ -463,4 +463,15 @@ public class ProtocolUtil {
         return ConfigUtil.getInst().getForDomain()+"res/v1/whiteuser";
     }
 
+    /**
+     * 获取升级版本信息
+     * @param apptype 1 (int required) - 应用类型： 1 超级身份 2 超级服务
+     * @param devicetype IOS (String required) - 设备类型：IOS ANDROID
+     * @param verno 1.0.0.1 (String required) - 当前客户端版本号
+     * @return
+     */
+    public static String upgradeNewestVersion(int apptype,String devicetype,String verno){
+        return ConfigUtil.getInst().getForDomain()+"/res/v1/systempub/upgrade/newestversion/"+apptype+"/"+devicetype+"/"+verno;
+    }
+
 }

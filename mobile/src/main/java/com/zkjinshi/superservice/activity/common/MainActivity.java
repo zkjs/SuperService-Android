@@ -72,6 +72,9 @@ public class MainActivity extends BaseAppCompatActivity {
     }
 
     private void initData(){
+        MainController.getInstance().init(this);
+        MainController.getInstance().checkAppVersion();
+
         String payInfo = CacheUtil.getInstance().getPayInfo();
         if(!TextUtils.isEmpty(payInfo) && SSOManager.getInstance().isCollection()){
             findViewById(R.id.amount_tv).setVisibility(View.VISIBLE);
