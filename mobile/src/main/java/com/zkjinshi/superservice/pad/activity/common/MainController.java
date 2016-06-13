@@ -81,7 +81,7 @@ public class MainController {
             client.addHeader("Content-Type","application/json; charset=UTF-8");
             JSONObject jsonObject = new JSONObject();
             StringEntity stringEntity = new StringEntity(jsonObject.toString());
-            String url = ProtocolUtil.upgradeNewestVersion(2,"ANDROID",currentVersionCode+"");
+            String url = ProtocolUtil.upgradeNewestVersion(2,"AND_PAD",currentVersionCode+"");
             client.get(context,url, stringEntity, "application/json", new AsyncHttpResponseHandler(){
                 public void onStart(){
                     DialogUtil.getInstance().showAvatarProgressDialog(context,"");
