@@ -38,4 +38,12 @@
 
     <dimen name="user_photo_width">50dp</dimen>
 
+    <dimen name="item_notice_top_padding_size">5dp</dimen>
+
+    <dimen name="item_notice_right_padding_size">10dp</dimen>
+
+    <dimen name="key_up_login_height">148dp</dimen>
+
+    <dimen name="key_up_more_height">120dp</dimen>
+
 </resources>
