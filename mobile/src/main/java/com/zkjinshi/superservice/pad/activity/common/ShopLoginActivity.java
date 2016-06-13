@@ -1,9 +1,11 @@
 package com.zkjinshi.superservice.pad.activity.common;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 
+import android.view.Gravity;
 import android.view.View;
 
 import android.widget.EditText;
@@ -11,6 +13,7 @@ import android.widget.EditText;
 import com.zkjinshi.base.config.ConfigActivity;
 import com.zkjinshi.base.util.ActivityManagerHelper;
 import com.zkjinshi.base.util.DialogUtil;
+import com.zkjinshi.base.view.CustomDialog;
 import com.zkjinshi.superservice.pad.sqlite.DBOpenHelper;
 import com.zkjinshi.superservice.pad.utils.CacheUtil;
 import com.zkjinshi.superservice.pad.utils.SensorManagerHelper;
@@ -107,6 +110,27 @@ public class ShopLoginActivity extends BaseActivity{
                 overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
             }
         });
+
+        findViewById(R.id.forget_psw_tv).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showMessage("请找MIX管理员进行重置密码");
+            }
+        });
+    }
+
+    public void showMessage(String text){
+        CustomDialog.Builder customBuilder = new CustomDialog.Builder(ShopLoginActivity.this);
+        customBuilder.setMessage(text);
+        customBuilder.setGravity(Gravity.CENTER);
+        customBuilder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        customBuilder.create().show();
     }
 
     private void loginRequest(){
