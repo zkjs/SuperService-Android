@@ -13,6 +13,8 @@ import java.util.ArrayList;
  */
 public class NoticeResponse extends BaseResponse {
 
+    private String lastid;
+
     private ArrayList<NoticeVo> data;
 
     public ArrayList<NoticeVo> getData() {
@@ -21,5 +23,13 @@ public class NoticeResponse extends BaseResponse {
 
     public void setData(ArrayList<NoticeVo> data) {
         this.data = data;
+    }
+
+    public String getLastid() {
+        return lastid;
+    }
+
+    public void setLastid(String lastid) {
+        this.lastid = lastid;
     }
 }
