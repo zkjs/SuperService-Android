@@ -72,7 +72,8 @@
                     />
             </RelativeLayout>
 
-            <View style="@style/GrayLineBorder"></View>
+            <View style="@style/GrayLineBorder"
+                android:visibility="gone"></View>
 
             <com.zkjinshi.superservice.view.ItemUserSettingView
                 android:id="@+id/shopname_iusv"
@@ -80,6 +81,7 @@
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:background="#ffffff"
+                android:visibility="gone"
                 android:clickable="true"
                 zkjinshi:itemSettingTitle="组织" />
 

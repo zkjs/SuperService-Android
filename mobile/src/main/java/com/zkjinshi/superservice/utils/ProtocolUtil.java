@@ -193,12 +193,13 @@ public class ProtocolUtil {
      * 获得到店通知URL
      * @param shopId
      * @param locId
+     * @param lastid
      * @param page
-     * @param page_size
+     * @param pageSize
      * @return
      */
-    public static String getNoticeUrl(String shopId,String locId,String page,String page_size){
-        return  ConfigUtil.getInst().getPyxDomain()+"lbs/v1/loc/beacon/"+shopId+"/"+locId+"?roles=USER&page="+page+"&page_size="+page_size;
+    public static String getNoticeUrl(String shopId,String locId,String lastid,String page, String pageSize){
+        return  ConfigUtil.getInst().getForDomain()+"lbs/v1/loc/beacon/"+shopId+"/"+locId+"?roles=USER&lastid="+lastid+"&page="+page+"&page_size="+pageSize;
     }
 
     /**
