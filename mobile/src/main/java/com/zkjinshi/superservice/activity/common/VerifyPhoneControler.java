@@ -44,6 +44,7 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.regex.Matcher;
@@ -390,6 +391,12 @@ public class VerifyPhoneControler {
                     String token = response.getString("token");
                     CacheUtil.getInstance().setExtToken(token);
                     PayloadVo payloadVo = SSOManager.getInstance().decodeToken(token);
+                    if(null != payloadVo){
+                        Set<String> featureSet = payloadVo.getFeatures();
+                        if(null != featureSet){
+                            CacheUtil.getInstance().setFeatures(featureSet);
+                        }
+                    }
                     CacheUtil.getInstance().setUserId(payloadVo.getSub());
                     CacheUtil.getInstance().setLoginIdentity(IdentityType.WAITER);
                     DBOpenHelper.DB_NAME = payloadVo.getSub() + ".db";

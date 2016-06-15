@@ -9,6 +9,7 @@ import com.google.gson.Gson;
 import com.zkjinshi.superservice.vo.IdentityType;
 
 import java.util.ArrayList;
+import java.util.Set;
 
 /**
  * 缓存工具类
@@ -168,6 +169,32 @@ public class CacheUtil {
 		SharedPreferences sp = context.getSharedPreferences(
 				SVIP_CACHE, Context.MODE_PRIVATE);
 		return sp.getString("userId", null);
+	}
+
+	/**
+	 * 设置权限控制列表
+	 * @param features
+     */
+	public void setFeatures(Set<String> features) {
+		if (null == context) {
+			return;
+		}
+		SharedPreferences sp = context.getSharedPreferences(
+				SVIP_CACHE, Context.MODE_PRIVATE);
+		sp.edit().putStringSet("features",features);
+	}
+
+	/**
+	 * 获取用户id
+	 * @return
+	 */
+	public Set<String> getFeatures() {
+		if (null == context) {
+			return null;
+		}
+		SharedPreferences sp = context.getSharedPreferences(
+				SVIP_CACHE, Context.MODE_PRIVATE);
+		return sp.getStringSet("features", null);
 	}
 
 	/**

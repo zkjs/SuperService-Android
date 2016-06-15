@@ -48,6 +48,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 import cz.msebera.android.httpclient.Header;
 import cz.msebera.android.httpclient.entity.StringEntity;
@@ -183,6 +184,12 @@ public class LoginController {
                             String token = response.getString("token");
                             CacheUtil.getInstance().setExtToken(token);
                             PayloadVo payloadVo = SSOManager.getInstance().decodeToken(token);
+                            if(null != payloadVo){
+                                Set<String> featureSet = payloadVo.getFeatures();
+                                if(null != featureSet){
+                                    CacheUtil.getInstance().setFeatures(featureSet);
+                                }
+                            }
                             CacheUtil.getInstance().setUserId(payloadVo.getSub());
                             CacheUtil.getInstance().setShopID(payloadVo.getShopid());
                             CacheUtil.getInstance().setLoginIdentity(IdentityType.WAITER);
