@@ -181,7 +181,7 @@ public class CacheUtil {
 		}
 		SharedPreferences sp = context.getSharedPreferences(
 				SVIP_CACHE, Context.MODE_PRIVATE);
-		sp.edit().putStringSet("features",features);
+		sp.edit().putStringSet("features",features).commit();
 	}
 
 	/**
