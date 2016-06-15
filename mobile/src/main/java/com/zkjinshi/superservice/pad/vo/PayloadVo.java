@@ -1,6 +1,7 @@
 package com.zkjinshi.superservice.pad.vo;
 
 import java.io.Serializable;
+import java.util.Set;
 
 /**
  * 开发者：JimmyZhang
@@ -15,14 +16,14 @@ public class PayloadVo implements Serializable {
     private long expire;//有效期
     private String shopid;//商家id
     private String[] roles;//角色编号
-    private String[] feature;//功能编号
+    private Set<String> features;//功能编号
 
-    public String[] getFeature() {
-        return feature;
+    public Set<String> getFeatures() {
+        return features;
     }
 
-    public void setFeature(String[] feature) {
-        this.feature = feature;
+    public void setFeatures(Set<String> features) {
+        this.features = features;
     }
 
     public String getSub() {

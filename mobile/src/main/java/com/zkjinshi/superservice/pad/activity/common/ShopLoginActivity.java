@@ -29,6 +29,8 @@ import com.zkjinshi.superservice.pad.utils.MD5Util;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Set;
+
 /**
  * 商家登录
  * 开发者：dujiande
@@ -151,6 +153,12 @@ public class ShopLoginActivity extends BaseActivity{
                     token = response.getString("token");
                     CacheUtil.getInstance().setExtToken(token);
                     PayloadVo payloadVo = SSOManager.getInstance().decodeToken(token);
+                    if(null != payloadVo){
+                        Set<String> featureSet = payloadVo.getFeatures();
+                        if(null != featureSet){
+                            CacheUtil.getInstance().setFeatures(featureSet);
+                        }
+                    }
                     CacheUtil.getInstance().setUserId(payloadVo.getSub());
                     CacheUtil.getInstance().setLoginIdentity(IdentityType.BUSINESS);
                     DBOpenHelper.DB_NAME = payloadVo.getSub() + ".db";

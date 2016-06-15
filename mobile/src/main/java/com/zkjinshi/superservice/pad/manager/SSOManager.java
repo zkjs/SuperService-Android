@@ -48,7 +48,6 @@ public class SSOManager {
      * @return
      */
     public PayloadVo decodeToken(String tokenStr){
-        //String tokenStr = "eyJhbGciOiJSUzUxMiJ9.eyJzdWIiOiJjXzU2YTZlN2I1NjM0OGMiLCJ0eXBlIjozLCJleHBpcmUiOjE0NTY1NjE5NDI4MzcsInNob3BpZCI6Ijg4ODgiLCJyb2xlcyI6IltdIiwiZmVhdHVyZSI6IltdIn0.gPC-fUdKc-2gLGNvee6J9ZGVLXSJ96iVzZN47MsmO0z3PyQ4BMOq6CxVgIvFKyjeZx1Va_D8wphMSXByK8ppQtcQhPBv-q3CIFby8ttdE3y0yw6RXGrZnJwwusePPXBCAgXG80DtmWPjnjFRS5PVDpB3Ls3RQWPs5bSVTM0HkQ8";
         String[] tokenArr = tokenStr.split("\\.");
         PayloadVo payloadVo = null;
         if(null != tokenArr && tokenArr.length > 0){
@@ -162,6 +161,13 @@ public class SSOManager {
                                 String token = basePavoResponse.getToken();
                                 if(!TextUtils.isEmpty(token)){
                                     CacheUtil.getInstance().setExtToken(token);
+                                    PayloadVo payloadVo = decodeToken(token);
+                                    if(null != payloadVo){
+                                        Set<String> featureSet = payloadVo.getFeatures();
+                                        if(null != featureSet){
+                                            CacheUtil.getInstance().setFeatures(featureSet);
+                                        }
+                                    }
                                     if(null != ssoCallBack){
                                         ssoCallBack.onNetworkResponseSucceed();
                                     }
