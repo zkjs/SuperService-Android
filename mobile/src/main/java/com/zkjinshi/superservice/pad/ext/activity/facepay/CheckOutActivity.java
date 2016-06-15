@@ -25,6 +25,7 @@ import com.zkjinshi.base.util.IntentUtil;
 import com.zkjinshi.base.util.SoftInputUtil;
 import com.zkjinshi.superservice.pad.ext.adapter.NearbyAdapter;
 import com.zkjinshi.superservice.pad.net.MethodType;
+import com.zkjinshi.superservice.pad.utils.AccessControlUtil;
 import com.zkjinshi.superservice.pad.utils.CacheUtil;
 import com.zkjinshi.superservice.pad.R;
 import com.zkjinshi.superservice.pad.ext.response.NearbyUserResponse;
@@ -72,8 +73,13 @@ public class CheckOutActivity extends Activity {
     }
 
     private void initData(){
-        moreIBtn.setVisibility(View.VISIBLE);
+
         backIBtn.setVisibility(View.VISIBLE);
+        if(AccessControlUtil.isShowView(AccessControlUtil.BTNPOS)){
+            moreIBtn.setVisibility(View.VISIBLE);
+        }else {
+            moreIBtn.setVisibility(View.GONE);
+        }
         titleTv.setText("收款台");
         nearbyAdapter = new NearbyAdapter(this,nearbyUserList);
         nearbyUserGv.setAdapter(nearbyAdapter);

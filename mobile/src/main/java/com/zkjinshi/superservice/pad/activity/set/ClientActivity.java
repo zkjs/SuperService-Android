@@ -24,6 +24,7 @@ import com.zkjinshi.base.util.DisplayUtil;
 import com.zkjinshi.superservice.pad.adapter.VipUserAdapter;
 import com.zkjinshi.superservice.pad.response.BaseResponse;
 import com.zkjinshi.superservice.pad.response.WhiteUserListResponse;
+import com.zkjinshi.superservice.pad.utils.AccessControlUtil;
 import com.zkjinshi.superservice.pad.utils.AsyncHttpClientUtil;
 import com.zkjinshi.superservice.pad.utils.CacheUtil;
 import com.zkjinshi.superservice.pad.utils.Constants;
@@ -105,6 +106,7 @@ public class ClientActivity extends BaseAppCompatActivity {
         vipUserAdapter = new VipUserAdapter(this, whiteUserList);
         swipeRefreshListView.setAdapter(vipUserAdapter);
         vipUserAdapter.setSelectMap(selectMap);
+
     }
 
     private void initListener() {
@@ -114,10 +116,14 @@ public class ClientActivity extends BaseAppCompatActivity {
             public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
                 switch (index) {
                     case DELETE_MENU_ITEM://打开删除按钮
-                        WhiteUserVo whiteUserVo = (WhiteUserVo) vipUserAdapter.getItem(position);
-                        String userId = whiteUserVo.getUserid();
-                        String phone = whiteUserVo.getPhone();
-                        requestDeleteWhiteUserTask(userId,phone);
+                        if(AccessControlUtil.isShowView(AccessControlUtil.DELMEMBER)){
+                            WhiteUserVo whiteUserVo = (WhiteUserVo) vipUserAdapter.getItem(position);
+                            String userId = whiteUserVo.getUserid();
+                            String phone = whiteUserVo.getPhone();
+                            requestDeleteWhiteUserTask(userId,phone);
+                        }else {
+                            DialogUtil.getInstance().showCustomToast(ClientActivity.this,"你没有删除权限!",Gravity.CENTER);
+                        }
                         break;
                 }
                 return false;
@@ -141,9 +147,6 @@ public class ClientActivity extends BaseAppCompatActivity {
             @Override
             public boolean onMenuItemClick(android.view.MenuItem item) {
                 switch (item.getItemId()) {
-                    case R.id.menu_client_search:
-                        DialogUtil.getInstance().showToast(ClientActivity.this, "search");
-                        break;
 
                     case R.id.menu_client_jia:
                         Intent clientSelect = new Intent(ClientActivity.this, AddWhiteUserActivity.class);
@@ -192,10 +195,17 @@ public class ClientActivity extends BaseAppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_client, menu);
+        for(int i = 0 ; i < menu.size() ; i++){
+            if(AccessControlUtil.isShowView(AccessControlUtil.ADDMEMBER)){
+                menu.getItem(i).setVisible(true);
+            }else {
+                menu.getItem(i).setVisible(false);
+            }
+        }
         return true;
     }
 
-    /**放
+    /**
      * 删除白名单用户
      * @param userid
      * @param phone
