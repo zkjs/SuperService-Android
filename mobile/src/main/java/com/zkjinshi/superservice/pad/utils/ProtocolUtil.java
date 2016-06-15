@@ -475,4 +475,13 @@ public class ProtocolUtil {
         return ConfigUtil.getInst().getForDomain()+"/res/v1/systempub/upgrade/newestversion/"+apptype+"/"+devicetype+"/"+verno;
     }
 
+    /**
+     * 删除员工接口
+     * @param ids 支持批量删除，用英文逗号隔开
+     * @return
+     */
+    public static String deleteEmployee(String ids){
+        return ConfigUtil.getInst().getForDomain()+"/res/v1/delete/ss?userids="+ids;
+    }
+
 }

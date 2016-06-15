@@ -2,7 +2,10 @@ package com.zkjinshi.superservice.pad.activity.set;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Menu;
@@ -14,11 +17,17 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.baoyz.swipemenulistview.SwipeMenu;
+import com.baoyz.swipemenulistview.SwipeMenuCreator;
+import com.baoyz.swipemenulistview.SwipeMenuItem;
+import com.baoyz.swipemenulistview.SwipeMenuListView;
 import com.google.gson.Gson;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.base.util.DisplayUtil;
+import com.zkjinshi.superservice.pad.response.BaseFornaxResponse;
+import com.zkjinshi.superservice.pad.utils.AccessControlUtil;
 import com.zkjinshi.superservice.pad.view.AutoSideBar;
 import com.zkjinshi.superservice.pad.R;
 import com.zkjinshi.superservice.pad.activity.chat.single.ChatActivity;
@@ -45,6 +54,8 @@ import java.util.List;
 import cz.msebera.android.httpclient.Header;
 import cz.msebera.android.httpclient.entity.StringEntity;
 
+import static com.zkjinshi.superservice.pad.activity.set.ClientActivity.DELETE_MENU_ITEM;
+
 /**
  * 团队联系人显示界面
  * 开发者：vincent
@@ -58,7 +69,7 @@ public class TeamContactsActivity extends BaseAppCompatActivity {
 
     private Toolbar         mToolbar;
     private TextView        mTvCenterTitle;
-    private ListView        mRvTeamContacts;
+    private SwipeMenuListView mRvTeamContacts;
     private RelativeLayout  mRlSideBar;
     private TextView        mTvDialog;
     private AutoSideBar mAutoSideBar;
@@ -88,7 +99,7 @@ public class TeamContactsActivity extends BaseAppCompatActivity {
         mTvCenterTitle = (TextView) findViewById(R.id.tv_center_title);
         mTvCenterTitle.setText(getString(R.string.team));
 
-        mRvTeamContacts = (ListView)     findViewById(R.id.rcv_team_contacts);
+        mRvTeamContacts = (SwipeMenuListView)     findViewById(R.id.rcv_team_contacts);
         mRlSideBar      = (RelativeLayout)   findViewById(R.id.rl_side_bar);
         mTvDialog       = (TextView)         findViewById(R.id.tv_dialog);
         mAutoSideBar    = new AutoSideBar(TeamContactsActivity.this);
@@ -102,6 +113,25 @@ public class TeamContactsActivity extends BaseAppCompatActivity {
 
     private void initData() {
         mUserType = CacheUtil.getInstance().getLoginIdentity();
+
+        if(AccessControlUtil.isShowView(AccessControlUtil.DELEMPLOYEE)){
+            SwipeMenuCreator creator = new SwipeMenuCreator() {
+
+                @Override
+                public void create(SwipeMenu menu) {
+                    SwipeMenuItem openItem = new SwipeMenuItem(
+                            getApplicationContext());
+                    openItem.setBackground(new ColorDrawable(Color.rgb(0xF9,
+                            0x3F, 0x25)));
+                    openItem.setWidth(DisplayUtil.dip2px(TeamContactsActivity.this,90));
+                    openItem.setTitle("删除");
+                    openItem.setTitleSize(16);
+                    openItem.setTitleColor(Color.WHITE);
+                    menu.addMenuItem(openItem);
+                }
+            };
+            mRvTeamContacts.setMenuCreator(creator);
+        }
         mTeamContactAdapter = new TeamContactsAdapter(TeamContactsActivity.this,new ArrayList<EmployeeVo>());
         mRvTeamContacts.setAdapter(mTeamContactAdapter);
     }
@@ -254,6 +284,81 @@ public class TeamContactsActivity extends BaseAppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        mRvTeamContacts.setOnMenuItemClickListener(new SwipeMenuListView.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
+                switch (index) {
+                    case DELETE_MENU_ITEM://打开删除按钮
+                        EmployeeVo employeeVo = mTeamContactAdapter.mDatas.get(position);
+                        requestDeleteEmployeeTask(employeeVo);
+                        break;
+                }
+                return false;
+            }
+        });
+
+        if(AccessControlUtil.isShowView(AccessControlUtil.DELEMPLOYEE)){
+            mRvTeamContacts.setOnMenuStateChangeListener(new SwipeMenuListView.OnMenuStateChangeListener() {
+                @Override
+                public void onMenuOpen(int position) {
+                    //Toast.makeText(TeamContactsActivity.this,"onMenuOpen",Toast.LENGTH_SHORT).show();
+                    mAutoSideBar.setVisibility(View.GONE);
+                }
+
+                @Override
+                public void onMenuClose(int position) {
+                    //Toast.makeText(TeamContactsActivity.this,"onMenuClose",Toast.LENGTH_SHORT).show();
+                    mAutoSideBar.setVisibility(View.VISIBLE);
+                }
+            });
+        }
+    }
+
+    //删除员工
+    private void requestDeleteEmployeeTask(EmployeeVo employeeVo) {
+        try{
+            AsyncHttpClient client = new AsyncHttpClient();
+            client.setTimeout(Constants.OVERTIMEOUT);
+            client.addHeader("Content-Type","application/json; charset=UTF-8");
+            client.addHeader("Token", CacheUtil.getInstance().getExtToken());
+            JSONObject jsonObject = new JSONObject();
+            StringEntity stringEntity = new StringEntity(jsonObject.toString(),"UTF-8");
+            String url = ProtocolUtil.deleteEmployee(employeeVo.getUserid());
+            client.delete(mContext,url, stringEntity, "application/json", new AsyncHttpResponseHandler(){
+                public void onStart(){
+                    DialogUtil.getInstance().showAvatarProgressDialog(mContext,"");
+                }
+
+                public void onFinish(){
+                    DialogUtil.getInstance().cancelProgressDialog();
+                    mAutoSideBar.setVisibility(View.VISIBLE);
+                }
+
+                public void onSuccess(int statusCode, Header[] headers, byte[] responseBody){
+                    try {
+                        String response = new String(responseBody,"utf-8");
+                        BaseFornaxResponse baseFornaxResponse = new Gson().fromJson(response,BaseFornaxResponse.class);
+                        if(baseFornaxResponse.getRes() == 0){
+                            getEmployeesList();
+                        }else{
+                            Toast.makeText(mContext,baseFornaxResponse.getResDesc(),Toast.LENGTH_SHORT).show();
+                        }
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error){
+                    Toast.makeText(mContext,"API 错误："+statusCode,Toast.LENGTH_SHORT).show();
+                    AsyncHttpClientUtil.onFailure(mContext,statusCode);
+                }
+            });
+        }catch (Exception e){
+            Toast.makeText(mContext,"json解析错误",Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -269,7 +374,7 @@ public class TeamContactsActivity extends BaseAppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        if(mUserType == IdentityType.BUSINESS){
+        if(AccessControlUtil.isShowView(AccessControlUtil.BTNADDMEMBER)){
             getMenuInflater().inflate(R.menu.menu_team_for_business, menu);
         }else {
             //getMenuInflater().inflate(R.menu.menu_team_for_waiter, menu);
