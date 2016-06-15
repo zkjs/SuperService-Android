@@ -33,6 +33,7 @@ import com.zkjinshi.superservice.net.NetResponse;
 import com.zkjinshi.superservice.net.RequestUtil;
 import com.zkjinshi.superservice.sqlite.ShopDepartmentDBUtil;
 import com.zkjinshi.superservice.sqlite.ShopEmployeeDBUtil;
+import com.zkjinshi.superservice.utils.AccessControlUtil;
 import com.zkjinshi.superservice.utils.AsyncHttpClientUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.Constants;
@@ -164,17 +165,28 @@ public class EmployeeAddActivity extends BaseActivity {
         contactsAdapter = new ContactsAdapter(this,contactLocalList);
         listView.setAdapter(contactsAdapter);
         listView.setEmptyView(findViewById(R.id.empty_tv));
-        String listStr =  CacheUtil.getInstance().getListStrCache("contactLocalList");
-        if(!TextUtils.isEmpty(listStr)){
-            Type listType = new TypeToken<ArrayList<ContactLocalVo>>(){}.getType();
-            Gson gson = new Gson();
-            contactLocalList = gson.fromJson(listStr, listType);
-            if (null != contactLocalList && !contactLocalList.isEmpty()) {
-               contactsAdapter.refreshData(contactLocalList);
+        //是否有团队管理->通讯录导入权限
+        if(AccessControlUtil.isShowView(AccessControlUtil.CONTACTIMPORT)){
+            String listStr =  CacheUtil.getInstance().getListStrCache("contactLocalList");
+            if(!TextUtils.isEmpty(listStr)){
+                Type listType = new TypeToken<ArrayList<ContactLocalVo>>(){}.getType();
+                Gson gson = new Gson();
+                contactLocalList = gson.fromJson(listStr, listType);
+                if (null != contactLocalList && !contactLocalList.isEmpty()) {
+                    contactsAdapter.refreshData(contactLocalList);
+                }
             }
+            LoadPhoneContactTask loadPhoneContactTask = new LoadPhoneContactTask();
+            loadPhoneContactTask.execute();
         }
-        LoadPhoneContactTask loadPhoneContactTask = new LoadPhoneContactTask();
-        loadPhoneContactTask.execute();
+
+        //是否有团队管理->批量导入Excel权限
+        if(AccessControlUtil.isShowView(AccessControlUtil.BATCHIMPORT)){
+            findViewById(R.id.import_listener).setVisibility(View.VISIBLE);
+        }else{
+            findViewById(R.id.import_listener).setVisibility(View.GONE);
+        }
+
     }
 
     private boolean isExsitInEmployeeVoList(String phone){
