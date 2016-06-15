@@ -25,8 +25,10 @@ import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.adapter.VipUserAdapter;
 import com.zkjinshi.superservice.base.BaseAppCompatActivity;
 import com.zkjinshi.superservice.listener.OnRefreshListener;
+import com.zkjinshi.superservice.menu.vo.MenuItem;
 import com.zkjinshi.superservice.response.BaseResponse;
 import com.zkjinshi.superservice.response.WhiteUserListResponse;
+import com.zkjinshi.superservice.utils.AccessControlUtil;
 import com.zkjinshi.superservice.utils.AsyncHttpClientUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.Constants;
@@ -63,6 +65,7 @@ public class ClientActivity extends BaseAppCompatActivity {
     private VipUserAdapter vipUserAdapter;
     private HashMap<String,Boolean> selectMap = new HashMap<String, Boolean>();
     private TextView noResultTv;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,6 +108,7 @@ public class ClientActivity extends BaseAppCompatActivity {
         vipUserAdapter = new VipUserAdapter(this, whiteUserList);
         swipeRefreshListView.setAdapter(vipUserAdapter);
         vipUserAdapter.setSelectMap(selectMap);
+
     }
 
     private void initListener() {
@@ -114,10 +118,14 @@ public class ClientActivity extends BaseAppCompatActivity {
             public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
                 switch (index) {
                     case DELETE_MENU_ITEM://打开删除按钮
-                        WhiteUserVo whiteUserVo = (WhiteUserVo) vipUserAdapter.getItem(position);
-                        String userId = whiteUserVo.getUserid();
-                        String phone = whiteUserVo.getPhone();
-                        requestDeleteWhiteUserTask(userId,phone);
+                        if(AccessControlUtil.isShowView(AccessControlUtil.DELMEMBER)){
+                            WhiteUserVo whiteUserVo = (WhiteUserVo) vipUserAdapter.getItem(position);
+                            String userId = whiteUserVo.getUserid();
+                            String phone = whiteUserVo.getPhone();
+                            requestDeleteWhiteUserTask(userId,phone);
+                        }else {
+                            DialogUtil.getInstance().showCustomToast(ClientActivity.this,"你没有删除权限!",Gravity.CENTER);
+                        }
                         break;
                 }
                 return false;
@@ -141,9 +149,6 @@ public class ClientActivity extends BaseAppCompatActivity {
             @Override
             public boolean onMenuItemClick(android.view.MenuItem item) {
                 switch (item.getItemId()) {
-                    case R.id.menu_client_search:
-                        DialogUtil.getInstance().showToast(ClientActivity.this, "search");
-                        break;
 
                     case R.id.menu_client_jia:
                         Intent clientSelect = new Intent(ClientActivity.this, AddWhiteUserActivity.class);
@@ -192,6 +197,13 @@ public class ClientActivity extends BaseAppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_client, menu);
+        for(int i = 0 ; i < menu.size() ; i++){
+            if(AccessControlUtil.isShowView(AccessControlUtil.ADDMEMBER)){
+                menu.getItem(i).setVisible(true);
+            }else {
+                menu.getItem(i).setVisible(false);
+            }
+        }
         return true;
     }
 

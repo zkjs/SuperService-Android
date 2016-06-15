@@ -38,6 +38,7 @@ import com.zkjinshi.superservice.net.NetRequest;
 import com.zkjinshi.superservice.net.NetRequestTask;
 import com.zkjinshi.superservice.net.NetResponse;
 import com.zkjinshi.superservice.sqlite.DBOpenHelper;
+import com.zkjinshi.superservice.utils.AccessControlUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.view.CustomExtDialog;
@@ -62,6 +63,7 @@ public class MainActivity extends BaseAppCompatActivity {
     private TextView        shopnameTv;
     private RelativeLayout  avatarLayout;
     private ImageButton     setIbtn;
+    private TextView checkOutTv,clientTv;
 
     private void initView(){
         avatarIv   = (SimpleDraweeView)findViewById(R.id.avatar_iv);
@@ -69,17 +71,23 @@ public class MainActivity extends BaseAppCompatActivity {
         shopnameTv = (TextView)findViewById(R.id.shop_name_tv);
         avatarLayout = (RelativeLayout)findViewById(R.id.avatar_rlt);
         setIbtn = (ImageButton)findViewById(R.id.edit_avatar_ibtn);
+        checkOutTv = (TextView)findViewById(R.id.amount_tv);
+        clientTv = (TextView)findViewById(R.id.client_tv);
     }
 
     private void initData(){
         MainController.getInstance().init(this);
         MainController.getInstance().checkAppVersion();
-
-        String payInfo = CacheUtil.getInstance().getPayInfo();
-        if(!TextUtils.isEmpty(payInfo) && SSOManager.getInstance().isCollection()){
-            findViewById(R.id.amount_tv).setVisibility(View.VISIBLE);
+        //String payInfo = CacheUtil.getInstance().getPayInfo();
+        if(AccessControlUtil.isShowView(AccessControlUtil.CASHREGISTER)){
+            checkOutTv.setVisibility(View.VISIBLE);
         }else {
-            findViewById(R.id.amount_tv).setVisibility(View.GONE);
+            checkOutTv.setVisibility(View.GONE);
+        }
+        if(AccessControlUtil.isShowView(AccessControlUtil.MEMBER)){
+            clientTv.setVisibility(View.VISIBLE);
+        }else {
+            clientTv.setVisibility(View.GONE);
         }
     }
 
@@ -116,8 +124,8 @@ public class MainActivity extends BaseAppCompatActivity {
             }
         });
 
-        //我的客人点击事件
-        findViewById(R.id.client_tv).setOnClickListener(new View.OnClickListener() {
+        //会员管理
+        clientTv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent myClient = new Intent(MainActivity.this, ClientActivity.class);
@@ -127,7 +135,7 @@ public class MainActivity extends BaseAppCompatActivity {
         });
 
         //收款台
-        findViewById(R.id.amount_tv).setOnClickListener(new View.OnClickListener() {
+        checkOutTv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this,CheckOutActivity.class);

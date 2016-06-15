@@ -35,6 +35,7 @@ import com.zkjinshi.superservice.net.MethodType;
 import com.zkjinshi.superservice.net.NetRequest;
 import com.zkjinshi.superservice.net.NetRequestTask;
 import com.zkjinshi.superservice.net.NetResponse;
+import com.zkjinshi.superservice.utils.AccessControlUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
 
 import java.util.ArrayList;
@@ -75,8 +76,13 @@ public class CheckOutActivity extends Activity {
     }
 
     private void initData(){
-        moreIBtn.setVisibility(View.VISIBLE);
+
         backIBtn.setVisibility(View.VISIBLE);
+        if(AccessControlUtil.isShowView(AccessControlUtil.BTNPOS)){
+            moreIBtn.setVisibility(View.VISIBLE);
+        }else {
+            moreIBtn.setVisibility(View.GONE);
+        }
         titleTv.setText("收款台");
         nearbyAdapter = new NearbyAdapter(this,nearbyUserList);
         nearbyUserGv.setAdapter(nearbyAdapter);

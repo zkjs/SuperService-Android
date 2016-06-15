@@ -5,13 +5,6 @@
     tools:context=".activity.set.TeamContactsActivity">
 
     <item
-        android:id="@+id/menu_client_search"
-        android:icon="@mipmap/ic_search"
-        android:title="@string/search"
-        android:visible="false"
-        app:showAsAction="always" />
-
-    <item
         android:id="@+id/menu_client_jia"
         android:icon="@drawable/bg_ic_tianjia"
         android:title="@string/action_tian_jia"

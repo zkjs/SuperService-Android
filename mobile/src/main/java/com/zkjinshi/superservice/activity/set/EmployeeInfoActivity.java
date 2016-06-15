@@ -13,11 +13,13 @@ import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.zkjinshi.base.util.IntentUtil;
 import com.zkjinshi.base.util.TimeUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.chat.single.ChatActivity;
 import com.zkjinshi.superservice.base.BaseActivity;
 import com.zkjinshi.superservice.sqlite.ShopEmployeeDBUtil;
+import com.zkjinshi.superservice.utils.AccessControlUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
@@ -72,6 +74,15 @@ public class EmployeeInfoActivity extends BaseActivity {
 
     private void initData() {
 
+        //拨打电话权限控制
+        if(AccessControlUtil.isShowView(AccessControlUtil.MEMBERDETAIL)){
+            mRlDianHua.setVisibility(View.VISIBLE);
+            mRlDuiHua.setVisibility(View.VISIBLE);
+        }else {
+            mRlDianHua.setVisibility(View.GONE);
+            mRlDuiHua.setVisibility(View.GONE);
+        }
+
         mShopID = CacheUtil.getInstance().getShopID();
         mUserID = CacheUtil.getInstance().getUserId();
 
@@ -125,20 +136,10 @@ public class EmployeeInfoActivity extends BaseActivity {
         mRlDuiHua.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String userId    = mEmployee.getUserid();
-                String toName  = mEmployee.getUsername();
-                String shopName = CacheUtil.getInstance().getShopFullName();
-                Intent intent = new Intent(EmployeeInfoActivity.this, ChatActivity.class);
-                intent.putExtra(Constants.EXTRA_USER_ID, userId);
-                if (!TextUtils.isEmpty(mShopID)) {
-                    intent.putExtra(Constants.EXTRA_SHOP_ID,mShopID);
+                String phoneNumber = mTvPhoneNumber.getText().toString().trim();
+                if(!TextUtils.isEmpty(phoneNumber)){
+                    IntentUtil.sendMessage("",phoneNumber,EmployeeInfoActivity.this);
                 }
-                intent.putExtra(Constants.EXTRA_SHOP_NAME,shopName);
-                if(!TextUtils.isEmpty(toName)){
-                    intent.putExtra(Constants.EXTRA_TO_NAME, toName);
-                }
-                intent.putExtra(Constants.EXTRA_FROM_NAME, CacheUtil.getInstance().getUserName());
-                startActivity(intent);
             }
         });
 
@@ -147,8 +148,7 @@ public class EmployeeInfoActivity extends BaseActivity {
             public void onClick(View v) {
                 String phoneNumber = mTvPhoneNumber.getText().toString().trim();
                 if(!TextUtils.isEmpty(phoneNumber)){
-                    Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + phoneNumber));
-                    EmployeeInfoActivity.this.startActivity(intent);
+                   IntentUtil.callPhone(EmployeeInfoActivity.this,phoneNumber);
                 }
             }
         });
