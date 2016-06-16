@@ -32,6 +32,7 @@ import com.zkjinshi.superservice.base.BaseAppCompatActivity;
 import com.zkjinshi.superservice.blueTooth.BlueToothManager;
 import com.zkjinshi.superservice.emchat.EasemobIMHelper;
 import com.zkjinshi.superservice.ext.activity.facepay.CheckOutActivity;
+import com.zkjinshi.superservice.manager.CheckoutInnerManager;
 import com.zkjinshi.superservice.manager.SSOManager;
 import com.zkjinshi.superservice.manager.YunBaSubscribeManager;
 import com.zkjinshi.superservice.net.ExtNetRequestListener;
@@ -146,8 +147,13 @@ public class MainActivity extends BaseAppCompatActivity {
         checkOutTv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this,CheckOutActivity.class);
-                startActivity(intent);
+                if(CheckoutInnerManager.getInstance().isInnerCheckout()){
+                    Intent intent = new Intent(MainActivity.this,CheckOutActivity.class);
+                    startActivity(intent);
+                }else {
+                    DialogUtil.getInstance().showCustomToast(view.getContext(),"您不在收款区域,暂时无法收款!",Gravity.CENTER);
+                }
+
             }
         });
 

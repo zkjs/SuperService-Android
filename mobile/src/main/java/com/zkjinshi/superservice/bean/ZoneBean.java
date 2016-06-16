@@ -1,5 +1,13 @@
 package com.zkjinshi.superservice.bean;
 
+import com.zkjinshi.pyxis.bluetooth.BeaconExtInfo;
+import com.zkjinshi.superservice.vo.BeaconVo;
+import com.zkjinshi.superservice.vo.ZoneVo;
+
+import org.altbeacon.beacon.Beacon;
+
+import java.util.ArrayList;
+
 /**
  * 服务员获取商家整个区域列表 返回实体
  * 开发者：dujiande
@@ -17,6 +25,15 @@ public class ZoneBean {
     private String uuid;
     private String sensorid;
     private int subscribed;
+    private ArrayList<BeaconVo> beacons;
+
+    public ArrayList<BeaconVo> getBeacons() {
+        return beacons;
+    }
+
+    public void setBeacons(ArrayList<BeaconVo> beacons) {
+        this.beacons = beacons;
+    }
 
     public String getLocid() {
         return locid;
