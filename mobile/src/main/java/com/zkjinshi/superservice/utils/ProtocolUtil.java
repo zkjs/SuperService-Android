@@ -484,4 +484,12 @@ public class ProtocolUtil {
         return ConfigUtil.getInst().getForDomain()+"/res/v1/delete/ss?userids="+ids;
     }
 
+    /**
+     * 推送/更新室内位置
+     * @return
+     */
+    public static String lbsLocBeacon(){
+        return ConfigUtil.getInst().getPyxDomain()+"lbs/v1/loc/beacon";
+    }
+
 }

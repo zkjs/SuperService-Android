@@ -4,6 +4,13 @@
     android:versionCode="13"
     android:versionName="1.14.12">
 
+    <uses-feature
+        android:name="android.hardware.bluetooth_le"
+        android:required="true" />
+
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.CAMERA" />
@@ -521,6 +528,15 @@
         <meta-data
             android:name="UMENG_CHANNEL"
             android:value="QQ" />
+
+        <!--pyxis sdk-->
+        <service
+            android:name="com.zkjinshi.pyxis.bluetooth.IBeaconService"
+            android:enabled="true">
+            <intent-filter android:priority="1000">
+                <action android:name="com.zkjinshi.pyxis.Beacon_SERVICE"/>
+            </intent-filter>
+        </service>
 
     </application>
 
