@@ -22,18 +22,21 @@ import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.mine.MineNetController;
 import com.zkjinshi.superservice.activity.mine.MineUiController;
 import com.zkjinshi.superservice.base.BaseFragmentActivity;
+import com.zkjinshi.superservice.manager.SSOManager;
 import com.zkjinshi.superservice.utils.AsyncHttpClientUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.utils.FileUtil;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.utils.task.ImgAsyncTask;
+import com.zkjinshi.superservice.vo.PayloadVo;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
 import java.util.List;
+import java.util.Set;
 
 import cz.msebera.android.httpclient.Header;
 import me.nereo.multi_image_selector.MultiImageSelectorActivity;
@@ -166,6 +169,13 @@ public class MoreActivity extends BaseFragmentActivity{
                             if(!getIntent().getBooleanExtra("from_setting",false)){
                                 String token = response.getString("token");
                                 CacheUtil.getInstance().setExtToken(token);
+                                PayloadVo payloadVo = SSOManager.getInstance().decodeToken(token);
+                                if(null != payloadVo){
+                                    Set<String> featureSet = payloadVo.getFeatures();
+                                    if(null != featureSet){
+                                        CacheUtil.getInstance().setFeatures(featureSet);
+                                    }
+                                }
                                 getUserInfo();
                             }else{
                                 if(picPath != null){
