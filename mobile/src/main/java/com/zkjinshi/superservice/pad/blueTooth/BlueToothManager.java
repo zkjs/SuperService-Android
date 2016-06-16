@@ -22,6 +22,7 @@ import com.zkjinshi.pyxis.bluetooth.IBeaconService;
 import com.zkjinshi.pyxis.bluetooth.IBeaconSubject;
 import com.zkjinshi.pyxis.bluetooth.IBeaconVo;
 import com.zkjinshi.pyxis.bluetooth.NetBeaconVo;
+import com.zkjinshi.superservice.pad.manager.CheckoutInnerManager;
 import com.zkjinshi.superservice.pad.manager.SSOManager;
 import com.zkjinshi.superservice.pad.utils.CacheUtil;
 import com.zkjinshi.superservice.pad.utils.ProtocolUtil;
@@ -91,6 +92,8 @@ public class BlueToothManager {
         @Override
         public void intoRegion(IBeaconVo iBeaconVo) {
             LogUtil.getInstance().info(LogLevel.DEBUG,"进入："+iBeaconVo.getMajor());
+            //保存收款台区域信息
+            CheckoutInnerManager.getInstance().saveBeaconCache(true,iBeaconVo);
             Bundle bundle = new Bundle();
             bundle.putSerializable("iBeaconVo",iBeaconVo);
             Message msg = new Message();
@@ -102,6 +105,8 @@ public class BlueToothManager {
         @Override
         public void outRegin(IBeaconVo iBeaconVo) {
             LogUtil.getInstance().info(LogLevel.DEBUG,"离开："+iBeaconVo.getMajor());
+            //保存收款台区域信息
+            CheckoutInnerManager.getInstance().saveBeaconCache(false,iBeaconVo);
         }
 
         public void postCollectBeacons(){

@@ -339,7 +339,7 @@ public class ProtocolUtil {
      * @return
      */
     public static String getZoneList(){
-        return ConfigUtil.getInst().getPyxDomain()+"lbs/v1/loc/beacon";
+        return ConfigUtil.getInst().getForDomain()+"lbs/v1/loc/beacon";
     }
 
     /**

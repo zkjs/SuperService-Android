@@ -15,6 +15,7 @@ import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.pad.bean.ZoneBean;
+import com.zkjinshi.superservice.pad.manager.CheckoutInnerManager;
 import com.zkjinshi.superservice.pad.manager.UnSubscribeCallback;
 import com.zkjinshi.superservice.pad.manager.YunBaSubscribeManager;
 import com.zkjinshi.superservice.pad.utils.AsyncHttpClientUtil;
@@ -25,6 +26,7 @@ import com.zkjinshi.superservice.pad.R;
 import com.zkjinshi.superservice.pad.adapter.ZoneAdapter;
 import com.zkjinshi.superservice.pad.base.BaseActivity;
 import com.zkjinshi.superservice.pad.response.GetZoneListResponse;
+import com.zkjinshi.superservice.pad.vo.BeaconVo;
 
 import org.json.JSONObject;
 
@@ -47,6 +49,7 @@ public class ZoneActivity extends BaseActivity {
     private ZoneAdapter zoneAdapter;
     private Context mContext;
     private ArrayList<ZoneBean> zoneList,requestZoneList,payZoneList;
+    private ArrayList<BeaconVo> beaconList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -141,6 +144,8 @@ public class ZoneActivity extends BaseActivity {
                 CacheUtil.getInstance().saveListCache(ZONE_CACHE_KEY, zoneAdapter.getSelectZoneBeanList());
                 String checkedIds =  zoneAdapter.getCheckedIds();
                 String payIds = getPeyIds(payZoneList);
+                beaconList = getBeaconList();
+                CheckoutInnerManager.getInstance().saveBeaconCache(beaconList);
                 if(!TextUtils.isEmpty(checkedIds)){
                     CacheUtil.getInstance().setAreaInfo(checkedIds);
                     CacheUtil.getInstance().setPayInfo(payIds);
@@ -243,6 +248,23 @@ public class ZoneActivity extends BaseActivity {
 
         }
         return  ids;
+    }
+
+    /**
+     * 获取收款台相关的beacon信息
+     * @return
+     */
+    public ArrayList<BeaconVo> getBeaconList(){
+        ArrayList<BeaconVo> beaconList = new ArrayList<BeaconVo>();
+        if(null != payZoneList && !payZoneList.isEmpty()){
+            for(int i=0;i<payZoneList.size();i++){
+                ZoneBean zoneBean = payZoneList.get(i);
+                if(zoneBean.getPayment_support() == 1){
+                    beaconList = zoneBean.getBeacons();
+                }
+            }
+        }
+        return beaconList;
     }
 
 }

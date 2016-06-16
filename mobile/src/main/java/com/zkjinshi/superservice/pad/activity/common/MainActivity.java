@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.blueware.agent.android.BlueWare;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.pyxis.bluetooth.NetBeaconVo;
 import com.zkjinshi.superservice.pad.activity.set.ClientActivity;
 import com.zkjinshi.superservice.pad.activity.set.SettingActivity;
@@ -25,6 +26,7 @@ import com.zkjinshi.superservice.pad.base.BaseAppCompatActivity;
 import com.zkjinshi.superservice.pad.blueTooth.BlueToothManager;
 import com.zkjinshi.superservice.pad.emchat.EasemobIMHelper;
 import com.zkjinshi.superservice.pad.ext.activity.facepay.CheckOutActivity;
+import com.zkjinshi.superservice.pad.manager.CheckoutInnerManager;
 import com.zkjinshi.superservice.pad.manager.SSOManager;
 import com.zkjinshi.superservice.pad.manager.YunBaSubscribeManager;
 import com.zkjinshi.superservice.pad.sqlite.DBOpenHelper;
@@ -134,8 +136,13 @@ public class MainActivity extends BaseAppCompatActivity {
         checkOutTv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this,CheckOutActivity.class);
-                startActivity(intent);
+                if(CheckoutInnerManager.getInstance().isInnerCheckout()){
+                    Intent intent = new Intent(MainActivity.this,CheckOutActivity.class);
+                    startActivity(intent);
+                }else {
+                    DialogUtil.getInstance().showCustomToast(view.getContext(),"您不在收款区域,暂时无法收款!",Gravity.CENTER);
+                }
+
             }
         });
 
