@@ -26,6 +26,7 @@ import com.zkjinshi.base.log.LogSwitch;
 import com.zkjinshi.base.log.LogUtil;
 import com.zkjinshi.base.util.BaseContext;
 import com.zkjinshi.base.util.DeviceUtils;
+import com.zkjinshi.superservice.pad.blueTooth.BlueToothManager;
 import com.zkjinshi.superservice.pad.utils.CacheUtil;
 import com.zkjinshi.superservice.pad.base.BaseApplication;
 import com.zkjinshi.superservice.pad.emchat.EasemobIMHelper;
@@ -41,6 +42,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import io.yunba.android.manager.YunBaManager;
+import org.altbeacon.beacon.powersave.BackgroundPowerSaver;
 
 /**
  * 超级服务入口
@@ -54,7 +56,7 @@ public class ServiceApplication extends BaseApplication {
     public static final String TAG = ServiceApplication.class.getSimpleName();
 
     public int currentNetConfigVersion = 2;//网络配置项
-
+    private BackgroundPowerSaver backgroundPowerSaver;
     private static Context mContext;
 
     @Override
@@ -73,6 +75,8 @@ public class ServiceApplication extends BaseApplication {
         initTest();
         //initActive();
         Fresco.initialize(this);
+        BlueToothManager.getInstance().init(this);
+        backgroundPowerSaver = new BackgroundPowerSaver(this);
     }
 
     @Override

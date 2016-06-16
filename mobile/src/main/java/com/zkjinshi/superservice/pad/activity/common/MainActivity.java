@@ -17,10 +17,12 @@ import android.widget.TextView;
 
 import com.blueware.agent.android.BlueWare;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.zkjinshi.pyxis.bluetooth.NetBeaconVo;
 import com.zkjinshi.superservice.pad.activity.set.ClientActivity;
 import com.zkjinshi.superservice.pad.activity.set.SettingActivity;
 import com.zkjinshi.superservice.pad.activity.set.TeamContactsActivity;
 import com.zkjinshi.superservice.pad.base.BaseAppCompatActivity;
+import com.zkjinshi.superservice.pad.blueTooth.BlueToothManager;
 import com.zkjinshi.superservice.pad.emchat.EasemobIMHelper;
 import com.zkjinshi.superservice.pad.ext.activity.facepay.CheckOutActivity;
 import com.zkjinshi.superservice.pad.manager.SSOManager;
@@ -31,6 +33,8 @@ import com.zkjinshi.superservice.pad.utils.CacheUtil;
 import com.zkjinshi.superservice.pad.view.CustomExtDialog;
 import com.zkjinshi.superservice.pad.vo.IdentityType;
 import com.zkjinshi.superservice.pad.R;
+
+import java.util.ArrayList;
 
 
 /**
@@ -77,6 +81,10 @@ public class MainActivity extends BaseAppCompatActivity {
         }else {
             clientTv.setVisibility(View.GONE);
         }
+
+        //打开蓝牙请求
+        BlueToothManager.getInstance().openBluetooth();
+        BlueToothManager.getInstance().startIBeaconService(new ArrayList<NetBeaconVo>());
     }
 
     private void initListeners(){
