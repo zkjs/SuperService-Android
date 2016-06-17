@@ -145,6 +145,11 @@
 -dontwarn org.eclipse.paho.client.mqttv3.**
 -keep class org.eclipse.paho.client.mqttv3.**{ *; }
 
+ #Pyxis sdk
+-keep class com.zkjinshi.pyxis.bluetooth.** { *; }
+-keep class com.zkjinshi.pyxis.utils.** { *; }
+-keep class org.altbeacon.**{ *; }
+
  #5 环信app打包混淆
 -keep class com.easemob.** {*;}
 -keep class org.jivesoftware.** {*;}

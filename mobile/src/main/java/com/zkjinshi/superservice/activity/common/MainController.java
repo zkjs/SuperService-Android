@@ -111,7 +111,7 @@ public class MainController {
                 }
 
                 public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error){
-                    Toast.makeText(context,"API 错误："+statusCode,Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(context,"API 错误："+statusCode,Toast.LENGTH_SHORT).show();
                     AsyncHttpClientUtil.onFailure(context,statusCode);
                 }
             });
