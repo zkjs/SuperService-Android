@@ -91,15 +91,17 @@ public class ClientActivity extends BaseAppCompatActivity {
 
             @Override
             public void create(SwipeMenu menu) {
-                SwipeMenuItem openItem = new SwipeMenuItem(
+                SwipeMenuItem deleteItem = new SwipeMenuItem(
                         getApplicationContext());
-                openItem.setBackground(new ColorDrawable(Color.rgb(0xF9,
+                deleteItem.setBackground(new ColorDrawable(Color.rgb(0xF9,
                         0x3F, 0x25)));
-                openItem.setWidth(DisplayUtil.dip2px(ClientActivity.this,90));
-                openItem.setTitle("删除");
-                openItem.setTitleSize(16);
-                openItem.setTitleColor(Color.WHITE);
-                menu.addMenuItem(openItem);
+                deleteItem.setWidth(DisplayUtil.dip2px(ClientActivity.this,90));
+                deleteItem.setTitle("删除");
+                deleteItem.setTitleSize(16);
+                deleteItem.setTitleColor(Color.WHITE);
+                if(AccessControlUtil.isShowView(AccessControlUtil.DELMEMBER)){
+                    menu.addMenuItem(deleteItem);
+                }
             }
         };
         swipeRefreshListView.setMenuCreator(creator);
@@ -116,14 +118,12 @@ public class ClientActivity extends BaseAppCompatActivity {
             public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
                 switch (index) {
                     case DELETE_MENU_ITEM://打开删除按钮
-                        if(AccessControlUtil.isShowView(AccessControlUtil.DELMEMBER)){
-                            WhiteUserVo whiteUserVo = (WhiteUserVo) vipUserAdapter.getItem(position);
-                            String userId = whiteUserVo.getUserid();
-                            String phone = whiteUserVo.getPhone();
-                            requestDeleteWhiteUserTask(userId,phone);
-                        }else {
-                            DialogUtil.getInstance().showCustomToast(ClientActivity.this,"你没有删除权限!",Gravity.CENTER);
-                        }
+
+                        WhiteUserVo whiteUserVo = (WhiteUserVo) vipUserAdapter.getItem(position);
+                        String userId = whiteUserVo.getUserid();
+                        String phone = whiteUserVo.getPhone();
+                        requestDeleteWhiteUserTask(userId,phone);
+
                         break;
                 }
                 return false;
