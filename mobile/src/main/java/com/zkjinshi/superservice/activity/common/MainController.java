@@ -76,7 +76,7 @@ public class MainController {
         }
         try{
             AsyncHttpClient client = new AsyncHttpClient();
-            client.setTimeout(Constants.OVERTIMEOUT);
+            client.setTimeout(10*1000);
             client.addHeader("Content-Type","application/json; charset=UTF-8");
             JSONObject jsonObject = new JSONObject();
             StringEntity stringEntity = new StringEntity(jsonObject.toString());
