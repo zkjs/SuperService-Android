@@ -18,9 +18,7 @@ public class DBOpenHelper extends SQLiteOpenHelper {
     public static String DB_NAME = "super_service.db";//根据每个用户创建一份数据库
 
     public static final int VERSION = 4;// 数据库版本
-    public static final String USER_TBL = "user_tbl";// 客户表名
     public static final String CLIENT_TBL = "client_tbl";// 客户表名
-    public static final String COMING_TBL = "coming_tbl";//到店信息表
     public static final String SHOP_EMPLOYEE_TBL = "shop_employee_tbl";//商家员工列表
     public static final String SHOP_DEPARTMENT_TBL = "shop_department_tbl";//商家部门表
 

@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.zkjinshi.superservice.R;
+import com.zkjinshi.superservice.fragment.CallServiceFragment;
 import com.zkjinshi.superservice.fragment.MessageFragment;
 import com.zkjinshi.superservice.fragment.NoticeFragment;
 import com.zkjinshi.superservice.fragment.OrderFragment;
@@ -24,13 +25,15 @@ import java.util.ArrayList;
  */
 public class ViewPagerAdapter extends FragmentPagerAdapter {
 
-    public static final int NUM_ITEMS = 2;
-   // public static final int NUM_ITEMS = 3;
+   // public static final int NUM_ITEMS = 2;
+    public static final int NUM_ITEMS = 3;
     public static final int ALL_POS = 0;
     public static final int SHARED_POS = 1;
-    //public static final int FAVORITES_POS = 2;
+    //public static final int FAVORITES_POS = 2;//订单
+    public static final int CALL_SERVICE = 2;
 
-    public String[] tabTitles = {"到店通知","消息通知"};
+
+    public String[] tabTitles = {"到店通知","消息通知","呼叫通知"};
     //public String[] tabTitles = {"到店通知","消息通知","订单处理"};
     public ArrayList<ViewHolder> myTagList = new ArrayList<ViewHolder>();
 
@@ -50,6 +53,8 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
                 return NoticeFragment.newInstance();
             case SHARED_POS:
                 return MessageFragment.newInstance();
+            case CALL_SERVICE:
+                return CallServiceFragment.newInstance();
            // case FAVORITES_POS:
              //   return new OrderFragment();
             default:
@@ -64,6 +69,8 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
                 return context.getString(R.string.coming_notice);
             case SHARED_POS:
                 return context.getString(R.string.message_notice);
+            case CALL_SERVICE:
+                return context.getString(R.string.call_service);
             //case FAVORITES_POS:
               //  return context.getString(R.string.deal_with_order);
             default:

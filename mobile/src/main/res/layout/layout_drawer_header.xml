@@ -91,6 +91,13 @@
             android:text="团队联系人"
             android:id="@+id/team_tv" />
 
+
+        <TextView
+            android:layout_marginTop="30dp"
+            style="@style/leftMenuText"
+            android:text="服务标签"
+            android:id="@+id/service_tag_tv" />
+
         <TextView
             style="@style/leftMenuText"
             android:text="@string/invite_code"

@@ -1,61 +1,31 @@
 package com.zkjinshi.superservice.activity.set;
 
-import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
-import android.view.Window;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.easemob.chat.EMChatManager;
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.google.gson.Gson;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.base.view.CustomDialog;
 import com.zkjinshi.superservice.R;
-import com.zkjinshi.superservice.activity.common.InviteCodesActivity;
 import com.zkjinshi.superservice.activity.common.LoginController;
-import com.zkjinshi.superservice.activity.common.MainActivity;
 import com.zkjinshi.superservice.activity.common.MoreActivity;
 import com.zkjinshi.superservice.activity.common.WebViewActivity;
 import com.zkjinshi.superservice.activity.common.ZoneActivity;
-import com.zkjinshi.superservice.activity.mine.MineNetController;
-import com.zkjinshi.superservice.activity.mine.MineUiController;
 import com.zkjinshi.superservice.base.BaseActivity;
-import com.zkjinshi.superservice.bean.Head;
-import com.zkjinshi.superservice.bean.InviteCode;
-import com.zkjinshi.superservice.bean.SempCodeReturnBean;
-import com.zkjinshi.superservice.net.ExtNetRequestListener;
-import com.zkjinshi.superservice.net.MethodType;
-import com.zkjinshi.superservice.net.NetRequest;
-import com.zkjinshi.superservice.net.NetRequestTask;
-import com.zkjinshi.superservice.net.NetResponse;
-import com.zkjinshi.superservice.sqlite.UserDBUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.MD5Util;
-import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.utils.StringUtil;
-import com.zkjinshi.superservice.view.CircleImageView;
 import com.zkjinshi.superservice.view.CustomInputDialog;
 import com.zkjinshi.superservice.view.ItemUserSettingView;
 import com.zkjinshi.superservice.vo.IdentityType;
-import com.zkjinshi.superservice.vo.UserVo;
 
-import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.HashMap;
-import java.util.List;
 
 /**
  * 开发者：dujiande

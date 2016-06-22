@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="120dp">
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/call_service_user_photo_sdv"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="35dp"
+            android:layout_marginBottom="35dp"
+            fresco:actualImageScaleType="centerInside"
+            fresco:placeholderImage="@mipmap/logo_round"
+            fresco:placeholderImageScaleType="fitCenter"
+            fresco:roundAsCircle="true"
+            fresco:roundedCornerRadius="0dp" />
+
+        <TextView
+            android:id="@+id/call_service_user_name_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/call_service_user_photo_sdv"
+            android:text="劳小七"
+            android:textSize="14sp"
+            android:textColor="#101010"
+            android:layout_alignTop="@id/call_service_user_photo_sdv"/>
+
+        <TextView
+            android:id="@+id/call_service_project_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/call_service_user_photo_sdv"
+            android:text="人工按摩"
+            android:textSize="14sp"
+            android:textColor="#666666"
+            android:layout_alignBottom="@id/call_service_user_photo_sdv"/>
+
+
+        <TextView
+            android:id="@+id/call_service_time_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="15dp"
+            android:text="16:40"
+            android:textSize="12sp"
+            android:textColor="#888888"
+            android:layout_alignTop="@id/call_service_user_photo_sdv"/>
+
+        <TextView
+            android:id="@+id/call_service_status_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="15dp"
+            android:text="未指派"
+            android:textSize="12sp"
+            android:textColor="@color/service_red_color"
+            android:layout_alignBottom="@id/call_service_user_photo_sdv"/>
+
+    </RelativeLayout>
+
+    <View style="@style/GrayLineBorder"
+        android:visibility="visible"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/call_service_finish_layout"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/bg_white_light_gray"
+            android:clickable="true"
+            android:gravity="center"
+            android:visibility="visible"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="完成"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:textColor="@color/theme_primary"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="0.5dp"
+            android:layout_height="match_parent"
+            android:visibility="visible"
+            android:background="@color/divider_line_color"/>
+
+
+        <LinearLayout
+            android:id="@+id/call_service_ready_layout"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/bg_white_light_gray"
+            android:clickable="true"
+            android:gravity="center"
+            android:visibility="visible"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="就绪"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:textColor="@color/theme_primary"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="0.5dp"
+            android:layout_height="match_parent"
+            android:visibility="visible"
+            android:background="@color/divider_line_color"/>
+
+        <LinearLayout
+            android:id="@+id/call_service_appoint_layout"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/bg_white_light_gray"
+            android:clickable="true"
+            android:gravity="center"
+            android:visibility="visible"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/call_service_appoint_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="指派"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:textColor="@color/theme_primary"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+</merge>

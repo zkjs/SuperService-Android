@@ -37,13 +37,11 @@ public class MainActivityController implements View.OnClickListener{
     private MaterialSheetFab materialSheetFab;
     private int statusBarColor;
     private DisplayImageOptions options;
-    private Intent intent;
 
     ViewPagerAdapter viewPagerAdapter;
 
     public MainActivityController(MainActivity activity){
         this.activity = activity;
-        this.intent = activity.getIntent();
         this.options = new DisplayImageOptions.Builder()
                 .showImageOnLoading(R.mipmap.ic_main_user_default_photo_nor)// 设置图片下载期间显示的图片
                 .showImageForEmptyUri(R.mipmap.ic_main_user_default_photo_nor)// 设置图片Uri为空或是错误的时候显示的图片
@@ -203,6 +201,9 @@ public class MainActivityController implements View.OnClickListener{
                 break;
             case ViewPagerAdapter.SHARED_POS:
                 materialSheetFab.showFab();
+                break;
+            case ViewPagerAdapter.CALL_SERVICE:
+                materialSheetFab.hideSheetThenFab();
                 break;
           //  case ViewPagerAdapter.FAVORITES_POS:
             //    materialSheetFab.hideSheetThenFab();
