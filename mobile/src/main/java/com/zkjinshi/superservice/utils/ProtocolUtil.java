@@ -540,4 +540,12 @@ public class ProtocolUtil {
     public static String getDeleteSecondTagUrl(String secondTagId){
         return ConfigUtil.getInst().getForDomain()+"res/v1/call/srvtag?secondsrctagid="+secondTagId;
     }
+
+    /**
+     * 获取部门列表
+     * @return
+     */
+    public static String getRoleListUrl(){
+        return ConfigUtil.getInst().getForDomain()+"res/v1/shop/roles";
+    }
 }

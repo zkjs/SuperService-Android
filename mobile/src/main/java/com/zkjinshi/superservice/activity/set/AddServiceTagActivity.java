@@ -95,7 +95,13 @@ public class AddServiceTagActivity extends BaseAppCompatActivity {
             public boolean onMenuItemClick(android.view.MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.menu_add_service_tag_next://下一步
-
+                        String firstTagName = inputSeviceTagNameEtv.getText().toString().trim();
+                        Intent intent = new Intent(AddServiceTagActivity.this,ChooseCoverageActivity.class);
+                        intent.putExtra("firstTagName",firstTagName);
+                        intent.putExtra("selectMemberList",selectMemberList);
+                        startActivity(intent);
+                        finish();
+                        overridePendingTransition(R.anim.slide_in_right,R.anim.slide_out_left);
                         break;
                 }
                 return true;

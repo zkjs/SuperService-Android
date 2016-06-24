@@ -82,6 +82,18 @@
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
         <activity
+            android:name=".activity.set.ChooseAgencyActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
+        <activity
+            android:name=".activity.set.ChooseCoverageActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
+        <activity
             android:name=".activity.set.ServiceSecondTagListActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
