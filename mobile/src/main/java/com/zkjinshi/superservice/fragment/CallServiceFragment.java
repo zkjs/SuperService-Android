@@ -6,15 +6,29 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.adapter.CallServiceAdapter;
 import com.zkjinshi.superservice.listener.RecyclerItemClickListener;
+import com.zkjinshi.superservice.net.ExtNetRequestListener;
+import com.zkjinshi.superservice.net.MethodType;
+import com.zkjinshi.superservice.net.NetRequest;
+import com.zkjinshi.superservice.net.NetRequestTask;
+import com.zkjinshi.superservice.net.NetResponse;
+import com.zkjinshi.superservice.response.NoticeResponse;
+import com.zkjinshi.superservice.response.ServiceTaskListResponse;
+import com.zkjinshi.superservice.utils.CacheUtil;
+import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.vo.NoticeVo;
 import com.zkjinshi.superservice.vo.ServiceTaskVo;
 
@@ -175,6 +189,69 @@ public class CallServiceFragment extends Fragment implements CallServiceAdapter.
      * @param isRefresh
      */
     private void requestCallServiceTask(final boolean isRefresh){
+        String noticesUrl = ProtocolUtil.getServiceListUrl(""+PAGE_NO,""+PAGE_SIZE);
+        NetRequest netRequest = new NetRequest(noticesUrl);
+        NetRequestTask netRequestTask = new NetRequestTask(getActivity(), netRequest, NetResponse.class);
+        netRequestTask.methodType = MethodType.GET;
+        netRequestTask.setNetRequestListener(new ExtNetRequestListener(getActivity()) {
+            @Override
+            public void onNetworkRequestError(int errorCode, String errorMessage) {
+                Log.i(TAG, "errorCode:" + errorCode);
+                Log.i(TAG, "errorMessage:" + errorMessage);
+                if (null != refreshLayout) {
+                    refreshLayout.setRefreshing(false);
+                }
+                isLoadMoreAble = true;
+            }
 
+            @Override
+            public void onNetworkRequestCancelled() {
+                isLoadMoreAble = true;
+            }
+
+            @Override
+            public void onNetworkResponseSucceed(NetResponse result) {
+                super.onNetworkResponseSucceed(result);
+                try {
+                    Log.i(TAG, "result.rawResult:" + result.rawResult);
+                    isLoadMoreAble = true;
+                    if (null != refreshLayout) {
+                        refreshLayout.setRefreshing(false);
+                    }
+                    ServiceTaskListResponse serviceTaskListResponse = new Gson().fromJson(result.rawResult,ServiceTaskListResponse.class);
+                    if(null != serviceTaskListResponse){
+                        int resultCode = serviceTaskListResponse.getRes();
+                        if(0 == resultCode){
+                            requestServiceList = serviceTaskListResponse.getData();
+                            if(isRefresh){
+                                serviceList = requestServiceList;
+                            }else {
+                                serviceList.addAll(requestServiceList);
+                            }
+                            if(null != requestServiceList && !requestServiceList.isEmpty()){
+                                PAGE_NO++;
+                            }else {
+                                DialogUtil.getInstance().showCustomToast(getActivity(),"再无更多数据", Gravity.CENTER);
+                            }
+                            callServiceAdapter.setServiceList(serviceList);
+                        }else {
+                            String resultMsg = serviceTaskListResponse.getResDesc();
+                            if(!TextUtils.isEmpty(resultMsg)){
+                                DialogUtil.getInstance().showCustomToast(getActivity(),resultMsg,Gravity.CENTER);
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void beforeNetworkRequestStart() {
+
+            }
+        });
+        netRequestTask.isShowLoadingDialog = false;
+        netRequestTask.execute();
     }
 }

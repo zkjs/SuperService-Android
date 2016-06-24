@@ -472,7 +472,7 @@ public class ProtocolUtil {
      * @return
      */
     public static String upgradeNewestVersion(int apptype,String devicetype,String verno){
-        return ConfigUtil.getInst().getForDomain()+"/res/v1/systempub/upgrade/newestversion/"+apptype+"/"+devicetype+"/"+verno;
+        return ConfigUtil.getInst().getForDomain()+"res/v1/systempub/upgrade/newestversion/"+apptype+"/"+devicetype+"/"+verno;
     }
 
     /**
@@ -481,7 +481,7 @@ public class ProtocolUtil {
      * @return
      */
     public static String deleteEmployee(String ids){
-        return ConfigUtil.getInst().getForDomain()+"/res/v1/delete/ss?userids="+ids;
+        return ConfigUtil.getInst().getForDomain()+"res/v1/delete/ss?userids="+ids;
     }
 
     /**
@@ -492,4 +492,52 @@ public class ProtocolUtil {
         return ConfigUtil.getInst().getPyxDomain()+"lbs/v1/loc/beacon";
     }
 
+    /**
+     * 获取呼叫通知列表
+     */
+    public static String getServiceListUrl(String pageNo,String pageSize){
+        return ConfigUtil.getInst().getForDomain()+"res/v1/call/service/task?page="+pageNo+"&page_size="+pageSize;
+    }
+
+    /**
+     * 获取服务标签列表
+     * @return
+     */
+    public static String getServiceTagListUrl(){
+        return ConfigUtil.getInst().getForDomain()+"res/v1/call/servicetag";
+    }
+
+    /**
+     * 添加一级标签
+     * @return
+     */
+    public static String getAddFirstTagUrl(){
+        return ConfigUtil.getInst().getForDomain()+"res/v1/call/firstsrvtag";
+    }
+
+    /**
+     * 添加二级标签
+     * @return
+     */
+    public static String getAddSecondTagUrl(){
+        return ConfigUtil.getInst().getForDomain()+"res/v1/call/secondsrvtag";
+    }
+
+    /**
+     * 删除一级标签
+     * @param firstTagId
+     * @return
+     */
+    public static String getDeleteFirstTagUrl(String firstTagId){
+        return ConfigUtil.getInst().getForDomain()+"res/v1/call/srvtag?firstsrvtagid="+firstTagId;
+    }
+
+    /**
+     * 删除二级标签
+     * @param secondTagId
+     * @return
+     */
+    public static String getDeleteSecondTagUrl(String secondTagId){
+        return ConfigUtil.getInst().getForDomain()+"res/v1/call/srvtag?secondsrctagid="+secondTagId;
+    }
 }

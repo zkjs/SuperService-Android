@@ -37,7 +37,7 @@ public class CallServiceAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     public void setServiceList(ArrayList<ServiceTaskVo> serviceList) {
         if(null == serviceList){
-            serviceList = new ArrayList<ServiceTaskVo>();
+            this.serviceList = new ArrayList<ServiceTaskVo>();
         }else {
             this.serviceList = serviceList;
         }
@@ -46,7 +46,7 @@ public class CallServiceAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     public CallServiceAdapter(Context context, ArrayList<ServiceTaskVo> serviceList){
         this.context = context;
-
+        this.setServiceList(serviceList);
     }
 
     @Override
@@ -74,24 +74,23 @@ public class CallServiceAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         final ServiceTaskVo serviceTaskVo = serviceList.get(position);
         UserVo userVo = null;
         if(null != serviceTaskVo){
-            userVo = serviceTaskVo.getUser();
-            if(null != userVo){
-                String userImage = userVo.getUserimage();
-                int width = (int)context.getResources().getDimension(R.dimen.user_photo_width);
-                String imageUrl = ProtocolUtil.getImageUrlByWidth(context,userImage,width);
-                if(!TextUtils.isEmpty(imageUrl)){
-                    ((CallServiceViewHolder)holder).userPhotoSdv.setImageURI(Uri.parse(imageUrl));
-                }
-                String userNameStr = userVo.getUsername();
-                if(!TextUtils.isEmpty(userNameStr)){
-                    ((CallServiceViewHolder)holder).userNameTv.setText(userNameStr);
-                }
+
+            String userImage = serviceTaskVo.getUserimage();
+            int width = (int)context.getResources().getDimension(R.dimen.user_photo_width);
+            String imageUrl = ProtocolUtil.getImageUrlByWidth(context,userImage,width);
+            if(!TextUtils.isEmpty(imageUrl)){
+                ((CallServiceViewHolder)holder).userPhotoSdv.setImageURI(Uri.parse(imageUrl));
             }
+            String userNameStr = serviceTaskVo.getUsername();
+            if(!TextUtils.isEmpty(userNameStr)){
+                ((CallServiceViewHolder)holder).userNameTv.setText(userNameStr);
+            }
+
         }
-        int flowStatus = serviceTaskVo.getFlow();//1. 发起任务 2. 指派 3. 就绪 4.取消 5 完成 6 评价
-        if(flowStatus == 1 ){
+        int statuscode = serviceTaskVo.getStatuscode();//1. 发起任务 2. 指派 3. 就绪 4.取消 5 完成 6 评价
+        if(statuscode == 1 ){
             ((CallServiceViewHolder)holder).statusIv.setBackgroundResource(R.drawable.bg_service_circle_red);
-        }else if(flowStatus == 2 || flowStatus == 3){
+        }else if(statuscode == 2 || statuscode == 3){
             ((CallServiceViewHolder)holder).statusIv.setBackgroundResource(R.drawable.bg_service_circle_blue);
         }else {
             ((CallServiceViewHolder)holder).statusIv.setBackgroundResource(R.drawable.bg_service_circle_gray);
@@ -100,7 +99,7 @@ public class CallServiceAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         if(!TextUtils.isEmpty(statusDescStr)){
             ((CallServiceViewHolder)holder).statusTv.setText(statusDescStr);
         }
-        String timeStr = serviceTaskVo.getTime();
+        String timeStr = serviceTaskVo.getCreatetime();
         if(!TextUtils.isEmpty(timeStr)){
             ((CallServiceViewHolder)holder).timeTv.setText(timeStr);
         }

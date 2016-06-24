@@ -10,45 +10,39 @@ import java.io.Serializable;
  */
 public class ServiceTaskVo implements Serializable {
 
-    private UserVo user;
-    private String place;//服务场所
-    private String project;//服务项目
-    private String time;
-    private String status;
     private String taskid;
-    private int flow;//1. 发起任务 2. 指派 3. 就绪 4.取消 5 完成 6 评价
+    private String svrname;
+    private String status;
+    private int statuscode;//1. 发起任务 2. 指派 3. 就绪 4.取消 5 完成 6 评价
     private int isowner;//0:是所有者用来区分指派和取消按钮
+    private String userid;
+    private String username;
+    private String userimage;
+    private int operationseq;
+    private String createtime;
 
-    public String getTime() {
-        return time;
+    public String getCreatetime() {
+        return createtime;
     }
 
-    public void setTime(String time) {
-        this.time = time;
+    public void setCreatetime(String createtime) {
+        this.createtime = createtime;
     }
 
-    public String getPlace() {
-        return place;
+    public String getTaskid() {
+        return taskid;
     }
 
-    public void setPlace(String place) {
-        this.place = place;
+    public void setTaskid(String taskid) {
+        this.taskid = taskid;
     }
 
-    public String getProject() {
-        return project;
+    public String getSvrname() {
+        return svrname;
     }
 
-    public void setProject(String project) {
-        this.project = project;
-    }
-
-    public UserVo getUser() {
-        return user;
-    }
-
-    public void setUser(UserVo user) {
-        this.user = user;
+    public void setSvrname(String svrname) {
+        this.svrname = svrname;
     }
 
     public String getStatus() {
@@ -59,12 +53,12 @@ public class ServiceTaskVo implements Serializable {
         this.status = status;
     }
 
-    public int getFlow() {
-        return flow;
+    public int getStatuscode() {
+        return statuscode;
     }
 
-    public void setFlow(int flow) {
-        this.flow = flow;
+    public void setStatuscode(int statuscode) {
+        this.statuscode = statuscode;
     }
 
     public int getIsowner() {
@@ -75,11 +69,35 @@ public class ServiceTaskVo implements Serializable {
         this.isowner = isowner;
     }
 
-    public String getTaskid() {
-        return taskid;
+    public String getUserid() {
+        return userid;
     }
 
-    public void setTaskid(String taskid) {
-        this.taskid = taskid;
+    public void setUserid(String userid) {
+        this.userid = userid;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getUserimage() {
+        return userimage;
+    }
+
+    public void setUserimage(String userimage) {
+        this.userimage = userimage;
+    }
+
+    public int getOperationseq() {
+        return operationseq;
+    }
+
+    public void setOperationseq(int operationseq) {
+        this.operationseq = operationseq;
     }
 }

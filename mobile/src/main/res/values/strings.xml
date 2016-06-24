@@ -65,6 +65,8 @@
     <string name="action_edit">编辑</string>
     <string name="action_checkout">收款中心</string>
     <string name="action_tian_jia">添加</string>
+    <string name="action_finish">完成</string>
+    <string name="action_next">下一步</string>
     <string name="add_clients">添加客户</string>
     <string name="team_edit">团队编辑</string>
     <string name="change_department">更改部门</string>

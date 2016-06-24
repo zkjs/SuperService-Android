@@ -26,6 +26,8 @@ import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.pyxis.bluetooth.NetBeaconVo;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.set.ClientActivity;
+import com.zkjinshi.superservice.activity.set.ServiceSecondTagListActivity;
+import com.zkjinshi.superservice.activity.set.ServiceTagListActivity;
 import com.zkjinshi.superservice.activity.set.SettingActivity;
 import com.zkjinshi.superservice.activity.set.TeamContactsActivity;
 import com.zkjinshi.superservice.base.BaseAppCompatActivity;
@@ -95,11 +97,11 @@ public class MainActivity extends BaseAppCompatActivity {
         }else {
             clientTv.setVisibility(View.GONE);
         }
-        if(AccessControlUtil.isShowView(AccessControlUtil.SERVICETAG)){
-            serviceTagTv.setVisibility(View.VISIBLE);
-        }else {
-            serviceTagTv.setVisibility(View.GONE);
-        }
+//        if(AccessControlUtil.isShowView(AccessControlUtil.SERVICETAG)){
+//            serviceTagTv.setVisibility(View.VISIBLE);
+//        }else {
+//            serviceTagTv.setVisibility(View.GONE);
+//        }
 
         //打开蓝牙请求
         BlueToothManager.getInstance().openBluetooth();
@@ -156,6 +158,7 @@ public class MainActivity extends BaseAppCompatActivity {
                 if(CheckoutInnerManager.getInstance().isInnerCheckout()){
                     Intent intent = new Intent(MainActivity.this,CheckOutActivity.class);
                     startActivity(intent);
+                    overridePendingTransition(R.anim.activity_new, R.anim.activity_out);
                 }else {
                     DialogUtil.getInstance().showCustomToast(view.getContext(),"您不在收款区域,暂时无法收款!",Gravity.CENTER);
                 }
@@ -167,7 +170,9 @@ public class MainActivity extends BaseAppCompatActivity {
         serviceTagTv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent myClient = new Intent(MainActivity.this, ServiceTagListActivity.class);
+                MainActivity.this.startActivity(myClient);
+                overridePendingTransition(R.anim.activity_new, R.anim.activity_out);
             }
         });
 
