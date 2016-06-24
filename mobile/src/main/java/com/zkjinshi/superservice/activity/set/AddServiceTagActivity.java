@@ -219,15 +219,15 @@ public class AddServiceTagActivity extends BaseAppCompatActivity {
                             return;
                         }
                         if(getEmployeesResponse.getRes() == 0){
-                            ArrayList<EmployeeVo> employeeVos = getEmployeesResponse.getData();
-                            if (null != employeeVos && !employeeVos.isEmpty()) {
+                            teamMemberList = getEmployeesResponse.getData();
+                            if (null != teamMemberList && !teamMemberList.isEmpty()) {
                                 ShopEmployeeDBUtil.getInstance().deleteAllShopEmployee();
-                                ShopEmployeeDBUtil.getInstance().batchAddShopEmployees(employeeVos);
-                                employeeVos = ShopEmployeeDBUtil.getInstance().queryAllExceptUser(CacheUtil.getInstance().getUserId());
+                                ShopEmployeeDBUtil.getInstance().batchAddShopEmployees(teamMemberList);
+                                teamMemberList = ShopEmployeeDBUtil.getInstance().queryAllExceptUser(CacheUtil.getInstance().getUserId());
                                 List<String> strLetters = new ArrayList<>();//首字母显示数组
 
                                 //获取部门首字母进行排序
-                                for (EmployeeVo employeeVo : employeeVos) {
+                                for (EmployeeVo employeeVo : teamMemberList) {
                                     String roleName = employeeVo.getRolename();
                                     String sortLetter = null;
 
@@ -244,7 +244,7 @@ public class AddServiceTagActivity extends BaseAppCompatActivity {
                                     }
 
                                 }
-                                teamMemberAdapter.setData(employeeVos);
+                                teamMemberAdapter.setData(teamMemberList);
                                 ListViewUtil.setListViewHeightBasedOnChildren(memberslistView);
                             }
                         }else{
