@@ -22,7 +22,7 @@
                 android:layout_height="88dp">
 
                 <com.facebook.drawee.view.SimpleDraweeView
-                    android:id="@+id/client_avatar_sdv"
+                    android:id="@+id/user_photo_sdv"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_gravity="center_vertical"
@@ -38,19 +38,21 @@
                     fresco:failureImageScaleType="fitCenter"/>
 
                 <TextView
+                    android:id="@+id/user_name_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_toRightOf="@id/client_avatar_sdv"
-                    android:layout_alignTop="@id/client_avatar_sdv"
+                    android:layout_toRightOf="@id/user_photo_sdv"
+                    android:layout_alignTop="@id/user_photo_sdv"
                     android:textSize="14sp"
                     android:textColor="#101010"
                     android:text="@null"/>
 
                 <TextView
+                    android:id="@+id/service_name_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_toRightOf="@id/client_avatar_sdv"
-                    android:layout_alignBottom="@id/client_avatar_sdv"
+                    android:layout_toRightOf="@id/user_photo_sdv"
+                    android:layout_alignBottom="@id/user_photo_sdv"
                     android:textSize="14sp"
                     android:textColor="#101010"
                     android:text="@null"/>
@@ -75,8 +77,7 @@
                 android:visibility="visible" />
 
         </LinearLayout>
+
     </ScrollView>
-
-
 
 </LinearLayout>

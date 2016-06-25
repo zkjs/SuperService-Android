@@ -556,4 +556,13 @@ public class ProtocolUtil {
     public static String getUpdateServiceUrl(){
         return ConfigUtil.getInst().getForDomain()+"res/v1/call/service/task";
     }
+
+    /**
+     * 获取服务详情
+     * @param taskId
+     * @return
+     */
+    public static String getTaskDetailUrl(String taskId){
+        return ConfigUtil.getInst().getForDomain()+"res/v1/call/service/task/detail/"+taskId;
+    }
 }

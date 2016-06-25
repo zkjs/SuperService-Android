@@ -1,5 +1,6 @@
 package com.zkjinshi.superservice.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -20,6 +21,7 @@ import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
+import com.zkjinshi.superservice.activity.set.DetailTaskActivity;
 import com.zkjinshi.superservice.adapter.CallServiceAdapter;
 import com.zkjinshi.superservice.listener.RecyclerItemClickListener;
 import com.zkjinshi.superservice.net.ExtNetRequestListener;
@@ -210,7 +212,10 @@ public class CallServiceFragment extends Fragment implements CallServiceAdapter.
 
     @Override
     public void executeAppoint(ServiceTaskVo taskVo) {//指派呼叫服务
-
+        Intent intent = new Intent(getActivity(),DetailTaskActivity.class);
+        startActivity(intent);
+        intent.putExtra("taskId",taskVo.getTaskid());
+        getActivity().overridePendingTransition(R.anim.slide_in_right,R.anim.slide_out_left);
     }
 
     @Override

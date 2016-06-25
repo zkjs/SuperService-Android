@@ -3,6 +3,7 @@ package com.zkjinshi.superservice.activity.set;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
@@ -10,19 +11,22 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.gson.Gson;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
-import com.zkjinshi.superservice.adapter.CoverageAdapter;
+import com.zkjinshi.superservice.adapter.TaskHistoryAdapter;
 import com.zkjinshi.superservice.base.BaseAppCompatActivity;
-import com.zkjinshi.superservice.bean.ZoneBean;
-import com.zkjinshi.superservice.response.GetZoneListResponse;
+import com.zkjinshi.superservice.response.TaskDetailResponse;
 import com.zkjinshi.superservice.utils.AsyncHttpClientUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.Constants;
+import com.zkjinshi.superservice.utils.ListViewUtil;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
+import com.zkjinshi.superservice.vo.ServiceHistoryVo;
+import com.zkjinshi.superservice.vo.TaskDetailVo;
 
 import org.json.JSONObject;
 
@@ -44,19 +48,17 @@ public class DetailTaskActivity extends BaseAppCompatActivity {
 
     private Toolbar toolbar;
     private TextView titleIv;
-    private ListView coveragelistView;
-    private Menu menu;
-    private String firstTagName;
-    private ArrayList<String> selectMemberList;
-    private ArrayList<String> selectCoverageList;
-    private ArrayList<ZoneBean> zoneList;
-    private CoverageAdapter coverageAdapter;
-    private Map<String, Boolean> selectMap;
+    private String taskId;
+    private SimpleDraweeView userPhotoSdv;
+    private TextView userNameTv;
+    private TextView serviceNameTv;
+    private ListView historyListView;
+    private TaskHistoryAdapter taskHistoryAdapter;
+    private ArrayList<ServiceHistoryVo> historyList;
 
     private void initView(){
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         titleIv = (TextView) findViewById(R.id.tv_center_title);
-        coveragelistView = (ListView)findViewById(R.id.list_view_coverage);
     }
 
     private void initData(){
@@ -64,20 +66,15 @@ public class DetailTaskActivity extends BaseAppCompatActivity {
         toolbar.setNavigationIcon(R.mipmap.ic_fanhui);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        titleIv.setText("选择服务区域");
+        titleIv.setText("任务追踪");
         if(null != getIntent()){
-            if(null != getIntent().getStringExtra("firstTagName")){
-                firstTagName = getIntent().getStringExtra("firstTagName");
-            }
-            if(null != getIntent().getStringArrayListExtra("selectMemberList")){
-                selectMemberList = getIntent().getStringArrayListExtra("selectMemberList");
+            if(null != getIntent().getStringExtra("taskId")){
+                taskId = getIntent().getStringExtra("taskId");
             }
         }
-        selectCoverageList = new ArrayList<String>();
-        selectMap = new HashMap<String, Boolean>();
-        coverageAdapter = new CoverageAdapter(this,zoneList);
-        coveragelistView.setAdapter(coverageAdapter);
-        requestCoverageListTask();
+        taskHistoryAdapter = new TaskHistoryAdapter(this,historyList);
+        historyListView.setAdapter(taskHistoryAdapter);
+        requestTaskDetailTask(taskId);
     }
 
     private void initListeners(){
@@ -89,42 +86,23 @@ public class DetailTaskActivity extends BaseAppCompatActivity {
                 overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
             }
         });
+    }
 
-        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(android.view.MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.menu_choose_coverage_next://下一步
-                        Intent intent = new Intent(DetailTaskActivity.this,ChooseAgencyActivity.class);
-                        intent.putExtra("firstTagName",firstTagName);
-                        intent.putExtra("selectMemberList",selectMemberList);
-                        intent.putExtra("selectCoverageList",selectCoverageList);
-                        startActivity(intent);
-                        finish();
-                        overridePendingTransition(R.anim.slide_in_right,R.anim.slide_out_left);
-                        break;
-                }
-                return true;
+    private void updateData(TaskDetailVo taskDetailVo){
+        if(null != taskDetailVo){
+            String userNameStr = taskDetailVo.getUsername();
+            String locDesc = taskDetailVo.getLocdesc();
+            if(!TextUtils.isEmpty(userNameStr) && !TextUtils.isEmpty(locDesc)){
+                userNameTv.setText(userNameStr+" (" + locDesc + ")");
             }
-        });
-
-        coveragelistView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ZoneBean zoneBean = (ZoneBean) parent.getAdapter().getItem(position);
-                String locId = zoneBean.getLocid();
-                if (selectMap != null
-                        && selectMap.containsKey(locId)
-                        && selectMap.get(locId)) {
-                    selectMap.put(locId, false);
-                    selectCoverageList.remove(locId);
-                } else {
-                    selectMap.put(locId, true);
-                    selectCoverageList.add(locId);
-                }
-                coverageAdapter.setSelectMap(selectMap);
+            String serviceNameStr = taskDetailVo.getSrvname();
+            if(!TextUtils.isEmpty(serviceNameStr)){
+                serviceNameTv.setText(serviceNameStr);
             }
-        });
+            historyList = taskDetailVo.getHistory();
+            taskHistoryAdapter.setHistoryList(historyList);
+            ListViewUtil.setListViewHeightBasedOnChildren(historyListView);
+        }
     }
 
     @Override
@@ -136,18 +114,11 @@ public class DetailTaskActivity extends BaseAppCompatActivity {
         initListeners();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_choose_coverage, menu);
-        this.menu = menu;
-        return true;
-    }
-
     /**
-     * 获取服务区域
+     * 获取任务追踪明细
      *
      */
-    private void requestCoverageListTask(){
+    private void requestTaskDetailTask(String taskId){
         try{
             AsyncHttpClient client = new AsyncHttpClient();
             client.setTimeout(Constants.OVERTIMEOUT);
@@ -155,7 +126,7 @@ public class DetailTaskActivity extends BaseAppCompatActivity {
             client.addHeader("Token",CacheUtil.getInstance().getExtToken());
             JSONObject jsonObject = new JSONObject();
             StringEntity stringEntity = new StringEntity(jsonObject.toString());
-            String url = ProtocolUtil.getZoneList();
+            String url = ProtocolUtil.getTaskDetailUrl(taskId);
             client.get(DetailTaskActivity.this,url, stringEntity, "application/json", new AsyncHttpResponseHandler(){
                 public void onStart(){
                     DialogUtil.getInstance().showAvatarProgressDialog(DetailTaskActivity.this,"");
@@ -168,12 +139,12 @@ public class DetailTaskActivity extends BaseAppCompatActivity {
                 public void onSuccess(int statusCode, Header[] headers, byte[] responseBody){
                     try {
                         String response = new String(responseBody,"utf-8");
-                        GetZoneListResponse getZoneListResponse = new Gson().fromJson(response,GetZoneListResponse.class);
-                        if(null != getZoneListResponse && getZoneListResponse.getRes() == 0){
-                            zoneList= getZoneListResponse.getData();
-                            coverageAdapter.setZoneList(zoneList);
+                        TaskDetailResponse taskDetialResponse = new Gson().fromJson(response,TaskDetailResponse.class);
+                        if(null != taskDetialResponse && taskDetialResponse.getRes() == 0){
+                            TaskDetailVo taskDetailVo = taskDetialResponse.getData();
+                            updateData(taskDetailVo);
                         }else{
-                            Toast.makeText(DetailTaskActivity.this,getZoneListResponse.getResDesc(),Toast.LENGTH_SHORT).show();
+                            Toast.makeText(DetailTaskActivity.this,taskDetialResponse.getResDesc(),Toast.LENGTH_SHORT).show();
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
