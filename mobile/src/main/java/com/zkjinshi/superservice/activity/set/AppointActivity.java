@@ -7,10 +7,12 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,6 +30,7 @@ import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.chat.single.ChatActivity;
 import com.zkjinshi.superservice.adapter.TeamContactsAdapter;
 import com.zkjinshi.superservice.base.BaseAppCompatActivity;
+import com.zkjinshi.superservice.fragment.CallServiceNetController;
 import com.zkjinshi.superservice.manager.SSOManager;
 import com.zkjinshi.superservice.response.BaseFornaxResponse;
 import com.zkjinshi.superservice.response.GetEmployeesResponse;
@@ -65,20 +68,20 @@ public class AppointActivity extends BaseAppCompatActivity {
 
     private Toolbar         mToolbar;
     private TextView        mTvCenterTitle;
-    private SwipeMenuListView mRvTeamContacts;
+    private ListView mRvTeamContacts;
     private RelativeLayout  mRlSideBar;
     private TextView        mTvDialog;
     private AutoSideBar     mAutoSideBar;
+    private String taskId;
 
     private TeamContactsAdapter mTeamContactAdapter;
-    private IdentityType mUserType;
 
     Context mContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_team_contacts);
+        setContentView(R.layout.activity_appoint);
         mContext = this;
 
         initView();
@@ -95,7 +98,7 @@ public class AppointActivity extends BaseAppCompatActivity {
         mTvCenterTitle = (TextView) findViewById(R.id.tv_center_title);
         mTvCenterTitle.setText(getString(R.string.team));
 
-        mRvTeamContacts = (SwipeMenuListView)     findViewById(R.id.rcv_team_contacts);
+        mRvTeamContacts = (ListView)     findViewById(R.id.rcv_team_contacts);
         mRlSideBar      = (RelativeLayout)   findViewById(R.id.rl_side_bar);
         mTvDialog       = (TextView)         findViewById(R.id.tv_dialog);
         mAutoSideBar    = new AutoSideBar(AppointActivity.this);
@@ -108,40 +111,18 @@ public class AppointActivity extends BaseAppCompatActivity {
     }
 
     private void initData() {
-        mUserType = CacheUtil.getInstance().getLoginIdentity();
-
-        if(AccessControlUtil.isShowView(AccessControlUtil.DELEMPLOYEE)){
-            SwipeMenuCreator creator = new SwipeMenuCreator() {
-
-                @Override
-                public void create(SwipeMenu menu) {
-                    SwipeMenuItem openItem = new SwipeMenuItem(
-                            getApplicationContext());
-                    openItem.setBackground(new ColorDrawable(Color.rgb(0xF9,
-                            0x3F, 0x25)));
-                    openItem.setWidth(DisplayUtil.dip2px(AppointActivity.this,90));
-                    openItem.setTitle("删除");
-                    openItem.setTitleSize(16);
-                    openItem.setTitleColor(Color.WHITE);
-                    menu.addMenuItem(openItem);
-                }
-            };
-            mRvTeamContacts.setMenuCreator(creator);
-        }
+        taskId = getIntent().getStringExtra("taskId");
         mTeamContactAdapter = new TeamContactsAdapter(AppointActivity.this,new ArrayList<EmployeeVo>());
         mRvTeamContacts.setAdapter(mTeamContactAdapter);
+        getEmployeesList(taskId);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        getEmployeesList();
     }
 
-
-
-
-    private void getEmployeesList(){
+    private void getEmployeesList(String taskId){
         try{
             AsyncHttpClient client = new AsyncHttpClient();
             client.setTimeout(Constants.OVERTIMEOUT);
@@ -149,7 +130,7 @@ public class AppointActivity extends BaseAppCompatActivity {
             client.addHeader("Token",CacheUtil.getInstance().getExtToken());
             JSONObject jsonObject = new JSONObject();
             StringEntity stringEntity = new StringEntity(jsonObject.toString());
-            String url = ProtocolUtil.getEmpployeeList();
+            String url = ProtocolUtil.getTaskDeptUrl(taskId);
             client.get(mContext,url, stringEntity, "application/json", new AsyncHttpResponseHandler(){
                 public void onStart(){
                     super.onStart();
@@ -263,108 +244,18 @@ public class AppointActivity extends BaseAppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 EmployeeVo employeeVo = mTeamContactAdapter.mDatas.get(position);
-                String userId = employeeVo.getUserid();
-                String toName = employeeVo.getUsername();
-                String shopName = CacheUtil.getInstance().getShopFullName();
-                Intent intent = new Intent(AppointActivity.this, ChatActivity.class);
-                intent.putExtra(Constants.EXTRA_USER_ID, userId);
-                PayloadVo payloadVo = SSOManager.getInstance().decodeToken(CacheUtil.getInstance().getExtToken());
-                if (!TextUtils.isEmpty(payloadVo.getShopid())) {
-                    intent.putExtra(Constants.EXTRA_SHOP_ID,payloadVo.getShopid());
-                }
-                intent.putExtra(Constants.EXTRA_SHOP_NAME, shopName);
-                if(!TextUtils.isEmpty(toName)){
-                    intent.putExtra(Constants.EXTRA_TO_NAME, toName);
-                }
-                intent.putExtra(Constants.EXTRA_FROM_NAME, CacheUtil.getInstance().getUserName());
-                startActivity(intent);
-            }
-        });
-
-        mRvTeamContacts.setOnMenuItemClickListener(new SwipeMenuListView.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
-                switch (index) {
-                    case DELETE_MENU_ITEM://打开删除按钮
-                        EmployeeVo employeeVo = mTeamContactAdapter.mDatas.get(position);
-                        requestDeleteEmployeeTask(employeeVo);
-                        break;
-                }
-                return false;
-            }
-        });
-
-        if(AccessControlUtil.isShowView(AccessControlUtil.DELEMPLOYEE)){
-            mRvTeamContacts.setOnMenuStateChangeListener(new SwipeMenuListView.OnMenuStateChangeListener() {
-                @Override
-                public void onMenuOpen(int position) {
-                    //Toast.makeText(TeamContactsActivity.this,"onMenuOpen",Toast.LENGTH_SHORT).show();
-                    mAutoSideBar.setVisibility(View.GONE);
-                }
-
-                @Override
-                public void onMenuClose(int position) {
-                    //Toast.makeText(TeamContactsActivity.this,"onMenuClose",Toast.LENGTH_SHORT).show();
-                    mAutoSideBar.setVisibility(View.VISIBLE);
-                }
-            });
-        }
-    }
-
-    //删除员工
-    private void requestDeleteEmployeeTask(EmployeeVo employeeVo) {
-        try{
-            AsyncHttpClient client = new AsyncHttpClient();
-            client.setTimeout(Constants.OVERTIMEOUT);
-            client.addHeader("Content-Type","application/json; charset=UTF-8");
-            client.addHeader("Token", CacheUtil.getInstance().getExtToken());
-            JSONObject jsonObject = new JSONObject();
-            StringEntity stringEntity = new StringEntity(jsonObject.toString(),"UTF-8");
-            String url = ProtocolUtil.deleteEmployee(employeeVo.getUserid());
-            client.delete(mContext,url, stringEntity, "application/json", new AsyncHttpResponseHandler(){
-                public void onStart(){
-                    DialogUtil.getInstance().showAvatarProgressDialog(mContext,"");
-                }
-
-                public void onFinish(){
-                    DialogUtil.getInstance().cancelProgressDialog();
-                    mAutoSideBar.setVisibility(View.VISIBLE);
-                }
-
-                public void onSuccess(int statusCode, Header[] headers, byte[] responseBody){
-                    try {
-                        String response = new String(responseBody,"utf-8");
-                        BaseFornaxResponse baseFornaxResponse = new Gson().fromJson(response,BaseFornaxResponse.class);
-                        if(baseFornaxResponse.getRes() == 0){
-                            getEmployeesList();
-                        }else{
-                            Toast.makeText(mContext,baseFornaxResponse.getResDesc(),Toast.LENGTH_SHORT).show();
-                        }
-
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                String target = employeeVo.getUserid();
+                //指派(2), 就绪(3), 取消(4), 完成(5), 评价(6)
+                int taskAction = 2;
+                CallServiceNetController.getInstance().requestUpdateServiceTask(taskId, taskAction, target, AppointActivity.this, new CallServiceNetController.NetCallBack() {
+                    @Override
+                    public void onSuccess() {
+                        DialogUtil.getInstance().showCustomToast(AppointActivity.this,"指派成功", Gravity.CENTER);
+                        finish();
                     }
-                }
-
-                public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error){
-                    Toast.makeText(mContext,"API 错误："+statusCode,Toast.LENGTH_SHORT).show();
-                    AsyncHttpClientUtil.onFailure(mContext,statusCode);
-                }
-            });
-        }catch (Exception e){
-            Toast.makeText(mContext,"json解析错误",Toast.LENGTH_SHORT).show();
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (RESULT_OK == resultCode) {
-            if (ADD_REQUEST_CODE == requestCode) {
-
+                });
             }
-        }
+        });
     }
 
     @Override

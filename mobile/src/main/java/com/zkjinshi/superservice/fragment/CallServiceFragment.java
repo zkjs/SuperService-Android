@@ -1,6 +1,9 @@
 package com.zkjinshi.superservice.fragment;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -15,12 +18,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
+import com.zkjinshi.superservice.activity.set.AppointActivity;
 import com.zkjinshi.superservice.activity.set.DetailTaskActivity;
 import com.zkjinshi.superservice.adapter.CallServiceAdapter;
 import com.zkjinshi.superservice.listener.RecyclerItemClickListener;
@@ -29,18 +34,14 @@ import com.zkjinshi.superservice.net.MethodType;
 import com.zkjinshi.superservice.net.NetRequest;
 import com.zkjinshi.superservice.net.NetRequestTask;
 import com.zkjinshi.superservice.net.NetResponse;
-import com.zkjinshi.superservice.response.AddSecondTagResponse;
-import com.zkjinshi.superservice.response.BaseResponse;
-import com.zkjinshi.superservice.response.NoticeResponse;
+import com.zkjinshi.superservice.response.RoleListResponse;
 import com.zkjinshi.superservice.response.ServiceTaskListResponse;
+import com.zkjinshi.superservice.utils.AsyncHttpClientUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
-import com.zkjinshi.superservice.vo.NoticeVo;
-import com.zkjinshi.superservice.vo.SecondServiceTagVo;
 import com.zkjinshi.superservice.vo.ServiceTaskVo;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -69,7 +70,9 @@ public class CallServiceFragment extends Fragment implements CallServiceAdapter.
     private ArrayList<ServiceTaskVo> serviceList = new ArrayList<ServiceTaskVo>();
     private ArrayList<ServiceTaskVo> requestServiceList;
     private boolean isLoadMoreAble = true;
-    private int isowner = 1;//0: 获取所有者列表, 1: 获取非所有者列表
+    private int isower = 0;//0: 获取所有者列表, 1: 获取非所有者列表
+    private ServiceReceiver serviceReceiver;
+    private IntentFilter serviceIntentFilter;
 
     private void initView(View view){
         emptyLayout = (RelativeLayout)view.findViewById(R.id.call_empty_layout);
@@ -81,12 +84,17 @@ public class CallServiceFragment extends Fragment implements CallServiceAdapter.
     private void initData(){
         emptyTips.setText("暂无呼叫通知");
         callServiceAdapter = new CallServiceAdapter(getActivity(),serviceList);
+        callServiceAdapter.setOnOptionListener(this);
         recyclerView.setAdapter(callServiceAdapter);
         recyclerView.setHasFixedSize(true);
         recyclerView.setNestedScrollingEnabled(false);
         linearLayoutManager = new LinearLayoutManager(getActivity());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(linearLayoutManager);
+        serviceReceiver = new ServiceReceiver();
+        serviceIntentFilter = new IntentFilter();
+        serviceIntentFilter.addAction(Constants.ACTION_SERVICE);
+        getActivity().registerReceiver(serviceReceiver,serviceIntentFilter);
     }
 
     private void initListeners(){
@@ -140,7 +148,12 @@ public class CallServiceFragment extends Fragment implements CallServiceAdapter.
         callServiceAdapter.setOnItemClickListener(new RecyclerItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-
+                ServiceTaskVo serviceTaskVo = serviceList.get(position);
+                String taskId = serviceTaskVo.getTaskid();
+                Intent intent = new Intent(getActivity(),DetailTaskActivity.class);
+                intent.putExtra("taskId",taskId);
+                startActivity(intent);
+                getActivity().overridePendingTransition(R.anim.slide_in_right,R.anim.slide_out_left);
             }
         });
     }
@@ -172,11 +185,16 @@ public class CallServiceFragment extends Fragment implements CallServiceAdapter.
     @Override
     public void onResume() {
         super.onResume();
+        PAGE_NO = 0;
+        requestCallServiceTask(true);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+        if(null != serviceReceiver){
+            getActivity().unregisterReceiver(serviceReceiver);
+        }
     }
 
     @Override
@@ -213,9 +231,9 @@ public class CallServiceFragment extends Fragment implements CallServiceAdapter.
 
     @Override
     public void executeAppoint(ServiceTaskVo taskVo) {//指派呼叫服务
-        Intent intent = new Intent(getActivity(),DetailTaskActivity.class);
-        startActivity(intent);
+        Intent intent = new Intent(getActivity(),AppointActivity.class);
         intent.putExtra("taskId",taskVo.getTaskid());
+        startActivity(intent);
         getActivity().overridePendingTransition(R.anim.slide_in_right,R.anim.slide_out_left);
     }
 
@@ -240,7 +258,7 @@ public class CallServiceFragment extends Fragment implements CallServiceAdapter.
      * @param isowner
      */
     public void chooseTaskTab(int isowner){
-        this.isowner = isowner;
+        this.isower = isowner;
         PAGE_NO = 0;
         requestCallServiceTask(true);
     }
@@ -250,69 +268,90 @@ public class CallServiceFragment extends Fragment implements CallServiceAdapter.
      * @param isRefresh
      */
     private void requestCallServiceTask(final boolean isRefresh){
-        String noticesUrl = ProtocolUtil.getServiceListUrl(isowner,""+PAGE_NO,""+PAGE_SIZE);
-        NetRequest netRequest = new NetRequest(noticesUrl);
-        NetRequestTask netRequestTask = new NetRequestTask(getActivity(), netRequest, NetResponse.class);
-        netRequestTask.methodType = MethodType.GET;
-        netRequestTask.setNetRequestListener(new ExtNetRequestListener(getActivity()) {
-            @Override
-            public void onNetworkRequestError(int errorCode, String errorMessage) {
-                Log.i(TAG, "errorCode:" + errorCode);
-                Log.i(TAG, "errorMessage:" + errorMessage);
-                if (null != refreshLayout) {
-                    refreshLayout.setRefreshing(false);
+        try{
+            AsyncHttpClient client = new AsyncHttpClient();
+            client.setTimeout(Constants.OVERTIMEOUT);
+            client.addHeader("Content-Type","application/json; charset=UTF-8");
+            client.addHeader("Token", CacheUtil.getInstance().getExtToken());
+            JSONObject jsonObject = new JSONObject();
+            StringEntity stringEntity = new StringEntity(jsonObject.toString());
+            String noticesUrl = ProtocolUtil.getServiceListUrl(isower,""+PAGE_NO,""+PAGE_SIZE);
+            client.get(getActivity(),noticesUrl, stringEntity, "application/json", new AsyncHttpResponseHandler(){
+                public void onStart(){
+                    super.onStart();
                 }
-                isLoadMoreAble = true;
-            }
 
-            @Override
-            public void onNetworkRequestCancelled() {
-                isLoadMoreAble = true;
-            }
-
-            @Override
-            public void onNetworkResponseSucceed(NetResponse result) {
-                super.onNetworkResponseSucceed(result);
-                try {
-                    Log.i(TAG, "result.rawResult:" + result.rawResult);
-                    isLoadMoreAble = true;
+                public void onFinish(){
+                    super.onFinish();
                     if (null != refreshLayout) {
                         refreshLayout.setRefreshing(false);
                     }
-                    ServiceTaskListResponse serviceTaskListResponse = new Gson().fromJson(result.rawResult,ServiceTaskListResponse.class);
-                    if(null != serviceTaskListResponse){
-                        int resultCode = serviceTaskListResponse.getRes();
-                        if(0 == resultCode){
-                            requestServiceList = serviceTaskListResponse.getData();
-                            if(isRefresh){
-                                serviceList = requestServiceList;
+                    isLoadMoreAble = true;
+                }
+
+                public void onSuccess(int statusCode, Header[] headers, byte[] responseBody){
+                    try {
+                        String result = new String(responseBody,"utf-8");
+                        isLoadMoreAble = true;
+                        if (null != refreshLayout) {
+                            refreshLayout.setRefreshing(false);
+                        }
+                        ServiceTaskListResponse serviceTaskListResponse = new Gson().fromJson(result,ServiceTaskListResponse.class);
+                        if(null != serviceTaskListResponse){
+                            int resultCode = serviceTaskListResponse.getRes();
+                            if(0 == resultCode){
+                                requestServiceList = serviceTaskListResponse.getData();
+                                if(isRefresh){
+                                    serviceList = requestServiceList;
+                                }else {
+                                    serviceList.addAll(requestServiceList);
+                                }
+                                callServiceAdapter.setServiceList(serviceList);
+                                if(null != requestServiceList && !requestServiceList.isEmpty()){
+                                    PAGE_NO++;
+                                }else {
+                                    DialogUtil.getInstance().showCustomToast(getActivity(),"再无更多数据", Gravity.CENTER);
+                                }
                             }else {
-                                serviceList.addAll(requestServiceList);
-                            }
-                            if(null != requestServiceList && !requestServiceList.isEmpty()){
-                                PAGE_NO++;
-                            }else {
-                                DialogUtil.getInstance().showCustomToast(getActivity(),"再无更多数据", Gravity.CENTER);
-                            }
-                            callServiceAdapter.setServiceList(serviceList);
-                        }else {
-                            String resultMsg = serviceTaskListResponse.getResDesc();
-                            if(!TextUtils.isEmpty(resultMsg)){
-                                DialogUtil.getInstance().showCustomToast(getActivity(),resultMsg,Gravity.CENTER);
+                                String resultMsg = serviceTaskListResponse.getResDesc();
+                                if(!TextUtils.isEmpty(resultMsg)){
+                                    DialogUtil.getInstance().showCustomToast(getActivity(),resultMsg,Gravity.CENTER);
+                                }
                             }
                         }
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
+                }
+
+                public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error){
+                    if (null != refreshLayout) {
+                        refreshLayout.setRefreshing(false);
+                    }
+                    isLoadMoreAble = true;
+                }
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 服务通知自动刷新
+     *
+     */
+    class ServiceReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if(null != intent){
+                String action = intent.getAction();
+                if(!TextUtils.isEmpty(action) && action.equals(Constants.ACTION_SERVICE)){
+                    PAGE_NO = 0;
+                    requestCallServiceTask(true);
                 }
             }
-
-            @Override
-            public void beforeNetworkRequestStart() {
-
-            }
-        });
-        netRequestTask.isShowLoadingDialog = false;
-        netRequestTask.execute();
+        }
     }
 }

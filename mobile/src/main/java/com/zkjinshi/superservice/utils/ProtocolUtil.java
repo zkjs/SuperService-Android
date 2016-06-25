@@ -496,7 +496,7 @@ public class ProtocolUtil {
      * 获取呼叫通知列表
      */
     public static String getServiceListUrl(int isowner,String pageNo,String pageSize){
-        return ConfigUtil.getInst().getForDomain()+"res/v1/call/service/task?isowner="+isowner+"page="+pageNo+"&page_size="+pageSize;
+        return ConfigUtil.getInst().getForDomain()+"res/v1/call/service/task?isower="+isowner+"&page="+pageNo+"&page_size="+pageSize;
     }
 
     /**
@@ -564,5 +564,14 @@ public class ProtocolUtil {
      */
     public static String getTaskDetailUrl(String taskId){
         return ConfigUtil.getInst().getForDomain()+"res/v1/call/service/task/detail/"+taskId;
+    }
+
+    /**
+     * 获取任务部分列表
+     * @param taskId
+     * @return
+     */
+    public static String getTaskDeptUrl(String taskId){
+        return ConfigUtil.getInst().getForDomain()+"res/v1/query/sss?taskid="+taskId;
     }
 }

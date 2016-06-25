@@ -1,6 +1,7 @@
 package com.zkjinshi.superservice.activity.set;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -25,6 +26,7 @@ import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.utils.ListViewUtil;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
+import com.zkjinshi.superservice.view.ExtListView;
 import com.zkjinshi.superservice.vo.ServiceHistoryVo;
 import com.zkjinshi.superservice.vo.TaskDetailVo;
 
@@ -59,6 +61,10 @@ public class DetailTaskActivity extends BaseAppCompatActivity {
     private void initView(){
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         titleIv = (TextView) findViewById(R.id.tv_center_title);
+        userPhotoSdv = (SimpleDraweeView)findViewById(R.id.user_photo_sdv);
+        userNameTv = (TextView)findViewById(R.id.user_name_tv);
+        serviceNameTv = (TextView)findViewById(R.id.service_name_tv);
+        historyListView = (ListView)findViewById(R.id.list_view_service_history);
     }
 
     private void initData(){
@@ -74,6 +80,7 @@ public class DetailTaskActivity extends BaseAppCompatActivity {
         }
         taskHistoryAdapter = new TaskHistoryAdapter(this,historyList);
         historyListView.setAdapter(taskHistoryAdapter);
+        ListViewUtil.setListViewHeightBasedOnChildren(historyListView);
         requestTaskDetailTask(taskId);
     }
 
@@ -99,6 +106,9 @@ public class DetailTaskActivity extends BaseAppCompatActivity {
             if(!TextUtils.isEmpty(serviceNameStr)){
                 serviceNameTv.setText(serviceNameStr);
             }
+            String userImage = taskDetailVo.getUserimage();
+            String imageUrl = ProtocolUtil.getAvatarUrl(this,userImage);
+            userPhotoSdv.setImageURI(Uri.parse(imageUrl));
             historyList = taskDetailVo.getHistory();
             taskHistoryAdapter.setHistoryList(historyList);
             ListViewUtil.setListViewHeightBasedOnChildren(historyListView);
@@ -139,12 +149,12 @@ public class DetailTaskActivity extends BaseAppCompatActivity {
                 public void onSuccess(int statusCode, Header[] headers, byte[] responseBody){
                     try {
                         String response = new String(responseBody,"utf-8");
-                        TaskDetailResponse taskDetialResponse = new Gson().fromJson(response,TaskDetailResponse.class);
-                        if(null != taskDetialResponse && taskDetialResponse.getRes() == 0){
-                            TaskDetailVo taskDetailVo = taskDetialResponse.getData();
+                        TaskDetailResponse taskDetailResponse = new Gson().fromJson(response,TaskDetailResponse.class);
+                        if(null != taskDetailResponse && taskDetailResponse.getRes() == 0){
+                            TaskDetailVo taskDetailVo = taskDetailResponse.getData();
                             updateData(taskDetailVo);
                         }else{
-                            Toast.makeText(DetailTaskActivity.this,taskDetialResponse.getResDesc(),Toast.LENGTH_SHORT).show();
+                            Toast.makeText(DetailTaskActivity.this,taskDetailResponse.getResDesc(),Toast.LENGTH_SHORT).show();
                         }
                     } catch (Exception e) {
                         e.printStackTrace();

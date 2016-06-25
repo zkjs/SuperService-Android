@@ -72,7 +72,6 @@ public class CallServiceAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         }
         ((CallServiceViewHolder) holder).contentLayout.setLayoutParams(contentLayoutParams);
         final ServiceTaskVo serviceTaskVo = serviceList.get(position);
-        UserVo userVo = null;
         if(null != serviceTaskVo){
 
             String userImage = serviceTaskVo.getUserimage();
@@ -178,6 +177,7 @@ public class CallServiceAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             appointLayout = (LinearLayout)itemView.findViewById(R.id.call_service_appoint_layout);
             appointTv = (TextView)itemView.findViewById(R.id.call_service_appoint_tv);
             contentLayout = (LinearLayout)itemView.findViewById(R.id.call_service_content_layout);
+            itemView.setOnClickListener(this);
         }
 
         @Override

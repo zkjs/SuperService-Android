@@ -12,6 +12,11 @@ import com.zkjinshi.superservice.ext.vo.AmountStatusVo;
 import com.zkjinshi.superservice.notification.NotificationHelper;
 import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.vo.ActiveCodeNoticeVo;
+import com.zkjinshi.superservice.vo.CallAssignVo;
+import com.zkjinshi.superservice.vo.CallCancelVo;
+import com.zkjinshi.superservice.vo.CallDoneVo;
+import com.zkjinshi.superservice.vo.CallInitVo;
+import com.zkjinshi.superservice.vo.CallReadyVo;
 import com.zkjinshi.superservice.vo.YunBaMsgVo;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -75,6 +80,46 @@ public class YunBaMessageReceiver extends BroadcastReceiver {
                         context.sendBroadcast(receiver);
                         NotificationHelper.getInstance().showNotification(context,activeCodeNoticeVo);
                     }
+                }else if("CALL_INIT".equals(type)){//发起呼叫(等待指派)
+                    Intent noticeIntent = new Intent();
+                    noticeIntent.setAction(Constants.ACTION_SERVICE);
+                    context.sendBroadcast(noticeIntent);
+                    CallInitVo callInitVo = new Gson().fromJson(data,CallInitVo.class);
+                    String alert = callInitVo.getAlert();
+                    String userimage = callInitVo.getUserimage();
+                    NotificationHelper.getInstance().showNotification(context,alert,userimage);
+                }else if("CALL_ASSIGN".equals(type)){//呼叫任务的服务员
+                    Intent noticeIntent = new Intent();
+                    noticeIntent.setAction(Constants.ACTION_SERVICE);
+                    context.sendBroadcast(noticeIntent);
+                    CallAssignVo callInitVo = new Gson().fromJson(data,CallAssignVo.class);
+                    String alert = callInitVo.getAlert();
+                    String userimage = callInitVo.getUserimage();
+                    NotificationHelper.getInstance().showNotification(context,alert,userimage);
+                }else if("CALL_READY".equals(type)){//呼叫任务就绪
+                    Intent noticeIntent = new Intent();
+                    noticeIntent.setAction(Constants.ACTION_SERVICE);
+                    context.sendBroadcast(noticeIntent);
+                    CallReadyVo callInitVo = new Gson().fromJson(data,CallReadyVo.class);
+                    String alert = callInitVo.getAlert();
+                    String userimage = callInitVo.getUserimage();
+                    NotificationHelper.getInstance().showNotification(context,alert,userimage);
+                }else if("CALL_DONE".equals(type)){//呼叫任务完成
+                    Intent noticeIntent = new Intent();
+                    noticeIntent.setAction(Constants.ACTION_SERVICE);
+                    context.sendBroadcast(noticeIntent);
+                    CallDoneVo callInitVo = new Gson().fromJson(data,CallDoneVo.class);
+                    String alert = callInitVo.getAlert();
+                    String userimage = callInitVo.getUserimage();
+                    NotificationHelper.getInstance().showNotification(context,alert,userimage);
+                }else if("CALL_CANCEL".equals(type)){//呼叫任务取消
+                    Intent noticeIntent = new Intent();
+                    noticeIntent.setAction(Constants.ACTION_SERVICE);
+                    context.sendBroadcast(noticeIntent);
+                    CallCancelVo callInitVo = new Gson().fromJson(data,CallCancelVo.class);
+                    String alert = callInitVo.getAlert();
+                    String userimage = callInitVo.getUserimage();
+                    NotificationHelper.getInstance().showNotification(context,alert,userimage);
                 }
 
             } catch (JSONException e) {
