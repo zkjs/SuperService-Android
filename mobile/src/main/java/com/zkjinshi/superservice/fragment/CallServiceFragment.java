@@ -69,6 +69,7 @@ public class CallServiceFragment extends Fragment implements CallServiceAdapter.
     private ArrayList<ServiceTaskVo> serviceList = new ArrayList<ServiceTaskVo>();
     private ArrayList<ServiceTaskVo> requestServiceList;
     private boolean isLoadMoreAble = true;
+    private int isowner = 1;//0: 获取所有者列表, 1: 获取非所有者列表
 
     private void initView(View view){
         emptyLayout = (RelativeLayout)view.findViewById(R.id.call_empty_layout);
@@ -235,11 +236,21 @@ public class CallServiceFragment extends Fragment implements CallServiceAdapter.
     }
 
     /**
+     * 切换接受任务/指派任务
+     * @param isowner
+     */
+    public void chooseTaskTab(int isowner){
+        this.isowner = isowner;
+        PAGE_NO = 0;
+        requestCallServiceTask(true);
+    }
+
+    /**
      * 获取呼叫服务列表
      * @param isRefresh
      */
     private void requestCallServiceTask(final boolean isRefresh){
-        String noticesUrl = ProtocolUtil.getServiceListUrl(""+PAGE_NO,""+PAGE_SIZE);
+        String noticesUrl = ProtocolUtil.getServiceListUrl(isowner,""+PAGE_NO,""+PAGE_SIZE);
         NetRequest netRequest = new NetRequest(noticesUrl);
         NetRequestTask netRequestTask = new NetRequestTask(getActivity(), netRequest, NetResponse.class);
         netRequestTask.methodType = MethodType.GET;

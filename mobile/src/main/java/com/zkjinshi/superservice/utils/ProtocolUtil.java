@@ -495,8 +495,8 @@ public class ProtocolUtil {
     /**
      * 获取呼叫通知列表
      */
-    public static String getServiceListUrl(String pageNo,String pageSize){
-        return ConfigUtil.getInst().getForDomain()+"res/v1/call/service/task?page="+pageNo+"&page_size="+pageSize;
+    public static String getServiceListUrl(int isowner,String pageNo,String pageSize){
+        return ConfigUtil.getInst().getForDomain()+"res/v1/call/service/task?isowner="+isowner+"page="+pageNo+"&page_size="+pageSize;
     }
 
     /**
