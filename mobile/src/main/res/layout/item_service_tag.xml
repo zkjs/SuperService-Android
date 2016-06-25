@@ -7,7 +7,8 @@
     <TextView
         android:id="@+id/first_tag_name_tv"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="45dp"
+        android:gravity="center"
         android:text="会所"
         android:layout_centerVertical="true"
         android:textSize="14sp"
@@ -15,13 +16,13 @@
         android:textColor="#101010"
         />
 
-    <ImageButton
-        android:layout_width="56dp"
-        android:layout_height="56dp"
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:src="@drawable/btn_right_arrow_blue_selector"
         android:background="@null"
         android:layout_alignParentRight="true"
-        android:layout_marginRight="10dp"
+        android:layout_marginRight="15dp"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         />

@@ -548,4 +548,12 @@ public class ProtocolUtil {
     public static String getRoleListUrl(){
         return ConfigUtil.getInst().getForDomain()+"res/v1/shop/roles";
     }
+
+    /**
+     * 变更呼叫服务状态
+     * @return
+     */
+    public static String getUpdateServiceUrl(){
+        return ConfigUtil.getInst().getForDomain()+"res/v1/call/service/task";
+    }
 }

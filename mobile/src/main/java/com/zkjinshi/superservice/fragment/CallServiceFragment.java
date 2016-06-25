@@ -16,6 +16,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.JsonHttpResponseHandler;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.adapter.CallServiceAdapter;
@@ -25,14 +27,24 @@ import com.zkjinshi.superservice.net.MethodType;
 import com.zkjinshi.superservice.net.NetRequest;
 import com.zkjinshi.superservice.net.NetRequestTask;
 import com.zkjinshi.superservice.net.NetResponse;
+import com.zkjinshi.superservice.response.AddSecondTagResponse;
+import com.zkjinshi.superservice.response.BaseResponse;
 import com.zkjinshi.superservice.response.NoticeResponse;
 import com.zkjinshi.superservice.response.ServiceTaskListResponse;
 import com.zkjinshi.superservice.utils.CacheUtil;
+import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.vo.NoticeVo;
+import com.zkjinshi.superservice.vo.SecondServiceTagVo;
 import com.zkjinshi.superservice.vo.ServiceTaskVo;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+
+import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.entity.StringEntity;
 
 /**
  * 呼叫服务Fragment页面
@@ -166,12 +178,34 @@ public class CallServiceFragment extends Fragment implements CallServiceAdapter.
 
     @Override
     public void executeCancel(ServiceTaskVo taskVo) {//取消呼叫服务
-
+        String taskId = taskVo.getTaskid();
+        //指派(2), 就绪(3), 取消(4), 完成(5), 评价(6)
+        int taskAction = 4;
+        String target = "";
+        CallServiceNetController.getInstance().requestUpdateServiceTask(taskId, taskAction, target, getActivity(), new CallServiceNetController.NetCallBack() {
+            @Override
+            public void onSuccess() {
+                DialogUtil.getInstance().showCustomToast(getActivity(),"取消成功",Gravity.CENTER);
+                PAGE_NO = 0;
+                requestCallServiceTask(true);
+            }
+        });
     }
 
     @Override
     public void executeFinish(ServiceTaskVo taskVo) {//完成呼叫服务
-
+        String taskId = taskVo.getTaskid();
+        //指派(2), 就绪(3), 取消(4), 完成(5), 评价(6)
+        int taskAction = 5;
+        String target = "";
+        CallServiceNetController.getInstance().requestUpdateServiceTask(taskId, taskAction, target, getActivity(), new CallServiceNetController.NetCallBack() {
+            @Override
+            public void onSuccess() {
+                DialogUtil.getInstance().showCustomToast(getActivity(),"完成成功",Gravity.CENTER);
+                PAGE_NO = 0;
+                requestCallServiceTask(true);
+            }
+        });
     }
 
     @Override
@@ -181,7 +215,18 @@ public class CallServiceFragment extends Fragment implements CallServiceAdapter.
 
     @Override
     public void executeReady(ServiceTaskVo taskVo) {//就绪呼叫服务
-
+        String taskId = taskVo.getTaskid();
+        //指派(2), 就绪(3), 取消(4), 完成(5), 评价(6)
+        int taskAction = 3;
+        String target = "";
+        CallServiceNetController.getInstance().requestUpdateServiceTask(taskId, taskAction, target, getActivity(), new CallServiceNetController.NetCallBack() {
+            @Override
+            public void onSuccess() {
+                DialogUtil.getInstance().showCustomToast(getActivity(),"就绪成功",Gravity.CENTER);
+                PAGE_NO = 0;
+                requestCallServiceTask(true);
+            }
+        });
     }
 
     /**
