@@ -131,7 +131,7 @@
                             android:padding="10dp"
                             android:gravity="center"
                             android:layout_centerVertical="true"
-                            android:background="@drawable/bg_circle_26c6da"
+                            android:background="@drawable/bg_circle_yellow"
                             android:layout_width="56dp"
                             android:layout_height="56dp">
 
@@ -166,7 +166,7 @@
                             android:padding="10dp"
                             android:gravity="center"
                             android:layout_centerVertical="true"
-                            android:background="@drawable/bg_circle_ffa726"
+                            android:background="@drawable/bg_circle_26c6da"
                             android:layout_width="56dp"
                             android:layout_height="56dp">
 

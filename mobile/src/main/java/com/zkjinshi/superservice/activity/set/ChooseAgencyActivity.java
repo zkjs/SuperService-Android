@@ -43,6 +43,7 @@ import com.zkjinshi.superservice.vo.EmployeeVo;
 import com.zkjinshi.superservice.vo.IdentityType;
 import com.zkjinshi.superservice.vo.PayloadVo;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -143,6 +144,7 @@ public class ChooseAgencyActivity extends BaseAppCompatActivity {
                     selectMap.put(roleId, true);
                     selectAgencyList.add(roleId);
                 }
+                agencyAdapter.setSelectMap(selectMap);
             }
         });
     }
@@ -227,12 +229,26 @@ public class ChooseAgencyActivity extends BaseAppCompatActivity {
             AsyncHttpClient client = new AsyncHttpClient();
             client.setTimeout(Constants.OVERTIMEOUT);
             client.addHeader("Content-Type","application/json; charset=UTF-8");
+            if(CacheUtil.getInstance().isLogin()){
+                client.addHeader("Token",CacheUtil.getInstance().getExtToken());
+            }
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("firstSrvTagName",firstTagName);
-            jsonObject.put("roleids",selectAgencyList.toArray());
-            jsonObject.put("ownerids",selectMemberList.toArray());
-            jsonObject.put("locids",selectCoverageList.toArray());
-            LogUtil.getInstance().info(LogLevel.ERROR,"requestParams:"+jsonObject.toString());
+            JSONArray agencyArray = new JSONArray();
+            for (String agencyId : selectAgencyList){
+                agencyArray.put(agencyId);
+            }
+            jsonObject.put("roleids",agencyArray);
+            JSONArray memberArray = new JSONArray();
+            for (String memberId : selectMemberList){
+                memberArray.put(memberId);
+            }
+            jsonObject.put("ownerids",memberArray);
+            JSONArray coverageArray = new JSONArray();
+            for (String coverageId : selectAgencyList){
+                coverageArray.put(coverageId);
+            }
+            jsonObject.put("locids",coverageArray);
             StringEntity stringEntity = new StringEntity(jsonObject.toString());
             String url = ProtocolUtil.getAddFirstTagUrl();
             client.post(ChooseAgencyActivity.this,url, stringEntity, "application/json", new AsyncHttpResponseHandler(){

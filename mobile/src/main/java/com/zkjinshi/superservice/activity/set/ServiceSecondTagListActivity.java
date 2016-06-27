@@ -42,6 +42,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import cz.msebera.android.httpclient.Header;
 import cz.msebera.android.httpclient.entity.StringEntity;
@@ -208,12 +209,15 @@ public class ServiceSecondTagListActivity extends BaseAppCompatActivity {
      */
     private void deleteSecondTag(String secondTagId){
         if(null != secondServiceTagList && !secondServiceTagList.isEmpty()){
-            for(SecondServiceTagVo secondServiceTagVo : secondServiceTagList){
+            Iterator<SecondServiceTagVo> iterator = secondServiceTagList.iterator();
+            while(iterator.hasNext()){
+                SecondServiceTagVo secondServiceTagVo = iterator.next();
                 if(secondServiceTagVo.getSecondSrvTagId().equals(secondTagId)){
-                    secondServiceTagList.remove(secondServiceTagVo);
+                    iterator.remove();
                 }
             }
         }
+
         serviceSecondTagAdapter.setSecondTagList(secondServiceTagList);
     }
 
