@@ -11,7 +11,7 @@ import java.io.Serializable;
 public class ServiceTaskVo implements Serializable {
 
     private String taskid;
-    private String svrname;
+    private String srvname;
     private String status;
     private int statuscode;//1. 发起任务 2. 指派 3. 就绪 4.取消 5 完成 6 评价
     private int isowner;//0:是所有者用来区分指派和取消按钮
@@ -35,14 +35,6 @@ public class ServiceTaskVo implements Serializable {
 
     public void setTaskid(String taskid) {
         this.taskid = taskid;
-    }
-
-    public String getSvrname() {
-        return svrname;
-    }
-
-    public void setSvrname(String svrname) {
-        this.svrname = svrname;
     }
 
     public String getStatus() {
@@ -99,5 +91,13 @@ public class ServiceTaskVo implements Serializable {
 
     public void setOperationseq(int operationseq) {
         this.operationseq = operationseq;
+    }
+
+    public String getSrvname() {
+        return srvname;
+    }
+
+    public void setSrvname(String srvname) {
+        this.srvname = srvname;
     }
 }

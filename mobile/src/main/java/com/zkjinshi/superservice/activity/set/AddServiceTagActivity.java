@@ -123,6 +123,12 @@ public class AddServiceTagActivity extends BaseAppCompatActivity {
                     selectMemberList.add(empId);
                 }
                 teamMemberAdapter.setSelectMap(selectMap);
+                String firstTagNameStr = inputSeviceTagNameEtv.getText().toString();
+                if(!TextUtils.isEmpty(firstTagNameStr)&& null != selectMemberList && !selectMemberList.isEmpty()){
+                    showMenu(menu);
+                }else {
+                    hiddenMenu(menu);
+                }
             }
         });
 
@@ -139,7 +145,7 @@ public class AddServiceTagActivity extends BaseAppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if (editable.length() > 0) {//显示menu
+                if (editable.length() > 0 && null != selectMemberList && !selectMemberList.isEmpty()) {//显示menu
                     showMenu(menu);
                 } else {//隐藏menu
                     hiddenMenu(menu);

@@ -202,7 +202,8 @@ public class CallServiceFragment extends Fragment implements CallServiceAdapter.
         //指派(2), 就绪(3), 取消(4), 完成(5), 评价(6)
         int taskAction = 4;
         String target = "";
-        CallServiceNetController.getInstance().requestUpdateServiceTask(taskId, taskAction, target, getActivity(), new CallServiceNetController.NetCallBack() {
+        int operationseq = taskVo.getOperationseq();
+        CallServiceNetController.getInstance().requestUpdateServiceTask(taskId, taskAction, target, operationseq,getActivity(), new CallServiceNetController.NetCallBack() {
             @Override
             public void onSuccess() {
                 DialogUtil.getInstance().showCustomToast(getActivity(),"取消成功",Gravity.CENTER);
@@ -217,8 +218,9 @@ public class CallServiceFragment extends Fragment implements CallServiceAdapter.
         String taskId = taskVo.getTaskid();
         //指派(2), 就绪(3), 取消(4), 完成(5), 评价(6)
         int taskAction = 5;
+        int operationseq = taskVo.getOperationseq();
         String target = "";
-        CallServiceNetController.getInstance().requestUpdateServiceTask(taskId, taskAction, target, getActivity(), new CallServiceNetController.NetCallBack() {
+        CallServiceNetController.getInstance().requestUpdateServiceTask(taskId, taskAction, target,operationseq, getActivity(), new CallServiceNetController.NetCallBack() {
             @Override
             public void onSuccess() {
                 DialogUtil.getInstance().showCustomToast(getActivity(),"完成成功",Gravity.CENTER);
@@ -232,6 +234,7 @@ public class CallServiceFragment extends Fragment implements CallServiceAdapter.
     public void executeAppoint(ServiceTaskVo taskVo) {//指派呼叫服务
         Intent intent = new Intent(getActivity(),AppointActivity.class);
         intent.putExtra("taskId",taskVo.getTaskid());
+        intent.putExtra("operationseq",taskVo.getOperationseq());
         startActivity(intent);
         getActivity().overridePendingTransition(R.anim.slide_in_right,R.anim.slide_out_left);
     }
@@ -242,7 +245,8 @@ public class CallServiceFragment extends Fragment implements CallServiceAdapter.
         //指派(2), 就绪(3), 取消(4), 完成(5), 评价(6)
         int taskAction = 3;
         String target = "";
-        CallServiceNetController.getInstance().requestUpdateServiceTask(taskId, taskAction, target, getActivity(), new CallServiceNetController.NetCallBack() {
+        int operationseq = taskVo.getOperationseq();
+        CallServiceNetController.getInstance().requestUpdateServiceTask(taskId, taskAction, target, operationseq,getActivity(), new CallServiceNetController.NetCallBack() {
             @Override
             public void onSuccess() {
                 DialogUtil.getInstance().showCustomToast(getActivity(),"就绪成功",Gravity.CENTER);

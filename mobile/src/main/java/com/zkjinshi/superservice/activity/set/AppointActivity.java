@@ -73,6 +73,7 @@ public class AppointActivity extends BaseAppCompatActivity {
     private TextView        mTvDialog;
     private AutoSideBar     mAutoSideBar;
     private String taskId;
+    private int operationseq;
 
     private TeamContactsAdapter mTeamContactAdapter;
 
@@ -112,6 +113,7 @@ public class AppointActivity extends BaseAppCompatActivity {
 
     private void initData() {
         taskId = getIntent().getStringExtra("taskId");
+        operationseq = getIntent().getIntExtra("operationseq",0);
         mTeamContactAdapter = new TeamContactsAdapter(AppointActivity.this,new ArrayList<EmployeeVo>());
         mRvTeamContacts.setAdapter(mTeamContactAdapter);
         getEmployeesList(taskId);
@@ -247,7 +249,7 @@ public class AppointActivity extends BaseAppCompatActivity {
                 String target = employeeVo.getUserid();
                 //指派(2), 就绪(3), 取消(4), 完成(5), 评价(6)
                 int taskAction = 2;
-                CallServiceNetController.getInstance().requestUpdateServiceTask(taskId, taskAction, target, AppointActivity.this, new CallServiceNetController.NetCallBack() {
+                CallServiceNetController.getInstance().requestUpdateServiceTask(taskId, taskAction, target, operationseq,AppointActivity.this, new CallServiceNetController.NetCallBack() {
                     @Override
                     public void onSuccess() {
                         DialogUtil.getInstance().showCustomToast(AppointActivity.this,"指派成功", Gravity.CENTER);

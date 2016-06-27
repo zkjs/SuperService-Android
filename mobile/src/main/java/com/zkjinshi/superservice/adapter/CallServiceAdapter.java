@@ -7,11 +7,13 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.zkjinshi.base.util.DisplayUtil;
+import com.zkjinshi.base.util.TimeUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.listener.RecyclerItemClickListener;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
@@ -85,65 +87,89 @@ public class CallServiceAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 ((CallServiceViewHolder)holder).userNameTv.setText(userNameStr);
             }
 
-            int statuscode = serviceTaskVo.getStatuscode();//1. 发起任务 2. 指派 3. 就绪 4.取消 5 完成 6 评价
+            /**
+             1	未指派	未处理
+             2	已指派	处理中
+             3	已就绪	处理中
+             4	已完成	已完成
+             5	已评价	已完成
+             */
+            int statuscode = serviceTaskVo.getStatuscode();
             if(statuscode == 1 ){
                 ((CallServiceViewHolder)holder).statusIv.setBackgroundResource(R.drawable.bg_service_circle_red);
+                ((CallServiceViewHolder)holder).statusTv.setTextColor(context.getResources().getColor(R.color.service_red_color));
             }else if(statuscode == 2 || statuscode == 3){
                 ((CallServiceViewHolder)holder).statusIv.setBackgroundResource(R.drawable.bg_service_circle_blue);
+                ((CallServiceViewHolder)holder).statusTv.setTextColor(context.getResources().getColor(R.color.service_blue_color));
             }else {
                 ((CallServiceViewHolder)holder).statusIv.setBackgroundResource(R.drawable.bg_service_circle_gray);
+                ((CallServiceViewHolder)holder).statusTv.setTextColor(context.getResources().getColor(R.color.service_gray_color));
             }
             String statusDescStr = serviceTaskVo.getStatus();
             if(!TextUtils.isEmpty(statusDescStr)){
                 ((CallServiceViewHolder)holder).statusTv.setText(statusDescStr);
             }
+            String serviceNameTv = serviceTaskVo.getSrvname();
+            if(!TextUtils.isEmpty(serviceNameTv)){
+                ((CallServiceViewHolder)holder).projectTv.setText(serviceNameTv);
+            }
             String timeStr = serviceTaskVo.getCreatetime();
             if(!TextUtils.isEmpty(timeStr)){
-                ((CallServiceViewHolder)holder).timeTv.setText(timeStr);
+                ((CallServiceViewHolder)holder).timeTv.setText(TimeUtil.getNoticeTime(timeStr));
             }
 
-            //完成
-            ((CallServiceViewHolder)holder).finishLayout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if(null != optionListener){
-                        optionListener.executeFinish(serviceTaskVo);
-                    }
-                }
-            });
+            if(statuscode == 4 || statuscode == 5){//完成或者评价按钮置灰
+                ((CallServiceViewHolder)holder).readyTv.setTextColor(context.getResources().getColor(R.color.service_gray_color));
+                ((CallServiceViewHolder)holder).finishTv.setTextColor(context.getResources().getColor(R.color.service_gray_color));
+                ((CallServiceViewHolder)holder).appointTv.setTextColor(context.getResources().getColor(R.color.service_gray_color));
 
-            //就绪
-            ((CallServiceViewHolder)holder).readyLayout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if(null != optionListener){
-                        optionListener.executeReady(serviceTaskVo);
+            }else {
+                ((CallServiceViewHolder)holder).readyTv.setTextColor(context.getResources().getColor(R.color.service_blue_color));
+                ((CallServiceViewHolder)holder).finishTv.setTextColor(context.getResources().getColor(R.color.service_blue_color));
+                ((CallServiceViewHolder)holder).appointTv.setTextColor(context.getResources().getColor(R.color.service_blue_color));
+
+                //完成
+                ((CallServiceViewHolder)holder).finishLayout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if(null != optionListener){
+                            optionListener.executeFinish(serviceTaskVo);
+                        }
                     }
+                });
+
+                //就绪
+                ((CallServiceViewHolder)holder).readyLayout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if(null != optionListener){
+                            optionListener.executeReady(serviceTaskVo);
+                        }
+                    }
+                });
+                int ownerStatus = serviceTaskVo.getIsowner();
+                ((CallServiceViewHolder)holder).appointLayout.setTag(ownerStatus);
+                if(ownerStatus == 0){  //指派
+                    ((CallServiceViewHolder)holder).appointTv.setText("指派");
+                }else {//取消
+                    ((CallServiceViewHolder)holder).appointTv.setText("取消");
                 }
-            });
-            int ownerStatus = serviceTaskVo.getIsowner();
-            ((CallServiceViewHolder)holder).appointLayout.setTag(ownerStatus);
-            if(ownerStatus == 0){  //指派
-                ((CallServiceViewHolder)holder).appointTv.setText("指派");
-            }else {//取消
-                ((CallServiceViewHolder)holder).appointTv.setText("取消");
+                ((CallServiceViewHolder)holder).appointLayout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        int ownerStatus = (int)view.getTag();
+                        if(ownerStatus == 0){  //指派
+                            if(null != optionListener){
+                                optionListener.executeAppoint(serviceTaskVo);
+                            }
+                        }else {//取消
+                            if(null != optionListener){
+                                optionListener.executeCancel(serviceTaskVo);
+                            }
+                        }
+                    }
+                });
             }
-            ((CallServiceViewHolder)holder).appointLayout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    int ownerStatus = (int)view.getTag();
-                    if(ownerStatus == 0){  //指派
-                        if(null != optionListener){
-                            optionListener.executeAppoint(serviceTaskVo);
-                        }
-                    }else {//取消
-                        if(null != optionListener){
-                            optionListener.executeCancel(serviceTaskVo);
-                        }
-                    }
-                }
-            });
-
         }
 
     }
@@ -158,7 +184,7 @@ public class CallServiceAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         View topCutLineView;
         SimpleDraweeView userPhotoSdv;
         CircleImageView statusIv;
-        TextView userNameTv,projectTv,timeTv,statusTv,appointTv;
+        TextView userNameTv,projectTv,timeTv,statusTv,appointTv,finishTv,readyTv;
         LinearLayout finishLayout,readyLayout,appointLayout;
         LinearLayout contentLayout;
 
@@ -176,6 +202,8 @@ public class CallServiceAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             appointLayout = (LinearLayout)itemView.findViewById(R.id.call_service_appoint_layout);
             appointTv = (TextView)itemView.findViewById(R.id.call_service_appoint_tv);
             contentLayout = (LinearLayout)itemView.findViewById(R.id.call_service_content_layout);
+            finishTv = (TextView)itemView.findViewById(R.id.call_service_finish_tv);
+            readyTv = (TextView)itemView.findViewById(R.id.call_service_ready_tv);
             itemView.setOnClickListener(this);
         }
 

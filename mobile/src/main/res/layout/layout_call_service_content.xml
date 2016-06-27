@@ -37,7 +37,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/call_service_user_photo_sdv"
-            android:text="人工按摩"
+            android:text="@null"
             android:textSize="14sp"
             android:textColor="#666666"
             android:layout_alignBottom="@id/call_service_user_photo_sdv"/>
@@ -87,6 +87,7 @@
             android:orientation="horizontal">
 
             <TextView
+                android:id="@+id/call_service_finish_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="完成"
@@ -116,6 +117,7 @@
             android:orientation="horizontal">
 
             <TextView
+                android:id="@+id/call_service_ready_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="就绪"

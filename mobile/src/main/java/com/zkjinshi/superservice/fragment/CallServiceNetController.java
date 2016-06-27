@@ -46,7 +46,7 @@ public class CallServiceNetController {
      * @param context
      * @param callBack
      */
-    public void requestUpdateServiceTask(String taskid, int taskaction, String target, final Context context, final NetCallBack callBack){
+    public void requestUpdateServiceTask(String taskid, int taskaction, String target, int operationseq,final Context context, final NetCallBack callBack){
 
         try {
             AsyncHttpClient httpClient = new AsyncHttpClient();
@@ -59,6 +59,7 @@ public class CallServiceNetController {
             if(!TextUtils.isEmpty(target)){
                 jsonObject.put("target",target);
             }
+            jsonObject.put("operationseq",operationseq);
             StringEntity stringEntity = new StringEntity(jsonObject.toString(),"UTF-8");
             String requestUrl = ProtocolUtil.getUpdateServiceUrl();
             httpClient.put(context,requestUrl,stringEntity,"application/json",new JsonHttpResponseHandler(){
