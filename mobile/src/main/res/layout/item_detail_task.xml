@@ -7,11 +7,9 @@
 
     <TextView
         android:id="@+id/task_time"
-        android:layout_width="wrap_content"
+        android:layout_width="100dp"
         android:layout_height="80dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
-        android:text="14:15"
+        android:text="@null"
         android:layout_gravity="center_vertical"
         android:gravity="center"
         android:textColor="#101010"
@@ -51,7 +49,7 @@
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/task_user_icon_sdv"
-        android:layout_marginRight="15dp"
+        android:layout_marginRight="10dp"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_gravity="center_vertical"
@@ -65,28 +63,14 @@
         fresco:failureImageScaleType="fitCenter"/>
 
     <TextView
-        android:id="@+id/task_user_name_tv"
-        android:layout_marginRight="10dp"
-        android:layout_width="wrap_content"
-        android:maxLength="6"
-        android:ellipsize="end"
-        android:gravity="center"
-        android:layout_gravity="center_vertical"
-        android:layout_height="wrap_content"
-        android:text="吴媛媛"
-        android:textSize="14sp"
-        android:textColor="#101010"/>
-
-    <TextView
         android:id="@+id/task_action_desc_tv"
         android:layout_marginRight="10dp"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="取消任务"
-        android:layout_gravity="center_vertical"
         android:gravity="center"
+        android:layout_gravity="center_vertical"
+        android:layout_height="wrap_content"
+        android:text="@null"
         android:textSize="14sp"
-        android:ellipsize="end"
         android:textColor="#101010"/>
 
 

@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.zkjinshi.base.util.TimeUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.vo.ServiceHistoryVo;
@@ -68,11 +69,10 @@ public class TaskHistoryAdapter extends BaseAdapter {
             viewHolder.updateTimeTv = (TextView)convertView.findViewById(R.id.task_time);
             viewHolder.timeAxisTopTv = (TextView)convertView.findViewById(R.id.task_time_axis_top);
             viewHolder.timeAxisBottomTv = (TextView)convertView.findViewById(R.id.task_time_axis_bottom);
-            viewHolder.userNameTv = (TextView)convertView.findViewById(R.id.task_user_name_tv);
             viewHolder.actionDescTv = (TextView)convertView.findViewById(R.id.task_action_desc_tv);
             viewHolder.userImageSdv = (SimpleDraweeView)convertView.findViewById(R.id.task_user_icon_sdv);
             viewHolder.timeIcon = (ImageView)convertView.findViewById(R.id.task_time_icon);
-            convertView.setTag(convertView);
+            convertView.setTag(viewHolder);
         }else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
@@ -80,17 +80,13 @@ public class TaskHistoryAdapter extends BaseAdapter {
         if(null != serviceHistoryVo){
             String timeStr = serviceHistoryVo.getCreatetime();
             if(!TextUtils.isEmpty(timeStr)){
-                viewHolder.updateTimeTv.setText(timeStr);
-            }
-            String userNameStr = serviceHistoryVo.getUsername();
-            if(!TextUtils.isEmpty(userNameStr)){
-                viewHolder.userNameTv.setText(userNameStr);
+                viewHolder.updateTimeTv.setText(TimeUtil.getNoticeTime(timeStr));
             }
             String acionDescStr = serviceHistoryVo.getActiondesc();
             if(!TextUtils.isEmpty(acionDescStr)){
                 viewHolder.actionDescTv.setText(acionDescStr);
             }
-            int statusCode = serviceHistoryVo.getStatuscode();
+            int statusCode = serviceHistoryVo.getActioncode();
             /**
              状态码	超级服务	超级身份
              1	未指派	未处理
@@ -109,7 +105,7 @@ public class TaskHistoryAdapter extends BaseAdapter {
                 viewHolder.timeIcon.setImageResource(R.mipmap.ic_shang_r);
             }
             String userImgStr = serviceHistoryVo.getUserimage();
-            if (TextUtils.isEmpty(userImgStr)) {
+            if (!TextUtils.isEmpty(userImgStr)) {
                 String userImgUrl = ProtocolUtil.getAvatarUrl(context,userImgStr);
                 viewHolder.userImageSdv.setImageURI(Uri.parse(userImgUrl));
             }
@@ -123,6 +119,10 @@ public class TaskHistoryAdapter extends BaseAdapter {
         }else{
             viewHolder.timeAxisTopTv.setVisibility(View.VISIBLE);
             viewHolder.timeAxisBottomTv.setVisibility(View.VISIBLE);
+        }
+        if(getCount() == 1){
+            viewHolder.timeAxisTopTv.setVisibility(View.INVISIBLE);
+            viewHolder.timeAxisBottomTv.setVisibility(View.INVISIBLE);
         }
         return convertView;
     }

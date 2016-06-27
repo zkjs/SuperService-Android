@@ -103,8 +103,9 @@
 
                             <ImageView
                                 android:src="@mipmap/ic_tuandui_w"
-                                android:layout_width="19dp"
-                                android:layout_height="11dp" />
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerInParent="true"/>
 
                         </RelativeLayout>
                     </RelativeLayout>
@@ -135,9 +136,10 @@
                             android:layout_height="56dp">
 
                             <ImageView
-                                android:src="@mipmap/ic_tuandui_w"
-                                android:layout_width="19dp"
-                                android:layout_height="11dp" />
+                                android:src="@mipmap/ic_woderenwu"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerInParent="true"/>
 
                         </RelativeLayout>
                     </RelativeLayout>
@@ -169,9 +171,10 @@
                             android:layout_height="56dp">
 
                             <ImageView
-                                android:src="@mipmap/ic_kehu"
-                                android:layout_width="17dp"
-                                android:layout_height="18dp" />
+                                android:src="@mipmap/ic_zhipairenwu"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerInParent="true" />
 
                         </RelativeLayout>
                     </RelativeLayout>

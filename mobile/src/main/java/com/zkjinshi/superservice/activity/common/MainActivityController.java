@@ -23,6 +23,7 @@ import com.zkjinshi.superservice.activity.set.TeamContactsActivity;
 import com.zkjinshi.superservice.adapter.ViewPagerAdapter;
 import com.zkjinshi.superservice.fragment.CallServiceFragment;
 import com.zkjinshi.superservice.utils.CacheUtil;
+import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.view.Fab;
 
 /**
@@ -296,16 +297,18 @@ public class MainActivityController implements View.OnClickListener{
                 break;
             case R.id.fab_sheet_item_accept://接受任务
                 {
-                    if(viewPagerAdapter.getItem(2) instanceof CallServiceFragment){
-                        ((CallServiceFragment)viewPagerAdapter.getItem(2)).chooseTaskTab(1);
-                    }
+                    CacheUtil.getInstance().setIsOwer(1);
+                    Intent intent = new Intent();
+                    intent.setAction(Constants.ACTION_SERVICE);
+                    activity.sendBroadcast(intent);
                 }
                 break;
             case R.id.fab_sheet_item_appoint://指派任务
                 {
-                    if(viewPagerAdapter.getItem(2) instanceof CallServiceFragment){
-                        ((CallServiceFragment)viewPagerAdapter.getItem(2)).chooseTaskTab(0);
-                    }
+                    CacheUtil.getInstance().setIsOwer(0);
+                    Intent intent = new Intent();
+                    intent.setAction(Constants.ACTION_SERVICE);
+                    activity.sendBroadcast(intent);
                 }
             break;
             default:

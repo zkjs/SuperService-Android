@@ -1,13 +1,12 @@
 package com.zkjinshi.superservice.activity.set;
 
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.view.Menu;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,17 +23,13 @@ import com.zkjinshi.superservice.response.TaskDetailResponse;
 import com.zkjinshi.superservice.utils.AsyncHttpClientUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.Constants;
-import com.zkjinshi.superservice.utils.ListViewUtil;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
-import com.zkjinshi.superservice.view.ExtListView;
 import com.zkjinshi.superservice.vo.ServiceHistoryVo;
 import com.zkjinshi.superservice.vo.TaskDetailVo;
 
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 import cz.msebera.android.httpclient.Header;
 import cz.msebera.android.httpclient.entity.StringEntity;
@@ -57,13 +52,15 @@ public class DetailTaskActivity extends BaseAppCompatActivity {
     private ListView historyListView;
     private TaskHistoryAdapter taskHistoryAdapter;
     private ArrayList<ServiceHistoryVo> historyList;
+    private LinearLayout headView;
 
     private void initView(){
+        headView = (LinearLayout) LayoutInflater.from(this).inflate(R.layout.layout_head_call_service_list_view,null);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         titleIv = (TextView) findViewById(R.id.tv_center_title);
-        userPhotoSdv = (SimpleDraweeView)findViewById(R.id.user_photo_sdv);
-        userNameTv = (TextView)findViewById(R.id.user_name_tv);
-        serviceNameTv = (TextView)findViewById(R.id.service_name_tv);
+        userPhotoSdv = (SimpleDraweeView)headView.findViewById(R.id.user_photo_sdv);
+        userNameTv = (TextView)headView.findViewById(R.id.user_name_tv);
+        serviceNameTv = (TextView)headView.findViewById(R.id.service_name_tv);
         historyListView = (ListView)findViewById(R.id.list_view_service_history);
     }
 
@@ -80,7 +77,7 @@ public class DetailTaskActivity extends BaseAppCompatActivity {
         }
         taskHistoryAdapter = new TaskHistoryAdapter(this,historyList);
         historyListView.setAdapter(taskHistoryAdapter);
-        ListViewUtil.setListViewHeightBasedOnChildren(historyListView);
+        historyListView.addHeaderView(headView);
         requestTaskDetailTask(taskId);
     }
 
@@ -111,7 +108,6 @@ public class DetailTaskActivity extends BaseAppCompatActivity {
             userPhotoSdv.setImageURI(Uri.parse(imageUrl));
             historyList = taskDetailVo.getHistory();
             taskHistoryAdapter.setHistoryList(historyList);
-            ListViewUtil.setListViewHeightBasedOnChildren(historyListView);
         }
     }
 

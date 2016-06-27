@@ -85,67 +85,66 @@ public class CallServiceAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 ((CallServiceViewHolder)holder).userNameTv.setText(userNameStr);
             }
 
-        }
-        int statuscode = serviceTaskVo.getStatuscode();//1. 发起任务 2. 指派 3. 就绪 4.取消 5 完成 6 评价
-        if(statuscode == 1 ){
-            ((CallServiceViewHolder)holder).statusIv.setBackgroundResource(R.drawable.bg_service_circle_red);
-        }else if(statuscode == 2 || statuscode == 3){
-            ((CallServiceViewHolder)holder).statusIv.setBackgroundResource(R.drawable.bg_service_circle_blue);
-        }else {
-            ((CallServiceViewHolder)holder).statusIv.setBackgroundResource(R.drawable.bg_service_circle_gray);
-        }
-        String statusDescStr = serviceTaskVo.getStatus();
-        if(!TextUtils.isEmpty(statusDescStr)){
-            ((CallServiceViewHolder)holder).statusTv.setText(statusDescStr);
-        }
-        String timeStr = serviceTaskVo.getCreatetime();
-        if(!TextUtils.isEmpty(timeStr)){
-            ((CallServiceViewHolder)holder).timeTv.setText(timeStr);
-        }
-
-        //完成
-        ((CallServiceViewHolder)holder).finishLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(null != optionListener){
-                    optionListener.executeFinish(serviceTaskVo);
-                }
+            int statuscode = serviceTaskVo.getStatuscode();//1. 发起任务 2. 指派 3. 就绪 4.取消 5 完成 6 评价
+            if(statuscode == 1 ){
+                ((CallServiceViewHolder)holder).statusIv.setBackgroundResource(R.drawable.bg_service_circle_red);
+            }else if(statuscode == 2 || statuscode == 3){
+                ((CallServiceViewHolder)holder).statusIv.setBackgroundResource(R.drawable.bg_service_circle_blue);
+            }else {
+                ((CallServiceViewHolder)holder).statusIv.setBackgroundResource(R.drawable.bg_service_circle_gray);
             }
-        });
-
-        //就绪
-        ((CallServiceViewHolder)holder).readyLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(null != optionListener){
-                    optionListener.executeReady(serviceTaskVo);
-                }
+            String statusDescStr = serviceTaskVo.getStatus();
+            if(!TextUtils.isEmpty(statusDescStr)){
+                ((CallServiceViewHolder)holder).statusTv.setText(statusDescStr);
             }
-        });
-        int ownerStatus = serviceTaskVo.getIsowner();
-        ((CallServiceViewHolder)holder).appointLayout.setTag(ownerStatus);
-        if(ownerStatus == 0){  //指派
-            ((CallServiceViewHolder)holder).appointTv.setText("指派");
-        }else {//取消
-            ((CallServiceViewHolder)holder).appointTv.setText("取消");
-        }
-        ((CallServiceViewHolder)holder).appointLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                int ownerStatus = (int)view.getTag();
-                if(ownerStatus == 0){  //指派
+            String timeStr = serviceTaskVo.getCreatetime();
+            if(!TextUtils.isEmpty(timeStr)){
+                ((CallServiceViewHolder)holder).timeTv.setText(timeStr);
+            }
+
+            //完成
+            ((CallServiceViewHolder)holder).finishLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
                     if(null != optionListener){
-                        optionListener.executeAppoint(serviceTaskVo);
-                    }
-                }else {//取消
-                    if(null != optionListener){
-                        optionListener.executeCancel(serviceTaskVo);
+                        optionListener.executeFinish(serviceTaskVo);
                     }
                 }
+            });
+
+            //就绪
+            ((CallServiceViewHolder)holder).readyLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(null != optionListener){
+                        optionListener.executeReady(serviceTaskVo);
+                    }
+                }
+            });
+            int ownerStatus = serviceTaskVo.getIsowner();
+            ((CallServiceViewHolder)holder).appointLayout.setTag(ownerStatus);
+            if(ownerStatus == 0){  //指派
+                ((CallServiceViewHolder)holder).appointTv.setText("指派");
+            }else {//取消
+                ((CallServiceViewHolder)holder).appointTv.setText("取消");
             }
-        });
+            ((CallServiceViewHolder)holder).appointLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    int ownerStatus = (int)view.getTag();
+                    if(ownerStatus == 0){  //指派
+                        if(null != optionListener){
+                            optionListener.executeAppoint(serviceTaskVo);
+                        }
+                    }else {//取消
+                        if(null != optionListener){
+                            optionListener.executeCancel(serviceTaskVo);
+                        }
+                    }
+                }
+            });
 
-
+        }
 
     }
 

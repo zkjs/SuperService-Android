@@ -70,7 +70,6 @@ public class CallServiceFragment extends Fragment implements CallServiceAdapter.
     private ArrayList<ServiceTaskVo> serviceList = new ArrayList<ServiceTaskVo>();
     private ArrayList<ServiceTaskVo> requestServiceList;
     private boolean isLoadMoreAble = true;
-    private int isower = 0;//0: 获取所有者列表, 1: 获取非所有者列表
     private ServiceReceiver serviceReceiver;
     private IntentFilter serviceIntentFilter;
 
@@ -254,16 +253,6 @@ public class CallServiceFragment extends Fragment implements CallServiceAdapter.
     }
 
     /**
-     * 切换接受任务/指派任务
-     * @param isowner
-     */
-    public void chooseTaskTab(int isowner){
-        this.isower = isowner;
-        PAGE_NO = 0;
-        requestCallServiceTask(true);
-    }
-
-    /**
      * 获取呼叫服务列表
      * @param isRefresh
      */
@@ -275,7 +264,7 @@ public class CallServiceFragment extends Fragment implements CallServiceAdapter.
             client.addHeader("Token", CacheUtil.getInstance().getExtToken());
             JSONObject jsonObject = new JSONObject();
             StringEntity stringEntity = new StringEntity(jsonObject.toString());
-            String noticesUrl = ProtocolUtil.getServiceListUrl(isower,""+PAGE_NO,""+PAGE_SIZE);
+            String noticesUrl = ProtocolUtil.getServiceListUrl(CacheUtil.getInstance().getIsOwer(),""+PAGE_NO,""+PAGE_SIZE);
             client.get(getActivity(),noticesUrl, stringEntity, "application/json", new AsyncHttpResponseHandler(){
                 public void onStart(){
                     super.onStart();
