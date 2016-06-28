@@ -303,7 +303,9 @@ public class CallServiceFragment extends Fragment implements CallServiceAdapter.
                                 if(null != requestServiceList && !requestServiceList.isEmpty()){
                                     PAGE_NO++;
                                 }else {
-                                    DialogUtil.getInstance().showCustomToast(getActivity(),"再无更多数据", Gravity.CENTER);
+                                    if(!isRefresh){
+                                        DialogUtil.getInstance().showCustomToast(getActivity(),"再无更多数据", Gravity.CENTER);
+                                    }
                                 }
                             }else {
                                 String resultMsg = serviceTaskListResponse.getResDesc();
