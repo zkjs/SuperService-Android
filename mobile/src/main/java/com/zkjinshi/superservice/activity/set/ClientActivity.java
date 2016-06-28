@@ -189,6 +189,10 @@ public class ClientActivity extends BaseAppCompatActivity {
                 }
                 selectMap.put(userId, isSelect);
                 vipUserAdapter.setSelectMap(selectMap);
+                if(null != whiteUserList && !whiteUserList.isEmpty() && position == whiteUserList.size()){
+                    swipeRefreshListView.setSelection(parent.getCount()-1);
+
+                }
             }
         });
 

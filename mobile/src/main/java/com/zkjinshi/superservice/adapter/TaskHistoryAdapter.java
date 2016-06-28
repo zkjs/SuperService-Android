@@ -88,18 +88,13 @@ public class TaskHistoryAdapter extends BaseAdapter {
             }
             int statusCode = serviceHistoryVo.getActioncode();
             /**
-             状态码	超级服务	超级身份
-             1	未指派	未处理
-             2	已指派	处理中
-             3	已就绪	处理中
-             4	已完成	已完成
-             5	已评价	已完成
+             未指派(1) 指派(2), 就绪(3), 取消(4), 完成(5), 评价(6)
              */
             if(1 == statusCode){
                 viewHolder.timeIcon.setImageResource(R.mipmap.ic_round_blue);
-            }else if(4 == statusCode){
-                viewHolder.timeIcon.setImageResource(R.mipmap.ic_gou_r);
             }else if(5 == statusCode){
+                viewHolder.timeIcon.setImageResource(R.mipmap.ic_gou_r);
+            }else if(6 == statusCode){
                 viewHolder.timeIcon.setImageResource(R.mipmap.ic_pingjia);
             }else {
                 viewHolder.timeIcon.setImageResource(R.mipmap.ic_shang_r);
