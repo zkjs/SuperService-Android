@@ -32,6 +32,7 @@ public class EmployeeHandAddActivity extends BaseActivity {
     private final static String TAG = EmployeeHandAddActivity.class.getSimpleName();
 
     public static final String CREATE_RESULT = "create_result";
+    private EmployeeVo handEmployeeVo = null; //手动输入的员工资料
 
     private EditText phoneEt;
     private EditText nameEt;
@@ -58,10 +59,19 @@ public class EmployeeHandAddActivity extends BaseActivity {
         deptText = (TextView)findViewById(R.id.tv_dept);
         remarkEt = (EditText)findViewById(R.id.et_remark);
         adminCbx = (CheckBox)findViewById(R.id.cbx_admin);
+
     }
 
     private void initData() {
+        deptText.setVisibility(View.GONE);
+        adminCbx.setVisibility(View.GONE);
+        remarkEt.setVisibility(View.GONE);
 
+        if(getIntent().getSerializableExtra(CREATE_RESULT) != null){
+            handEmployeeVo = (EmployeeVo)getIntent().getSerializableExtra(CREATE_RESULT);
+            phoneEt.setText(handEmployeeVo.getPhone());
+            nameEt.setText(handEmployeeVo.getUsername());
+        }
     }
 
     private void initListener() {

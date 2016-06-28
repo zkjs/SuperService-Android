@@ -228,6 +228,7 @@ public class EmployeeAddActivity extends BaseActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(EmployeeAddActivity.this, EmployeeHandAddActivity.class);
+                intent.putExtra(EmployeeHandAddActivity.CREATE_RESULT,handEmployeeVo);
                 startActivityForResult(intent,HAND_REQUEST_CODE);
             }
         });
@@ -386,7 +387,7 @@ public class EmployeeAddActivity extends BaseActivity {
             client.addHeader("Token",CacheUtil.getInstance().getExtToken());
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("users",users);
-            StringEntity stringEntity = new StringEntity(jsonObject.toString());
+            StringEntity stringEntity = new StringEntity(jsonObject.toString(),"UTF-8");
             String url = ProtocolUtil.registerSSusers();
             client.post(mContext,url, stringEntity, "application/json", new JsonHttpResponseHandler(){
                 public void onStart(){
@@ -404,6 +405,8 @@ public class EmployeeAddActivity extends BaseActivity {
                     try {
                         if(response.getInt("res") == 0){
                             Toast.makeText(mContext,"成功添加",Toast.LENGTH_SHORT).show();
+                            handEmployeeVo = null;
+                            handText.setText("");
                             setResult(RESULT_OK);
                             finish();
                         }else{

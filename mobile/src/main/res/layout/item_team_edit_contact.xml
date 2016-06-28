@@ -63,24 +63,10 @@
                 android:singleLine="true"
                 android:gravity="center_vertical|left"
                 android:textColor="@color/black"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:text="名字"/>
 
-            <RelativeLayout
-                android:id="@+id/rl_xuankuang"
-                android:layout_alignParentRight="true"
-                android:padding="8dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
 
-                <CheckBox
-                    android:id="@+id/cb_check"
-                    android:background="@drawable/bg_ic_xuankuang"
-                    android:button="@null"
-                    android:clickable="false"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp" />
-
-            </RelativeLayout>
 
         </RelativeLayout>
 
