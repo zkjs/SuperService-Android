@@ -1,6 +1,7 @@
 package com.zkjinshi.superservice.activity.set;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -23,6 +24,7 @@ import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.adapter.EventAddInviteAdapter;
 import com.zkjinshi.superservice.adapter.EventManagerAdapter;
 import com.zkjinshi.superservice.base.BaseAppCompatActivity;
+import com.zkjinshi.superservice.base.BaseApplication;
 import com.zkjinshi.superservice.manager.SSOManager;
 import com.zkjinshi.superservice.response.BaseResponse;
 import com.zkjinshi.superservice.response.GuestListResponse;
@@ -308,7 +310,8 @@ public class AddInviteActivity extends BaseAppCompatActivity {
                     if(null != baseResponse){
                         int resultCode = baseResponse.getRes();
                         if(0 == resultCode){
-                            finish();
+                            DialogUtil.getInstance().showCustomToast(AddInviteActivity.this,"发布活动成功",Gravity.CENTER);
+                            BaseApplication.getInst().clearLeaveTop();
                         }else {
                             String resultMsg = baseResponse.getResDesc();
                             if(!TextUtils.isEmpty(resultMsg)){
