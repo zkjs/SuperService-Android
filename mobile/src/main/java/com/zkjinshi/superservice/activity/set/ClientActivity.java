@@ -314,7 +314,9 @@ public class ClientActivity extends BaseAppCompatActivity {
                             if(null != requestWhiteUserList && !requestWhiteUserList.isEmpty()){
                                 PAGE_NO++;
                             }else {
-                                DialogUtil.getInstance().showCustomToast(ClientActivity.this,"再无更多数据", Gravity.CENTER);
+                                if(!isRefresh){
+                                    DialogUtil.getInstance().showCustomToast(ClientActivity.this,"再无更多数据", Gravity.CENTER);
+                                }
                             }
                             vipUserAdapter.setVipUserList(whiteUserList);
                             if(30001 == resultFlag){

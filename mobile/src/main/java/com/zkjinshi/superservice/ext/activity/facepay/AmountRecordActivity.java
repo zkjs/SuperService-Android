@@ -161,7 +161,9 @@ public class AmountRecordActivity extends Activity {
                             if(null != requestAmountStatusList && !requestAmountStatusList.isEmpty()){
                                 PAGE_NO++;
                             }else {
-                                DialogUtil.getInstance().showCustomToast(AmountRecordActivity.this,"再无更多数据",Gravity.CENTER);
+                                if(!isRefresh){
+                                    DialogUtil.getInstance().showCustomToast(AmountRecordActivity.this,"再无更多数据",Gravity.CENTER);
+                                }
                             }
                             amountAdapter.setAmountStatusList(amountStatusList);
                             if(30001 == resultFlag){
