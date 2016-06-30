@@ -39,6 +39,7 @@ import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.utils.JxlUtil;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
+import com.zkjinshi.superservice.utils.StringUtil;
 import com.zkjinshi.superservice.vo.ContactLocalVo;
 import com.zkjinshi.superservice.vo.DepartmentVo;
 import com.zkjinshi.superservice.vo.EmployeeVo;
@@ -327,8 +328,10 @@ public class EmployeeAddActivity extends BaseActivity {
         //汇总手动添加的新成员
         if(handEmployeeVo != null){
             if(!TextUtils.isEmpty(handEmployeeVo.getPhone()) && !map.containsKey(handEmployeeVo.getPhone())){
-                allList.add(handEmployeeVo);
-                map.put(handEmployeeVo.getPhone(),handEmployeeVo.getPhone());
+                if(checkPhone(handEmployeeVo)){
+                    allList.add(handEmployeeVo);
+                    map.put(handEmployeeVo.getPhone(),handEmployeeVo.getPhone());
+                }
             }
         }
 
@@ -336,13 +339,10 @@ public class EmployeeAddActivity extends BaseActivity {
         if( excelList != null && excelList.size() > 0){
             for(EmployeeVo shopEmployeeVo : excelList){
                 if(!TextUtils.isEmpty(shopEmployeeVo.getPhone()) && !map.containsKey(shopEmployeeVo.getPhone())){
-                    if(shopEmployeeVo.getRolename().equals("管理层")){
-                        //shopEmployeeVo.setRoleid(1);
-                    }else{
-                        //shopEmployeeVo.setRoleid(2);
+                    if(checkPhone(shopEmployeeVo)){
+                        allList.add(shopEmployeeVo);
+                        map.put(shopEmployeeVo.getPhone(),shopEmployeeVo.getPhone());
                     }
-                    allList.add(shopEmployeeVo);
-                    map.put(shopEmployeeVo.getPhone(),shopEmployeeVo.getPhone());
                 }
             }
         }
@@ -354,15 +354,26 @@ public class EmployeeAddActivity extends BaseActivity {
                 phone = phone.replaceAll(" ","");
                 shopEmployeeVo.setPhone(phone);
                 shopEmployeeVo.setUsername(contactLocalVo.getContactName());
-//                shopEmployeeVo.setRoleid(2);
-//                shopEmployeeVo.setDept_id(0);
                 if(!TextUtils.isEmpty(shopEmployeeVo.getPhone()) && !map.containsKey(shopEmployeeVo.getPhone())){
-                    allList.add(shopEmployeeVo);
-                    map.put(shopEmployeeVo.getPhone(),shopEmployeeVo.getPhone());
+                    if(checkPhone(shopEmployeeVo)){
+                        allList.add(shopEmployeeVo);
+                        map.put(shopEmployeeVo.getPhone(),shopEmployeeVo.getPhone());
+                    }
                 }
             }
         }
         map = null;
+    }
+
+    private boolean checkPhone(EmployeeVo employeeVo) {
+        String phone = employeeVo.getPhone();
+        phone = phone.replaceAll(" ","");
+        phone = phone.replaceAll("-","");
+        employeeVo.setPhone(phone);
+        if(StringUtil.isPhoneNumber(phone)){
+            return true;
+        }
+        return false;
     }
 
     // 批量上传新建的成员
