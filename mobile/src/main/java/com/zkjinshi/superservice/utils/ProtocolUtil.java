@@ -574,4 +574,46 @@ public class ProtocolUtil {
     public static String getTaskDeptUrl(String taskId){
         return ConfigUtil.getInst().getForDomain()+"res/v1/query/sss?taskid="+taskId;
     }
+
+    /**
+     * 获取活动列表
+     * @return
+     */
+    public static String getEventListUrl(){
+        return ConfigUtil.getInst().getForDomain()+"res/v1/activity/detail";
+    }
+
+    /**
+     * 删除活动
+     * @param actid
+     * @return
+     */
+    public static String getDeleteEventUrl(String actid){
+        return ConfigUtil.getInst().getForDomain()+"res/v1/activity/"+actid;
+    }
+
+    /**
+     * 创建活动
+     * @return
+     */
+    public static String getCreateEventUrl(){
+        return ConfigUtil.getInst().getForDomain()+"res/v1/activity";
+    }
+
+    /**
+     * 编辑活动
+     * @param actId
+     * @return
+     */
+    public static String getEditEventUrl(String actId){
+        return ConfigUtil.getInst().getForDomain()+"res/v1/activity/"+actId;
+    }
+
+    /**
+     * 获取邀请名单
+     * @return
+     */
+    public static String getGuestListUrl(){
+        return ConfigUtil.getInst().getForDomain()+"res/v1/activity/member";
+    }
 }

@@ -26,6 +26,8 @@ import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.pyxis.bluetooth.NetBeaconVo;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.set.ClientActivity;
+import com.zkjinshi.superservice.activity.set.CreateEventActivity;
+import com.zkjinshi.superservice.activity.set.EventManagerActivity;
 import com.zkjinshi.superservice.activity.set.ServiceSecondTagListActivity;
 import com.zkjinshi.superservice.activity.set.ServiceTagListActivity;
 import com.zkjinshi.superservice.activity.set.SettingActivity;
@@ -70,7 +72,7 @@ public class MainActivity extends BaseAppCompatActivity {
     private TextView        shopnameTv;
     private RelativeLayout  avatarLayout;
     private ImageButton     setIbtn;
-    private TextView checkOutTv,clientTv,serviceTagTv;
+    private TextView checkOutTv,clientTv,serviceTagTv,eventTv;
 
     private void initView(){
         avatarIv   = (SimpleDraweeView)findViewById(R.id.avatar_iv);
@@ -81,6 +83,7 @@ public class MainActivity extends BaseAppCompatActivity {
         checkOutTv = (TextView)findViewById(R.id.amount_tv);
         clientTv = (TextView)findViewById(R.id.client_tv);
         serviceTagTv = (TextView)findViewById(R.id.service_tag_tv);
+        eventTv = (TextView)findViewById(R.id.event_tag_tv);
     }
 
     private void initData(){
@@ -102,6 +105,11 @@ public class MainActivity extends BaseAppCompatActivity {
         }else {
             serviceTagTv.setVisibility(View.GONE);
         }
+//        if(AccessControlUtil.isShowView(AccessControlUtil.CREATEACTIVITY)){
+//            eventTv.setVisibility(View.VISIBLE);
+//        }else {
+//            eventTv.setVisibility(View.GONE);
+//        }
 
         //打开蓝牙请求
         BlueToothManager.getInstance().openBluetooth();
@@ -173,6 +181,16 @@ public class MainActivity extends BaseAppCompatActivity {
                 Intent myClient = new Intent(MainActivity.this, ServiceTagListActivity.class);
                 MainActivity.this.startActivity(myClient);
                 overridePendingTransition(R.anim.activity_new, R.anim.activity_out);
+            }
+        });
+
+        //活动管理
+        eventTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this,EventManagerActivity.class);
+                startActivity(intent);
+                overridePendingTransition(R.anim.activity_new,R.anim.activity_out);
             }
         });
 

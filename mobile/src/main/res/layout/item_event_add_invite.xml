@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/role_name_choose_cb"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:clickable="true"
+        android:layout_centerVertical="true"
+        android:src="@mipmap/list_checkbox"
+        android:background="@null"
+        android:button="@null"/>
+
+    <TextView
+        android:id="@+id/role_name_tv"
+        android:layout_toRightOf="@id/role_name_choose_cb"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:gravity="center"
+        android:text="@null"
+        android:layout_centerVertical="true"
+        android:textSize="14sp"
+        android:layout_marginLeft="20dp"
+        android:textColor="#101010"
+        />
+
+    <ImageView
+        android:id="@+id/role_right_arrow_iv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/btn_right_arrow_blue_selector"
+        android:background="@null"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="15dp"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        />
+
+    <TextView
+        android:id="@+id/role_stat_tv"
+        android:layout_toLeftOf="@id/role_right_arrow_iv"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:gravity="center"
+        android:text="@null"
+        android:layout_centerVertical="true"
+        android:textSize="10sp"
+        android:layout_marginRight="15dp"
+        android:textColor="#888888"
+        />
+
+</RelativeLayout>

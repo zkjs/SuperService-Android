@@ -1,0 +1,352 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:background="#f5f5f5"
+    android:layout_height="match_parent"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:clickable="true"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto">
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/title_toolbar"
+        />
+
+    <Button
+        android:id="@+id/create_event_btn_sure"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/selector_go"
+        android:gravity="center"
+        android:src="@null"
+        android:text="确定"
+        android:textSize="16sp"
+        android:textColor="@android:color/white"
+        />
+
+    <ScrollView
+        android:id="@+id/create_event_sv_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/create_event_btn_sure"
+        android:layout_below="@id/toolbar"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="96dp"
+                android:background="@android:color/white">
+
+                <TextView
+                    android:id="@+id/create_event_tv_event_name_tips"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginRight="10dp"
+                    android:textColor="#101010"
+                    android:text="活动名称"
+                    />
+
+                <TextView
+                    android:layout_toRightOf="@id/create_event_tv_event_name_tips"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="*"
+                    android:textColor="#e51c23"/>
+                
+                <EditText
+                    android:id="@+id/create_event_etv_event_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:background="@android:color/white"
+                    android:layout_alignParentBottom="true"
+                    android:textColorHint="#d1d1d1"
+                    android:padding="5dp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:textColor="#101010"
+                    android:hint="请输入活动名称"
+                    android:textSize="14sp"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="96dp"
+                android:layout_marginTop="10dp"
+                android:background="@android:color/white">
+
+                <TextView
+                    android:id="@+id/create_event_tv_event_date_tips"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:layout_marginLeft="15dp"
+                    android:clickable="true"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginRight="10dp"
+                    android:textColor="#101010"
+                    android:text="活动日期"
+                    />
+
+                <TextView
+                    android:layout_toRightOf="@id/create_event_tv_event_date_tips"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="*"
+                    android:textColor="#e51c23"/>
+
+                <TextView
+                    android:id="@+id/create_event_tv_event_start_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:layout_marginLeft="25dp"
+                    android:text="请选择活动开始日期"
+                    android:gravity="center"
+                    android:clickable="true"
+                    android:layout_alignParentBottom="true"
+                    android:textColor="#d1d1d1"
+                    android:textSize="14sp"/>
+
+                <TextView
+                    android:id="@+id/create_event_tv_event_start_middle"
+                    android:layout_centerInParent="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:text="－"
+                    android:gravity="center"
+                    android:layout_alignParentBottom="true"
+                    android:textColor="#101010"
+                    android:textSize="16sp"/>
+
+                <TextView
+                    android:id="@+id/create_event_tv_event_over_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:clickable="true"
+                    android:text="请选择活动结束时间"
+                    android:layout_marginRight="25dp"
+                    android:layout_alignParentRight="true"
+                    android:gravity="center"
+                    android:layout_alignParentBottom="true"
+                    android:textColor="#d1d1d1"
+                    android:textSize="14sp"/>
+
+            </RelativeLayout>
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_marginTop="10dp"
+                android:background="@android:color/white">
+
+                <TextView
+                    android:id="@+id/create_event_tv_event_content_tips"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginRight="10dp"
+                    android:textColor="#101010"
+                    android:text="活动内容"
+                    />
+
+                <TextView
+                    android:layout_toRightOf="@id/create_event_tv_event_content_tips"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="*"
+                    android:textColor="#e51c23"/>
+
+                <EditText
+                    android:id="@+id/create_event_etv_event_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:background="@android:color/white"
+                    android:layout_alignParentBottom="true"
+                    android:textColorHint="#d1d1d1"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:padding="5dp"
+                    android:textColor="#101010"
+                    android:gravity="left"
+                    android:textSize="14sp"
+                    android:maxLength="100"
+                    android:hint="请输入活动内容（100字以内）"
+                    android:clickable="true" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="240dp"
+                android:layout_marginTop="10dp"
+                android:background="@android:color/white">
+
+                <TextView
+                    android:id="@+id/create_event_tv_event_logo_tips"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginRight="10dp"
+                    android:textColor="#101010"
+                    android:text="图片"
+                    />
+
+                <TextView
+                    android:layout_toRightOf="@id/create_event_tv_event_logo_tips"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="*"
+                    android:textColor="#e51c23"/>
+
+                <com.facebook.drawee.view.SimpleDraweeView
+                    android:id="@+id/create_event_sdv_event_logo"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/event_logo_height"
+                    android:layout_margin="10dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_gravity="center"
+                    android:layout_centerVertical="true"
+                    fresco:actualImageScaleType="centerCrop"
+                    fresco:placeholderImageScaleType="centerCrop"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="10dp"
+                android:background="@android:color/white">
+
+                <TextView
+                    android:id="@+id/create_event_tv_carry_tips"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginRight="10dp"
+                    android:textColor="#101010"
+                    android:text="携带人员"
+                    />
+
+                <TextView
+                    android:layout_toRightOf="@id/create_event_tv_carry_tips"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="*"
+                    android:textColor="#e51c23"/>
+
+                <CheckBox
+                    android:id="@+id/create_event_cb_carry"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="15dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:checked="true"
+                    android:background="@drawable/bg_event_cb_checked"
+                    android:button="@null"/>
+
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/create_event_tv_cut_line"
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="#e3e3e3"/>
+
+            <RelativeLayout
+                android:id="@+id/create_event_tv_carry_input_layout"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:background="@android:color/white">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginRight="10dp"
+                    android:textColor="#101010"
+                    android:text="携带人数"
+                    />
+
+                <EditText
+                    android:id="@+id/create_event_etv_carry_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="15dp"
+                    android:layout_alignParentRight="true"
+                    android:hint="请输入最多可携带人数"
+                    android:layout_centerVertical="true"
+                    android:textSize="14sp"
+                    android:textColor="#101010"
+                    android:textColorHint="#d1d1d1"
+                    android:background="@android:color/white"/>
+
+            </RelativeLayout>
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="96dp"
+                android:layout_marginTop="10dp"
+                android:background="@android:color/white">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginRight="10dp"
+                    android:textColor="#101010"
+                    android:text="链接地址"
+                    />
+
+
+                <EditText
+                    android:id="@+id/create_event_tv_event_url"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:background="@android:color/white"
+                    android:layout_alignParentBottom="true"
+                    android:textColorHint="#d1d1d1"
+                    android:padding="5dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:textSize="14sp"
+                    android:textColor="#101010"
+                    android:hint="请输入链接地址"/>
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+
+    </ScrollView>
+
+
+</RelativeLayout>
