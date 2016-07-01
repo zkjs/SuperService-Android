@@ -94,6 +94,7 @@ public class AddInviteActivity extends BaseAppCompatActivity {
         selectMap = new HashMap<String, Boolean>();
         eventAddInviteAdapter = new EventAddInviteAdapter(this,guestList);
         eventAddInviteAdapter.setSelectMap(selectMap);
+        eventAddInviteAdapter.setChooseMemberMap(chooseMemberMap);
         guestListView.setAdapter(eventAddInviteAdapter);
         if(null != getIntent()){
             if(null != getIntent().getStringExtra("actName")){
@@ -146,9 +147,21 @@ public class AddInviteActivity extends BaseAppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 GuestVo guestVo = (GuestVo) parent.getAdapter().getItem(position);
-                Intent intent = new Intent(AddInviteActivity.this,ContactActivity.class);
-                intent.putExtra("guestVo",guestVo);
-                startActivityForResult(intent,CONTACT_REQUEST_CODE);
+                if(null != guestVo){
+                    selectMap = ((EventAddInviteAdapter)parent.getAdapter()).getSelectMap();
+                    chooseMemberMap = ((EventAddInviteAdapter) parent.getAdapter()).getChooseMemberMap();
+                    String roleId = guestVo.getRoleid();
+                    boolean isAll = false;
+                    if(null != selectMap && selectMap.containsKey(roleId)){
+                        isAll = selectMap.get(roleId);
+                    }
+                    ArrayList<MemberVo> chooseMemberList = chooseMemberMap.get(roleId);
+                    Intent intent = new Intent(AddInviteActivity.this,ContactActivity.class);
+                    intent.putExtra("guestVo",guestVo);
+                    intent.putExtra("chooseMemberList",chooseMemberList);
+                    intent.putExtra("isAll",isAll);
+                    startActivityForResult(intent,CONTACT_REQUEST_CODE);
+                }
             }
         });
     }
@@ -366,6 +379,27 @@ public class AddInviteActivity extends BaseAppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
+        if(requestCode == CONTACT_REQUEST_CODE && resultCode == RESULT_OK){
+            if(null != data){
+                boolean isAll = data.getBooleanExtra("isAll",false);
+                GuestVo guestVo = (GuestVo) data.getSerializableExtra("guestVo");
+                ArrayList<MemberVo> memberList = guestVo.getMember();
+                String roleId = guestVo.getRoleid();
+                String roleid = null;
+                if(isAll){
+                    selectMap.put(roleId, true);
+                }else {
+                    selectMap.put(roleId,false);
+                }
+                chooseMemberMap.put(roleId,memberList);
+                for (GuestVo guest : guestList){
+                    roleid = guest.getRoleid();
+                    if(roleId.equals(roleid)){
+                        guest.setCount(memberList == null ? 0: memberList.size());
+                    }
+                }
+                eventAddInviteAdapter.setSelectMap(selectMap);
+            }
+        }
     }
 }

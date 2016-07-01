@@ -17,6 +17,7 @@ import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.vo.MemberVo;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 /**
  * 开发者：jimmyzhang
@@ -29,11 +30,17 @@ public class ContactAdapter extends BaseAdapter {
     private ArrayList<MemberVo> memberList;
     private Context context;
     private LayoutInflater inflater;
+    private Map<String, Boolean> selectMap;
 
     public ContactAdapter(ArrayList<MemberVo> memberList,Context context){
         this.context = context;
         this.inflater = LayoutInflater.from(context);
         this.setMemberList(memberList);
+    }
+
+    public void setSelectMap(Map<String, Boolean> selectMap) {
+        this.selectMap = selectMap;
+        notifyDataSetChanged();
     }
 
     public void setMemberList(ArrayList<MemberVo> memberList) {
@@ -76,6 +83,12 @@ public class ContactAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
         MemberVo memberVo = memberList.get(position);
+        String memberId = memberVo.getUserid();
+        if (selectMap != null && selectMap.containsKey(memberId) && selectMap.get(memberId)) {
+            viewHolder.chooseIv.setImageResource(R.mipmap.list_checkbox_selected);
+        } else {
+            viewHolder.chooseIv.setImageResource(R.mipmap.list_checkbox);
+        }
         int section = getSectionForPosition(position);
         if (position == getPositionForSection(section)) {
             viewHolder.sortLetterLayout.setVisibility(View.VISIBLE);

@@ -1,5 +1,6 @@
 package com.zkjinshi.superservice.activity.set;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -7,6 +8,7 @@ import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -23,7 +25,10 @@ import com.zkjinshi.superservice.vo.MemberVo;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 开发者：jimmyzhang
@@ -37,6 +42,7 @@ public class ContactActivity extends BaseAppCompatActivity {
     private TextView titleIv;
     private GuestVo guestVo;
     private ArrayList<MemberVo> memberList;
+    private ArrayList<MemberVo> selectMemberList;
     private ListView contactListView;
     private LinearLayout topLayout;
     private TextView topChatTv;
@@ -45,6 +51,8 @@ public class ContactActivity extends BaseAppCompatActivity {
     private ContactAdapter contactAdapter;
     private ContactPinyinComparator pinyinComparator;
     private int lastFirstVisibleItem = -1;
+    private Map<String, Boolean> selectMap;
+    private boolean isAll;
 
     private void initView(){
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -61,6 +69,7 @@ public class ContactActivity extends BaseAppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         titleIv.setText("联系人");
+        selectMap = new HashMap<String, Boolean>();
         characterParser = CharacterParser.getInstance();
         pinyinComparator = new ContactPinyinComparator();
         if(null != getIntent() && null != getIntent().getSerializableExtra("guestVo")){
@@ -72,10 +81,21 @@ public class ContactActivity extends BaseAppCompatActivity {
                     titleIv.setText(roleNameStr);
                 }
             }
+            isAll = getIntent().getBooleanExtra("isAll",false);
+            selectMemberList = (ArrayList<MemberVo>) getIntent().getSerializableExtra("chooseMemberList");
         }
         memberList = filledData(memberList);
+        if(null == selectMemberList){
+            selectMemberList = new ArrayList<MemberVo>();
+        }
+        if(null != selectMemberList && !selectMemberList.isEmpty()){
+            for (MemberVo memberVo : selectMemberList){
+                selectMap.put(memberVo.getUserid(),true);
+            }
+        }
         Collections.sort(memberList, pinyinComparator);
         contactAdapter = new ContactAdapter(memberList,this);
+        contactAdapter.setSelectMap(selectMap);
         contactListView.setAdapter(contactAdapter);
     }
 
@@ -94,7 +114,18 @@ public class ContactActivity extends BaseAppCompatActivity {
             public boolean onMenuItemClick(android.view.MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.menu_contact_sure://确定
-
+                        Intent intent = getIntent();
+                        int selectCount = selectMemberList == null ? 0 : selectMemberList.size();
+                        int totalCount = memberList.size();
+                        if(selectCount == totalCount){
+                            intent.putExtra("isAll",true);
+                        }else {
+                            intent.putExtra("isAll",false);
+                        }
+                        guestVo.setMember(selectMemberList);
+                        intent.putExtra("guestVo",guestVo);
+                        setResult(RESULT_OK,intent);
+                        finish();
                         break;
                 }
                 return true;
@@ -119,7 +150,6 @@ public class ContactActivity extends BaseAppCompatActivity {
 
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
-                // TODO Auto-generated method stub
 
             }
 
@@ -156,6 +186,40 @@ public class ContactActivity extends BaseAppCompatActivity {
                     }
                 }
                 lastFirstVisibleItem = firstVisibleItem;
+            }
+        });
+
+        contactListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                MemberVo memberVo = (MemberVo) parent.getAdapter().getItem(position);
+                String memberId = memberVo.getUserid();
+                if (selectMap != null
+                        && selectMap.containsKey(memberId)
+                        && selectMap.get(memberId)) {
+                    selectMap.put(memberId, false);
+                    Iterator<MemberVo> iterator = selectMemberList.iterator();
+                    while(iterator.hasNext()){
+                        MemberVo member = iterator.next();
+                        if(member.getUserid().equals(memberId)){
+                            iterator.remove();
+                        }
+                    }
+                } else {
+                    selectMap.put(memberId, true);
+                    boolean isChoose = false;
+                    if(null != selectMemberList && !selectMemberList.isEmpty()){
+                        for (MemberVo member : selectMemberList){
+                            if(member.getUserid().equals(memberId)){
+                                isChoose = true;
+                            }
+                        }
+                    }
+                    if(!isChoose){
+                        selectMemberList.add(memberVo);
+                    }
+                }
+                contactAdapter.setSelectMap(selectMap);
             }
         });
 
