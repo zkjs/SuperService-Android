@@ -48,6 +48,11 @@ public class EventVo implements Serializable {
     private String enddate;
     private int invitedpersoncnt;
     private int confirmpersoncnt;
+    private int portable;
+    private String actContent;
+    private int maxTake;
+    private String acturl;
+    private String actimage;
 
     private ArrayList<EventUserVo> inviteperson;
 
@@ -105,5 +110,45 @@ public class EventVo implements Serializable {
 
     public void setInviteperson(ArrayList<EventUserVo> inviteperson) {
         this.inviteperson = inviteperson;
+    }
+
+    public int getPortable() {
+        return portable;
+    }
+
+    public void setPortable(int portable) {
+        this.portable = portable;
+    }
+
+    public String getActContent() {
+        return actContent;
+    }
+
+    public void setActContent(String actContent) {
+        this.actContent = actContent;
+    }
+
+    public int getMaxTake() {
+        return maxTake;
+    }
+
+    public void setMaxTake(int maxTake) {
+        this.maxTake = maxTake;
+    }
+
+    public String getActurl() {
+        return acturl;
+    }
+
+    public void setActurl(String acturl) {
+        this.acturl = acturl;
+    }
+
+    public String getActimage() {
+        return actimage;
+    }
+
+    public void setActimage(String actimage) {
+        this.actimage = actimage;
     }
 }

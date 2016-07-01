@@ -27,6 +27,7 @@ public class EventUserVo implements Serializable {
     private int takeperson;
     private String confirmstatus;
     private int confirmstatusCode;
+    private String phone;
 
     public String getUserid() {
         return userid;
@@ -66,5 +67,13 @@ public class EventUserVo implements Serializable {
 
     public void setConfirmstatusCode(int confirmstatusCode) {
         this.confirmstatusCode = confirmstatusCode;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 }

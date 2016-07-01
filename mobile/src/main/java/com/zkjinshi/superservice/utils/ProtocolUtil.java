@@ -616,4 +616,14 @@ public class ProtocolUtil {
     public static String getGuestListUrl(){
         return ConfigUtil.getInst().getForDomain()+"res/v1/activity/member";
     }
+
+    /**
+     * 根据活动id获取邀请名单
+     * @param actid
+     * @return
+     */
+    public static String getGuestListUl(String actid){
+        return ConfigUtil.getInst().getForDomain()+"res/v1/activity/member?actid";
+    }
+
 }

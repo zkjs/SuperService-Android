@@ -76,6 +76,7 @@ public class AddInviteActivity extends BaseAppCompatActivity {
     private int maxTake;
     private int portable;
     private String actUrl;
+    private String actId;
     private String actImage;
     private Map<String, Boolean> selectMap;
 
@@ -116,6 +117,9 @@ public class AddInviteActivity extends BaseAppCompatActivity {
             }
             if(null != getIntent().getStringExtra("actImage")){
                 actImage = getIntent().getStringExtra("actImage");
+            }
+            if(null != getIntent().getStringExtra("actId")){
+                actId = getIntent().getStringExtra("actId");
             }
         }
         requestGuestListTask();
@@ -240,7 +244,12 @@ public class AddInviteActivity extends BaseAppCompatActivity {
             client.addHeader("Token", CacheUtil.getInstance().getExtToken());
             JSONObject jsonObject = new JSONObject();
             StringEntity stringEntity = new StringEntity(jsonObject.toString());
-            String url = ProtocolUtil.getGuestListUrl();
+            String url = null;
+            if(TextUtils.isEmpty(actId)){
+                url = ProtocolUtil.getGuestListUrl();
+            }else {
+                url = ProtocolUtil.getGuestListUl(actId);
+            }
             client.get(AddInviteActivity.this,url, stringEntity, "application/json", new AsyncHttpResponseHandler(){
                 public void onStart(){
                     super.onStart();
@@ -298,17 +307,34 @@ public class AddInviteActivity extends BaseAppCompatActivity {
             if(CacheUtil.getInstance().isLogin()){
                 client.addHeader("Token",CacheUtil.getInstance().getExtToken());
             }
-            String url = ProtocolUtil.getCreateEventUrl();
+            String url = null;
+            if(TextUtils.isEmpty(actId)){
+                url  = ProtocolUtil.getCreateEventUrl();
+            }else {
+                url = ProtocolUtil.getEditEventUrl(actId);
+            }
             RequestParams params = new RequestParams();
-            params.put("actname",actName);
-            params.put("actcontent",actContent);
-            params.put("startdate",startDate);
-            params.put("enddate",endDate);
-            if(actImage != null){
+            if(!TextUtils.isEmpty(actName)){
+                params.put("actname",actName);
+            }
+            if(!TextUtils.isEmpty(actContent)){
+                params.put("actcontent",actContent);
+            }
+            if(!TextUtils.isEmpty(startDate)){
+                params.put("startdate",startDate);
+            }
+            if(!TextUtils.isEmpty(endDate)){
+                params.put("enddate",endDate);
+            }
+            if(!TextUtils.isEmpty(actImage)){
                 params.put("actimage",new File(actImage));
             }
-            params.put("maxtake",maxTake);
-            params.put("acturl",actUrl);
+            if(maxTake > 0){
+                params.put("maxtake",maxTake);
+            }
+            if(!TextUtils.isEmpty(actUrl)){
+                params.put("acturl",actUrl);
+            }
             params.put("portable",portable);
             params.put("invitesi",invites);
             client.post(url, params, new JsonHttpResponseHandler(){
