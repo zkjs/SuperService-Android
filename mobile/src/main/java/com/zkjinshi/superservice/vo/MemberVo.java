@@ -12,6 +12,7 @@ import java.io.Serializable;
  * 版权所有
  */
 public class MemberVo implements Serializable{
+
     /**
      "userid": "c_ae0f4570a5a9fd55",
      "username": "林2哈哈",
@@ -31,6 +32,7 @@ public class MemberVo implements Serializable{
     private int sex;
     private String email;
     private int viplevel;
+    private String sortLetter;
 
     public String getUserid() {
         return userid;
@@ -86,5 +88,13 @@ public class MemberVo implements Serializable{
 
     public void setViplevel(int viplevel) {
         this.viplevel = viplevel;
+    }
+
+    public String getSortLetter() {
+        return sortLetter;
+    }
+
+    public void setSortLetter(String sortLetter) {
+        this.sortLetter = sortLetter;
     }
 }

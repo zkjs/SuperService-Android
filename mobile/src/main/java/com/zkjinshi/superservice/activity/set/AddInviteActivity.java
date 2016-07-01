@@ -61,6 +61,8 @@ import cz.msebera.android.httpclient.entity.StringEntity;
  */
 public class AddInviteActivity extends BaseAppCompatActivity {
 
+    public static final int CONTACT_REQUEST_CODE = 0x0011;
+
     private Toolbar toolbar;
     private TextView titleIv;
     private ListView guestListView;
@@ -143,7 +145,10 @@ public class AddInviteActivity extends BaseAppCompatActivity {
         guestListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+                GuestVo guestVo = (GuestVo) parent.getAdapter().getItem(position);
+                Intent intent = new Intent(AddInviteActivity.this,ContactActivity.class);
+                intent.putExtra("guestVo",guestVo);
+                startActivityForResult(intent,CONTACT_REQUEST_CODE);
             }
         });
     }
@@ -358,4 +363,9 @@ public class AddInviteActivity extends BaseAppCompatActivity {
         customBuilder.create().show();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+    }
 }
