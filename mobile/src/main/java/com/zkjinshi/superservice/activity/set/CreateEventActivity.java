@@ -30,6 +30,7 @@ import com.google.gson.Gson;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.zkjinshi.base.util.DialogUtil;
+import com.zkjinshi.base.util.SoftInputUtil;
 import com.zkjinshi.base.util.TimeUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.common.CutActivity;
@@ -187,10 +188,10 @@ public class CreateEventActivity extends BaseAppCompatActivity {
             @Override
             public void onTimeSelect(Date date) {
                 if(isEventStartDate){
-                    startDateTv.setText(TimeUtil.getTime(date.getTime()));
+                    startDateTv.setText(TimeUtil.getTime(date));
                     startDate = date;
                 }else {
-                    overDateTv.setText(TimeUtil.getTime(date.getTime()));
+                    overDateTv.setText(TimeUtil.getTime(date));
                     endDate = date;
                 }
             }
@@ -201,6 +202,7 @@ public class CreateEventActivity extends BaseAppCompatActivity {
 
             @Override
             public void onClick(View v) {
+                SoftInputUtil.hideSoftInputMode(v.getContext(),eventNameEtv);
                 isEventStartDate = true;
                 timePickerView.show();
             }
@@ -210,6 +212,7 @@ public class CreateEventActivity extends BaseAppCompatActivity {
         overDateTv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                SoftInputUtil.hideSoftInputMode(view.getContext(),eventNameEtv);
                 isEventStartDate = false;
                 timePickerView.show();
             }

@@ -381,7 +381,11 @@ public class AddInviteActivity extends BaseAppCompatActivity {
      */
     private void showPublishEventDialog(){
         CustomDialog.Builder customBuilder = new CustomDialog.Builder(this);
-        customBuilder.setMessage("您确定发布活动邀请吗?");
+        if(TextUtils.isEmpty(actId)){
+            customBuilder.setMessage("您确定发布活动邀请吗?");
+        }else {
+            customBuilder.setMessage("您确定编辑活动邀请吗?");
+        }
         customBuilder.setGravity(Gravity.CENTER);
         customBuilder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
 

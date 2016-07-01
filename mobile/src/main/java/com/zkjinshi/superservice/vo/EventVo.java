@@ -49,7 +49,7 @@ public class EventVo implements Serializable {
     private int invitedpersoncnt;
     private int confirmpersoncnt;
     private int portable;
-    private String actContent;
+    private String actcontent;
     private int maxTake;
     private String acturl;
     private String actimage;
@@ -120,12 +120,12 @@ public class EventVo implements Serializable {
         this.portable = portable;
     }
 
-    public String getActContent() {
-        return actContent;
+    public String getActcontent() {
+        return actcontent;
     }
 
-    public void setActContent(String actContent) {
-        this.actContent = actContent;
+    public void setActcontent(String actcontent) {
+        this.actcontent = actcontent;
     }
 
     public int getMaxTake() {

@@ -15,7 +15,8 @@
     <ScrollView
         android:id="@+id/create_event_sv_content"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1.0"
         android:scrollbars="none">
 
         <LinearLayout
@@ -340,7 +341,7 @@
     <Button
         android:id="@+id/sure_btn"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="50dp"
         android:background="@drawable/selector_go"
         android:text="确认"
         android:textColor="@android:color/white"

@@ -31,6 +31,7 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.zkjinshi.base.config.ConfigUtil;
 import com.zkjinshi.base.util.DialogUtil;
+import com.zkjinshi.base.util.SoftInputUtil;
 import com.zkjinshi.base.util.TimeUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.common.CutActivity;
@@ -116,7 +117,7 @@ public class EditEventActivity extends BaseAppCompatActivity {
             if(null != eventVo){
                 actName = eventVo.getActname();
                 actId = eventVo.getActid();
-                actContent = eventVo.getActContent();
+                actContent = eventVo.getActcontent();
                 startDateStr = eventVo.getStartdate();
                 endDateStr = eventVo.getEnddate();
                 maxTake = eventVo.getMaxTake();
@@ -224,10 +225,10 @@ public class EditEventActivity extends BaseAppCompatActivity {
             @Override
             public void onTimeSelect(Date date) {
                 if(isEventStartDate){
-                    startDateTv.setText(TimeUtil.getTime(date.getTime()));
+                    startDateTv.setText(TimeUtil.getTime(date));
                     startDate = date;
                 }else {
-                    overDateTv.setText(TimeUtil.getTime(date.getTime()));
+                    overDateTv.setText(TimeUtil.getTime(date));
                     endDate = date;
                 }
             }
@@ -238,6 +239,7 @@ public class EditEventActivity extends BaseAppCompatActivity {
 
             @Override
             public void onClick(View v) {
+                SoftInputUtil.hideSoftInputMode(v.getContext(),eventNameEtv);
                 isEventStartDate = true;
                 timePickerView.show();
             }
@@ -247,6 +249,7 @@ public class EditEventActivity extends BaseAppCompatActivity {
         overDateTv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                SoftInputUtil.hideSoftInputMode(view.getContext(),eventNameEtv);
                 isEventStartDate = false;
                 timePickerView.show();
             }

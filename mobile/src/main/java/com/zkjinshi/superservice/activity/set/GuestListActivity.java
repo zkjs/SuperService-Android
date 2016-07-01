@@ -41,11 +41,14 @@ public class GuestListActivity extends BaseAppCompatActivity {
     private EventVo eventVo;
     private ArrayList<EventUserVo> eventUserList;
     private GuestAdapter guestAdapter;
+    private TextView inviteCountTv,sureCountTv;
 
     private void initView(){
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         titleIv = (TextView) findViewById(R.id.tv_center_title);
         guestListView = (SwipeMenuListView)findViewById(R.id.list_view_guest);
+        inviteCountTv = (TextView)findViewById(R.id.total_invit_count_tv);
+        sureCountTv = (TextView)findViewById(R.id.total_sure_count_tv);
     }
 
     private void initData(){
@@ -53,12 +56,16 @@ public class GuestListActivity extends BaseAppCompatActivity {
         toolbar.setNavigationIcon(R.mipmap.ic_fanhui);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        titleIv.setText("创建活动");
+        titleIv.setText("邀请名单");
         if(null != getIntent() && null != getIntent().getSerializableExtra("eventVo")){
             eventVo = (EventVo) getIntent().getSerializableExtra("eventVo");
             if(null != eventVo){
                 eventUserList = eventVo.getInviteperson();
             }
+            int inviteCount = eventVo.getInvitedpersoncnt();
+            inviteCountTv.setText("已邀请"+inviteCount+"人");
+            int sureCount = eventVo.getConfirmpersoncnt();
+            sureCountTv.setText("已确认"+sureCount+"人");
         }
         guestAdapter = new GuestAdapter(this,eventUserList);
         guestListView.setAdapter(guestAdapter);
