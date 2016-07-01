@@ -50,7 +50,7 @@ public class EventVo implements Serializable {
     private int confirmpersoncnt;
     private int portable;
     private String actcontent;
-    private int maxTake;
+    private int maxtake;
     private String acturl;
     private String actimage;
 
@@ -128,12 +128,12 @@ public class EventVo implements Serializable {
         this.actcontent = actcontent;
     }
 
-    public int getMaxTake() {
-        return maxTake;
+    public int getMaxtake() {
+        return maxtake;
     }
 
-    public void setMaxTake(int maxTake) {
-        this.maxTake = maxTake;
+    public void setMaxtake(int maxtake) {
+        this.maxtake = maxtake;
     }
 
     public String getActurl() {

@@ -120,7 +120,7 @@ public class EditEventActivity extends BaseAppCompatActivity {
                 actContent = eventVo.getActcontent();
                 startDateStr = eventVo.getStartdate();
                 endDateStr = eventVo.getEnddate();
-                maxTake = eventVo.getMaxTake();
+                maxTake = eventVo.getMaxtake();
                 portable = eventVo.getPortable();
                 actUrl = eventVo.getActurl();
                 actImage = eventVo.getActimage();
