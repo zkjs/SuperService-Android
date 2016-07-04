@@ -517,7 +517,6 @@
     <color name="OrangeFB880E">#FB880E</color>
     <color name="Gray9E9E9E">#9E9E9E</color>
     <color name="Gray7C7C7C">#7C7C7C</color>
-    <color name="light_gray">#fafafa</color>
 
     <color name="TextColorBlack">#101010</color>
     <color name="TextColorGray">#666666</color>
@@ -533,5 +532,6 @@
 
     <color name="light_blue">#03a9f4</color>
     <color name="light_red">#e51c23</color>
+    <color name="light_gray">#fafafa</color>
 
 </resources>

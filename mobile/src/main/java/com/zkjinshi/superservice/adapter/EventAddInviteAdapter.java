@@ -12,8 +12,10 @@ import android.widget.TextView;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.vo.EventVo;
 import com.zkjinshi.superservice.vo.GuestVo;
+import com.zkjinshi.superservice.vo.MemberVo;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -29,6 +31,7 @@ public class EventAddInviteAdapter extends BaseAdapter {
     private LayoutInflater inflater;
     private ArrayList<GuestVo> guestList;
     private Map<String, Boolean> selectMap;
+    private HashMap<String,ArrayList<MemberVo>> chooseMemberMap;
 
     public void setGuestList(ArrayList<GuestVo> guestList) {
         if(null == guestList){
@@ -48,6 +51,19 @@ public class EventAddInviteAdapter extends BaseAdapter {
     public void setSelectMap(Map<String, Boolean> selectMap) {
         this.selectMap = selectMap;
         notifyDataSetChanged();
+    }
+
+    public void setChooseMemberMap(HashMap<String, ArrayList<MemberVo>> chooseMemberMap) {
+        this.chooseMemberMap = chooseMemberMap;
+        notifyDataSetChanged();
+    }
+
+    public Map<String, Boolean> getSelectMap() {
+        return selectMap;
+    }
+
+    public HashMap<String, ArrayList<MemberVo>> getChooseMemberMap() {
+        return chooseMemberMap;
     }
 
     @Override
@@ -78,7 +94,7 @@ public class EventAddInviteAdapter extends BaseAdapter {
         }else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
-        GuestVo guestVo = guestList.get(position);
+        final GuestVo guestVo = guestList.get(position);
         String roleId = guestVo.getRoleid();
         if (selectMap != null && selectMap.containsKey(roleId) && selectMap.get(roleId)) {
             viewHolder.chooseIv.setImageResource(R.mipmap.list_checkbox_selected);
@@ -90,7 +106,9 @@ public class EventAddInviteAdapter extends BaseAdapter {
             viewHolder.roleNameTv.setText(roleNameStr);
         }
         int count = guestVo.getCount();
-        viewHolder.roleStatTv.setText("（"+count+"/"+getCount()+"）");
+        final ArrayList<MemberVo> memberList = guestVo.getMember();
+        final int totalCount = memberList == null ? 0 : memberList.size();
+        viewHolder.roleStatTv.setText("（"+count+"/"+totalCount+"）");
         viewHolder.chooseIv.setTag(roleId);
         viewHolder.chooseIv.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -100,8 +118,12 @@ public class EventAddInviteAdapter extends BaseAdapter {
                         && selectMap.containsKey(roleId)
                         && selectMap.get(roleId)) {
                     selectMap.put(roleId, false);
+                    guestVo.setCount(0);
+                    chooseMemberMap.put(roleId,new ArrayList<MemberVo>());
                 } else {
                     selectMap.put(roleId, true);
+                    guestVo.setCount(totalCount);
+                    chooseMemberMap.put(roleId,memberList);
                 }
                 notifyDataSetChanged();
             }

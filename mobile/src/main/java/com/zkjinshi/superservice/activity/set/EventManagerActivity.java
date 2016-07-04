@@ -96,7 +96,7 @@ public class EventManagerActivity extends BaseAppCompatActivity {
                 deleteItem.setBackground(new ColorDrawable(Color.rgb(0xE8,
                         0x4E, 0x40)));
                 deleteItem.setWidth(DisplayUtil.dip2px(EventManagerActivity.this,90));
-                deleteItem.setTitle("删除");
+                deleteItem.setTitle("取消");
                 deleteItem.setTitleSize(16);
                 deleteItem.setTitleColor(Color.WHITE);
                 menu.addMenuItem(deleteItem);

@@ -624,4 +624,14 @@ public class ProtocolUtil {
     public static String lbsV2LocBeacon(){
         return ConfigUtil.getInst().getPyxDomain()+"lbs/v2/loc/beacon";
     }
+
+    /**
+     * 根据活动id获取邀请名单
+     * @param actid
+     * @return
+     */
+    public static String getGuestListUl(String actid){
+        return ConfigUtil.getInst().getForDomain()+"res/v1/activity/member?actid";
+    }
+
 }

@@ -61,6 +61,8 @@ import cz.msebera.android.httpclient.entity.StringEntity;
  */
 public class AddInviteActivity extends BaseAppCompatActivity {
 
+    public static final int CONTACT_REQUEST_CODE = 0x0011;
+
     private Toolbar toolbar;
     private TextView titleIv;
     private ListView guestListView;
@@ -74,6 +76,7 @@ public class AddInviteActivity extends BaseAppCompatActivity {
     private int maxTake;
     private int portable;
     private String actUrl;
+    private String actId;
     private String actImage;
     private Map<String, Boolean> selectMap;
 
@@ -92,6 +95,7 @@ public class AddInviteActivity extends BaseAppCompatActivity {
         selectMap = new HashMap<String, Boolean>();
         eventAddInviteAdapter = new EventAddInviteAdapter(this,guestList);
         eventAddInviteAdapter.setSelectMap(selectMap);
+        eventAddInviteAdapter.setChooseMemberMap(chooseMemberMap);
         guestListView.setAdapter(eventAddInviteAdapter);
         if(null != getIntent()){
             if(null != getIntent().getStringExtra("actName")){
@@ -113,6 +117,9 @@ public class AddInviteActivity extends BaseAppCompatActivity {
             }
             if(null != getIntent().getStringExtra("actImage")){
                 actImage = getIntent().getStringExtra("actImage");
+            }
+            if(null != getIntent().getStringExtra("actId")){
+                actId = getIntent().getStringExtra("actId");
             }
         }
         requestGuestListTask();
@@ -143,7 +150,22 @@ public class AddInviteActivity extends BaseAppCompatActivity {
         guestListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+                GuestVo guestVo = (GuestVo) parent.getAdapter().getItem(position);
+                if(null != guestVo){
+                    selectMap = ((EventAddInviteAdapter)parent.getAdapter()).getSelectMap();
+                    chooseMemberMap = ((EventAddInviteAdapter) parent.getAdapter()).getChooseMemberMap();
+                    String roleId = guestVo.getRoleid();
+                    boolean isAll = false;
+                    if(null != selectMap && selectMap.containsKey(roleId)){
+                        isAll = selectMap.get(roleId);
+                    }
+                    ArrayList<MemberVo> chooseMemberList = chooseMemberMap.get(roleId);
+                    Intent intent = new Intent(AddInviteActivity.this,ContactActivity.class);
+                    intent.putExtra("guestVo",guestVo);
+                    intent.putExtra("chooseMemberList",chooseMemberList);
+                    intent.putExtra("isAll",isAll);
+                    startActivityForResult(intent,CONTACT_REQUEST_CODE);
+                }
             }
         });
     }
@@ -222,7 +244,12 @@ public class AddInviteActivity extends BaseAppCompatActivity {
             client.addHeader("Token", CacheUtil.getInstance().getExtToken());
             JSONObject jsonObject = new JSONObject();
             StringEntity stringEntity = new StringEntity(jsonObject.toString());
-            String url = ProtocolUtil.getGuestListUrl();
+            String url = null;
+            if(TextUtils.isEmpty(actId)){
+                url = ProtocolUtil.getGuestListUrl();
+            }else {
+                url = ProtocolUtil.getGuestListUl(actId);
+            }
             client.get(AddInviteActivity.this,url, stringEntity, "application/json", new AsyncHttpResponseHandler(){
                 public void onStart(){
                     super.onStart();
@@ -280,17 +307,34 @@ public class AddInviteActivity extends BaseAppCompatActivity {
             if(CacheUtil.getInstance().isLogin()){
                 client.addHeader("Token",CacheUtil.getInstance().getExtToken());
             }
-            String url = ProtocolUtil.getCreateEventUrl();
+            String url = null;
+            if(TextUtils.isEmpty(actId)){
+                url  = ProtocolUtil.getCreateEventUrl();
+            }else {
+                url = ProtocolUtil.getEditEventUrl(actId);
+            }
             RequestParams params = new RequestParams();
-            params.put("actname",actName);
-            params.put("actcontent",actContent);
-            params.put("startdate",startDate);
-            params.put("enddate",endDate);
-            if(actImage != null){
+            if(!TextUtils.isEmpty(actName)){
+                params.put("actname",actName);
+            }
+            if(!TextUtils.isEmpty(actContent)){
+                params.put("actcontent",actContent);
+            }
+            if(!TextUtils.isEmpty(startDate)){
+                params.put("startdate",startDate);
+            }
+            if(!TextUtils.isEmpty(endDate)){
+                params.put("enddate",endDate);
+            }
+            if(!TextUtils.isEmpty(actImage)){
                 params.put("actimage",new File(actImage));
             }
-            params.put("maxtake",maxTake);
-            params.put("acturl",actUrl);
+            if(maxTake > 0){
+                params.put("maxtake",maxTake);
+            }
+            if(!TextUtils.isEmpty(actUrl)){
+                params.put("acturl",actUrl);
+            }
             params.put("portable",portable);
             params.put("invitesi",invites);
             client.post(url, params, new JsonHttpResponseHandler(){
@@ -337,7 +381,11 @@ public class AddInviteActivity extends BaseAppCompatActivity {
      */
     private void showPublishEventDialog(){
         CustomDialog.Builder customBuilder = new CustomDialog.Builder(this);
-        customBuilder.setMessage("您确定发布活动邀请吗?");
+        if(TextUtils.isEmpty(actId)){
+            customBuilder.setMessage("您确定发布活动邀请吗?");
+        }else {
+            customBuilder.setMessage("您确定编辑活动邀请吗?");
+        }
         customBuilder.setGravity(Gravity.CENTER);
         customBuilder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
 
@@ -358,4 +406,30 @@ public class AddInviteActivity extends BaseAppCompatActivity {
         customBuilder.create().show();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == CONTACT_REQUEST_CODE && resultCode == RESULT_OK){
+            if(null != data){
+                boolean isAll = data.getBooleanExtra("isAll",false);
+                GuestVo guestVo = (GuestVo) data.getSerializableExtra("guestVo");
+                ArrayList<MemberVo> memberList = guestVo.getMember();
+                String roleId = guestVo.getRoleid();
+                String roleid = null;
+                if(isAll){
+                    selectMap.put(roleId, true);
+                }else {
+                    selectMap.put(roleId,false);
+                }
+                chooseMemberMap.put(roleId,memberList);
+                for (GuestVo guest : guestList){
+                    roleid = guest.getRoleid();
+                    if(roleId.equals(roleid)){
+                        guest.setCount(memberList == null ? 0: memberList.size());
+                    }
+                }
+                eventAddInviteAdapter.setSelectMap(selectMap);
+            }
+        }
+    }
 }

@@ -31,5 +31,6 @@
     <!--会员列表页面-->
     <dimen name="user_photo_width">50dp</dimen>
     <dimen name="event_logo_height">175dp</dimen>
+    <dimen name="contact_logo_height">50dp</dimen>
 
 </resources>
