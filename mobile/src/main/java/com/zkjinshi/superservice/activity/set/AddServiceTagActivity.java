@@ -229,7 +229,7 @@ public class AddServiceTagActivity extends BaseAppCompatActivity {
                             if (null != teamMemberList && !teamMemberList.isEmpty()) {
                                 ShopEmployeeDBUtil.getInstance().deleteAllShopEmployee();
                                 ShopEmployeeDBUtil.getInstance().batchAddShopEmployees(teamMemberList);
-                                teamMemberList = ShopEmployeeDBUtil.getInstance().queryAllExceptUser(CacheUtil.getInstance().getUserId());
+                                teamMemberList = ShopEmployeeDBUtil.getInstance().queryAllExceptUser();
                                 List<String> strLetters = new ArrayList<>();//首字母显示数组
 
                                 //获取部门首字母进行排序
