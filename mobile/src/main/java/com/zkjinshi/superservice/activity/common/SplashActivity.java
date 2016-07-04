@@ -59,7 +59,6 @@ public class SplashActivity extends BaseActivity{
         }else {
             showNetDialog();
         }
-
     }
 
     private void initListeners(){

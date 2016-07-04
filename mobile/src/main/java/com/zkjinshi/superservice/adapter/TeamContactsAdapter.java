@@ -46,7 +46,7 @@ public class TeamContactsAdapter extends ServiceBaseAdapter<EmployeeVo> implemen
         ViewHolder holder = null;
         if(null == convertView){
             holder      = new ViewHolder();
-            convertView = View.inflate(mActivity, R.layout.item_team_contact, null);
+            convertView = View.inflate(mActivity, R.layout.item_call_service_appoint, null);
             holder.tvLetter          = (TextView) convertView.findViewById(R.id.catalog);
             holder.flContactAvatar   = (FrameLayout) convertView.findViewById(R.id.fl_contact_avatar);
             holder.civContactAvatar  = (SimpleDraweeView) convertView.findViewById(R.id.civ_contact_avatar);
