@@ -618,6 +618,14 @@ public class ProtocolUtil {
     }
 
     /**
+     * 更新室内位置/多区域定位
+     * @return
+     */
+    public static String lbsV2LocBeacon(){
+        return ConfigUtil.getInst().getPyxDomain()+"lbs/v2/loc/beacon";
+    }
+
+    /**
      * 根据活动id获取邀请名单
      * @param actid
      * @return
