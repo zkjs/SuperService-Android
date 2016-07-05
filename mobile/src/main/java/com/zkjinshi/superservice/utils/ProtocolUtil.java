@@ -634,4 +634,13 @@ public class ProtocolUtil {
         return ConfigUtil.getInst().getForDomain()+"res/v1/activity/member?actid";
     }
 
+
+    /**
+     * 根据shopid获取部门列表
+     * @return
+     */
+    public static String getshopdepts(){
+        return ConfigUtil.getInst().getForDomain()+"res/v1/shop/depts";
+    }
+
 }

@@ -65,10 +65,10 @@ public class ShopDepartmentDBUtil {
                 if (cursor != null && cursor.getCount() > 0) {
                     while (cursor.moveToNext()) {
                         DepartmentVo departmentVo = ShopDepartmentFactory.getInstance().buildDepartmentVo(cursor);
-                        departName = departmentVo.getDept_name();
-                        if(TextUtils.isEmpty(departName)){
-                            return departName;
-                        }
+//                        departName = departmentVo.getDept_name();
+//                        if(TextUtils.isEmpty(departName)){
+//                            return departName;
+//                        }
                     }
                 }
             } catch (Exception e) {
@@ -129,8 +129,8 @@ public class ShopDepartmentDBUtil {
                     e.printStackTrace();
                 }
                 if(addResult == -1){
-                    int deptID = departmentVo.getDeptid();
-                    addResult = db.update(DBOpenHelper.SHOP_DEPARTMENT_TBL, values, " depid = ? ", new String[]{ deptID+"" });
+//                    int deptID = departmentVo.getDeptid();
+//                    addResult = db.update(DBOpenHelper.SHOP_DEPARTMENT_TBL, values, " depid = ? ", new String[]{ deptID+"" });
                 }
             }
 

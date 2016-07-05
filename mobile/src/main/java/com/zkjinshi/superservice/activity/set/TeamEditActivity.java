@@ -233,17 +233,17 @@ public class TeamEditActivity extends BaseActivity {
      * @param shopEmployeeVos
      */
     private void showChangeDepartmentDialog(final List<String> shopEmployeeVos){
-        //弹出选择部门对话框
-        DepartmentDialog dialog = new DepartmentDialog(TeamEditActivity.this);
-        dialog.setClickOneListener(new DepartmentDialog.ClickOneListener() {
-            @Override
-            public void clickOne(DepartmentVo departmentVo) {
-                int deptID = departmentVo.getDeptid();
-                String changeList = convertList2String(shopEmployeeVos);
-                postChangeDept(mUserID, mToken, mShopID, deptID, changeList);
-            }
-        });
-        dialog.show();
+//        //弹出选择部门对话框
+//        DepartmentDialog dialog = new DepartmentDialog(TeamEditActivity.this);
+//        dialog.setClickOneListener(new DepartmentDialog.ClickOneListener() {
+//            @Override
+//            public void clickOne(DepartmentVo departmentVo) {
+//                int deptID = departmentVo.getDeptid();
+//                String changeList = convertList2String(shopEmployeeVos);
+//                postChangeDept(mUserID, mToken, mShopID, deptID, changeList);
+//            }
+//        });
+//        dialog.show();
     }
 
     /**

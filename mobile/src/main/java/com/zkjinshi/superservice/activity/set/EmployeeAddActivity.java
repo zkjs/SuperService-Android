@@ -212,15 +212,7 @@ public class EmployeeAddActivity extends BaseActivity {
         findViewById(R.id.header_confirm_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if( excelList != null && excelList.size() > 0){
-                    if(hasGetDept){
-                        submitEmployees();
-                    }else{
-                        submitDepts();
-                    }
-                }else{
-                    submitEmployees();
-                }
+                submitEmployees();
 
             }
         });
@@ -254,72 +246,7 @@ public class EmployeeAddActivity extends BaseActivity {
         });
     }
 
-    /**
-     *  批量上传部门
-     */
-    private void submitDepts() {
-        if(deptList != null && deptList.size() > 0){
-            String url = ProtocolUtil.getBatchAddDeptUrl();
-            Log.i(TAG, url);
-            String deptJson = new Gson().toJson(deptList);
-            NetRequest netRequest = new NetRequest(url);
-            HashMap<String,String> bizMap = new HashMap<String,String>();
-            bizMap.put("salesid", CacheUtil.getInstance().getUserId());
-            bizMap.put("token", CacheUtil.getInstance().getToken());
-            bizMap.put("shopid", CacheUtil.getInstance().getShopID());
-            bizMap.put("dept", deptJson);
-            bizMap.put("set","2");
-            netRequest.setBizParamMap(bizMap);
-            NetRequestTask netRequestTask = new NetRequestTask(this,netRequest, NetResponse.class);
-            netRequestTask.methodType = MethodType.PUSH;
-            netRequestTask.setNetRequestListener(new ExtNetRequestListener(this) {
-                @Override
-                public void onNetworkRequestError(int errorCode, String errorMessage) {
-                    Log.i(TAG, "errorCode:" + errorCode);
-                    Log.i(TAG, "errorMessage:" + errorMessage);
-                }
 
-                @Override
-                public void onNetworkRequestCancelled() {}
-
-                @Override
-                public void onNetworkResponseSucceed(NetResponse result) {
-                    super.onNetworkResponseSucceed(result);
-
-                    Log.i(TAG, "result.rawResult:" + result.rawResult);
-                    try {
-                        ArrayList<DepartmentVo> dlist = new Gson().fromJson(result.rawResult, new TypeToken<ArrayList<DepartmentVo>>() {
-                        }.getType());
-                        if (dlist != null && deptList.size() > 0) {
-                            deptList = dlist;
-                            hasGetDept = true;
-                            ShopDepartmentDBUtil.getInstance().batchAddShopDepartments(deptList);
-
-                            for (EmployeeVo shopEmployeeVo : excelList) {
-                                for (DepartmentVo departmentVo : deptList) {
-                                    if (shopEmployeeVo.getRolename().equals(departmentVo.getDept_name())) {
-
-                                        break;
-                                    }
-                                }
-                            }
-                            submitEmployees();
-                        }
-
-                    } catch (Exception e) {
-                        Log.e(TAG, e.getMessage());
-                    }
-
-                }
-
-                @Override
-                public void beforeNetworkRequestStart() {
-                }
-            });
-            netRequestTask.isShowLoadingDialog = true;
-            netRequestTask.execute();
-        }
-    }
 
     //汇总要添加的成员
     private void summaryEmployees(){
@@ -390,6 +317,8 @@ public class EmployeeAddActivity extends BaseActivity {
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("phone",allList.get(i).getPhone());
                 jsonObject.put("username",allList.get(i).getUsername());
+                jsonObject.put("deptid",allList.get(i).getDeptid());
+                jsonObject.put("desc",allList.get(i).getDesc());
                 users.put(jsonObject);
             }
             AsyncHttpClient client = new AsyncHttpClient();
@@ -479,7 +408,6 @@ public class EmployeeAddActivity extends BaseActivity {
             if(!TextUtils.isEmpty(deptname) && !map.containsKey(deptname)){
                 map.put(deptname, deptname);
                 DepartmentVo departmentVo = new DepartmentVo();
-                departmentVo.setDept_name(deptname);
                 deptList.add(departmentVo);
             }
         }

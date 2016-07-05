@@ -25,10 +25,10 @@ public class DeptAdapter extends BaseAdapter {
 
     private LayoutInflater mInflater;//得到一个LayoutInfalter对象用来导入布局
     private ArrayList<DepartmentVo> dataList = new ArrayList<DepartmentVo>();
-    private int selectid = -1;
+    private String selectid = "";
     Context context;
 
-    public DeptAdapter(Context context,ArrayList<DepartmentVo> dataList,int selectid) {
+    public DeptAdapter(Context context,ArrayList<DepartmentVo> dataList,String selectid) {
         this.context = context;
         this.mInflater = LayoutInflater.from(context);
         this.dataList = dataList;
@@ -71,8 +71,8 @@ public class DeptAdapter extends BaseAdapter {
         }
 
         DepartmentVo departmentVo = dataList.get(position);
-        holder.dept.setText(departmentVo.getDept_name());
-        if(departmentVo.getDeptid() == selectid){
+        holder.dept.setText(departmentVo.getDeptname());
+        if(departmentVo.getDeptid().equals(selectid) ){
             holder.dept.setTextColor(context.getResources().getColor(R.color.selected_color));
         }else{
             holder.dept.setTextColor(context.getResources().getColor(R.color.unselect_color));
