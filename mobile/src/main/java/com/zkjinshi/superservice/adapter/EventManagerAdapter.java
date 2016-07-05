@@ -78,7 +78,7 @@ public class EventManagerAdapter extends BaseAdapter {
         return convertView;
     }
 
-    class ViewHolder{
+    static class ViewHolder{
         TextView eventNameTv;
     }
 }

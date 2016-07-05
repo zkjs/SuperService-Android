@@ -128,8 +128,7 @@ public class ContactsAdapter extends BaseAdapter{
         return super.getViewTypeCount();
     }
 
-    /*存放控件*/
-    public final class ViewHolder{
+    static class ViewHolder{
         public SimpleDraweeView avatar;
         public TextView avatarText;
         public TextView  name;

@@ -112,7 +112,7 @@ public class ClientLabelAdapter extends BaseAdapter {
         return convertView;
     }
 
-    class ViewHolder{
+    static class ViewHolder{
         RoundProgressBar roundProgressBar;
         ImageView roundLabelIv;
         RelativeLayout contentLayout;

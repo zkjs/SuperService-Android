@@ -122,7 +122,7 @@ public class TaskHistoryAdapter extends BaseAdapter {
         return convertView;
     }
 
-    class ViewHolder{
+    static class ViewHolder{
         TextView updateTimeTv,timeAxisTopTv,timeAxisBottomTv,userNameTv,actionDescTv;
         SimpleDraweeView userImageSdv;
         ImageView timeIcon;

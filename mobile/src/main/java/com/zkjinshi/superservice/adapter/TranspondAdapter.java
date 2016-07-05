@@ -132,7 +132,7 @@ public class TranspondAdapter extends ServiceBaseAdapter<EmployeeVo> implements 
         return convertView;
     }
 
-    public static class ViewHolder{
+    static class ViewHolder{
 
         public TextView         tvLetter;
         public FrameLayout      flContactAvatar;

@@ -167,7 +167,7 @@ public class TeamContactsSlideAdapter extends SlideBaseAdapter implements Sectio
         return R.layout.row_right_view;
     }
 
-    public static class ViewHolder{
+    static class ViewHolder{
 
         public TextView         tvLetter;
         public FrameLayout      flContactAvatar;

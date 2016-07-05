@@ -57,7 +57,7 @@ import cz.msebera.android.httpclient.Header;
 import cz.msebera.android.httpclient.entity.StringEntity;
 
 /**
- * 选中执行部门Activity
+ * 选择执行部门Activity
  * 开发者：jimmyzhang
  * 日期：16/6/22
  * Copyright (C) 2016 深圳中科金石科技有限公司
@@ -245,11 +245,11 @@ public class ChooseAgencyActivity extends BaseAppCompatActivity {
             }
             jsonObject.put("ownerids",memberArray);
             JSONArray coverageArray = new JSONArray();
-            for (String coverageId : selectAgencyList){
+            for (String coverageId : selectCoverageList){
                 coverageArray.put(coverageId);
             }
             jsonObject.put("locids",coverageArray);
-            StringEntity stringEntity = new StringEntity(jsonObject.toString());
+            StringEntity stringEntity = new StringEntity(jsonObject.toString(),"UTF-8");
             String url = ProtocolUtil.getAddFirstTagUrl();
             client.post(ChooseAgencyActivity.this,url, stringEntity, "application/json", new AsyncHttpResponseHandler(){
                 public void onStart(){

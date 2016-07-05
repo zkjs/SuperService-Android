@@ -111,7 +111,7 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
     }
 
 
-    public class ViewHolder{
+    static class ViewHolder{
         public TextView  title;
         public TextView  num;
     }

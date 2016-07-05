@@ -111,7 +111,7 @@ public class ContactAdapter extends BaseAdapter {
         return convertView;
     }
 
-    class ViewHolder{
+    static class ViewHolder{
         LinearLayout sortLetterLayout;
         TextView sortLetterTv;
         ImageView chooseIv;

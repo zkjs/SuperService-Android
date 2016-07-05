@@ -131,7 +131,7 @@ public class EventAddInviteAdapter extends BaseAdapter {
         return convertView;
     }
 
-    class ViewHolder{
+    static class ViewHolder{
         ImageView chooseIv;
         TextView roleNameTv,roleStatTv;
     }

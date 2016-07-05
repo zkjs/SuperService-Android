@@ -94,7 +94,7 @@ public class GuestAdapter extends BaseAdapter {
         return convertView;
     }
 
-    class ViewHolder{
+    static class ViewHolder{
         TextView guestNameTv,guestCountTv,guestStatusTv;
     }
 }

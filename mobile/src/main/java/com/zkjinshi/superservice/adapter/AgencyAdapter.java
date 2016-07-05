@@ -91,7 +91,7 @@ public class AgencyAdapter extends BaseAdapter {
         return convertView;
     }
 
-    class ViewHolder{
+    static class ViewHolder{
         TextView coverageTv;
         ImageView chooseIv;
     }

@@ -77,7 +77,7 @@ public class ServiceSecondTagAdapter extends BaseAdapter {
         return convertView;
     }
 
-    class ViewHolder{
+    static class ViewHolder{
         TextView secondTagTv;
     }
 }

@@ -90,7 +90,7 @@ public class CoverageAdapter extends BaseAdapter {
         return convertView;
     }
 
-    class ViewHolder{
+    static class ViewHolder{
         TextView coverageTv;
         ImageView chooseIv;
     }

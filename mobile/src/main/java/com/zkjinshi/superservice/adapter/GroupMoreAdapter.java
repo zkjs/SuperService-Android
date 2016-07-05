@@ -82,7 +82,7 @@ public class GroupMoreAdapter extends BaseAdapter {
 		return convertView;
 	}
 
-	public static class ViewHolder {
+	static class ViewHolder {
 		ImageView iconIv;
 		TextView nameTv;
 	}

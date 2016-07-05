@@ -87,7 +87,7 @@ public class FaceAdapter extends BaseAdapter {
 		return convertView;
 	}
 
-	public static class ViewHolder {
+	static class ViewHolder {
 		ImageView faceIV;
 	}
 }
