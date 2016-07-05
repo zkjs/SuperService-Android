@@ -41,7 +41,7 @@ public class EmployeeHandAddActivity extends BaseActivity {
     private CheckBox adminCbx;
 
     private DepartmentVo selectDepartmentVo = null;
-    private int deptId = -1;
+    private String deptId = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,9 +63,9 @@ public class EmployeeHandAddActivity extends BaseActivity {
     }
 
     private void initData() {
-        deptText.setVisibility(View.GONE);
+        //deptText.setVisibility(View.GONE);
         adminCbx.setVisibility(View.GONE);
-        remarkEt.setVisibility(View.GONE);
+        //remarkEt.setVisibility(View.GONE);
 
         if(getIntent().getSerializableExtra(CREATE_RESULT) != null){
             handEmployeeVo = (EmployeeVo)getIntent().getSerializableExtra(CREATE_RESULT);
@@ -85,7 +85,7 @@ public class EmployeeHandAddActivity extends BaseActivity {
                     @Override
                     public void clickOne(DepartmentVo departmentVo) {
                         selectDepartmentVo = departmentVo;
-                        deptText.setText(selectDepartmentVo.getDept_name());
+                        deptText.setText(selectDepartmentVo.getDeptname());
                         deptId = selectDepartmentVo.getDeptid();
                     }
                 });
@@ -127,6 +127,9 @@ public class EmployeeHandAddActivity extends BaseActivity {
         EmployeeVo shopEmployeeVo = new EmployeeVo();
         shopEmployeeVo.setUsername(name);
         shopEmployeeVo.setPhone(phone);
+        shopEmployeeVo.setDesc(remark);
+        shopEmployeeVo.setDeptid(deptId);
+
 
         Intent intent = getIntent();
         intent.putExtra(EmployeeHandAddActivity.CREATE_RESULT,shopEmployeeVo);
