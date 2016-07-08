@@ -63,7 +63,7 @@ public class ServiceSecondTagListActivity extends BaseAppCompatActivity {
     private TextView emptyTv;
     private RelativeLayout emptyLayout;
     private SwipeMenuListView tagListView;
-    private ArrayList<SecondServiceTagVo> secondServiceTagList;
+    private ArrayList<SecondServiceTagVo> secondServiceTagList = new ArrayList<SecondServiceTagVo>();
     private ServiceTagVo serviceTagVo;
     private String firstTagId;
     private ServiceSecondTagAdapter serviceSecondTagAdapter;
@@ -108,7 +108,6 @@ public class ServiceSecondTagListActivity extends BaseAppCompatActivity {
         }
         serviceSecondTagAdapter = new ServiceSecondTagAdapter(this,secondServiceTagList);
         tagListView.setAdapter(serviceSecondTagAdapter);
-        tagListView.setEmptyView(emptyLayout);
         if(null != serviceTagVo){
             String titleNameStr =  serviceTagVo.getFirstSrvTagName();
             if(TextUtils.isEmpty(titleNameStr)){
@@ -226,9 +225,10 @@ public class ServiceSecondTagListActivity extends BaseAppCompatActivity {
      * @param serviceTagVo
      */
     private void addSecondTag(SecondServiceTagVo serviceTagVo){
-        if(null != secondServiceTagList && !secondServiceTagList.isEmpty()){
-            secondServiceTagList.add(0,serviceTagVo);
+        if(null == secondServiceTagList){
+            secondServiceTagList = new ArrayList<SecondServiceTagVo>();
         }
+        secondServiceTagList.add(0,serviceTagVo);
         serviceSecondTagAdapter.setSecondTagList(secondServiceTagList);
     }
 
