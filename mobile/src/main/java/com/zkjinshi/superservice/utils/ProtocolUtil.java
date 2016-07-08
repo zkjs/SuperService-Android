@@ -643,4 +643,13 @@ public class ProtocolUtil {
         return ConfigUtil.getInst().getForDomain()+"res/v1/shop/depts";
     }
 
+    /**
+     * 获得标签名称
+     * @param labelName
+     * @return
+     */
+    public static String getAddLabelUrl(String labelName){
+        return ConfigUtil.getInst().getForDomain()+"/res/v1/update/user/add/tags/"+labelName;
+    }
+
 }

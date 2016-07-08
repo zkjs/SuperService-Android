@@ -67,7 +67,7 @@
             android:name=".activity.label.ClientLabelActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
         <activity
             android:name=".activity.set.ServiceTagListActivity"
