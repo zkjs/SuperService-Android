@@ -433,6 +433,32 @@ public class ProtocolUtil {
     }
 
     /**
+     * 获取用户到店记录集合信息
+     * @param clientId
+     * @return
+     */
+    public static String getClientArrivingUrl(String clientId){
+        return ConfigUtil.getInst().getForDomain()+"lbs/v1/loc/beacon/u/"+clientId;
+    }
+
+    /**
+     * 获取用户消费记录集合信息
+     * @param clientId
+     * @return
+     */
+    public static String getClientPaymentUrl(String clientId){
+        return ConfigUtil.getInst().getForDomain()+"res/v1/payment/records/"+clientId;
+    }
+
+    /**
+     * 添加用户消费记录
+     * @return
+     */
+    public static String addClientPaymentUrl(){
+        return ConfigUtil.getInst().getForDomain()+"res/v1/payment/records";
+    }
+
+    /**
      * 验证原始密码是否正确
      * @return
      */

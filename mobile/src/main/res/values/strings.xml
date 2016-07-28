@@ -184,4 +184,13 @@
     <string name="latest_update">最后更新</string>
     <string name="refreshing_now">正在刷新中</string>
 
+    <!--客人profile页-->
+    <string name="profile_tab_label">喜好标签</string>
+    <string name="profile_tab_arriving">到店记录</string>
+    <string name="profile_tab_payment">消费记录</string>
+
+    <string name="profile_payment_mount">结算金额</string>
+    <string name="add_successed">添加成功</string>
+    <string name="add_failed">添加标签失败</string>
+
 </resources>

@@ -3,6 +3,7 @@ package com.zkjinshi.superservice.activity.label;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
+import android.view.Gravity;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -11,6 +12,7 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.zkjinshi.base.log.LogLevel;
 import com.zkjinshi.base.log.LogUtil;
 import com.zkjinshi.base.util.DialogUtil;
+import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.net.ExtNetRequestListener;
 import com.zkjinshi.superservice.net.MethodType;
 import com.zkjinshi.superservice.net.NetRequest;
@@ -22,6 +24,7 @@ import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -57,6 +60,7 @@ public class ClientLabelController {
      */
     public void requestGetClientTagsTask(String clientId, Context context, ExtNetRequestListener listener){
         String requestUrl = ProtocolUtil.getClientTagsUrl(clientId);
+        Log.i("HabitsUrl",requestUrl);
         NetRequest netRequest = new NetRequest(requestUrl);
         NetRequestTask netRequestTask = new NetRequestTask(context, netRequest, NetResponse.class);
         netRequestTask.methodType = MethodType.GET;
@@ -84,4 +88,39 @@ public class ClientLabelController {
         netRequestTask.isShowLoadingDialog = true;
         netRequestTask.execute();
     }
+
+    /**
+     * 获取用户到店记录
+     * @param clientId
+     * @param context
+     * @param listener
+     */
+    public void requestGetClientArriving(String clientId, Context context, ExtNetRequestListener listener){
+        String requestUrl = ProtocolUtil.getClientArrivingUrl(clientId);
+        Log.i("ArrivingUrl",requestUrl);
+        NetRequest netRequest = new NetRequest(requestUrl);
+        NetRequestTask netRequestTask = new NetRequestTask(context, netRequest, NetResponse.class);
+        netRequestTask.methodType = MethodType.GET;
+        netRequestTask.setNetRequestListener(listener);
+        netRequestTask.isShowLoadingDialog = true;
+        netRequestTask.execute();
+    }
+
+    /**
+     * 获取用户到店记录
+     * @param clientId
+     * @param context
+     * @param listener
+     */
+    public void requestGetClientPayment(String clientId, Context context, ExtNetRequestListener listener){
+        String requestUrl = ProtocolUtil.getClientPaymentUrl(clientId);
+        Log.i("ArrivingUrl",requestUrl);
+        NetRequest netRequest = new NetRequest(requestUrl);
+        NetRequestTask netRequestTask = new NetRequestTask(context, netRequest, NetResponse.class);
+        netRequestTask.methodType = MethodType.GET;
+        netRequestTask.setNetRequestListener(listener);
+        netRequestTask.isShowLoadingDialog = true;
+        netRequestTask.execute();
+    }
+
 }

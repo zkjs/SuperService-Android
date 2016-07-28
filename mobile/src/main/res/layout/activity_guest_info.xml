@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical"
+    tools:ignore="ContentDescription" >
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical" android:layout_width="match_parent"
+        android:background="#03a9f4"
+        android:layout_height="50dp">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp">
+
+            <ImageButton
+                android:id="@+id/header_bar_btn_back"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_marginLeft="5dp"
+                android:gravity="center_horizontal"
+                android:layout_centerVertical="true"
+                android:background="@null"
+                android:clickable="true"
+                android:scaleType="centerInside"
+                android:src="@drawable/header_ibtn_back"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/header_bar_tv_back"
+                android:layout_width="wrap_content"
+                android:layout_height="45dp"
+                android:layout_marginLeft="5dp"
+                android:gravity="center_vertical"
+                android:layout_centerVertical="true"
+                android:background="@null"
+                android:clickable="true"
+                android:textSize="20dp"
+                android:textColor="@android:color/white"
+                android:scaleType="centerInside"
+                android:drawableLeft="@drawable/header_ibtn_back"
+                android:drawablePadding="10dp"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/header_bar_tv_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center_horizontal"
+                android:layout_centerHorizontal="true"
+                android:textColor="@android:color/white"
+                android:text="@string/app_name"/>
+
+            <ImageButton
+                android:id="@+id/header_bar_btn_more"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="20dp"
+                android:background="@drawable/header_ibtn_more"
+                android:padding="10dp"
+                android:visibility="gone" />
+
+            <ImageButton
+                android:id="@+id/header_bar_btn_add"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="20dp"
+                android:background="@drawable/bg_ic_tianjia"
+                android:padding="10dp"
+                android:visibility="gone"
+                />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/srl_profile_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ListView
+            android:id="@+id/listview"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+</LinearLayout>

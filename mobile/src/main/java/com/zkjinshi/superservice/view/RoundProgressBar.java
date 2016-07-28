@@ -35,7 +35,7 @@ public class RoundProgressBar extends View {
     public static final int DEFAULT_VALUE_TEXT_COLOR = Color.parseColor("#FFFF0000");
 
     //Number
-    public static final int DEFAULT_CIRCLE_STROKE_WIDTH = 5;
+    public static final int DEFAULT_CIRCLE_STROKE_WIDTH = 4;
     public static final int DEFAULT_VALUE_TEXT_SIZE = 25;
     public static final int DEFAULT_ANIM_DURATION = 1000 * 2;
 
@@ -126,7 +126,7 @@ public class RoundProgressBar extends View {
         }
 
         mCircleXY = length / 2;
-        mRadius = length * 18 / 40;
+        mRadius = length * 18 / 40 - 2;
 
         mCirclePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mCirclePaint.setColor(roundColor);
@@ -176,13 +176,13 @@ public class RoundProgressBar extends View {
                 int baseline = (getMeasuredHeight() - fontMetrics.bottom + fontMetrics.top) / 2 - fontMetrics.top;
                 canvas.drawText(valueText,mCircleXY, baseline, valuePaint);
             }else {//两行显示文本
-                String firstLineStr = valueText.substring(0,2);
+                /*String firstLineStr = valueText.substring(0,2);
                 String secondLineStr = valueText.substring(2,valueText.length());
                 Paint.FontMetricsInt fontMetrics = valuePaint.getFontMetricsInt();
                 int firstBaseline = (getMeasuredHeight() - fontMetrics.bottom + fontMetrics.top) / 2 - fontMetrics.top/2-DisplayUtil.dip2px(getContext(),3) ;
                 int secondBaseline = (getMeasuredHeight() - fontMetrics.bottom + fontMetrics.top) / 2 - fontMetrics.top*3/2+DisplayUtil.dip2px(getContext(),3);
                 canvas.drawText(firstLineStr,mCircleXY, firstBaseline, valuePaint);
-                canvas.drawText(secondLineStr,mCircleXY, secondBaseline, valuePaint);
+                canvas.drawText(secondLineStr,mCircleXY, secondBaseline, valuePaint);*/
             }
         }
     }

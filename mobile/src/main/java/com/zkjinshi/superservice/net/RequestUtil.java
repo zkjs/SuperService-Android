@@ -1,6 +1,7 @@
 package com.zkjinshi.superservice.net;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.zkjinshi.base.log.LogLevel;
 import com.zkjinshi.base.log.LogUtil;
@@ -63,6 +64,7 @@ public class RequestUtil {
         httpclient.getParams().setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, CONNECT_TIMEOUT);
         httpclient.getParams().setParameter(CoreConnectionPNames.SO_TIMEOUT, SO_TIMEOUT);
         String token = CacheUtil.getInstance().getExtToken();
+        Log.i("TOKEN",token);
         if(!TextUtils.isEmpty(token)){
             httpRequest.addHeader("Token",token);
         }
@@ -93,6 +95,7 @@ public class RequestUtil {
         connection.setInstanceFollowRedirects(true);
         connection.setRequestProperty("Content-Type","application/json; charset=UTF-8");
         String token = CacheUtil.getInstance().getExtToken();
+        Log.i("TOKEN",token);
         if(!TextUtils.isEmpty(token)){
             connection.setRequestProperty("Token",token);
         }
@@ -145,6 +148,7 @@ public class RequestUtil {
         connection.setInstanceFollowRedirects(true);
         connection.setRequestProperty("Content-Type","application/json; charset=UTF-8");
         String token = CacheUtil.getInstance().getExtToken();
+        Log.i("TOKEN",token);
         if(!TextUtils.isEmpty(token)){
             connection.setRequestProperty("Token",token);
         }
@@ -199,6 +203,7 @@ public class RequestUtil {
         connection.setInstanceFollowRedirects(true);
         connection.setRequestProperty("Content-Type","application/json; charset=UTF-8");
         String token = CacheUtil.getInstance().getExtToken();
+        Log.i("TOKEN",token);
         if(!TextUtils.isEmpty(token)){
             connection.setRequestProperty("Token",token);
         }
@@ -252,6 +257,7 @@ public class RequestUtil {
         connection.setInstanceFollowRedirects(true);
         connection.setRequestProperty("Content-Type","application/json; charset=UTF-8");
         String token = CacheUtil.getInstance().getExtToken();
+        Log.i("TOKEN",token);
         if(!TextUtils.isEmpty(token)){
             connection.setRequestProperty("Token",token);
         }
@@ -333,6 +339,7 @@ public class RequestUtil {
         httpClient.getParams().setParameter(CoreConnectionPNames.SO_TIMEOUT, SO_TIMEOUT);
         httpPost.setEntity(multipartEntity);
         String token = CacheUtil.getInstance().getExtToken();
+        Log.i("TOKEN",token);
         if(!TextUtils.isEmpty(token)){
             httpPost.addHeader("Token",token);
         }

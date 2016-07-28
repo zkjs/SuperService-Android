@@ -23,6 +23,7 @@ import com.google.gson.Gson;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.label.ClientLabelActivity;
+import com.zkjinshi.superservice.activity.label.GuestInfoActivity;
 import com.zkjinshi.superservice.adapter.LocNotificationAdapter;
 import com.zkjinshi.superservice.listener.RecyclerItemClickListener;
 import com.zkjinshi.superservice.net.ExtNetRequestListener;
@@ -175,7 +176,8 @@ public class NoticeFragment extends Fragment {
                 }*/
                 //跳转到用户详情页面
                 NoticeVo noticeVo = noticeList.get(position);
-                Intent intent = new Intent(getActivity(),ClientLabelActivity.class);
+                //Intent intent = new Intent(getActivity(),ClientLabelActivity.class);
+                Intent intent = new Intent(getActivity(),GuestInfoActivity.class);
                 intent.putExtra("noticeVo",noticeVo);
                 startActivity(intent);
 
