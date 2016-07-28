@@ -278,7 +278,9 @@ public class NoticeFragment extends Fragment {
                                 LAST_ID = noticeResponse.getLastid();
 								PAGE_NO++;
                             }else {
-                                DialogUtil.getInstance().showCustomToast(getActivity(),"再无更多数据",Gravity.CENTER);
+                                if(!isRefresh){
+                                    DialogUtil.getInstance().showCustomToast(getActivity(),"再无更多数据",Gravity.CENTER);
+                                }
                             }
                             notificationAdapter.setNoticeList(noticeList);
                         }else {

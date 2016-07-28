@@ -45,8 +45,7 @@
                 android:paddingLeft="15dp"
                 android:text=""
                 android:textColor="#101010"
-                android:textSize="14sp"
-                android:inputType="textPassword"/>
+                android:textSize="14sp"/>
         </LinearLayout>
 
         <TextView

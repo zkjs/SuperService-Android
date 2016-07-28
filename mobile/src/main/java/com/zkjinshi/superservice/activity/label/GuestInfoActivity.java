@@ -1,5 +1,6 @@
 package com.zkjinshi.superservice.activity.label;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -18,6 +20,8 @@ import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.gson.Gson;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.JsonHttpResponseHandler;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.adapter.ClientLabelAdapter;
@@ -36,8 +40,11 @@ import com.zkjinshi.superservice.response.ClientArrivingResponse;
 import com.zkjinshi.superservice.response.ClientPaymentResponse;
 import com.zkjinshi.superservice.response.ClientTagResponse;
 import com.zkjinshi.superservice.response.NoticeResponse;
+import com.zkjinshi.superservice.utils.AsyncHttpClientUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
+import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
+import com.zkjinshi.superservice.view.CustomInputDialog;
 import com.zkjinshi.superservice.view.LabelGridView;
 import com.zkjinshi.superservice.vo.ClientArrivingVo;
 import com.zkjinshi.superservice.vo.ClientPaymentVo;
@@ -46,10 +53,14 @@ import com.zkjinshi.superservice.vo.ItemTagVo;
 import com.zkjinshi.superservice.vo.NoticeVo;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.entity.StringEntity;
 
 /**
  * Created by qinyejun on 7/26/16.
@@ -130,7 +141,7 @@ public class GuestInfoActivity extends BaseActivity {
 
                 switch (currentTab) {
                     case HABIT_POS:
-                        addIBtn.setVisibility(View.GONE);
+                        addIBtn.setVisibility(View.VISIBLE);
                         listView.setAdapter(habitAdapter);
                         break;
                     case ARRIVE_POS:
@@ -164,6 +175,7 @@ public class GuestInfoActivity extends BaseActivity {
         titleTv = (TextView)findViewById(R.id.header_bar_tv_title);
         addIBtn = (ImageButton)findViewById(R.id.header_bar_btn_add);
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.srl_profile_list);
+        addIBtn.setVisibility(View.VISIBLE);
     }
 
     private void initData(){
@@ -232,10 +244,13 @@ public class GuestInfoActivity extends BaseActivity {
         addIBtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                if(currentTab != PAY_POS) { return; }
-                Intent intent = new Intent(GuestInfoActivity.this, GuestPaymentAddActivity.class);
-                intent.putExtra("noticeVo",noticeVo);
-                startActivityForResult(intent, ADD_PAYMENT_REQUEST);
+                if(currentTab == PAY_POS) {
+                    Intent intent = new Intent(GuestInfoActivity.this, GuestPaymentAddActivity.class);
+                    intent.putExtra("noticeVo", noticeVo);
+                    startActivityForResult(intent, ADD_PAYMENT_REQUEST);
+                } else if (currentTab == HABIT_POS) {
+                    showAddLabelDialog();
+                }
             }
         });
 
@@ -320,11 +335,11 @@ public class GuestInfoActivity extends BaseActivity {
         });
     }
 
+    //获取到店记录列表
     private void loadArriving(final int page) {
         Log.i(TAG, "loadArriving:" + page);
 
         if(null == clientId || clientId.isEmpty()) { return; }
-        //获取用户标签信息
         ClientLabelController.getInstance().requestGetClientArriving(clientId, this, new ExtNetRequestListener(this) {
             @Override
             public void onNetworkResponseSucceed(NetResponse result) {
@@ -364,11 +379,11 @@ public class GuestInfoActivity extends BaseActivity {
         });
     }
 
+    //获取消费记录列表
     private void loadPayment(final int page) {
         Log.i(TAG, "loadPayment:" + page);
 
         if(null == clientId || clientId.isEmpty()) { return; }
-        //获取用户标签信息
         ClientLabelController.getInstance().requestGetClientPayment(clientId, this, new ExtNetRequestListener(this) {
             @Override
             public void onNetworkResponseSucceed(NetResponse result) {
@@ -408,6 +423,7 @@ public class GuestInfoActivity extends BaseActivity {
         });
     }
 
+    // 选择标签 | 增加消费记录 返回后刷新列表
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == ADD_PAYMENT_REQUEST) {
@@ -418,6 +434,99 @@ public class GuestInfoActivity extends BaseActivity {
             if (resultCode == RESULT_OK) {
                 loadHabits(0);
             }
+        }
+    }
+
+   // 弹出添加标签窗口
+    private void showAddLabelDialog(){
+        final CustomInputDialog.Builder customBuilder = new CustomInputDialog.Builder(this);
+        customBuilder.setTitle("添加喜好标签");
+        customBuilder.setTint("请输入标签(字数不超过8个字)");
+        customBuilder.setGravity(Gravity.CENTER);
+        customBuilder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        customBuilder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                EditText inputEt = customBuilder.inputEt;
+                String inputStr = inputEt.getText().toString();
+                if(!TextUtils.isEmpty(inputStr)){
+                    if(inputStr.length() <= 8){
+                        requestAddLabelTask(inputStr);
+                    }else {
+                        DialogUtil.getInstance().showCustomToast(GuestInfoActivity.this,"标签不能超过8个字",Gravity.CENTER);
+                    }
+                }else {
+                    DialogUtil.getInstance().showCustomToast(GuestInfoActivity.this,"标签不能为空",Gravity.CENTER);
+                }
+            }
+        });
+        customBuilder.create().show();
+    }
+
+    // 添加标签请求
+    private void requestAddLabelTask(String labelName){
+        try{
+            AsyncHttpClient client = new AsyncHttpClient();
+            client.setTimeout(Constants.OVERTIMEOUT);
+            client.addHeader("Content-Type","application/json; charset=UTF-8");
+            if(CacheUtil.getInstance().isLogin()){
+                client.addHeader("Token",CacheUtil.getInstance().getExtToken());
+            }
+            JSONObject jsonObject = new JSONObject();
+            StringEntity stringEntity = new StringEntity(jsonObject.toString());
+            String url = ProtocolUtil.getAddLabelUrl(labelName);
+            client.post(this,url, stringEntity, "application/json", new JsonHttpResponseHandler(){
+                public void onStart(){
+                    super.onStart();
+                    DialogUtil.getInstance().showAvatarProgressDialog(GuestInfoActivity.this,"");
+                }
+
+                public void onFinish(){
+                    super.onFinish();
+                    DialogUtil.getInstance().cancelProgressDialog();
+                }
+
+                public void onSuccess(int statusCode, Header[] headers, JSONObject response){
+                    super.onSuccess(statusCode,headers,response);
+                    try {
+                        BaseResponse baseResponse = new Gson().fromJson(response.toString(),BaseResponse.class);
+                        if(null != baseResponse){
+                            if(baseResponse.getRes() == 0){
+                                DialogUtil.getInstance().showCustomToast(GuestInfoActivity.this,"添加一级标签成功", Gravity.CENTER);
+                                if(!TextUtils.isEmpty(clientId)){
+                                    loadHabits(0);
+                                }
+                            }else{
+                                Toast.makeText(GuestInfoActivity.this,baseResponse.getResDesc(),Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse){
+                    super.onFailure(statusCode,headers,throwable,errorResponse);
+                    try {
+                        JSONObject response = new JSONObject();
+                        response.put("statusCode",statusCode);
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                    AsyncHttpClientUtil.onFailure(GuestInfoActivity.this,statusCode);
+                }
+            });
+        }catch (Exception e){
+            e.printStackTrace();
         }
     }
 

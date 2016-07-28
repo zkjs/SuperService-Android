@@ -5,22 +5,20 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ListView;
+
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.baoyz.swipemenulistview.SwipeMenu;
-import com.baoyz.swipemenulistview.SwipeMenuCreator;
-import com.baoyz.swipemenulistview.SwipeMenuItem;
-import com.baoyz.swipemenulistview.SwipeMenuListView;
+
+
 import com.google.gson.Gson;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
@@ -28,11 +26,12 @@ import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.base.util.DisplayUtil;
 import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.chat.single.ChatActivity;
-import com.zkjinshi.superservice.adapter.TeamContactsAdapter;
 
+
+import com.zkjinshi.superservice.adapter.TeamContactsSlideAdapter;
 import com.zkjinshi.superservice.base.BaseAppCompatActivity;
 import com.zkjinshi.superservice.manager.SSOManager;
-import com.zkjinshi.superservice.net.RequestUtil;
+
 import com.zkjinshi.superservice.response.BaseFornaxResponse;
 import com.zkjinshi.superservice.response.GetEmployeesResponse;
 import com.zkjinshi.superservice.sqlite.ShopEmployeeDBUtil;
@@ -42,10 +41,12 @@ import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.view.AutoSideBar;
+import com.zkjinshi.superservice.view.slidelistview.SlideItemListener;
+import com.zkjinshi.superservice.view.slidelistview.SlideListView;
 import com.zkjinshi.superservice.vo.EmployeeVo;
 import com.zkjinshi.superservice.vo.IdentityType;
 import com.zkjinshi.superservice.vo.PayloadVo;
-import com.zkjinshi.superservice.vo.WhiteUserVo;
+
 
 import org.json.JSONObject;
 
@@ -56,7 +57,6 @@ import java.util.List;
 import cz.msebera.android.httpclient.Header;
 import cz.msebera.android.httpclient.entity.StringEntity;
 
-import static com.zkjinshi.superservice.activity.set.ClientActivity.DELETE_MENU_ITEM;
 
 /**
  * 团队联系人显示界面
@@ -71,12 +71,12 @@ public class TeamContactsActivity extends BaseAppCompatActivity {
 
     private Toolbar         mToolbar;
     private TextView        mTvCenterTitle;
-    private SwipeMenuListView mRvTeamContacts;
+    private SlideListView mRvTeamContacts;
     private RelativeLayout  mRlSideBar;
     private TextView        mTvDialog;
     private AutoSideBar     mAutoSideBar;
 
-    private TeamContactsAdapter mTeamContactAdapter;
+    private TeamContactsSlideAdapter mTeamContactAdapter;
     private IdentityType mUserType;
 
     Context mContext;
@@ -101,7 +101,7 @@ public class TeamContactsActivity extends BaseAppCompatActivity {
         mTvCenterTitle = (TextView) findViewById(R.id.tv_center_title);
         mTvCenterTitle.setText(getString(R.string.team));
 
-        mRvTeamContacts = (SwipeMenuListView)     findViewById(R.id.rcv_team_contacts);
+        mRvTeamContacts = (SlideListView)     findViewById(R.id.rcv_team_contacts);
         mRlSideBar      = (RelativeLayout)   findViewById(R.id.rl_side_bar);
         mTvDialog       = (TextView)         findViewById(R.id.tv_dialog);
         mAutoSideBar    = new AutoSideBar(TeamContactsActivity.this);
@@ -115,27 +115,14 @@ public class TeamContactsActivity extends BaseAppCompatActivity {
 
     private void initData() {
         mUserType = CacheUtil.getInstance().getLoginIdentity();
+        mTeamContactAdapter = new TeamContactsSlideAdapter(TeamContactsActivity.this,new ArrayList<EmployeeVo>());
+        mRvTeamContacts.setAdapter(mTeamContactAdapter);
 
         if(AccessControlUtil.isShowView(AccessControlUtil.DELEMPLOYEE)){
-            SwipeMenuCreator creator = new SwipeMenuCreator() {
-
-                @Override
-                public void create(SwipeMenu menu) {
-                    SwipeMenuItem openItem = new SwipeMenuItem(
-                            getApplicationContext());
-                    openItem.setBackground(new ColorDrawable(Color.rgb(0xF9,
-                            0x3F, 0x25)));
-                    openItem.setWidth(DisplayUtil.dip2px(TeamContactsActivity.this,90));
-                    openItem.setTitle("删除");
-                    openItem.setTitleSize(16);
-                    openItem.setTitleColor(Color.WHITE);
-                    menu.addMenuItem(openItem);
-                }
-            };
-            mRvTeamContacts.setMenuCreator(creator);
+            mRvTeamContacts.setSlideMode(SlideListView.SlideMode.RIGHT);
+        }else{
+            mRvTeamContacts.setSlideMode(SlideListView.SlideMode.NONE);
         }
-        mTeamContactAdapter = new TeamContactsAdapter(TeamContactsActivity.this,new ArrayList<EmployeeVo>());
-        mRvTeamContacts.setAdapter(mTeamContactAdapter);
     }
 
     @Override
@@ -208,7 +195,7 @@ public class TeamContactsActivity extends BaseAppCompatActivity {
                                     mRlSideBar.removeAllViews();
                                     mRlSideBar.addView(mAutoSideBar);
                                 }
-                                mTeamContactAdapter.setData(employeeVos);
+                                mTeamContactAdapter.refresh(employeeVos);
                             }
                         }else{
                             Toast.makeText(mContext,getEmployeesResponse.getResDesc(),Toast.LENGTH_SHORT).show();
@@ -268,7 +255,7 @@ public class TeamContactsActivity extends BaseAppCompatActivity {
         mRvTeamContacts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                EmployeeVo employeeVo = mTeamContactAdapter.mDatas.get(position);
+                EmployeeVo employeeVo = (EmployeeVo)mTeamContactAdapter.getItem(position);
                 String userId = employeeVo.getUserid();
                 String toName = employeeVo.getUsername();
                 String shopName = CacheUtil.getInstance().getShopFullName();
@@ -287,33 +274,28 @@ public class TeamContactsActivity extends BaseAppCompatActivity {
             }
         });
 
-        mRvTeamContacts.setOnMenuItemClickListener(new SwipeMenuListView.OnMenuItemClickListener() {
+
+        mTeamContactAdapter.setCallBack(new TeamContactsSlideAdapter.CallBack() {
             @Override
-            public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
-                switch (index) {
-                    case DELETE_MENU_ITEM://打开删除按钮
-                        EmployeeVo employeeVo = mTeamContactAdapter.mDatas.get(position);
-                        requestDeleteEmployeeTask(employeeVo);
-                        break;
-                }
-                return false;
+            public void delete(EmployeeVo employeeVo) {
+                requestDeleteEmployeeTask(employeeVo);
             }
         });
 
         if(AccessControlUtil.isShowView(AccessControlUtil.DELEMPLOYEE)){
-            mRvTeamContacts.setOnMenuStateChangeListener(new SwipeMenuListView.OnMenuStateChangeListener() {
+
+            mRvTeamContacts.setSlideItemListener(new SlideItemListener() {
                 @Override
-                public void onMenuOpen(int position) {
-                    //Toast.makeText(TeamContactsActivity.this,"onMenuOpen",Toast.LENGTH_SHORT).show();
+                public void onOpend(int position, boolean left) {
                     mAutoSideBar.setVisibility(View.GONE);
                 }
 
                 @Override
-                public void onMenuClose(int position) {
-                    //Toast.makeText(TeamContactsActivity.this,"onMenuClose",Toast.LENGTH_SHORT).show();
+                public void onClosed(int position, boolean left) {
                     mAutoSideBar.setVisibility(View.VISIBLE);
                 }
             });
+
         }
     }
 

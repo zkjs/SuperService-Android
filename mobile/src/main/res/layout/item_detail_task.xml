@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:background="@android:color/white"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/task_time"
+        android:layout_width="100dp"
+        android:layout_height="80dp"
+        android:text="@null"
+        android:layout_gravity="center_vertical"
+        android:gravity="center"
+        android:textColor="#101010"
+        android:textSize="16sp"
+        />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="80dp"
+        android:layout_marginRight="15dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/task_time_axis_top"
+            android:layout_width="0.5dp"
+            android:layout_height="0dp"
+            android:layout_gravity="center"
+            android:layout_weight="1.0"
+            android:background="#bbbbbb"/>
+
+        <ImageView
+            android:id="@+id/task_time_icon"
+            android:layout_width="wrap_content"
+            android:src="@mipmap/ic_pingjia"
+            android:layout_height="wrap_content"
+            android:scaleType="centerInside"/>
+
+        <TextView
+            android:id="@+id/task_time_axis_bottom"
+            android:layout_width="0.5dp"
+            android:layout_height="0dp"
+            android:layout_gravity="center"
+            android:layout_weight="1.0"
+            android:background="#bbbbbb"/>
+
+    </LinearLayout>
+
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/task_user_icon_sdv"
+        android:layout_marginRight="10dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center_vertical"
+        fresco:actualImageScaleType="centerInside"
+        fresco:roundAsCircle="true"
+        android:layout_centerVertical="true"
+        fresco:roundedCornerRadius="0dp"
+        fresco:placeholderImage="@android:color/transparent"
+        fresco:placeholderImageScaleType="fitCenter"
+        fresco:failureImage="@android:color/transparent"
+        fresco:failureImageScaleType="fitCenter"/>
+
+    <TextView
+        android:id="@+id/task_action_desc_tv"
+        android:layout_marginRight="10dp"
+        android:layout_width="wrap_content"
+        android:gravity="center"
+        android:layout_gravity="center_vertical"
+        android:layout_height="wrap_content"
+        android:text="@null"
+        android:textSize="14sp"
+        android:textColor="#101010"/>
+
+
+</LinearLayout>

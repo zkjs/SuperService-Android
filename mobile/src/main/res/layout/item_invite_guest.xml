@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <TextView
+        android:id="@+id/guest_name_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="45dp"
+        android:gravity="center"
+        android:text="@null"
+        android:layout_centerVertical="true"
+        android:textSize="14sp"
+        android:layout_marginLeft="20dp"
+        android:textColor="#101010"
+        />
+
+    <TextView
+        android:id="@+id/guest_count_tv"
+        android:layout_toRightOf="@id/guest_name_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="45dp"
+        android:gravity="center"
+        android:text="@null"
+        android:layout_centerVertical="true"
+        android:textSize="14sp"
+        android:layout_marginLeft="15dp"
+        android:textColor="#666666"
+        />
+
+    <TextView
+        android:id="@+id/guest_status_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="45dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="15dp"
+        android:gravity="center"
+        android:layout_centerVertical="true"
+        android:text="已确认"
+        android:textColor="#03a9f4"
+        android:textSize="14sp"/>
+
+</RelativeLayout>

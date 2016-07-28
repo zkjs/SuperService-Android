@@ -189,6 +189,10 @@ public class ClientActivity extends BaseAppCompatActivity {
                 }
                 selectMap.put(userId, isSelect);
                 vipUserAdapter.setSelectMap(selectMap);
+                if(null != whiteUserList && !whiteUserList.isEmpty() && position == whiteUserList.size()){
+                    swipeRefreshListView.setSelection(parent.getCount()-1);
+
+                }
             }
         });
 
@@ -310,7 +314,9 @@ public class ClientActivity extends BaseAppCompatActivity {
                             if(null != requestWhiteUserList && !requestWhiteUserList.isEmpty()){
                                 PAGE_NO++;
                             }else {
-                                DialogUtil.getInstance().showCustomToast(ClientActivity.this,"再无更多数据", Gravity.CENTER);
+                                if(!isRefresh){
+                                    DialogUtil.getInstance().showCustomToast(ClientActivity.this,"再无更多数据", Gravity.CENTER);
+                                }
                             }
                             vipUserAdapter.setVipUserList(whiteUserList);
                             if(30001 == resultFlag){

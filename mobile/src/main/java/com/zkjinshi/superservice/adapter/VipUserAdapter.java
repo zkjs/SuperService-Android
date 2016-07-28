@@ -134,7 +134,7 @@ public class VipUserAdapter extends BaseAdapter {
         return convertView;
     }
 
-    class ViewHolder{
+    static class ViewHolder{
         SimpleDraweeView userPhotoDv;
         TextView userNameTv,telPhoneTv,loginStatusTv,remarkTv,visitTv;
         LinearLayout remarkLayout;

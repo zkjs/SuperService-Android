@@ -615,6 +615,108 @@ public class NotificationHelper {
         });
     }
 
+    /**
+     * 显示呼叫服务通知栏
+     * @param context
+     * @param alertStr
+     * @param imageStr
+     */
+    public synchronized void showNotification(final Context context, final String alertStr,final String imageStr){
+        ImageSize imageSize = new ImageSize(DisplayUtil.dip2px(context, 36),
+                DisplayUtil.dip2px(context, 36));
+        String imageUrl  = ProtocolUtil.getAvatarUrl(context,imageStr);
+        NonViewAware aware = new NonViewAware(imageSize, ViewScaleType.CROP);
+        ImageLoader.getInstance().displayImage(imageUrl,aware,new SimpleImageLoadingListener(){
+            @Override
+            public void onLoadingStarted(String imageUri, View view) {
+                super.onLoadingStarted(imageUri, view);
+            }
+
+            @Override
+            public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+                super.onLoadingFailed(imageUri, view, failReason);
+                NotificationCompat.Builder notificationBuilder = null;
+                // 1.设置显示信息
+                notificationBuilder = new NotificationCompat.Builder(context);
+                notificationBuilder.setContentTitle(alertStr);
+                notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
+                // 2.设置点击跳转事件
+                Intent intent = new Intent(context, SplashActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+                notificationBuilder.setContentIntent(pendingIntent);
+                // 3.设置通知栏其他属性
+                notificationBuilder.setAutoCancel(true);
+                notificationBuilder.setDefaults(Notification.DEFAULT_ALL);
+                NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+                notificationManager.notify(++NOTIFY_ID, notificationBuilder.build());
+                String reason = null;
+                switch (failReason.getType()) {
+                    case IO_ERROR:// 文件I/O错误
+                        reason = "文件I/O错误";
+                        break;
+                    case DECODING_ERROR:// 解码错误
+                        reason = "解码错误";
+                        break;
+                    case NETWORK_DENIED:// 网络延迟
+                        reason = "网络延迟";
+                        break;
+                    case OUT_OF_MEMORY:// 内存不足
+                        reason = "内存不足";
+                        break;
+                    case UNKNOWN:// 原因不明
+                        reason = "原因不明";
+                        break;
+                }
+                LogUtil.getInstance().info(LogLevel.WARN,"收到到店通通知加载图片失败:"+reason);
+            }
+
+            @Override
+            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                super.onLoadingComplete(imageUri, view, loadedImage);
+                NotificationCompat.Builder notificationBuilder = null;
+                // 1.设置显示信息
+                notificationBuilder = new NotificationCompat.Builder(context);
+                notificationBuilder.setContentTitle(alertStr);
+                notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
+                notificationBuilder.setLargeIcon(loadedImage);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    notificationBuilder.setStyle(new NotificationCompat.BigPictureStyle().bigPicture(loadedImage));
+                }
+                // 2.设置点击跳转事件
+                Intent intent = new Intent(context, SplashActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+                notificationBuilder.setContentIntent(pendingIntent);
+                // 3.设置通知栏其他属性
+                notificationBuilder.setAutoCancel(true);
+                notificationBuilder.setDefaults(Notification.DEFAULT_ALL);
+                NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+                notificationManager.notify(++NOTIFY_ID, notificationBuilder.build());
+            }
+
+            @Override
+            public void onLoadingCancelled(String imageUri, View view) {
+                super.onLoadingCancelled(imageUri, view);
+                NotificationCompat.Builder notificationBuilder = null;
+                // 1.设置显示信息
+                notificationBuilder = new NotificationCompat.Builder(context);
+                notificationBuilder.setContentTitle(alertStr);
+                notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
+                // 2.设置点击跳转事件
+                Intent intent = new Intent(context, SplashActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+                notificationBuilder.setContentIntent(pendingIntent);
+                // 3.设置通知栏其他属性
+                notificationBuilder.setAutoCancel(true);
+                notificationBuilder.setDefaults(Notification.DEFAULT_ALL);
+                NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+                notificationManager.notify(++NOTIFY_ID, notificationBuilder.build());
+            }
+        });
+    }
+
     private NotificationCompat.WearableExtender extendWear(Context context, NotificationCompat.Builder builder, EMMessage message) {
         NotificationCompat.WearableExtender wearableExtender = new NotificationCompat.WearableExtender();
         // 1、增加语音快捷回复

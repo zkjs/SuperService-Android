@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="service_blue_color">#03a9f4</color>
+    <color name="service_gray_color">#888888</color>
+    <color name="service_red_color">#e84e40</color>
+</resources>

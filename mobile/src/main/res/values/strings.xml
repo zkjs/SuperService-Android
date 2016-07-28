@@ -10,6 +10,7 @@
     <string name="coming_notice">到店通知</string>
     <string name="message_notice">消息通知</string>
     <string name="deal_with_order">订单处理</string>
+    <string name="call_service">呼叫通知</string>
     <string name="info_set">个人设置</string>
 
     <!-- 新增客户界面 -->
@@ -35,6 +36,8 @@
     <!--到店通知-->
     <string name="talk_with_team">与团队对话</string>
     <string name="talk_with_client">与客户对话</string>
+    <string name="accpet_task">接受任务</string>
+    <string name="appoint_task">指派任务</string>
     <string name="latest_contact">最近联系</string>
 
     <string name="no_data">暂无数据</string>
@@ -64,6 +67,10 @@
     <string name="action_edit">编辑</string>
     <string name="action_checkout">收款中心</string>
     <string name="action_tian_jia">添加</string>
+    <string name="action_finish">完成</string>
+    <string name="action_next">下一步</string>
+    <string name="action_add">添加</string>
+    <string name="action_sure">确定</string>
     <string name="add_clients">添加客户</string>
     <string name="team_edit">团队编辑</string>
     <string name="change_department">更改部门</string>
@@ -92,8 +99,8 @@
     <string name="latest">最近</string>
     <string name="not_choose_yet">尚未选择</string>
     <string name="user">用户</string>
-    <string name="use_your_invite_code_and_add_you_as_exclusive_server_success" >成功使用你的邀请码, 并添加你为专属客服</string>
-    <string name="use_your_invite_code" >成功使用你的邀请码</string>
+    <string name="use_your_invite_code_and_add_you_as_exclusive_server_success">成功使用你的邀请码, 并添加你为专属客服</string>
+    <string name="use_your_invite_code">成功使用你的邀请码</string>
 
     <!--音频通话和语音通话-->
     <string name="call_duration">通话时长</string>
@@ -151,14 +158,14 @@
     <string name="invite_code">邀请码</string>
     <string name="used">已使用</string>
     <string name="unused">未使用</string>
-    <string name="slash" >/</string>
+    <string name="slash">/</string>
     <string name="send_by_wechat">微信发送</string>
     <string name="client">客户</string>
     <string name="confirm_to_create_new_invite_code">确定生成新的邀请码</string>
     <string name="no_more_data">已无更多数据！</string>
     <string name="send_by_sms">短信</string>
-    <string name="share_invite_code" > 全国有超过百家顶级商户和1000+名人工客服将竭诚为您服务。</string>
-    <string name="your_invite_code" >您的邀请码为:</string>
+    <string name="share_invite_code"> 全国有超过百家顶级商户和1000+名人工客服将竭诚为您服务。</string>
+    <string name="your_invite_code">您的邀请码为:</string>
     <string name="download_link">下载链接：</string>
     <string name="add_to_my_client">添加到我的客户</string>
     <string name="client_already_be_added">客人已被添加</string>
@@ -193,4 +200,7 @@
     <string name="add_successed">添加成功</string>
     <string name="add_failed">添加标签失败</string>
 
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

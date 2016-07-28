@@ -22,6 +22,8 @@ public class AccessControlUtil {
     public static String BTNPOS = "BTNPOS";//收款台->收款记录按钮
     public static String MEMBER = "MEMBER";//侧滑栏->会员
     public static String DELEMPLOYEE = "DELEMPLOYEE";//团队管理->删除团队成员
+    public static String SERVICETAG = "SERVICETAG";//服务标签
+    public static String CREATEACTIVITY = "CREATEACTIVITY";//活动管理
 
     /**
      * 视图是否可见

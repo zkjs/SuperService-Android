@@ -11,88 +11,40 @@ import java.io.Serializable;
  */
 public class UserVo implements Serializable {
 
-    private String userId;
-    private String shopId;
-    private String userName;//用户名称
-    private String cellphone;
-    private String photoUrl;
-    private String shopName;//商家全称
-    private String token;
-    private String roleId;
-    private SexType sex;
+    private String userid;
+    private String username;
+    private String userimage;
+    private String sex;
 
-
-
-    public String getUserId() {
-        return userId;
+    public String getUserid() {
+        return userid;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setUserid(String userid) {
+        this.userid = userid;
     }
 
-    public String getShopId() {
-        return shopId;
+    public String getUsername() {
+        return username;
     }
 
-    public void setShopId(String shopId) {
-        this.shopId = shopId;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public String getCellphone() {
-        return cellphone;
-    }
-
-    public void setCellphone(String cellphone) {
-        this.cellphone = cellphone;
-    }
-
-    public String getPhotoUrl() {
-        return photoUrl;
-    }
-
-    public void setPhotoUrl(String photoUrl) {
-        this.photoUrl = photoUrl;
-    }
-
-    public String getShopName() {
-        return shopName;
-    }
-
-    public void setShopName(String shopName) {
-        this.shopName = shopName;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
-
-    public String getRoleId() {
-        return roleId;
-    }
-
-    public void setRoleId(String roleId) {
-        this.roleId = roleId;
-    }
-
-    public SexType getSex() {
+    public String getSex() {
         return sex;
     }
 
-    public void setSex(SexType sex) {
+    public void setSex(String sex) {
         this.sex = sex;
     }
 
+    public String getUserimage() {
+        return userimage;
+    }
+
+    public void setUserimage(String userimage) {
+        this.userimage = userimage;
+    }
 }

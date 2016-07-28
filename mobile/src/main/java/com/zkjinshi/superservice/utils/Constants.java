@@ -36,6 +36,8 @@ public class Constants {
 
     public static final String ACTION_NOTICE = "com.zkjinshi.superservice.intent.action.NOTICE";
 
+    public static final String ACTION_SERVICE = "com.zkjinshi.superservice.intent.action.SERVICE";
+
     public static final String WECHAT_APP_ID = "wx55cd1d05f22990a0";
 
     public static final int OVERTIMEOUT = 5000;

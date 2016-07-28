@@ -1,37 +1,20 @@
 package com.zkjinshi.superservice.activity.common;
 
-import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.Gravity;
 
-import com.google.gson.Gson;
 import com.zkjinshi.base.util.NetWorkUtil;
 import com.zkjinshi.base.view.CustomDialog;
 import com.zkjinshi.superservice.R;
-import com.zkjinshi.superservice.activity.set.TeamContactsController;
 
 import com.zkjinshi.superservice.base.BaseActivity;
-import com.zkjinshi.superservice.bean.SempLoginBean;
-import com.zkjinshi.superservice.factory.UserFactory;
 import com.zkjinshi.superservice.manager.SSOManager;
 import com.zkjinshi.superservice.manager.YunBaSubscribeManager;
-import com.zkjinshi.superservice.manager.ZoneManager;
-import com.zkjinshi.superservice.net.ExtNetRequestListener;
-import com.zkjinshi.superservice.net.NetResponse;
 
-import com.zkjinshi.superservice.sqlite.DBOpenHelper;
-import com.zkjinshi.superservice.sqlite.UserDBUtil;
 import com.zkjinshi.superservice.utils.CacheUtil;
-
-import com.zkjinshi.superservice.utils.MD5Util;
-import com.zkjinshi.superservice.utils.ProtocolUtil;
-import com.zkjinshi.superservice.vo.IdentityType;
-import com.zkjinshi.superservice.vo.UserVo;
 
 import org.json.JSONObject;
 
@@ -76,7 +59,6 @@ public class SplashActivity extends BaseActivity{
         }else {
             showNetDialog();
         }
-
     }
 
     private void initListeners(){

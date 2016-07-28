@@ -11,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import com.gordonwong.materialsheetfab.MaterialSheetFab;
 import com.gordonwong.materialsheetfab.MaterialSheetFabEventListener;
@@ -20,7 +21,9 @@ import com.zkjinshi.superservice.R;
 import com.zkjinshi.superservice.activity.set.ClientActivity;
 import com.zkjinshi.superservice.activity.set.TeamContactsActivity;
 import com.zkjinshi.superservice.adapter.ViewPagerAdapter;
+import com.zkjinshi.superservice.fragment.CallServiceFragment;
 import com.zkjinshi.superservice.utils.CacheUtil;
+import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.view.Fab;
 
 /**
@@ -37,13 +40,12 @@ public class MainActivityController implements View.OnClickListener{
     private MaterialSheetFab materialSheetFab;
     private int statusBarColor;
     private DisplayImageOptions options;
-    private Intent intent;
+    private RelativeLayout teamTalkLayout,acceptTaskLayout,appointTaskLayout;
 
     ViewPagerAdapter viewPagerAdapter;
 
     public MainActivityController(MainActivity activity){
         this.activity = activity;
-        this.intent = activity.getIntent();
         this.options = new DisplayImageOptions.Builder()
                 .showImageOnLoading(R.mipmap.ic_main_user_default_photo_nor)// 设置图片下载期间显示的图片
                 .showImageForEmptyUri(R.mipmap.ic_main_user_default_photo_nor)// 设置图片Uri为空或是错误的时候显示的图片
@@ -74,6 +76,7 @@ public class MainActivityController implements View.OnClickListener{
         setupDrawer();
         setupFab();
         setupTabs();
+        setupListeners();
     }
 
     public void onPostCreate() {
@@ -86,6 +89,15 @@ public class MainActivityController implements View.OnClickListener{
             return false;
         }
         return true;
+    }
+
+    private void setupListeners(){
+        //与团队对话
+        teamTalkLayout.setOnClickListener(this);
+        //接受任务
+        acceptTaskLayout.setOnClickListener(this);
+        //指派任务
+        appointTaskLayout.setOnClickListener(this);
     }
 
     /**
@@ -157,6 +169,9 @@ public class MainActivityController implements View.OnClickListener{
     private void setupFab() {
 
         Fab fab = (Fab)activity. findViewById(R.id.fab);
+        teamTalkLayout = (RelativeLayout) activity.findViewById(R.id.fab_sheet_item_team_talk);
+        acceptTaskLayout = (RelativeLayout) activity.findViewById(R.id.fab_sheet_item_accept);
+        appointTaskLayout = (RelativeLayout) activity.findViewById(R.id.fab_sheet_item_appoint);
         View sheetView = activity.findViewById(R.id.fab_sheet);
         View overlay = activity.findViewById(R.id.overlay);
         int sheetColor = activity.getResources().getColor(R.color.background_card);
@@ -179,9 +194,6 @@ public class MainActivityController implements View.OnClickListener{
             }
         });
 
-        // 悬浮item栏设置事件监听
-        activity.findViewById(R.id.fab_sheet_item_recording).setOnClickListener(this);
-        activity.findViewById(R.id.fab_sheet_item_reminder).setOnClickListener(this);
     }
 
     /**
@@ -202,6 +214,15 @@ public class MainActivityController implements View.OnClickListener{
                 materialSheetFab.hideSheetThenFab();
                 break;
             case ViewPagerAdapter.SHARED_POS:
+                teamTalkLayout.setVisibility(View.VISIBLE);
+                acceptTaskLayout.setVisibility(View.GONE);
+                appointTaskLayout.setVisibility(View.GONE);
+                materialSheetFab.showFab();
+                break;
+            case ViewPagerAdapter.CALL_SERVICE:
+                teamTalkLayout.setVisibility(View.GONE);
+                acceptTaskLayout.setVisibility(View.VISIBLE);
+                appointTaskLayout.setVisibility(View.VISIBLE);
                 materialSheetFab.showFab();
                 break;
           //  case ViewPagerAdapter.FAVORITES_POS:
@@ -268,21 +289,33 @@ public class MainActivityController implements View.OnClickListener{
     @Override
     public void onClick(View v) {
         switch (v.getId()){
-            case R.id.fab_sheet_item_recording://与团队对话
+            case R.id.fab_sheet_item_team_talk://与团队对话
                 {
                     Intent intent = new Intent(activity, TeamContactsActivity.class);
                     activity.startActivity(intent);
                 }
                 break;
-            case R.id.fab_sheet_item_reminder://与客人对话
+            case R.id.fab_sheet_item_accept://接受任务
                 {
-                    Intent intent = new Intent(activity, ClientActivity.class);
-                    activity.startActivity(intent);
+                    CacheUtil.getInstance().setIsOwer(1);
+                    Intent intent = new Intent();
+                    intent.setAction(Constants.ACTION_SERVICE);
+                    activity.sendBroadcast(intent);
                 }
                 break;
+            case R.id.fab_sheet_item_appoint://指派任务
+                {
+                    CacheUtil.getInstance().setIsOwer(0);
+                    Intent intent = new Intent();
+                    intent.setAction(Constants.ACTION_SERVICE);
+                    activity.sendBroadcast(intent);
+                }
+            break;
             default:
                 break;
         }
         materialSheetFab.hideSheet();
     }
+
+
 }

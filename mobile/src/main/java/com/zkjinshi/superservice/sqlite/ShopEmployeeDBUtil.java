@@ -134,6 +134,40 @@ public class ShopEmployeeDBUtil {
         return  employeeVos;
     }
 
+    /**
+     * 获取员工列表
+     * @return
+     */
+    public ArrayList<EmployeeVo> queryAllExceptUser() {
+        ArrayList<EmployeeVo> employeeVos = new ArrayList<EmployeeVo>();
+        EmployeeVo employeeVo = null;
+        SQLiteDatabase db = null;
+        Cursor cursor = null;
+        if (null != helper) {
+            try {
+                db = helper.getReadableDatabase();
+                cursor = db.query(DBOpenHelper.SHOP_EMPLOYEE_TBL, null, null,null, null, null, " rolename ASC");
+                if (cursor != null && cursor.getCount() > 0) {
+                    while (cursor.moveToNext()) {
+                        employeeVo = ShopEmployeeFactory.getInstance().bulidEmployeeVo(cursor);
+                        employeeVos.add(employeeVo);
+                    }
+                }
+            } catch (Exception e) {
+                LogUtil.getInstance().info(LogLevel.ERROR, TAG+".queryAll->"+e.getMessage());
+                e.printStackTrace();
+            } finally {
+                if (null != cursor) {
+                    cursor.close();
+                }
+                if (null != db) {
+                    db.close();
+                }
+            }
+        }
+        return  employeeVos;
+    }
+
 
 
     /**
