@@ -98,11 +98,11 @@ public class GuestPaymentAddActivity  extends BaseActivity {
                     DialogUtil.getInstance().showCustomToast(GuestPaymentAddActivity.this,"金额不能为空", Gravity.CENTER);
                     return;
                 }
-                if (!StringUtil.isNumeric(etAmount.getText().toString())) {
+                if (!StringUtil.isDecimal(etAmount.getText().toString())) {
                     DialogUtil.getInstance().showCustomToast(GuestPaymentAddActivity.this,"金额只能是数字", Gravity.CENTER);
                     return;
                 }
-                int amount = Integer.parseInt(etAmount.getText().toString());
+                double amount = Double.parseDouble(etAmount.getText().toString());
                 if ( amount <= 0 ) {
                     DialogUtil.getInstance().showCustomToast(GuestPaymentAddActivity.this,"金额必须大于零", Gravity.CENTER);
                     return;
@@ -120,7 +120,7 @@ public class GuestPaymentAddActivity  extends BaseActivity {
                     return;
                 }
 
-                addPayment(amount * 100, etRemark.getText().toString(), clientId);
+                addPayment((int)(amount * 100), etRemark.getText().toString(), clientId);
             }
         });
 
