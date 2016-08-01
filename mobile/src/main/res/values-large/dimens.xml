@@ -44,4 +44,6 @@
 
     <dimen name="key_up_more_height">120dp</dimen>
 
+    <dimen name="tab_title_textsize">24sp</dimen>
+
 </resources>

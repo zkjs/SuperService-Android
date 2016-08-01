@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:progress="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="horizontal"
+    android:padding="16dp"
+    android:descendantFocusability="blocksDescendants"
+    tools:ignore="HardcodedText,RtlHardcoded,ContentDescription" >
+
+    <CheckBox
+        android:id="@+id/client_label_ck"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="false"
+        android:buttonTint="#03a9f4"
+        android:layout_gravity="center_vertical"/>
+
+    <com.zkjinshi.superservice.pad.view.RoundProgressBar
+        android:id="@+id/client_label_progress"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_marginLeft="10dp"
+        progress:valueTextSize="14sp"
+        progress:roundColor="@color/round_color"
+        progress:roundProgressColor="@color/round_progress_color"
+        progress:valueTextColor="#666666"
+        progress:circleStrokeWidth="10dp"/>
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:textColor="#000000"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="10dp"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:text="Title Title Title Title Title Title Title Title Title Title Title "
+        android:textSize="32sp" />
+
+</LinearLayout>

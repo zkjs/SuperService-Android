@@ -95,7 +95,7 @@ public class NetRequestTask extends AsyncTask<NetRequest, Void, NetResponse> {
         HashMap<String,File> fileMap = null;
         try {
             requestUrl = mediaRequest.requestUrl;
-            Log.d("showurl", requestUrl);
+            Log.i("[requestUrl]", requestUrl);
             bizParamsMap = mediaRequest.getBizParamMap();
             fileParamsMap = mediaRequest.getFileParamMap();
             objectParamsMap = mediaRequest.getObjectParamMap();

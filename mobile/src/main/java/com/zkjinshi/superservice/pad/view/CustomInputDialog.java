@@ -36,6 +36,7 @@ public class CustomInputDialog extends Dialog {
 		private String title;
 		private String message;
 		private int gravity = -1;
+		private String tint;
 		private int visibility = -1;
 		private String positiveButtonText;
 		private String negativeButtonText;
@@ -59,7 +60,15 @@ public class CustomInputDialog extends Dialog {
 			return this;
 		}
 
+		public Builder setTint(String tint) {
+			this.tint = tint;
+			return this;
+		}
 
+		public Builder setTint(int tint) {
+			this.tint = (String) context.getText(tint);
+			return this;
+		}
 
 		public Builder setGravity(int gravity) {
 			this.gravity = gravity;
@@ -158,14 +167,19 @@ public class CustomInputDialog extends Dialog {
 						.setVisibility(View.VISIBLE);
 				((TextView) layout.findViewById(R.id.dialogContent))
 						.setText(message);
+			}else {
+				((TextView) layout.findViewById(R.id.dialogContent))
+						.setVisibility(View.GONE);
 			}
+
 			if (gravity != -1) {
 				((LinearLayout) layout.findViewById(R.id.dialogText))
 						.setGravity(gravity);
 			}
-
 			inputEt = (EditText)layout.findViewById(R.id.input_et);
-
+			if(!TextUtils.isEmpty(tint)){
+				inputEt.setHint(tint);
+			}
 			dialog.setContentView(layout);
 			return dialog;
 		}

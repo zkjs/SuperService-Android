@@ -1,6 +1,7 @@
 package com.zkjinshi.superservice.pad.net;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.zkjinshi.base.log.LogLevel;
 import com.zkjinshi.base.log.LogUtil;
@@ -65,6 +66,7 @@ public class RequestUtil {
         String token = CacheUtil.getInstance().getExtToken();
         if(!TextUtils.isEmpty(token)){
             httpRequest.addHeader("Token",token);
+            Log.i("TOKEN",token);
         }
         HttpResponse httpResponse = httpclient.execute(httpRequest);
         int statusCode = httpResponse.getStatusLine().getStatusCode();
@@ -95,6 +97,7 @@ public class RequestUtil {
         String token = CacheUtil.getInstance().getExtToken();
         if(!TextUtils.isEmpty(token)){
             connection.setRequestProperty("Token",token);
+            Log.i("TOKEN",token);
         }
         connection.connect();
         DataOutputStream out = new DataOutputStream(connection.getOutputStream());
@@ -147,6 +150,7 @@ public class RequestUtil {
         String token = CacheUtil.getInstance().getExtToken();
         if(!TextUtils.isEmpty(token)){
             connection.setRequestProperty("Token",token);
+            Log.i("TOKEN",token);
         }
         connection.connect();
         // POST请求
@@ -201,6 +205,7 @@ public class RequestUtil {
         String token = CacheUtil.getInstance().getExtToken();
         if(!TextUtils.isEmpty(token)){
             connection.setRequestProperty("Token",token);
+            Log.i("TOKEN",token);
         }
         connection.connect();
         if (null != objectParamsMap) {
@@ -254,6 +259,7 @@ public class RequestUtil {
         String token = CacheUtil.getInstance().getExtToken();
         if(!TextUtils.isEmpty(token)){
             connection.setRequestProperty("Token",token);
+            Log.i("TOKEN",token);
         }
         connection.connect();
         // POST请求
@@ -335,6 +341,7 @@ public class RequestUtil {
         String token = CacheUtil.getInstance().getExtToken();
         if(!TextUtils.isEmpty(token)){
             httpPost.addHeader("Token",token);
+            Log.i("TOKEN",token);
         }
         HttpResponse response = httpClient.execute(httpPost);
         int respCode = 0;

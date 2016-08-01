@@ -21,7 +21,8 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.zkjinshi.base.util.DialogUtil;
-import com.zkjinshi.superservice.pad.activity.label.ClientLabelActivity;
+import com.zkjinshi.superservice.pad.R;
+import com.zkjinshi.superservice.pad.activity.label.GuestInfoActivity;
 import com.zkjinshi.superservice.pad.adapter.LocNotificationAdapter;
 import com.zkjinshi.superservice.pad.listener.RecyclerItemClickListener;
 import com.zkjinshi.superservice.pad.net.ExtNetRequestListener;
@@ -29,11 +30,10 @@ import com.zkjinshi.superservice.pad.net.MethodType;
 import com.zkjinshi.superservice.pad.net.NetRequest;
 import com.zkjinshi.superservice.pad.net.NetRequestTask;
 import com.zkjinshi.superservice.pad.net.NetResponse;
+import com.zkjinshi.superservice.pad.response.NoticeResponse;
 import com.zkjinshi.superservice.pad.utils.CacheUtil;
 import com.zkjinshi.superservice.pad.utils.Constants;
 import com.zkjinshi.superservice.pad.utils.ProtocolUtil;
-import com.zkjinshi.superservice.pad.R;
-import com.zkjinshi.superservice.pad.response.NoticeResponse;
 import com.zkjinshi.superservice.pad.vo.NoticeVo;
 
 import java.util.ArrayList;
@@ -175,7 +175,8 @@ public class NoticeFragment extends Fragment {
                 }*/
                 //跳转到用户详情页面
                 NoticeVo noticeVo = noticeList.get(position);
-                Intent intent = new Intent(getActivity(),ClientLabelActivity.class);
+                //Intent intent = new Intent(getActivity(),ClientLabelActivity.class);
+                Intent intent = new Intent(getActivity(),GuestInfoActivity.class);
                 intent.putExtra("noticeVo",noticeVo);
                 startActivity(intent);
 

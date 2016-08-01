@@ -277,4 +277,12 @@
         <item name="android:background">#C7C7C7</item>
     </style>
 
+    <style name="MyCustomTabLayout" parent="Widget.Design.TabLayout">
+        <item name="tabTextAppearance">@style/MyCustomTabText</item>
+    </style>
+
+    <style name="MyCustomTabText" parent="TextAppearance.AppCompat.Button">
+        <item name="android:textSize">@dimen/tab_title_textsize</item>
+    </style>
+
 </resources>

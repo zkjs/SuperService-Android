@@ -1,6 +1,7 @@
 package com.zkjinshi.superservice.pad.activity.label;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.zkjinshi.superservice.pad.net.ExtNetRequestListener;
 import com.zkjinshi.superservice.pad.net.MethodType;
@@ -40,6 +41,7 @@ public class ClientLabelController {
      */
     public void requestGetClientTagsTask(String clientId, Context context, ExtNetRequestListener listener){
         String requestUrl = ProtocolUtil.getClientTagsUrl(clientId);
+        //Log.i("LabelUrl",requestUrl);
         NetRequest netRequest = new NetRequest(requestUrl);
         NetRequestTask netRequestTask = new NetRequestTask(context, netRequest, NetResponse.class);
         netRequestTask.methodType = MethodType.GET;
@@ -63,6 +65,40 @@ public class ClientLabelController {
         bizMap.put("tags",tagList);
         netRequest.setObjectParamMap(bizMap);
         netRequestTask.methodType = MethodType.JSONPOST;
+        netRequestTask.setNetRequestListener(listener);
+        netRequestTask.isShowLoadingDialog = true;
+        netRequestTask.execute();
+    }
+
+    /**
+     * 获取用户到店记录
+     * @param clientId
+     * @param context
+     * @param listener
+     */
+    public void requestGetClientArriving(String clientId, Context context, ExtNetRequestListener listener){
+        String requestUrl = ProtocolUtil.getClientArrivingUrl(clientId);
+        //Log.i("ArrivingUrl",requestUrl);
+        NetRequest netRequest = new NetRequest(requestUrl);
+        NetRequestTask netRequestTask = new NetRequestTask(context, netRequest, NetResponse.class);
+        netRequestTask.methodType = MethodType.GET;
+        netRequestTask.setNetRequestListener(listener);
+        netRequestTask.isShowLoadingDialog = true;
+        netRequestTask.execute();
+    }
+
+    /**
+     * 获取用户到店记录
+     * @param clientId
+     * @param context
+     * @param listener
+     */
+    public void requestGetClientPayment(String clientId, Context context, ExtNetRequestListener listener){
+        String requestUrl = ProtocolUtil.getClientPaymentUrl(clientId);
+        //Log.i("ArrivingUrl",requestUrl);
+        NetRequest netRequest = new NetRequest(requestUrl);
+        NetRequestTask netRequestTask = new NetRequestTask(context, netRequest, NetResponse.class);
+        netRequestTask.methodType = MethodType.GET;
         netRequestTask.setNetRequestListener(listener);
         netRequestTask.isShowLoadingDialog = true;
         netRequestTask.execute();
