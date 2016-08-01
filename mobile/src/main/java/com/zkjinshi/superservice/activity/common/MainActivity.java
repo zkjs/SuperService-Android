@@ -236,6 +236,8 @@ public class MainActivity extends BaseAppCompatActivity {
                             EasemobIMHelper.getInstance().logout();
                             //修改登录状态
                             CacheUtil.getInstance().setLogin(false);
+                            //清空token
+                            CacheUtil.getInstance().setToken("");
                             startActivity(new Intent(MainActivity.this, LoginActivity.class));
                             finish();
                             overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);

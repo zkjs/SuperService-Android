@@ -136,6 +136,7 @@ public class NetRequestTask extends AsyncTask<NetRequest, Void, NetResponse> {
             onExceptionThrown(e, "IOException thrown when requesting: " + mediaRequest.requestUrl);
         } catch (Exception e) {
             errorCode = RESPONSE_ERROR;
+            Log.e("Error",e.toString(),e);
             onExceptionThrown(e, "Exception thrown when getResultString from the response.");
         }
         return resultInfo;
