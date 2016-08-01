@@ -19,7 +19,7 @@
         android:ellipsize="end"
         android:singleLine="true"
         android:text="2016-07-27 11:12"
-        android:textSize="32sp" />
+        android:textSize="24sp" />
 
     <TextView
         android:id="@+id/tv_amount"
@@ -32,7 +32,7 @@
         android:ellipsize="end"
         android:singleLine="true"
         android:text="666"
-        android:textSize="32sp" />
+        android:textSize="24sp" />
 
     <TextView
         android:id="@+id/tv_remark"
@@ -46,5 +46,5 @@
         android:ellipsize="end"
         android:singleLine="true"
         android:text="房费"
-        android:textSize="32sp" />
+        android:textSize="24sp" />
 </LinearLayout>

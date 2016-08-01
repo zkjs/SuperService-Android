@@ -74,6 +74,16 @@ public class StringUtil {
         return true;
     }
 
+    /**
+     * @param str
+     * @return
+     */
+    public static boolean isDecimal(String str) {
+        Pattern p = Pattern.compile("^[0-9]+(\\.[0-9]+)?$");
+        Matcher m = p.matcher(str);
+        return m.matches();
+    }
+
     public static boolean isEquals(String... agrs) {
         String last = null;
         for (int i = 0; i < agrs.length; i++) {
