@@ -32,6 +32,15 @@ public class AmountStatusVo implements Serializable {
     private int status;//订单状态码  0-待确认, 1-已拒绝, 2-已确认
     private String statusdesc;
     private String confirmtime;
+    private String alert;
+
+    public String getAlert() {
+        return alert;
+    }
+
+    public void setAlert(String alert) {
+        this.alert = alert;
+    }
 
     public String getCreatetime() {
         return createtime;

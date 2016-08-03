@@ -379,10 +379,13 @@ public class NotificationHelper {
                 notificationBuilder = new NotificationCompat.Builder(context);
                 int status = amountStatusVo.getStatus();
                 //0-待确认, 1-已拒绝, 2-已确认
+                String alert = amountStatusVo.getAlert();
                 String tipsMsg = null;
-                if(1 == status){
+                if(!TextUtils.isEmpty(alert)){
+                    tipsMsg = alert;
+                } else if(1 == status){
                     tipsMsg = "用户已拒绝收款";
-                }else {
+                } else {
                     tipsMsg = "用户已确认收款";
                 }
                 notificationBuilder.setContentTitle(tipsMsg);
@@ -409,8 +412,11 @@ public class NotificationHelper {
                 notificationBuilder = new NotificationCompat.Builder(context);
                 int status = amountStatusVo.getStatus();
                 //0-待确认, 1-已拒绝, 2-已确认
+                String alert = amountStatusVo.getAlert();
                 String tipsMsg = null;
-                if(1 == status){
+                if(!TextUtils.isEmpty(alert)){
+                    tipsMsg = alert;
+                } else if(1 == status){
                     tipsMsg = "用户已拒绝收款";
                 }else {
                     tipsMsg = "用户已确认收款";
@@ -443,8 +449,11 @@ public class NotificationHelper {
                 notificationBuilder = new NotificationCompat.Builder(context);
                 int status = amountStatusVo.getStatus();
                 //0-待确认, 1-已拒绝, 2-已确认
+                String alert = amountStatusVo.getAlert();
                 String tipsMsg = null;
-                if(1 == status){
+                if(!TextUtils.isEmpty(alert)){
+                    tipsMsg = alert;
+                } else if(1 == status){
                     tipsMsg = "用户已拒绝收款";
                 }else {
                     tipsMsg = "用户已确认收款";
