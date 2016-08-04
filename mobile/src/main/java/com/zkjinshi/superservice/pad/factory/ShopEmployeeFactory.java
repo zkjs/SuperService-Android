@@ -3,7 +3,16 @@ package com.zkjinshi.superservice.pad.factory;
 import android.content.ContentValues;
 import android.database.Cursor;
 
+import com.zkjinshi.superservice.pad.bean.TeamContactBean;
+import com.zkjinshi.superservice.pad.sqlite.ShopDepartmentDBUtil;
+import com.zkjinshi.superservice.pad.utils.CacheUtil;
+import com.zkjinshi.superservice.pad.utils.RandomDrawbleUtil;
+import com.zkjinshi.superservice.pad.vo.OnlineStatus;
 import com.zkjinshi.superservice.pad.vo.EmployeeVo;
+import com.zkjinshi.superservice.pad.vo.WorkStatus;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 开发者：vincent

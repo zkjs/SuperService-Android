@@ -2,12 +2,15 @@ package com.zkjinshi.superservice.pad.blueTooth;
 
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
+
+import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
+
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
@@ -28,13 +31,17 @@ import com.zkjinshi.superservice.pad.utils.CacheUtil;
 import com.zkjinshi.superservice.pad.utils.ProtocolUtil;
 import com.zkjinshi.superservice.pad.vo.PayloadVo;
 
-import org.altbeacon.beacon.Region;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Map;
 
 import cz.msebera.android.httpclient.Header;
 import cz.msebera.android.httpclient.entity.StringEntity;
+
+import org.altbeacon.beacon.Region;
 
 /**
  * 蓝牙管理器
@@ -92,14 +99,16 @@ public class BlueToothManager {
         @Override
         public void intoRegion(IBeaconVo iBeaconVo) {
             LogUtil.getInstance().info(LogLevel.DEBUG,"进入："+iBeaconVo.getMajor());
-            //保存收款台区域信息
-            CheckoutInnerManager.getInstance().saveBeaconCache(true,iBeaconVo);
-            Bundle bundle = new Bundle();
-            bundle.putSerializable("iBeaconVo",iBeaconVo);
-            Message msg = new Message();
-            msg.what = BEACON_NOTICE;
-            msg.setData(bundle);
-            handler.sendMessage(msg);
+//            //保存收款台区域信息
+//            CheckoutInnerManager.getInstance().saveBeaconCache(true,iBeaconVo);
+//            Bundle bundle = new Bundle();
+//            bundle.putSerializable("iBeaconVo",iBeaconVo);
+//            Message msg = new Message();
+//            msg.what = BEACON_NOTICE;
+//            msg.setData(bundle);
+//            handler.sendMessage(msg);
+            BeaconsPushManager.getInstance().setPushable(true);
+            BeaconsPushManager.getInstance().add(iBeaconVo);
         }
 
         @Override
@@ -114,7 +123,7 @@ public class BlueToothManager {
         }
 
         public void sacnBeacon(IBeaconVo iBeaconVo){
-
+            BeaconsPushManager.getInstance().add(iBeaconVo);
         }
 
         public void exitRegion(Region region){
@@ -203,6 +212,7 @@ public class BlueToothManager {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {// 大于等于android 4.4
             IBeaconController.getInstance().init(context,3000L,3);
             IBeaconService.mIBeaconObserver = mIBeaconObserver;
+            BeaconsPushManager.getInstance().init(context);
         }
     }
 

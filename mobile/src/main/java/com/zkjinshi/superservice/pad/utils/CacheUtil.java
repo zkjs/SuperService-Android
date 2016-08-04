@@ -613,6 +613,22 @@ public class CacheUtil {
 		return sp.getInt("net_config_version", 0);
 	}
 
+	public void setIsOwer(int netConfigVersion) {
+		if (null == context) {
+			return;
+		}
+		SharedPreferences sp = context.getSharedPreferences(SVIP_CACHE, Context.MODE_PRIVATE);
+		sp.edit().putInt("isower", netConfigVersion).commit();
+	}
+
+	public int getIsOwer() {
+		if (null == context) {
+			return 0;
+		}
+		SharedPreferences sp = context.getSharedPreferences(SVIP_CACHE, Context.MODE_PRIVATE);
+		return sp.getInt("isower", 0);
+	}
+
 	/**
 	 * 加密存入缓存
 	 *

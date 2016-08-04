@@ -21,7 +21,11 @@ import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.base.util.DisplayUtil;
+import com.zkjinshi.superservice.pad.R;
 import com.zkjinshi.superservice.pad.adapter.VipUserAdapter;
+import com.zkjinshi.superservice.pad.base.BaseAppCompatActivity;
+import com.zkjinshi.superservice.pad.listener.OnRefreshListener;
+import com.zkjinshi.superservice.pad.menu.vo.MenuItem;
 import com.zkjinshi.superservice.pad.response.BaseResponse;
 import com.zkjinshi.superservice.pad.response.WhiteUserListResponse;
 import com.zkjinshi.superservice.pad.utils.AccessControlUtil;
@@ -31,9 +35,6 @@ import com.zkjinshi.superservice.pad.utils.Constants;
 import com.zkjinshi.superservice.pad.utils.ProtocolUtil;
 import com.zkjinshi.superservice.pad.view.SwipeRefreshListView;
 import com.zkjinshi.superservice.pad.vo.WhiteUserVo;
-import com.zkjinshi.superservice.pad.R;
-import com.zkjinshi.superservice.pad.base.BaseAppCompatActivity;
-import com.zkjinshi.superservice.pad.listener.OnRefreshListener;
 
 import org.json.JSONObject;
 
@@ -64,6 +65,7 @@ public class ClientActivity extends BaseAppCompatActivity {
     private VipUserAdapter vipUserAdapter;
     private HashMap<String,Boolean> selectMap = new HashMap<String, Boolean>();
     private TextView noResultTv;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -187,6 +189,10 @@ public class ClientActivity extends BaseAppCompatActivity {
                 }
                 selectMap.put(userId, isSelect);
                 vipUserAdapter.setSelectMap(selectMap);
+                if(null != whiteUserList && !whiteUserList.isEmpty() && position == whiteUserList.size()){
+                    swipeRefreshListView.setSelection(parent.getCount()-1);
+
+                }
             }
         });
 
@@ -308,7 +314,9 @@ public class ClientActivity extends BaseAppCompatActivity {
                             if(null != requestWhiteUserList && !requestWhiteUserList.isEmpty()){
                                 PAGE_NO++;
                             }else {
-                                DialogUtil.getInstance().showCustomToast(ClientActivity.this,"再无更多数据", Gravity.CENTER);
+                                if(!isRefresh){
+                                    DialogUtil.getInstance().showCustomToast(ClientActivity.this,"再无更多数据", Gravity.CENTER);
+                                }
                             }
                             vipUserAdapter.setVipUserList(whiteUserList);
                             if(30001 == resultFlag){

@@ -7,8 +7,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
-import com.zkjinshi.superservice.pad.utils.EmotionType;
 import com.zkjinshi.superservice.pad.R;
+import com.zkjinshi.superservice.pad.utils.EmotionType;
 import com.zkjinshi.superservice.pad.utils.EmotionUtil;
 
 import java.util.ArrayList;
@@ -87,7 +87,7 @@ public class FaceAdapter extends BaseAdapter {
 		return convertView;
 	}
 
-	public static class ViewHolder {
+	static class ViewHolder {
 		ImageView faceIV;
 	}
 }

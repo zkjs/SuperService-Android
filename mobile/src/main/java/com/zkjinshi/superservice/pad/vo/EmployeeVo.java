@@ -19,6 +19,25 @@ public class EmployeeVo implements Serializable {
     private String userid;
     private String userimage;
 
+    private String deptid;
+    private String desc;
+
+    public String getDeptid() {
+        return deptid;
+    }
+
+    public void setDeptid(String deptid) {
+        this.deptid = deptid;
+    }
+
+    public String getDesc() {
+        return desc;
+    }
+
+    public void setDesc(String desc) {
+        this.desc = desc;
+    }
+
     public String getEmail() {
         return email;
     }
@@ -106,4 +125,6 @@ public class EmployeeVo implements Serializable {
     public void setPhone(String phone) {
         this.phone = phone;
     }
+
+
 }

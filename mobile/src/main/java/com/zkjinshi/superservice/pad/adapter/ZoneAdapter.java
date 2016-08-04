@@ -2,17 +2,25 @@ package com.zkjinshi.superservice.pad.adapter;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.zkjinshi.superservice.pad.bean.ZoneBean;
+import com.zkjinshi.base.log.LogLevel;
+import com.zkjinshi.base.log.LogUtil;
 import com.zkjinshi.superservice.pad.R;
+import com.zkjinshi.superservice.pad.bean.ZoneBean;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * 区域列表adapter
@@ -165,8 +173,7 @@ public class ZoneAdapter extends BaseAdapter{
         return super.getViewTypeCount();
     }
 
-    /*存放控件*/
-    public final class ViewHolder{
+    static class ViewHolder{
         public ImageView img;
         public TextView  name;
         public ImageView check;

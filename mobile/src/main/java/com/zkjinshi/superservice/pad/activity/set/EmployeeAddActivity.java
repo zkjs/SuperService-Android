@@ -1,12 +1,16 @@
 package com.zkjinshi.superservice.pad.activity.set;
 
+import android.app.Activity;
+
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -17,22 +21,25 @@ import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.filechoser.activity.FileListActivity;
-import com.zkjinshi.superservice.pad.sqlite.ShopDepartmentDBUtil;
-import com.zkjinshi.superservice.pad.utils.AccessControlUtil;
-import com.zkjinshi.superservice.pad.utils.JxlUtil;
 import com.zkjinshi.superservice.pad.R;
 import com.zkjinshi.superservice.pad.adapter.ContactsAdapter;
 import com.zkjinshi.superservice.pad.base.BaseActivity;
+import com.zkjinshi.superservice.pad.bean.ImportSempBean;
 import com.zkjinshi.superservice.pad.net.ExtNetRequestListener;
 import com.zkjinshi.superservice.pad.net.MethodType;
 import com.zkjinshi.superservice.pad.net.NetRequest;
 import com.zkjinshi.superservice.pad.net.NetRequestTask;
 import com.zkjinshi.superservice.pad.net.NetResponse;
+import com.zkjinshi.superservice.pad.net.RequestUtil;
+import com.zkjinshi.superservice.pad.sqlite.ShopDepartmentDBUtil;
 import com.zkjinshi.superservice.pad.sqlite.ShopEmployeeDBUtil;
+import com.zkjinshi.superservice.pad.utils.AccessControlUtil;
 import com.zkjinshi.superservice.pad.utils.AsyncHttpClientUtil;
 import com.zkjinshi.superservice.pad.utils.CacheUtil;
 import com.zkjinshi.superservice.pad.utils.Constants;
+import com.zkjinshi.superservice.pad.utils.JxlUtil;
 import com.zkjinshi.superservice.pad.utils.ProtocolUtil;
+import com.zkjinshi.superservice.pad.utils.StringUtil;
 import com.zkjinshi.superservice.pad.vo.ContactLocalVo;
 import com.zkjinshi.superservice.pad.vo.DepartmentVo;
 import com.zkjinshi.superservice.pad.vo.EmployeeVo;
@@ -205,15 +212,7 @@ public class EmployeeAddActivity extends BaseActivity {
         findViewById(R.id.header_confirm_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if( excelList != null && excelList.size() > 0){
-                    if(hasGetDept){
-                        submitEmployees();
-                    }else{
-                        submitDepts();
-                    }
-                }else{
-                    submitEmployees();
-                }
+                submitEmployees();
 
             }
         });
@@ -222,6 +221,7 @@ public class EmployeeAddActivity extends BaseActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(EmployeeAddActivity.this, EmployeeHandAddActivity.class);
+                intent.putExtra(EmployeeHandAddActivity.CREATE_RESULT,handEmployeeVo);
                 startActivityForResult(intent,HAND_REQUEST_CODE);
             }
         });
@@ -246,72 +246,7 @@ public class EmployeeAddActivity extends BaseActivity {
         });
     }
 
-    /**
-     *  批量上传部门
-     */
-    private void submitDepts() {
-        if(deptList != null && deptList.size() > 0){
-            String url = ProtocolUtil.getBatchAddDeptUrl();
-            Log.i(TAG, url);
-            String deptJson = new Gson().toJson(deptList);
-            NetRequest netRequest = new NetRequest(url);
-            HashMap<String,String> bizMap = new HashMap<String,String>();
-            bizMap.put("salesid", CacheUtil.getInstance().getUserId());
-            bizMap.put("token", CacheUtil.getInstance().getToken());
-            bizMap.put("shopid", CacheUtil.getInstance().getShopID());
-            bizMap.put("dept", deptJson);
-            bizMap.put("set","2");
-            netRequest.setBizParamMap(bizMap);
-            NetRequestTask netRequestTask = new NetRequestTask(this,netRequest, NetResponse.class);
-            netRequestTask.methodType = MethodType.PUSH;
-            netRequestTask.setNetRequestListener(new ExtNetRequestListener(this) {
-                @Override
-                public void onNetworkRequestError(int errorCode, String errorMessage) {
-                    Log.i(TAG, "errorCode:" + errorCode);
-                    Log.i(TAG, "errorMessage:" + errorMessage);
-                }
 
-                @Override
-                public void onNetworkRequestCancelled() {}
-
-                @Override
-                public void onNetworkResponseSucceed(NetResponse result) {
-                    super.onNetworkResponseSucceed(result);
-
-                    Log.i(TAG, "result.rawResult:" + result.rawResult);
-                    try {
-                        ArrayList<DepartmentVo> dlist = new Gson().fromJson(result.rawResult, new TypeToken<ArrayList<DepartmentVo>>() {
-                        }.getType());
-                        if (dlist != null && deptList.size() > 0) {
-                            deptList = dlist;
-                            hasGetDept = true;
-                            ShopDepartmentDBUtil.getInstance().batchAddShopDepartments(deptList);
-
-                            for (EmployeeVo shopEmployeeVo : excelList) {
-                                for (DepartmentVo departmentVo : deptList) {
-                                    if (shopEmployeeVo.getRolename().equals(departmentVo.getDept_name())) {
-
-                                        break;
-                                    }
-                                }
-                            }
-                            submitEmployees();
-                        }
-
-                    } catch (Exception e) {
-                        Log.e(TAG, e.getMessage());
-                    }
-
-                }
-
-                @Override
-                public void beforeNetworkRequestStart() {
-                }
-            });
-            netRequestTask.isShowLoadingDialog = true;
-            netRequestTask.execute();
-        }
-    }
 
     //汇总要添加的成员
     private void summaryEmployees(){
@@ -320,8 +255,10 @@ public class EmployeeAddActivity extends BaseActivity {
         //汇总手动添加的新成员
         if(handEmployeeVo != null){
             if(!TextUtils.isEmpty(handEmployeeVo.getPhone()) && !map.containsKey(handEmployeeVo.getPhone())){
-                allList.add(handEmployeeVo);
-                map.put(handEmployeeVo.getPhone(),handEmployeeVo.getPhone());
+                if(checkPhone(handEmployeeVo)){
+                    allList.add(handEmployeeVo);
+                    map.put(handEmployeeVo.getPhone(),handEmployeeVo.getPhone());
+                }
             }
         }
 
@@ -329,13 +266,10 @@ public class EmployeeAddActivity extends BaseActivity {
         if( excelList != null && excelList.size() > 0){
             for(EmployeeVo shopEmployeeVo : excelList){
                 if(!TextUtils.isEmpty(shopEmployeeVo.getPhone()) && !map.containsKey(shopEmployeeVo.getPhone())){
-                    if(shopEmployeeVo.getRolename().equals("管理层")){
-                        //shopEmployeeVo.setRoleid(1);
-                    }else{
-                        //shopEmployeeVo.setRoleid(2);
+                    if(checkPhone(shopEmployeeVo)){
+                        allList.add(shopEmployeeVo);
+                        map.put(shopEmployeeVo.getPhone(),shopEmployeeVo.getPhone());
                     }
-                    allList.add(shopEmployeeVo);
-                    map.put(shopEmployeeVo.getPhone(),shopEmployeeVo.getPhone());
                 }
             }
         }
@@ -347,15 +281,26 @@ public class EmployeeAddActivity extends BaseActivity {
                 phone = phone.replaceAll(" ","");
                 shopEmployeeVo.setPhone(phone);
                 shopEmployeeVo.setUsername(contactLocalVo.getContactName());
-//                shopEmployeeVo.setRoleid(2);
-//                shopEmployeeVo.setDept_id(0);
                 if(!TextUtils.isEmpty(shopEmployeeVo.getPhone()) && !map.containsKey(shopEmployeeVo.getPhone())){
-                    allList.add(shopEmployeeVo);
-                    map.put(shopEmployeeVo.getPhone(),shopEmployeeVo.getPhone());
+                    if(checkPhone(shopEmployeeVo)){
+                        allList.add(shopEmployeeVo);
+                        map.put(shopEmployeeVo.getPhone(),shopEmployeeVo.getPhone());
+                    }
                 }
             }
         }
         map = null;
+    }
+
+    private boolean checkPhone(EmployeeVo employeeVo) {
+        String phone = employeeVo.getPhone();
+        phone = phone.replaceAll(" ","");
+        phone = phone.replaceAll("-","");
+        employeeVo.setPhone(phone);
+        if(StringUtil.isPhoneNumber(phone)){
+            return true;
+        }
+        return false;
     }
 
     // 批量上传新建的成员
@@ -372,6 +317,8 @@ public class EmployeeAddActivity extends BaseActivity {
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("phone",allList.get(i).getPhone());
                 jsonObject.put("username",allList.get(i).getUsername());
+                jsonObject.put("deptid",allList.get(i).getDeptid());
+                jsonObject.put("desc",allList.get(i).getDesc());
                 users.put(jsonObject);
             }
             AsyncHttpClient client = new AsyncHttpClient();
@@ -380,7 +327,7 @@ public class EmployeeAddActivity extends BaseActivity {
             client.addHeader("Token",CacheUtil.getInstance().getExtToken());
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("users",users);
-            StringEntity stringEntity = new StringEntity(jsonObject.toString());
+            StringEntity stringEntity = new StringEntity(jsonObject.toString(),"UTF-8");
             String url = ProtocolUtil.registerSSusers();
             client.post(mContext,url, stringEntity, "application/json", new JsonHttpResponseHandler(){
                 public void onStart(){
@@ -398,6 +345,8 @@ public class EmployeeAddActivity extends BaseActivity {
                     try {
                         if(response.getInt("res") == 0){
                             Toast.makeText(mContext,"成功添加",Toast.LENGTH_SHORT).show();
+                            handEmployeeVo = null;
+                            handText.setText("");
                             setResult(RESULT_OK);
                             finish();
                         }else{
@@ -459,7 +408,6 @@ public class EmployeeAddActivity extends BaseActivity {
             if(!TextUtils.isEmpty(deptname) && !map.containsKey(deptname)){
                 map.put(deptname, deptname);
                 DepartmentVo departmentVo = new DepartmentVo();
-                departmentVo.setDept_name(deptname);
                 deptList.add(departmentVo);
             }
         }

@@ -46,7 +46,7 @@ public class TeamContactsAdapter extends ServiceBaseAdapter<EmployeeVo> implemen
         ViewHolder holder = null;
         if(null == convertView){
             holder      = new ViewHolder();
-            convertView = View.inflate(mActivity, R.layout.item_team_contact, null);
+            convertView = View.inflate(mActivity, R.layout.item_call_service_appoint, null);
             holder.tvLetter          = (TextView) convertView.findViewById(R.id.catalog);
             holder.flContactAvatar   = (FrameLayout) convertView.findViewById(R.id.fl_contact_avatar);
             holder.civContactAvatar  = (SimpleDraweeView) convertView.findViewById(R.id.civ_contact_avatar);
@@ -97,8 +97,7 @@ public class TeamContactsAdapter extends ServiceBaseAdapter<EmployeeVo> implemen
             }
         });
 
-        int width = (int)mActivity.getResources().getDimension(R.dimen.normal_avatar_size);
-        String empAvatarUrl = ProtocolUtil.getImageUrlByWidth(mActivity,employeeVo.getUserimage(),width);
+        String empAvatarUrl = ProtocolUtil.getAvatarUrl(mActivity,employeeVo.getUserimage());
         holder.civContactAvatar.setImageURI( Uri.parse(empAvatarUrl));
 
         if(!TextUtils.isEmpty(empName)){
@@ -116,7 +115,7 @@ public class TeamContactsAdapter extends ServiceBaseAdapter<EmployeeVo> implemen
         return convertView;
     }
 
-    public static class ViewHolder{
+    static class ViewHolder{
 
         public TextView         tvLetter;
         public FrameLayout      flContactAvatar;

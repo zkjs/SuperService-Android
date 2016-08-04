@@ -1,109 +1,114 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout  xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     xmlns:fresco="http://schemas.android.com/apk/res-auto"
     android:background="@android:color/white"
     android:layout_height="match_parent">
 
+
     <include
-        android:id="@+id/head_bar_layout"
-        layout="@layout/header_bar" />
+        layout="@layout/title_toolbar" />
 
-    <Button
-        android:id="@+id/sure_select_label_btn"
-        android:layout_alignParentBottom="true"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:background="@drawable/selector_go"
-        android:text="确定"
-        android:textColor="@android:color/white"
-        android:src="@null" />
+        android:layout_height="wrap_content">
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scrollbars="none"
-        android:layout_above="@id/sure_select_label_btn"
-        android:layout_below="@id/head_bar_layout">
-
-        <RelativeLayout
+        <Button
+            android:id="@+id/sure_select_label_btn"
+            android:layout_alignParentBottom="true"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="45dp"
+            android:background="@drawable/selector_go"
+            android:text="确定"
+            android:textColor="@android:color/white"
+            android:src="@null" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="none"
+            android:layout_above="@id/sure_select_label_btn">
 
             <RelativeLayout
-                android:id="@+id/client_info_layout"
                 android:layout_width="match_parent"
-                android:background="#03A9F4"
-                android:layout_height="160dp">
+                android:layout_height="match_parent">
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:orientation="vertical">
-
-                    <com.facebook.drawee.view.SimpleDraweeView
-                        android:id="@+id/client_user_photo_dv"
-                        android:layout_width="@dimen/label_user_photo_size"
-                        android:layout_height="@dimen/label_user_photo_size"
-                        fresco:actualImageScaleType="fitCenter"
-                        fresco:roundAsCircle="true"
-                        fresco:roundedCornerRadius="0dp"
-                        fresco:placeholderImage="@mipmap/ic_launcher"
-                        fresco:placeholderImageScaleType="centerCrop" />
+                <RelativeLayout
+                    android:id="@+id/client_info_layout"
+                    android:layout_width="match_parent"
+                    android:background="#03A9F4"
+                    android:layout_height="160dp">
 
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="15dp"
-                        android:orientation="horizontal">
+                        android:layout_centerInParent="true"
+                        android:orientation="vertical">
 
-                        <TextView
-                            android:id="@+id/client_user_name_tv"
+                        <com.facebook.drawee.view.SimpleDraweeView
+                            android:id="@+id/client_user_photo_dv"
+                            android:layout_width="88dp"
+                            android:layout_height="88dp"
+                            fresco:actualImageScaleType="fitCenter"
+                            fresco:roundAsCircle="true"
+                            fresco:roundedCornerRadius="0dp"
+                            fresco:placeholderImage="@mipmap/ic_launcher"
+                            fresco:placeholderImageScaleType="centerCrop" />
+
+                        <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_centerHorizontal="true"
-                            android:textColor="@android:color/white"
-                            android:textSize="18sp"
-                            android:text="田宝强"
-                            />
+                            android:layout_marginTop="15dp"
+                            android:orientation="horizontal">
 
-                        <TextView
-                            android:id="@+id/client_user_sex_tv"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_centerHorizontal="true"
-                            android:layout_marginLeft="15dp"
-                            android:textColor="@android:color/white"
-                            android:textSize="18sp"
-                            android:text="男"
-                            />
+                            <TextView
+                                android:id="@+id/client_user_name_tv"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerHorizontal="true"
+                                android:textColor="@android:color/white"
+                                android:textSize="18sp"
+                                android:text="田宝强"
+                                />
+
+                            <TextView
+                                android:id="@+id/client_user_sex_tv"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerHorizontal="true"
+                                android:layout_marginLeft="15dp"
+                                android:textColor="@android:color/white"
+                                android:textSize="18sp"
+                                android:text="男"
+                                />
+
+                        </LinearLayout>
 
                     </LinearLayout>
 
-                </LinearLayout>
+                </RelativeLayout>
+
+                <com.zkjinshi.superservice.pad.view.LabelGridView
+                    android:id="@+id/client_label_gv"
+                    android:layout_below="@id/client_info_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:cacheColorHint="@android:color/transparent"
+                    android:gravity="center"
+                    android:scrollbars="none"
+                    android:numColumns="3"
+                    android:horizontalSpacing="20dp"
+                    android:verticalSpacing="20dp"
+                    android:columnWidth="150dp"
+                    android:layout_margin="20dp"
+                    android:listSelector="@android:color/transparent"
+                    />
 
             </RelativeLayout>
 
-            <com.zkjinshi.superservice.pad.view.LabelGridView
-                android:id="@+id/client_label_gv"
-                android:layout_below="@id/client_info_layout"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:cacheColorHint="@android:color/transparent"
-                android:gravity="center"
-                android:scrollbars="none"
-                android:numColumns="3"
-                android:horizontalSpacing="20dp"
-                android:verticalSpacing="20dp"
-                android:columnWidth="150dp"
-                android:layout_margin="20dp"
-                android:listSelector="@android:color/transparent"
-                />
+        </ScrollView>
 
-        </RelativeLayout>
+    </RelativeLayout>
 
-    </ScrollView>
-
-</RelativeLayout>
+</LinearLayout>
 

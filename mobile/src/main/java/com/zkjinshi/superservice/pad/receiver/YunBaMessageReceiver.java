@@ -9,9 +9,14 @@ import com.google.gson.Gson;
 import com.zkjinshi.base.log.LogLevel;
 import com.zkjinshi.base.log.LogUtil;
 import com.zkjinshi.superservice.pad.ext.vo.AmountStatusVo;
-import com.zkjinshi.superservice.pad.utils.Constants;
 import com.zkjinshi.superservice.pad.notification.NotificationHelper;
+import com.zkjinshi.superservice.pad.utils.Constants;
 import com.zkjinshi.superservice.pad.vo.ActiveCodeNoticeVo;
+import com.zkjinshi.superservice.pad.vo.CallAssignVo;
+import com.zkjinshi.superservice.pad.vo.CallCancelVo;
+import com.zkjinshi.superservice.pad.vo.CallDoneVo;
+import com.zkjinshi.superservice.pad.vo.CallInitVo;
+import com.zkjinshi.superservice.pad.vo.CallReadyVo;
 import com.zkjinshi.superservice.pad.vo.YunBaMsgVo;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -59,7 +64,6 @@ public class YunBaMessageReceiver extends BroadcastReceiver {
                         noticeIntent.setAction(Constants.ACTION_NOTICE);
                         context.sendBroadcast(noticeIntent);
                     }
-
                     //如果是商家中心，则执行发送消息给客人
                     /*if(SSOManager.getInstance().isShopCenter()){//1、检测用户身份，是否为消息中心
                         if(null != yunBaMsgVo){//2、发送欢迎信息给客人
@@ -76,6 +80,46 @@ public class YunBaMessageReceiver extends BroadcastReceiver {
                         context.sendBroadcast(receiver);
                         NotificationHelper.getInstance().showNotification(context,activeCodeNoticeVo);
                     }
+                }else if("CALL_INIT".equals(type)){//发起呼叫(等待指派)
+                    Intent noticeIntent = new Intent();
+                    noticeIntent.setAction(Constants.ACTION_SERVICE);
+                    context.sendBroadcast(noticeIntent);
+                    CallInitVo callInitVo = new Gson().fromJson(data,CallInitVo.class);
+                    String alert = callInitVo.getAlert();
+                    String userimage = callInitVo.getUserimage();
+                    NotificationHelper.getInstance().showNotification(context,alert,userimage);
+                }else if("CALL_ASSIGN".equals(type)){//呼叫任务的服务员
+                    Intent noticeIntent = new Intent();
+                    noticeIntent.setAction(Constants.ACTION_SERVICE);
+                    context.sendBroadcast(noticeIntent);
+                    CallAssignVo callInitVo = new Gson().fromJson(data,CallAssignVo.class);
+                    String alert = callInitVo.getAlert();
+                    String userimage = callInitVo.getUserimage();
+                    NotificationHelper.getInstance().showNotification(context,alert,userimage);
+                }else if("CALL_READY".equals(type)){//呼叫任务就绪
+                    Intent noticeIntent = new Intent();
+                    noticeIntent.setAction(Constants.ACTION_SERVICE);
+                    context.sendBroadcast(noticeIntent);
+                    CallReadyVo callInitVo = new Gson().fromJson(data,CallReadyVo.class);
+                    String alert = callInitVo.getAlert();
+                    String userimage = callInitVo.getUserimage();
+                    NotificationHelper.getInstance().showNotification(context,alert,userimage);
+                }else if("CALL_DONE".equals(type)){//呼叫任务完成
+                    Intent noticeIntent = new Intent();
+                    noticeIntent.setAction(Constants.ACTION_SERVICE);
+                    context.sendBroadcast(noticeIntent);
+                    CallDoneVo callInitVo = new Gson().fromJson(data,CallDoneVo.class);
+                    String alert = callInitVo.getAlert();
+                    String userimage = callInitVo.getUserimage();
+                    NotificationHelper.getInstance().showNotification(context,alert,userimage);
+                }else if("CALL_CANCEL".equals(type)){//呼叫任务取消
+                    Intent noticeIntent = new Intent();
+                    noticeIntent.setAction(Constants.ACTION_SERVICE);
+                    context.sendBroadcast(noticeIntent);
+                    CallCancelVo callInitVo = new Gson().fromJson(data,CallCancelVo.class);
+                    String alert = callInitVo.getAlert();
+                    String userimage = callInitVo.getUserimage();
+                    NotificationHelper.getInstance().showNotification(context,alert,userimage);
                 }
 
             } catch (JSONException e) {

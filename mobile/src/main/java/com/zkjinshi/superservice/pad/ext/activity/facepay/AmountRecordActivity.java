@@ -9,22 +9,25 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.zkjinshi.base.config.ConfigUtil;
 import com.zkjinshi.base.util.DialogUtil;
+import com.zkjinshi.superservice.pad.R;
+import com.zkjinshi.superservice.pad.ext.adapter.AmountAdapter;
+import com.zkjinshi.superservice.pad.ext.response.AmountDetailResponse;
+import com.zkjinshi.superservice.pad.ext.response.AmountRecordResponse;
 import com.zkjinshi.superservice.pad.ext.vo.AmountStatusVo;
+import com.zkjinshi.superservice.pad.listener.OnRefreshListener;
 import com.zkjinshi.superservice.pad.net.ExtNetRequestListener;
 import com.zkjinshi.superservice.pad.net.MethodType;
 import com.zkjinshi.superservice.pad.net.NetRequest;
 import com.zkjinshi.superservice.pad.net.NetRequestTask;
 import com.zkjinshi.superservice.pad.net.NetResponse;
-import com.zkjinshi.superservice.pad.R;
-import com.zkjinshi.superservice.pad.ext.adapter.AmountAdapter;
-import com.zkjinshi.superservice.pad.ext.response.AmountRecordResponse;
-import com.zkjinshi.superservice.pad.listener.OnRefreshListener;
 import com.zkjinshi.superservice.pad.view.RefreshListView;
+import com.zkjinshi.superservice.pad.vo.NoticeVo;
 
 import java.util.ArrayList;
 
@@ -158,7 +161,9 @@ public class AmountRecordActivity extends Activity {
                             if(null != requestAmountStatusList && !requestAmountStatusList.isEmpty()){
                                 PAGE_NO++;
                             }else {
-                                DialogUtil.getInstance().showCustomToast(AmountRecordActivity.this,"再无更多数据",Gravity.CENTER);
+                                if(!isRefresh){
+                                    DialogUtil.getInstance().showCustomToast(AmountRecordActivity.this,"再无更多数据",Gravity.CENTER);
+                                }
                             }
                             amountAdapter.setAmountStatusList(amountStatusList);
                             if(30001 == resultFlag){

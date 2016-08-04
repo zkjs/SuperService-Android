@@ -20,6 +20,8 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.pyxis.bluetooth.NetBeaconVo;
 import com.zkjinshi.superservice.pad.activity.set.ClientActivity;
+import com.zkjinshi.superservice.pad.activity.set.EventManagerActivity;
+import com.zkjinshi.superservice.pad.activity.set.ServiceTagListActivity;
 import com.zkjinshi.superservice.pad.activity.set.SettingActivity;
 import com.zkjinshi.superservice.pad.activity.set.TeamContactsActivity;
 import com.zkjinshi.superservice.pad.base.BaseAppCompatActivity;
@@ -57,7 +59,7 @@ public class MainActivity extends BaseAppCompatActivity {
     private TextView        shopnameTv;
     private RelativeLayout  avatarLayout;
     private ImageButton     setIbtn;
-    private TextView checkOutTv,clientTv;
+    private TextView checkOutTv,clientTv,serviceTagTv,eventTv;
 
     private void initView(){
         avatarIv   = (SimpleDraweeView)findViewById(R.id.avatar_iv);
@@ -67,6 +69,8 @@ public class MainActivity extends BaseAppCompatActivity {
         setIbtn = (ImageButton)findViewById(R.id.edit_avatar_ibtn);
         checkOutTv = (TextView)findViewById(R.id.amount_tv);
         clientTv = (TextView)findViewById(R.id.client_tv);
+        serviceTagTv = (TextView)findViewById(R.id.service_tag_tv);
+        eventTv = (TextView)findViewById(R.id.event_tag_tv);
     }
 
     private void initData(){
@@ -83,6 +87,16 @@ public class MainActivity extends BaseAppCompatActivity {
         }else {
             clientTv.setVisibility(View.GONE);
         }
+        if(AccessControlUtil.isShowView(AccessControlUtil.SERVICETAG)){
+            serviceTagTv.setVisibility(View.VISIBLE);
+        }else {
+            serviceTagTv.setVisibility(View.GONE);
+        }
+//        if(AccessControlUtil.isShowView(AccessControlUtil.CREATEACTIVITY)){
+//            eventTv.setVisibility(View.VISIBLE);
+//        }else {
+//            eventTv.setVisibility(View.GONE);
+//        }
 
         //打开蓝牙请求
         BlueToothManager.getInstance().openBluetooth();
@@ -106,7 +120,7 @@ public class MainActivity extends BaseAppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent myTeamContacts = new Intent(MainActivity.this, TeamContactsActivity.class);
-               // Intent myTeamContacts = new Intent(MainActivity.this, EmployeeAddActivity.class);
+                // Intent myTeamContacts = new Intent(MainActivity.this, EmployeeAddActivity.class);
                 MainActivity.this.startActivity(myTeamContacts);
                 overridePendingTransition(R.anim.activity_new, R.anim.activity_out);
             }
@@ -139,10 +153,31 @@ public class MainActivity extends BaseAppCompatActivity {
                 if(CheckoutInnerManager.getInstance().isInnerCheckout()){
                     Intent intent = new Intent(MainActivity.this,CheckOutActivity.class);
                     startActivity(intent);
+                    overridePendingTransition(R.anim.activity_new, R.anim.activity_out);
                 }else {
                     DialogUtil.getInstance().showCustomToast(view.getContext(),"您不在收款区域,暂时无法收款!",Gravity.CENTER);
                 }
 
+            }
+        });
+
+        //服务标签
+        serviceTagTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent myClient = new Intent(MainActivity.this, ServiceTagListActivity.class);
+                MainActivity.this.startActivity(myClient);
+                overridePendingTransition(R.anim.activity_new, R.anim.activity_out);
+            }
+        });
+
+        //活动管理
+        eventTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this,EventManagerActivity.class);
+                startActivity(intent);
+                overridePendingTransition(R.anim.activity_new,R.anim.activity_out);
             }
         });
 
@@ -166,35 +201,35 @@ public class MainActivity extends BaseAppCompatActivity {
                 customExtBuilder.setMessage(getString(R.string.confirm_exit_the_current_account));
                 customExtBuilder.setGravity(Gravity.CENTER);
                 customExtBuilder.setNegativeButton(
-                    getString(R.string.cancel),
-                    new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
+                        getString(R.string.cancel),
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
                         }
-                    }
                 );
 
                 customExtBuilder.setPositiveButton(
-                    getString(R.string.confirm),
-                    new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            //移除云巴订阅推送
-                            YunBaSubscribeManager.getInstance().unSubscribe(MainActivity.this,null);
-                            //取消订阅别名
-                            YunBaSubscribeManager.getInstance().cancelAlias(MainActivity.this);
-                            //环信接口退出
-                            EasemobIMHelper.getInstance().logout();
-                            //修改登录状态
-                            CacheUtil.getInstance().setLogin(false);
-                            //清空token
-                            CacheUtil.getInstance().setToken("");
-                            startActivity(new Intent(MainActivity.this, LoginActivity.class));
-                            finish();
-                            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                        getString(R.string.confirm),
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                //移除云巴订阅推送
+                                YunBaSubscribeManager.getInstance().unSubscribe(MainActivity.this,null);
+                                //取消订阅别名
+                                YunBaSubscribeManager.getInstance().cancelAlias(MainActivity.this);
+                                //环信接口退出
+                                EasemobIMHelper.getInstance().logout();
+                                //修改登录状态
+                                CacheUtil.getInstance().setLogin(false);
+                                //清空token
+                                CacheUtil.getInstance().setToken("");
+                                startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                                finish();
+                                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                            }
                         }
-                    }
                 );
                 customExtBuilder.create().show();
             }

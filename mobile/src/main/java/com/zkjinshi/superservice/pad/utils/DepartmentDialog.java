@@ -10,20 +10,30 @@ import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.zkjinshi.base.util.DialogUtil;
+import com.zkjinshi.superservice.pad.R;
+import com.zkjinshi.superservice.pad.adapter.DeptAdapter;
 import com.zkjinshi.superservice.pad.net.ExtNetRequestListener;
 import com.zkjinshi.superservice.pad.net.MethodType;
 import com.zkjinshi.superservice.pad.net.NetRequest;
 import com.zkjinshi.superservice.pad.net.NetRequestTask;
 import com.zkjinshi.superservice.pad.net.NetResponse;
 import com.zkjinshi.superservice.pad.vo.DepartmentVo;
-import com.zkjinshi.superservice.pad.R;
-import com.zkjinshi.superservice.pad.adapter.DeptAdapter;
+import com.zkjinshi.superservice.pad.vo.GetDeptsVo;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.entity.StringEntity;
 
 
 /**
@@ -40,7 +50,7 @@ public class DepartmentDialog  extends Dialog {
     private ClickOneListener clickOneListener;
     private ListView listView;
 
-    private int selectid = 0;
+    private String selectid = "";
     DeptAdapter deptAdapter;
 
     public interface ClickOneListener{
@@ -56,7 +66,7 @@ public class DepartmentDialog  extends Dialog {
         this.context = context;
     }
 
-    public DepartmentDialog(Context context,int selectid) {
+    public DepartmentDialog(Context context,String selectid) {
         super(context);
         this.context = context;
         this.selectid = selectid;
@@ -86,49 +96,51 @@ public class DepartmentDialog  extends Dialog {
     }
 
     private void loadDepartments() {
-        String url = ProtocolUtil.getShopDeptlistUrl();
-        Log.i(TAG, url);
-        NetRequest netRequest = new NetRequest(url);
-        HashMap<String,String> bizMap = new HashMap<String,String>();
-        bizMap.put("salesid",CacheUtil.getInstance().getUserId());
-        bizMap.put("token", CacheUtil.getInstance().getToken());
-        bizMap.put("shopid", CacheUtil.getInstance().getShopID());
-        netRequest.setBizParamMap(bizMap);
-        NetRequestTask netRequestTask = new NetRequestTask(context,netRequest, NetResponse.class);
-        netRequestTask.methodType = MethodType.PUSH;
-        netRequestTask.setNetRequestListener(new ExtNetRequestListener(context) {
-            @Override
-            public void onNetworkRequestError(int errorCode, String errorMessage) {
-                Log.i(TAG, "errorCode:" + errorCode);
-                Log.i(TAG, "errorMessage:" + errorMessage);
+        try{
+            AsyncHttpClient client = new AsyncHttpClient();
+            client.setTimeout(Constants.OVERTIMEOUT);
+            client.addHeader("Content-Type","application/json; charset=UTF-8");
+            if(CacheUtil.getInstance().isLogin()){
+                client.addHeader("Token",CacheUtil.getInstance().getExtToken());
             }
-
-            @Override
-            public void onNetworkRequestCancelled() {
-
-            }
-
-            @Override
-            public void onNetworkResponseSucceed(NetResponse result) {
-                super.onNetworkResponseSucceed(result);
-
-                Log.i(TAG, "result.rawResult:" + result.rawResult);
-                try{
-                    ArrayList<DepartmentVo> depts = new Gson().fromJson(result.rawResult, new TypeToken< ArrayList<DepartmentVo>>(){}.getType());
-                    initListByData(depts);
-                }catch (Exception e){
-                    Log.e(TAG,e.getMessage());
+            JSONObject jsonObject = new JSONObject();
+            StringEntity stringEntity = new StringEntity(jsonObject.toString(),"UTF-8");
+            String url = ProtocolUtil.getshopdepts();
+            client.get(context,url, stringEntity, "application/json", new AsyncHttpResponseHandler(){
+                public void onStart(){
+                    DialogUtil.getInstance().showAvatarProgressDialog(context,"");
                 }
 
-            }
+                public void onFinish(){
+                    DialogUtil.getInstance().cancelProgressDialog();
+                }
 
-            @Override
-            public void beforeNetworkRequestStart() {
+                public void onSuccess(int statusCode, Header[] headers, byte[] responseBody){
+                    try {
+                        String response = new String(responseBody,"utf-8");
+                        GetDeptsVo getDeptsVo = new Gson().fromJson(response,GetDeptsVo.class);
+                        if(getDeptsVo == null){
+                            return;
+                        }
+                        if(getDeptsVo.getRes() == 0){
+                            initListByData(getDeptsVo.getData());
+                        }else{
+                            Toast.makeText(context,"API错误："+getDeptsVo.getResDesc(),Toast.LENGTH_SHORT).show();
+                        }
 
-            }
-        });
-        netRequestTask.isShowLoadingDialog = true;
-        netRequestTask.execute();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error){
+                    AsyncHttpClientUtil.onFailure(context,statusCode);
+                }
+            });
+        }catch (Exception e){
+
+            e.printStackTrace();
+        }
     }
 
     private void initListByData(ArrayList<DepartmentVo> depts) {

@@ -1,10 +1,12 @@
 package com.zkjinshi.superservice.pad.activity.set;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 
 import android.view.View;
+import android.view.Window;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -30,6 +32,7 @@ public class EmployeeHandAddActivity extends BaseActivity {
     private final static String TAG = EmployeeHandAddActivity.class.getSimpleName();
 
     public static final String CREATE_RESULT = "create_result";
+    private EmployeeVo handEmployeeVo = null; //手动输入的员工资料
 
     private EditText phoneEt;
     private EditText nameEt;
@@ -38,7 +41,7 @@ public class EmployeeHandAddActivity extends BaseActivity {
     private CheckBox adminCbx;
 
     private DepartmentVo selectDepartmentVo = null;
-    private int deptId = -1;
+    private String deptId = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,10 +59,19 @@ public class EmployeeHandAddActivity extends BaseActivity {
         deptText = (TextView)findViewById(R.id.tv_dept);
         remarkEt = (EditText)findViewById(R.id.et_remark);
         adminCbx = (CheckBox)findViewById(R.id.cbx_admin);
+
     }
 
     private void initData() {
+        //deptText.setVisibility(View.GONE);
+        adminCbx.setVisibility(View.GONE);
+        //remarkEt.setVisibility(View.GONE);
 
+        if(getIntent().getSerializableExtra(CREATE_RESULT) != null){
+            handEmployeeVo = (EmployeeVo)getIntent().getSerializableExtra(CREATE_RESULT);
+            phoneEt.setText(handEmployeeVo.getPhone());
+            nameEt.setText(handEmployeeVo.getUsername());
+        }
     }
 
     private void initListener() {
@@ -73,7 +85,7 @@ public class EmployeeHandAddActivity extends BaseActivity {
                     @Override
                     public void clickOne(DepartmentVo departmentVo) {
                         selectDepartmentVo = departmentVo;
-                        deptText.setText(selectDepartmentVo.getDept_name());
+                        deptText.setText(selectDepartmentVo.getDeptname());
                         deptId = selectDepartmentVo.getDeptid();
                     }
                 });
@@ -115,6 +127,9 @@ public class EmployeeHandAddActivity extends BaseActivity {
         EmployeeVo shopEmployeeVo = new EmployeeVo();
         shopEmployeeVo.setUsername(name);
         shopEmployeeVo.setPhone(phone);
+        shopEmployeeVo.setDesc(remark);
+        shopEmployeeVo.setDeptid(deptId);
+
 
         Intent intent = getIntent();
         intent.putExtra(EmployeeHandAddActivity.CREATE_RESULT,shopEmployeeVo);

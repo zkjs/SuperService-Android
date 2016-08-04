@@ -15,17 +15,20 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.base.util.DisplayUtil;
 import com.zkjinshi.base.util.IntentUtil;
 import com.zkjinshi.base.util.TimeUtil;
+import com.zkjinshi.superservice.pad.R;
 import com.zkjinshi.superservice.pad.activity.order.HotelDealActivity;
 import com.zkjinshi.superservice.pad.activity.order.KTVDealActivity;
 import com.zkjinshi.superservice.pad.activity.order.NormalDealActivity;
 import com.zkjinshi.superservice.pad.bean.OrderBean;
 import com.zkjinshi.superservice.pad.utils.ProtocolUtil;
+import com.zkjinshi.superservice.pad.view.CircleImageView;
 import com.zkjinshi.superservice.pad.view.CircleStatusView;
-import com.zkjinshi.superservice.pad.R;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

@@ -10,10 +10,15 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.zkjinshi.base.config.ConfigUtil;
 import com.zkjinshi.superservice.pad.R;
 import com.zkjinshi.superservice.pad.bean.InviteCode;
+import com.zkjinshi.superservice.pad.bean.InviteCodeUser;
 import com.zkjinshi.superservice.pad.listener.RecyclerItemClickListener;
 import com.zkjinshi.superservice.pad.utils.ProtocolUtil;
+import com.zkjinshi.superservice.pad.view.CircleImageView;
 
 import java.util.ArrayList;
 import java.util.List;

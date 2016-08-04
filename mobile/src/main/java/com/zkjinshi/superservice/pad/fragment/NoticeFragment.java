@@ -22,6 +22,7 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.superservice.pad.R;
+import com.zkjinshi.superservice.pad.activity.label.ClientLabelActivity;
 import com.zkjinshi.superservice.pad.activity.label.GuestInfoActivity;
 import com.zkjinshi.superservice.pad.adapter.LocNotificationAdapter;
 import com.zkjinshi.superservice.pad.listener.RecyclerItemClickListener;
@@ -51,7 +52,7 @@ public class NoticeFragment extends Fragment {
     public static String LAST_ID = "0";
     public static int PAGE_NO = 0;
     public static final int PAGE_SIZE = 10;
-    private Activity     activity;
+    private Activity activity;
     private RecyclerView notityRecyclerView;
     private LinearLayoutManager    notifyLayoutManager;
     private LocNotificationAdapter notificationAdapter;
@@ -277,7 +278,9 @@ public class NoticeFragment extends Fragment {
                                 LAST_ID = noticeResponse.getLastid();
 								PAGE_NO++;
                             }else {
-                                DialogUtil.getInstance().showCustomToast(getActivity(),"再无更多数据",Gravity.CENTER);
+                                if(!isRefresh){
+                                    DialogUtil.getInstance().showCustomToast(getActivity(),"再无更多数据",Gravity.CENTER);
+                                }
                             }
                             notificationAdapter.setNoticeList(noticeList);
                         }else {

@@ -93,6 +93,16 @@
 
         <TextView
             style="@style/leftMenuText"
+            android:text="活动管理"
+            android:id="@+id/event_tag_tv" />
+
+        <TextView
+            style="@style/leftMenuText"
+            android:text="服务标签"
+            android:id="@+id/service_tag_tv" />
+
+        <TextView
+            style="@style/leftMenuText"
             android:text="@string/invite_code"
             android:visibility="gone"
             android:id="@+id/tv_invite_code" />

@@ -19,7 +19,7 @@ import java.util.Date;
 public class TimeUtil {
 	
 	public static String getYearTime(long time) {
-		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");//2015-1-1 12:00:00
 		return format.format(new Date(time));
 	}
 
@@ -31,6 +31,11 @@ public class TimeUtil {
 	public static String getTime(long time) {
 		SimpleDateFormat format = new SimpleDateFormat("MM-dd HH:mm");
 		return format.format(new Date(time));
+	}
+
+	public static String getTime(Date date){
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		return format.format(date);
 	}
 
 	public static String getHourAndMin(long time) {

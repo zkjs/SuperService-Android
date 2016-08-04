@@ -12,6 +12,8 @@ import com.zkjinshi.superservice.pad.ServiceApplication;
 import com.zkjinshi.superservice.pad.factory.ShopDepartmentFactory;
 import com.zkjinshi.superservice.pad.vo.DepartmentVo;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,10 +65,10 @@ public class ShopDepartmentDBUtil {
                 if (cursor != null && cursor.getCount() > 0) {
                     while (cursor.moveToNext()) {
                         DepartmentVo departmentVo = ShopDepartmentFactory.getInstance().buildDepartmentVo(cursor);
-                        departName = departmentVo.getDept_name();
-                        if(TextUtils.isEmpty(departName)){
-                            return departName;
-                        }
+//                        departName = departmentVo.getDept_name();
+//                        if(TextUtils.isEmpty(departName)){
+//                            return departName;
+//                        }
                     }
                 }
             } catch (Exception e) {
@@ -127,8 +129,8 @@ public class ShopDepartmentDBUtil {
                     e.printStackTrace();
                 }
                 if(addResult == -1){
-                    int deptID = departmentVo.getDeptid();
-                    addResult = db.update(DBOpenHelper.SHOP_DEPARTMENT_TBL, values, " depid = ? ", new String[]{ deptID+"" });
+//                    int deptID = departmentVo.getDeptid();
+//                    addResult = db.update(DBOpenHelper.SHOP_DEPARTMENT_TBL, values, " depid = ? ", new String[]{ deptID+"" });
                 }
             }
 

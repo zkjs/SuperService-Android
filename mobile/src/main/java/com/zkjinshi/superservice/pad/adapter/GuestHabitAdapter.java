@@ -24,7 +24,7 @@ public class GuestHabitAdapter extends ArrayAdapter<ItemTagVo> {
     private int resource;
 
     public GuestHabitAdapter(Context context, int resource,
-                             List<ItemTagVo> objects) {
+                       List<ItemTagVo> objects) {
         super(context, resource, objects);
         this.objects = objects;
         this.mContext = context;

@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Animatable;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
@@ -18,11 +19,15 @@ import com.easemob.chat.EMGroupManager;
 import com.easemob.chat.EMMessage;
 import com.easemob.chat.TextMessageBody;
 import com.easemob.exceptions.EaseMobException;
+import com.facebook.drawee.controller.BaseControllerListener;
+import com.facebook.drawee.controller.ControllerListener;
+import com.facebook.imagepipeline.image.ImageInfo;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.assist.ImageSize;
 import com.nostra13.universalimageloader.core.assist.ViewScaleType;
 import com.nostra13.universalimageloader.core.imageaware.NonViewAware;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 import com.zkjinshi.base.config.ConfigUtil;
 import com.zkjinshi.base.log.LogLevel;
@@ -31,28 +36,32 @@ import com.zkjinshi.base.util.ActivityManagerHelper;
 import com.zkjinshi.base.util.DisplayUtil;
 import com.zkjinshi.base.util.TimeUtil;
 import com.zkjinshi.base.util.VibratorHelper;
-import com.zkjinshi.superservice.pad.activity.common.SplashActivity;
-import com.zkjinshi.superservice.pad.ext.vo.AmountStatusVo;
-import com.zkjinshi.superservice.pad.utils.CacheUtil;
-import com.zkjinshi.superservice.pad.utils.Constants;
-import com.zkjinshi.superservice.pad.vo.ItemTagVo;
-import com.zkjinshi.superservice.pad.vo.YunBaMsgVo;
 import com.zkjinshi.superservice.pad.R;
 import com.zkjinshi.superservice.pad.activity.chat.group.ChatGroupActivity;
 import com.zkjinshi.superservice.pad.activity.chat.single.ChatActivity;
 import com.zkjinshi.superservice.pad.activity.common.LoginActivity;
 import com.zkjinshi.superservice.pad.activity.common.MainActivity;
+import com.zkjinshi.superservice.pad.activity.common.SplashActivity;
 import com.zkjinshi.superservice.pad.activity.set.ClientActivity;
+import com.zkjinshi.superservice.pad.bean.ClientBaseBean;
+import com.zkjinshi.superservice.pad.bean.LocPushBean;
 import com.zkjinshi.superservice.pad.emchat.EMConversationHelper;
 import com.zkjinshi.superservice.pad.ext.activity.facepay.AmountDetailActivity;
+import com.zkjinshi.superservice.pad.ext.vo.AmountStatusVo;
+import com.zkjinshi.superservice.pad.utils.CacheUtil;
+import com.zkjinshi.superservice.pad.utils.Constants;
 import com.zkjinshi.superservice.pad.utils.MediaPlayerUtil;
 import com.zkjinshi.superservice.pad.utils.ProtocolUtil;
 import com.zkjinshi.superservice.pad.vo.ActiveCodeNoticeVo;
+import com.zkjinshi.superservice.pad.vo.ItemTagVo;
 import com.zkjinshi.superservice.pad.vo.TxtExtType;
+import com.zkjinshi.superservice.pad.vo.YunBaMsgVo;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+
+import ytx.org.apache.http.impl.auth.SPNegoScheme;
 
 /**
  * 消息通知帮助类
@@ -88,7 +97,7 @@ public class NotificationHelper {
             case EventOfflineMessage:
             case EventNewMessage:
                 shopMessageNotification(context, event, nofifyFlag);
-            break;
+                break;
         }
     }
 
@@ -201,14 +210,11 @@ public class NotificationHelper {
      * @param yunBaMsgVo
      */
     public synchronized void showNotification(final Context context, final YunBaMsgVo yunBaMsgVo){
-        ImageSize imageSize = new ImageSize(DisplayUtil.dip2px(context, 256),
-                DisplayUtil.dip2px(context, 256));
+        ImageSize imageSize = new ImageSize(DisplayUtil.dip2px(context, 36),
+                DisplayUtil.dip2px(context, 36));
         String imageSuffix = yunBaMsgVo.getUserImage();
-        //按宽度进行缩放
-        int width = DisplayUtil.dip2px(context,256);
-        String imageUrl = ConfigUtil.getInst().getPcdDomain()+imageSuffix+"@"+width+"w.png";
-        //String imageUrl  = ConfigUtil.getInst().getCdnDomain()+imageSuffix;
-        NonViewAware aware = new NonViewAware(imageSize, ViewScaleType.FIT_INSIDE);
+        String imageUrl  = ProtocolUtil.getAvatarUrl(context,imageSuffix);
+        NonViewAware aware = new NonViewAware(imageSize, ViewScaleType.CROP);
         ImageLoader.getInstance().displayImage(imageUrl,aware,new SimpleImageLoadingListener(){
             @Override
             public void onLoadingStarted(String imageUri, View view) {
@@ -296,7 +302,7 @@ public class NotificationHelper {
                     notificationBuilder.setContentText(contentStr);
                 }
                 notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
-                //notificationBuilder.setLargeIcon(loadedImage);
+                notificationBuilder.setLargeIcon(loadedImage);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                     notificationBuilder.setStyle(new NotificationCompat.BigPictureStyle().bigPicture(loadedImage));
                 }
@@ -373,10 +379,13 @@ public class NotificationHelper {
                 notificationBuilder = new NotificationCompat.Builder(context);
                 int status = amountStatusVo.getStatus();
                 //0-待确认, 1-已拒绝, 2-已确认
+                String alert = amountStatusVo.getAlert();
                 String tipsMsg = null;
-                if(1 == status){
+                if(!TextUtils.isEmpty(alert)){
+                    tipsMsg = alert;
+                } else if(1 == status){
                     tipsMsg = "用户已拒绝收款";
-                }else {
+                } else {
                     tipsMsg = "用户已确认收款";
                 }
                 notificationBuilder.setContentTitle(tipsMsg);
@@ -403,8 +412,11 @@ public class NotificationHelper {
                 notificationBuilder = new NotificationCompat.Builder(context);
                 int status = amountStatusVo.getStatus();
                 //0-待确认, 1-已拒绝, 2-已确认
+                String alert = amountStatusVo.getAlert();
                 String tipsMsg = null;
-                if(1 == status){
+                if(!TextUtils.isEmpty(alert)){
+                    tipsMsg = alert;
+                } else if(1 == status){
                     tipsMsg = "用户已拒绝收款";
                 }else {
                     tipsMsg = "用户已确认收款";
@@ -437,8 +449,11 @@ public class NotificationHelper {
                 notificationBuilder = new NotificationCompat.Builder(context);
                 int status = amountStatusVo.getStatus();
                 //0-待确认, 1-已拒绝, 2-已确认
+                String alert = amountStatusVo.getAlert();
                 String tipsMsg = null;
-                if(1 == status){
+                if(!TextUtils.isEmpty(alert)){
+                    tipsMsg = alert;
+                } else if(1 == status){
                     tipsMsg = "用户已拒绝收款";
                 }else {
                     tipsMsg = "用户已确认收款";
@@ -605,6 +620,108 @@ public class NotificationHelper {
             @Override
             public void onLoadingCancelled(String imageUri, View view) {
                 super.onLoadingCancelled(imageUri,view);
+            }
+        });
+    }
+
+    /**
+     * 显示呼叫服务通知栏
+     * @param context
+     * @param alertStr
+     * @param imageStr
+     */
+    public synchronized void showNotification(final Context context, final String alertStr,final String imageStr){
+        ImageSize imageSize = new ImageSize(DisplayUtil.dip2px(context, 36),
+                DisplayUtil.dip2px(context, 36));
+        String imageUrl  = ProtocolUtil.getAvatarUrl(context,imageStr);
+        NonViewAware aware = new NonViewAware(imageSize, ViewScaleType.CROP);
+        ImageLoader.getInstance().displayImage(imageUrl,aware,new SimpleImageLoadingListener(){
+            @Override
+            public void onLoadingStarted(String imageUri, View view) {
+                super.onLoadingStarted(imageUri, view);
+            }
+
+            @Override
+            public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+                super.onLoadingFailed(imageUri, view, failReason);
+                NotificationCompat.Builder notificationBuilder = null;
+                // 1.设置显示信息
+                notificationBuilder = new NotificationCompat.Builder(context);
+                notificationBuilder.setContentTitle(alertStr);
+                notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
+                // 2.设置点击跳转事件
+                Intent intent = new Intent(context, SplashActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+                notificationBuilder.setContentIntent(pendingIntent);
+                // 3.设置通知栏其他属性
+                notificationBuilder.setAutoCancel(true);
+                notificationBuilder.setDefaults(Notification.DEFAULT_ALL);
+                NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+                notificationManager.notify(++NOTIFY_ID, notificationBuilder.build());
+                String reason = null;
+                switch (failReason.getType()) {
+                    case IO_ERROR:// 文件I/O错误
+                        reason = "文件I/O错误";
+                        break;
+                    case DECODING_ERROR:// 解码错误
+                        reason = "解码错误";
+                        break;
+                    case NETWORK_DENIED:// 网络延迟
+                        reason = "网络延迟";
+                        break;
+                    case OUT_OF_MEMORY:// 内存不足
+                        reason = "内存不足";
+                        break;
+                    case UNKNOWN:// 原因不明
+                        reason = "原因不明";
+                        break;
+                }
+                LogUtil.getInstance().info(LogLevel.WARN,"收到到店通通知加载图片失败:"+reason);
+            }
+
+            @Override
+            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                super.onLoadingComplete(imageUri, view, loadedImage);
+                NotificationCompat.Builder notificationBuilder = null;
+                // 1.设置显示信息
+                notificationBuilder = new NotificationCompat.Builder(context);
+                notificationBuilder.setContentTitle(alertStr);
+                notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
+                notificationBuilder.setLargeIcon(loadedImage);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    notificationBuilder.setStyle(new NotificationCompat.BigPictureStyle().bigPicture(loadedImage));
+                }
+                // 2.设置点击跳转事件
+                Intent intent = new Intent(context, SplashActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+                notificationBuilder.setContentIntent(pendingIntent);
+                // 3.设置通知栏其他属性
+                notificationBuilder.setAutoCancel(true);
+                notificationBuilder.setDefaults(Notification.DEFAULT_ALL);
+                NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+                notificationManager.notify(++NOTIFY_ID, notificationBuilder.build());
+            }
+
+            @Override
+            public void onLoadingCancelled(String imageUri, View view) {
+                super.onLoadingCancelled(imageUri, view);
+                NotificationCompat.Builder notificationBuilder = null;
+                // 1.设置显示信息
+                notificationBuilder = new NotificationCompat.Builder(context);
+                notificationBuilder.setContentTitle(alertStr);
+                notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
+                // 2.设置点击跳转事件
+                Intent intent = new Intent(context, SplashActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+                notificationBuilder.setContentIntent(pendingIntent);
+                // 3.设置通知栏其他属性
+                notificationBuilder.setAutoCancel(true);
+                notificationBuilder.setDefaults(Notification.DEFAULT_ALL);
+                NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+                notificationManager.notify(++NOTIFY_ID, notificationBuilder.build());
             }
         });
     }

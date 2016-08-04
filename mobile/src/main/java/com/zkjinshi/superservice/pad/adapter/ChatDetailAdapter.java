@@ -9,10 +9,10 @@ import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.zkjinshi.superservice.pad.view.CircleImageView;
-import com.zkjinshi.superservice.pad.vo.EContactVo;
 import com.zkjinshi.superservice.pad.R;
 import com.zkjinshi.superservice.pad.utils.ProtocolUtil;
+import com.zkjinshi.superservice.pad.view.CircleImageView;
+import com.zkjinshi.superservice.pad.vo.EContactVo;
 
 import java.util.ArrayList;
 

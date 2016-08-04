@@ -10,8 +10,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 
-import com.zkjinshi.superservice.pad.bean.PayBean;
 import com.zkjinshi.superservice.pad.R;
+
+import com.zkjinshi.superservice.pad.bean.PayBean;
 
 
 import java.util.ArrayList;
@@ -101,8 +102,7 @@ public class PayAdapter  extends BaseAdapter{
     }
 
 
-    /*存放控件*/
-    public final class ViewHolder{
+    static class ViewHolder{
         public ImageView img;
         public TextView  name;
     }

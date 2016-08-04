@@ -6,25 +6,32 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.zkjinshi.base.config.ConfigUtil;
+import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.base.util.DisplayUtil;
 import com.zkjinshi.base.util.IntentUtil;
 import com.zkjinshi.base.util.TimeUtil;
+import com.zkjinshi.superservice.pad.R;
+import com.zkjinshi.superservice.pad.activity.chat.single.ChatActivity;
 import com.zkjinshi.superservice.pad.listener.RecyclerItemClickListener;
 import com.zkjinshi.superservice.pad.utils.CacheUtil;
 import com.zkjinshi.superservice.pad.utils.Constants;
 import com.zkjinshi.superservice.pad.utils.ProtocolUtil;
-import com.zkjinshi.superservice.pad.vo.OrderVo;
-import com.zkjinshi.superservice.pad.R;
-import com.zkjinshi.superservice.pad.activity.chat.single.ChatActivity;
+import com.zkjinshi.superservice.pad.view.CircleImageView;
 import com.zkjinshi.superservice.pad.vo.NoticeVo;
+import com.zkjinshi.superservice.pad.vo.OrderVo;
 
 import java.util.ArrayList;
 
@@ -67,12 +74,15 @@ public class LocNotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
 
+       // holder.setIsRecyclable(false);
+
         NoticeVo noticeVo = noticeList.get(position);
         final String userId   = noticeVo.getUserid();
         final String userName = noticeVo.getUsername();
+
+        //用户头像 和 姓名
         String userImage = noticeVo.getUserimage();
-        int width = (int)context.getResources().getDimension(R.dimen.normal_avatar_size);
-        String imageUrl = ProtocolUtil.getImageUrlByWidth(context,userImage,width);
+        String imageUrl = ProtocolUtil.getAvatarUrl(context,userImage);
         if(!TextUtils.isEmpty(imageUrl)){
             ((NoticeViewHolder) holder).civClientAvatar.setImageURI(Uri.parse(imageUrl));
             if(!TextUtils.isEmpty(userName)){
@@ -150,17 +160,17 @@ public class LocNotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         LinearLayout.LayoutParams contentLayoutParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT);
-        int rightDp = DisplayUtil.dip2px(context, context.getResources().getDimension(R.dimen.item_notice_right_padding_size));
-        int topdp   = DisplayUtil.dip2px(context, context.getResources().getDimension(R.dimen.item_notice_top_padding_size));
+        int eigheDp = DisplayUtil.dip2px(context, 8);
+        int sixDp   = DisplayUtil.dip2px(context, 6);
 
         if(position == 0){
             ((NoticeViewHolder) holder).upCutLineView.setVisibility(View.INVISIBLE);
-            contentLayoutParams.setMargins(0, 2*topdp,rightDp, topdp);
+            contentLayoutParams.setMargins(0, 2*sixDp,eigheDp, sixDp);
         }else if(position == getItemCount()-1){
-            contentLayoutParams.setMargins(0, topdp, rightDp, topdp);
+            contentLayoutParams.setMargins(0, sixDp, eigheDp, sixDp);
             ((NoticeViewHolder) holder).upCutLineView.setVisibility(View.VISIBLE);
         }else{
-            contentLayoutParams.setMargins(0, topdp, rightDp, topdp);
+            contentLayoutParams.setMargins(0, sixDp, eigheDp, sixDp);
             ((NoticeViewHolder) holder).upCutLineView.setVisibility(View.VISIBLE);
         }
         ((NoticeViewHolder) holder).contentLayout.setLayoutParams(contentLayoutParams);

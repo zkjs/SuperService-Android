@@ -3,22 +3,29 @@ package com.zkjinshi.superservice.pad.adapter;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.zkjinshi.superservice.pad.R;
+import com.zkjinshi.superservice.pad.bean.ZoneBean;
 import com.zkjinshi.superservice.pad.utils.RandomDrawbleUtil;
+import com.zkjinshi.superservice.pad.view.CircleImageView;
 import com.zkjinshi.superservice.pad.vo.ContactLocalVo;
 
 
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * 区域列表adapter
@@ -121,8 +128,7 @@ public class ContactsAdapter extends BaseAdapter{
         return super.getViewTypeCount();
     }
 
-    /*存放控件*/
-    public final class ViewHolder{
+    static class ViewHolder{
         public SimpleDraweeView avatar;
         public TextView avatarText;
         public TextView  name;

@@ -3,7 +3,14 @@ package com.zkjinshi.superservice.pad.factory;
 import android.content.ContentValues;
 import android.database.Cursor;
 
+import com.zkjinshi.superservice.pad.bean.TeamContactBean;
 import com.zkjinshi.superservice.pad.vo.DepartmentVo;
+import com.zkjinshi.superservice.pad.vo.OnlineStatus;
+
+import com.zkjinshi.superservice.pad.vo.WorkStatus;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 开发者：vincent
@@ -34,9 +41,9 @@ public class ShopDepartmentFactory {
         ContentValues values = new ContentValues();
         values.put("deptid", departmentVo.getDeptid());
         values.put("shopid", departmentVo.getShopid());
-        values.put("dept_code", departmentVo.getDept_code());
-        values.put("dept_name", departmentVo.getDept_name());
-        values.put("description", departmentVo.getDescription());
+//        values.put("dept_code", departmentVo.getDept_code());
+//        values.put("dept_name", departmentVo.getDept_name());
+//        values.put("description", departmentVo.getDescription());
         return values;
     }
 
@@ -47,11 +54,11 @@ public class ShopDepartmentFactory {
      */
     public DepartmentVo buildDepartmentVo(Cursor cursor) {
         DepartmentVo departmentVo = new DepartmentVo();
-        departmentVo.setDeptid(cursor.getInt(0));
-        departmentVo.setShopid(cursor.getString(1));
-        departmentVo.setDept_code(cursor.getString(2));
-        departmentVo.setDept_name(cursor.getString(3));
-        departmentVo.setDescription(cursor.getString(4));
+//        departmentVo.setDeptid(cursor.getInt(0));
+//        departmentVo.setShopid(cursor.getString(1));
+//        departmentVo.setDept_code(cursor.getString(2));
+//        departmentVo.setDept_name(cursor.getString(3));
+//        departmentVo.setDescription(cursor.getString(4));
         return  departmentVo;
     }
 

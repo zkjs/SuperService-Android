@@ -36,8 +36,6 @@
 
     <dimen name="label_user_photo_size">88dp</dimen>
 
-    <dimen name="user_photo_width">50dp</dimen>
-
     <dimen name="item_notice_top_padding_size">5dp</dimen>
 
     <dimen name="item_notice_right_padding_size">10dp</dimen>
@@ -47,4 +45,10 @@
     <dimen name="key_up_more_height">120dp</dimen>
 
     <dimen name="tab_title_textsize">18sp</dimen>
+
+    <!--会员列表页面-->
+    <dimen name="user_photo_width">50dp</dimen>
+    <dimen name="event_logo_height">175dp</dimen>
+    <dimen name="contact_logo_height">50dp</dimen>
+
 </resources>

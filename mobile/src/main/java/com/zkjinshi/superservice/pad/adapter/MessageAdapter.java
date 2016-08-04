@@ -18,14 +18,18 @@ import com.easemob.chat.EMMessage;
 import com.easemob.chat.TextMessageBody;
 import com.easemob.exceptions.EaseMobException;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.zkjinshi.base.config.ConfigUtil;
 import com.zkjinshi.base.util.TimeUtil;
+import com.zkjinshi.superservice.pad.R;
 import com.zkjinshi.superservice.pad.listener.RecyclerItemClickListener;
 import com.zkjinshi.superservice.pad.utils.CacheUtil;
 import com.zkjinshi.superservice.pad.utils.Constants;
 import com.zkjinshi.superservice.pad.utils.EmotionType;
-import com.zkjinshi.superservice.pad.R;
 import com.zkjinshi.superservice.pad.utils.EmotionUtil;
 import com.zkjinshi.superservice.pad.utils.ProtocolUtil;
+import com.zkjinshi.superservice.pad.view.CircleImageView;
 import com.zkjinshi.superservice.pad.vo.MemberVo;
 import com.zkjinshi.superservice.pad.vo.TxtExtType;
 
@@ -116,9 +120,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 if(!TextUtils.isEmpty(userId)){
                     String userImg = getUserImg(userId);
                     if(!TextUtils.isEmpty(userImg)){
-                        int width = (int)context.getResources().getDimension(R.dimen.item_message_avatar_size);
-                        String imageUrl = ProtocolUtil.getImageUrlByWidth(context,userImg,width);
-                        ((ViewHolder)holder).photoImageView.setImageURI(Uri.parse(imageUrl));
+                        ((ViewHolder)holder).photoImageView.setImageURI(Uri.parse(ProtocolUtil.getAvatarUrl(context,userImg)));
                     }
                 }
             }

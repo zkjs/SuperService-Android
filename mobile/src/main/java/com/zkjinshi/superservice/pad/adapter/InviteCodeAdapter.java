@@ -9,10 +9,11 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.zkjinshi.superservice.pad.vo.IsValidity;
 import com.zkjinshi.superservice.pad.R;
 import com.zkjinshi.superservice.pad.bean.InviteCode;
+import com.zkjinshi.superservice.pad.bean.InviteCodeUser;
 import com.zkjinshi.superservice.pad.listener.RecyclerItemClickListener;
+import com.zkjinshi.superservice.pad.vo.IsValidity;
 
 import java.util.ArrayList;
 import java.util.List;

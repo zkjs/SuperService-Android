@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.zkjinshi.superservice.pad.R;
 import com.zkjinshi.superservice.pad.ext.util.MathUtil;
+import com.zkjinshi.superservice.pad.vo.ClientArrivingVo;
 import com.zkjinshi.superservice.pad.vo.ClientPaymentVo;
 
 import java.util.List;

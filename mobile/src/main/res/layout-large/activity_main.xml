@@ -76,24 +76,24 @@
                     android:layout_height="wrap_content">
 
                     <RelativeLayout
-                        android:id="@+id/fab_sheet_item_recording"
+                        android:id="@+id/fab_sheet_item_team_talk"
                         android:gravity="center_vertical"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content">
 
                         <!-- 与团队对话 -->
                         <TextView
-                            android:id="@+id/tv_sheet_item_recording"
+                            android:id="@+id/tv_sheet_item_team_talk"
                             android:padding="5dp"
                             android:layout_centerVertical="true"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textColor="@android:color/black"
                             android:textSize="16sp"
-                            android:text="与团团对话" />
+                            android:text="@string/talk_with_team" />
 
                         <RelativeLayout
-                            android:layout_toRightOf="@+id/tv_sheet_item_recording"
+                            android:layout_toRightOf="@+id/tv_sheet_item_team_talk"
                             android:padding="10dp"
                             android:gravity="center"
                             android:layout_centerVertical="true"
@@ -103,43 +103,78 @@
 
                             <ImageView
                                 android:src="@mipmap/ic_tuandui_w"
-                                android:layout_width="19dp"
-                                android:layout_height="11dp" />
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerInParent="true"/>
 
                         </RelativeLayout>
                     </RelativeLayout>
 
+                    <!--接受任务-->
                     <RelativeLayout
-                        android:id="@+id/fab_sheet_item_reminder"
+                        android:id="@+id/fab_sheet_item_accept"
+                        android:gravity="center_vertical"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:id="@+id/tv_sheet_item_accept"
+                            android:padding="5dp"
+                            android:layout_centerVertical="true"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@android:color/black"
+                            android:textSize="16sp"
+                            android:text="@string/accpet_task" />
+
+                        <RelativeLayout
+                            android:layout_toRightOf="@+id/tv_sheet_item_accept"
+                            android:padding="10dp"
+                            android:gravity="center"
+                            android:layout_centerVertical="true"
+                            android:background="@drawable/bg_circle_yellow"
+                            android:layout_width="56dp"
+                            android:layout_height="56dp">
+
+                            <ImageView
+                                android:src="@mipmap/ic_woderenwu"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerInParent="true"/>
+
+                        </RelativeLayout>
+                    </RelativeLayout>
+
+                    <!--指派任务-->
+                    <RelativeLayout
+                        android:id="@+id/fab_sheet_item_appoint"
                         android:gravity="center_vertical"
                         android:visibility="gone"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content">
-
-                        <!-- 与客户对话 -->
                         <TextView
                             android:padding="5dp"
                             android:layout_centerVertical="true"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:id="@+id/tv_sheet_item_reminder"
+                            android:id="@+id/tv_sheet_item_appoint"
                             android:textColor="@android:color/black"
                             android:textSize="16sp"
-                            android:text="@string/talk_with_client" />
+                            android:text="@string/appoint_task" />
 
                         <RelativeLayout
-                            android:layout_toRightOf="@+id/tv_sheet_item_reminder"
+                            android:layout_toRightOf="@+id/tv_sheet_item_appoint"
                             android:padding="10dp"
                             android:gravity="center"
                             android:layout_centerVertical="true"
-                            android:background="@drawable/bg_circle_ffa726"
+                            android:background="@drawable/bg_circle_26c6da"
                             android:layout_width="56dp"
                             android:layout_height="56dp">
 
                             <ImageView
-                                android:src="@mipmap/ic_kehu"
-                                android:layout_width="17dp"
-                                android:layout_height="18dp" />
+                                android:src="@mipmap/ic_zhipairenwu"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerInParent="true" />
 
                         </RelativeLayout>
                     </RelativeLayout>

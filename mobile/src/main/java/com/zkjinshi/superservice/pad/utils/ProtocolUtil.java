@@ -3,7 +3,7 @@ package com.zkjinshi.superservice.pad.utils;
 import android.content.Context;
 
 import com.zkjinshi.base.config.ConfigUtil;
-import com.zkjinshi.base.util.*;
+import com.zkjinshi.base.util.DisplayUtil;
 
 /**
  * 协议接口工具类
@@ -498,7 +498,7 @@ public class ProtocolUtil {
      * @return
      */
     public static String upgradeNewestVersion(int apptype,String devicetype,String verno){
-        return ConfigUtil.getInst().getForDomain()+"/res/v1/systempub/upgrade/newestversion/"+apptype+"/"+devicetype+"/"+verno;
+        return ConfigUtil.getInst().getForDomain()+"res/v1/systempub/upgrade/newestversion/"+apptype+"/"+devicetype+"/"+verno;
     }
 
     /**
@@ -507,7 +507,7 @@ public class ProtocolUtil {
      * @return
      */
     public static String deleteEmployee(String ids){
-        return ConfigUtil.getInst().getForDomain()+"/res/v1/delete/ss?userids="+ids;
+        return ConfigUtil.getInst().getForDomain()+"res/v1/delete/ss?userids="+ids;
     }
 
     /**
@@ -516,6 +516,157 @@ public class ProtocolUtil {
      */
     public static String lbsLocBeacon(){
         return ConfigUtil.getInst().getPyxDomain()+"lbs/v1/loc/beacon";
+    }
+
+    /**
+     * 获取呼叫通知列表
+     */
+    public static String getServiceListUrl(int isowner,String pageNo,String pageSize){
+        return ConfigUtil.getInst().getForDomain()+"res/v1/call/service/task?isower="+isowner+"&page="+pageNo+"&page_size="+pageSize;
+    }
+
+    /**
+     * 获取服务标签列表
+     * @return
+     */
+    public static String getServiceTagListUrl(){
+        return ConfigUtil.getInst().getForDomain()+"res/v1/call/servicetag";
+    }
+
+    /**
+     * 添加一级标签
+     * @return
+     */
+    public static String getAddFirstTagUrl(){
+        return ConfigUtil.getInst().getForDomain()+"res/v1/call/firstsrvtag";
+    }
+
+    /**
+     * 添加二级标签
+     * @return
+     */
+    public static String getAddSecondTagUrl(){
+        return ConfigUtil.getInst().getForDomain()+"res/v1/call/secondsrvtag";
+    }
+
+    /**
+     * 删除一级标签
+     * @param firstTagId
+     * @return
+     */
+    public static String getDeleteFirstTagUrl(String firstTagId){
+        return ConfigUtil.getInst().getForDomain()+"res/v1/call/srvtag?firstsrvtagid="+firstTagId;
+    }
+
+    /**
+     * 删除二级标签
+     * @param secondTagId
+     * @return
+     */
+    public static String getDeleteSecondTagUrl(String secondTagId){
+        return ConfigUtil.getInst().getForDomain()+"res/v1/call/srvtag?secondsrctagid="+secondTagId;
+    }
+
+    /**
+     * 获取部门列表
+     * @return
+     */
+    public static String getRoleListUrl(){
+        return ConfigUtil.getInst().getForDomain()+"res/v1/shop/roles";
+    }
+
+    /**
+     * 变更呼叫服务状态
+     * @return
+     */
+    public static String getUpdateServiceUrl(){
+        return ConfigUtil.getInst().getForDomain()+"res/v1/call/service/task";
+    }
+
+    /**
+     * 获取服务详情
+     * @param taskId
+     * @return
+     */
+    public static String getTaskDetailUrl(String taskId){
+        return ConfigUtil.getInst().getForDomain()+"res/v1/call/service/task/detail/"+taskId;
+    }
+
+    /**
+     * 获取任务部分列表
+     * @param taskId
+     * @return
+     */
+    public static String getTaskDeptUrl(String taskId){
+        return ConfigUtil.getInst().getForDomain()+"res/v1/query/sss?taskid="+taskId;
+    }
+
+    /**
+     * 获取活动列表
+     * @return
+     */
+    public static String getEventListUrl(){
+        return ConfigUtil.getInst().getForDomain()+"res/v1/activity/detail";
+    }
+
+    /**
+     * 删除活动
+     * @param actid
+     * @return
+     */
+    public static String getDeleteEventUrl(String actid){
+        return ConfigUtil.getInst().getForDomain()+"res/v1/activity/"+actid;
+    }
+
+    /**
+     * 创建活动
+     * @return
+     */
+    public static String getCreateEventUrl(){
+        return ConfigUtil.getInst().getForDomain()+"res/v1/activity";
+    }
+
+    /**
+     * 编辑活动
+     * @param actId
+     * @return
+     */
+    public static String getEditEventUrl(String actId){
+        return ConfigUtil.getInst().getForDomain()+"res/v1/activity/"+actId;
+    }
+
+    /**
+     * 获取邀请名单
+     * @return
+     */
+    public static String getGuestListUrl(){
+        return ConfigUtil.getInst().getForDomain()+"res/v1/activity/member";
+    }
+
+    /**
+     * 更新室内位置/多区域定位
+     * @return
+     */
+    public static String lbsV2LocBeacon(){
+        return ConfigUtil.getInst().getPyxDomain()+"lbs/v2/loc/beacon";
+    }
+
+    /**
+     * 根据活动id获取邀请名单
+     * @param actid
+     * @return
+     */
+    public static String getGuestListUl(String actid){
+        return ConfigUtil.getInst().getForDomain()+"res/v1/activity/member?actid";
+    }
+
+
+    /**
+     * 根据shopid获取部门列表
+     * @return
+     */
+    public static String getshopdepts(){
+        return ConfigUtil.getInst().getForDomain()+"res/v1/shop/depts";
     }
 
     /**

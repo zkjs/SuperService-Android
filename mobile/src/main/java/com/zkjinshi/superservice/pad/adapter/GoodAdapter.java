@@ -1,6 +1,7 @@
 package com.zkjinshi.superservice.pad.adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.text.TextUtils;
@@ -15,12 +16,18 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.zkjinshi.superservice.pad.utils.ProtocolUtil;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.zkjinshi.superservice.pad.R;
 
+import com.zkjinshi.superservice.pad.utils.ProtocolUtil;
 import com.zkjinshi.superservice.pad.vo.GoodInfoVo;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * 商品列表adapter

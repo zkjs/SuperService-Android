@@ -1,5 +1,6 @@
 package com.zkjinshi.superservice.pad.activity.set;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -12,21 +13,23 @@ import android.widget.TextView;
 import com.zkjinshi.base.log.LogLevel;
 import com.zkjinshi.base.log.LogUtil;
 import com.zkjinshi.base.util.DialogUtil;
-import com.zkjinshi.superservice.pad.listener.GetTeamContactsListener;
-import com.zkjinshi.superservice.pad.net.ExtNetRequestListener;
-import com.zkjinshi.superservice.pad.net.MethodType;
-import com.zkjinshi.superservice.pad.net.NetResponse;
-import com.zkjinshi.superservice.pad.sqlite.ShopEmployeeDBUtil;
-import com.zkjinshi.superservice.pad.utils.CacheUtil;
-import com.zkjinshi.superservice.pad.vo.DepartmentVo;
 import com.zkjinshi.superservice.pad.R;
 import com.zkjinshi.superservice.pad.adapter.TeamEditContactsAdapter;
 import com.zkjinshi.superservice.pad.base.BaseActivity;
+import com.zkjinshi.superservice.pad.bean.TeamContactBean;
+import com.zkjinshi.superservice.pad.factory.ShopEmployeeFactory;
+import com.zkjinshi.superservice.pad.listener.GetTeamContactsListener;
 import com.zkjinshi.superservice.pad.listener.RecyclerItemClickListener;
+import com.zkjinshi.superservice.pad.net.ExtNetRequestListener;
+import com.zkjinshi.superservice.pad.net.MethodType;
 import com.zkjinshi.superservice.pad.net.NetRequest;
 import com.zkjinshi.superservice.pad.net.NetRequestTask;
+import com.zkjinshi.superservice.pad.net.NetResponse;
+import com.zkjinshi.superservice.pad.sqlite.ShopEmployeeDBUtil;
+import com.zkjinshi.superservice.pad.utils.CacheUtil;
 import com.zkjinshi.superservice.pad.utils.DepartmentDialog;
 import com.zkjinshi.superservice.pad.utils.ProtocolUtil;
+import com.zkjinshi.superservice.pad.vo.DepartmentVo;
 import com.zkjinshi.superservice.pad.vo.EmployeeVo;
 
 import org.json.JSONException;
@@ -230,17 +233,17 @@ public class TeamEditActivity extends BaseActivity {
      * @param shopEmployeeVos
      */
     private void showChangeDepartmentDialog(final List<String> shopEmployeeVos){
-        //弹出选择部门对话框
-        DepartmentDialog dialog = new DepartmentDialog(TeamEditActivity.this);
-        dialog.setClickOneListener(new DepartmentDialog.ClickOneListener() {
-            @Override
-            public void clickOne(DepartmentVo departmentVo) {
-                int deptID = departmentVo.getDeptid();
-                String changeList = convertList2String(shopEmployeeVos);
-                postChangeDept(mUserID, mToken, mShopID, deptID, changeList);
-            }
-        });
-        dialog.show();
+//        //弹出选择部门对话框
+//        DepartmentDialog dialog = new DepartmentDialog(TeamEditActivity.this);
+//        dialog.setClickOneListener(new DepartmentDialog.ClickOneListener() {
+//            @Override
+//            public void clickOne(DepartmentVo departmentVo) {
+//                int deptID = departmentVo.getDeptid();
+//                String changeList = convertList2String(shopEmployeeVos);
+//                postChangeDept(mUserID, mToken, mShopID, deptID, changeList);
+//            }
+//        });
+//        dialog.show();
     }
 
     /**

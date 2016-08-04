@@ -18,13 +18,14 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
+import com.zkjinshi.superservice.pad.R;
 import com.zkjinshi.superservice.pad.listener.RecyclerItemClickListener;
 import com.zkjinshi.superservice.pad.utils.ProtocolUtil;
 import com.zkjinshi.superservice.pad.utils.RandomDrawbleUtil;
 import com.zkjinshi.superservice.pad.view.CircleImageView;
 import com.zkjinshi.superservice.pad.vo.EmployeeVo;
-import com.zkjinshi.superservice.pad.R;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;

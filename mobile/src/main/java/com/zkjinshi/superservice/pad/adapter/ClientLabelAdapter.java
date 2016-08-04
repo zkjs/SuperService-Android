@@ -12,9 +12,9 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.zkjinshi.base.util.DisplayUtil;
+import com.zkjinshi.superservice.pad.R;
 import com.zkjinshi.superservice.pad.view.RoundProgressBar;
 import com.zkjinshi.superservice.pad.vo.ItemTagVo;
-import com.zkjinshi.superservice.pad.R;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -112,7 +112,7 @@ public class ClientLabelAdapter extends BaseAdapter {
         return convertView;
     }
 
-    class ViewHolder{
+    static class ViewHolder{
         RoundProgressBar roundProgressBar;
         ImageView roundLabelIv;
         RelativeLayout contentLayout;

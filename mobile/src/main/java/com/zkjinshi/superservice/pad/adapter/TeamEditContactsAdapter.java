@@ -1,6 +1,9 @@
 package com.zkjinshi.superservice.pad.adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -9,16 +12,28 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.SectionIndexer;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.assist.deque.LIFOLinkedBlockingDeque;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
+import com.zkjinshi.base.util.TimeUtil;
+import com.zkjinshi.superservice.pad.R;
 import com.zkjinshi.superservice.pad.listener.RecyclerItemClickListener;
 import com.zkjinshi.superservice.pad.utils.ProtocolUtil;
 import com.zkjinshi.superservice.pad.utils.RandomDrawbleUtil;
+import com.zkjinshi.superservice.pad.utils.StringUtil;
+import com.zkjinshi.superservice.pad.view.CircleImageView;
+import com.zkjinshi.superservice.pad.view.CircleTextView;
+import com.zkjinshi.superservice.pad.vo.OnlineStatus;
 import com.zkjinshi.superservice.pad.vo.EmployeeVo;
-import com.zkjinshi.superservice.pad.R;
 
 import java.util.ArrayList;
 import java.util.HashMap;
