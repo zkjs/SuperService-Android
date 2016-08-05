@@ -76,8 +76,8 @@ public class DetailTaskActivity extends BaseAppCompatActivity {
             }
         }
         taskHistoryAdapter = new TaskHistoryAdapter(this,historyList);
-        historyListView.setAdapter(taskHistoryAdapter);
         historyListView.addHeaderView(headView);
+        historyListView.setAdapter(taskHistoryAdapter);
         requestTaskDetailTask(taskId);
     }
 

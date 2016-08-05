@@ -105,11 +105,11 @@ public class MainActivity extends BaseAppCompatActivity {
         }else {
             serviceTagTv.setVisibility(View.GONE);
         }
-//        if(AccessControlUtil.isShowView(AccessControlUtil.CREATEACTIVITY)){
-//            eventTv.setVisibility(View.VISIBLE);
-//        }else {
-//            eventTv.setVisibility(View.GONE);
-//        }
+        if(AccessControlUtil.isShowView(AccessControlUtil.CREATEACTIVITY)){
+            eventTv.setVisibility(View.VISIBLE);
+        }else {
+            eventTv.setVisibility(View.GONE);
+        }
 
         //打开蓝牙请求
         BlueToothManager.getInstance().openBluetooth();
