@@ -6,8 +6,7 @@
     android:focusableInTouchMode="true"
     android:layout_height="match_parent">
 
-    <include layout="@layout/title_toolbar"
-        />
+    <include layout="@layout/title_toolbar" />
 
     <ListView
         android:id="@+id/list_view_add_invite"

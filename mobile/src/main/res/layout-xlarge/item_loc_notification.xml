@@ -90,7 +90,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="#101010"
-                    android:textSize="32sp" />
+                    android:textSize="@dimen/normal_text_size" />
 
                 <TextView
                     android:id="@+id/tv_location_info"
@@ -99,7 +99,7 @@
                     android:layout_marginTop="30dp"
                     android:gravity="center_vertical|left"
                     android:textColor="@color/TextColorGray"
-                    android:textSize="32sp" />
+                    android:textSize="@dimen/normal_text_size" />
 
                 </LinearLayout>
 
@@ -113,7 +113,7 @@
                 android:layout_marginRight="30dp"
                 android:gravity="center_vertical|right"
                 android:textColor="#888888"
-                android:textSize="28sp" />
+                android:textSize="@dimen/timestamp_text_size" />
 
 
             <RelativeLayout

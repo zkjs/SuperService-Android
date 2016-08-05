@@ -6,12 +6,13 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="88dp">
+            android:layout_height="wrap_content"
+            android:padding="20dp">
 
             <com.facebook.drawee.view.SimpleDraweeView
                 android:id="@+id/user_photo_sdv"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:layout_width="@dimen/list_user_photo_size_medium"
+                android:layout_height="@dimen/list_user_photo_size_medium"
                 android:layout_gravity="center_vertical"
                 fresco:actualImageScaleType="centerInside"
                 fresco:roundAsCircle="true"
@@ -30,7 +31,7 @@
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@id/user_photo_sdv"
                 android:layout_alignTop="@id/user_photo_sdv"
-                android:textSize="14sp"
+                android:textSize="@dimen/normal_text_size"
                 android:textColor="#101010"
                 android:text="@null"/>
 
@@ -38,9 +39,10 @@
                 android:id="@+id/service_name_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
                 android:layout_toRightOf="@id/user_photo_sdv"
                 android:layout_alignBottom="@id/user_photo_sdv"
-                android:textSize="14sp"
+                android:textSize="@dimen/normal_text_size"
                 android:textColor="#101010"
                 android:text="@null"/>
 

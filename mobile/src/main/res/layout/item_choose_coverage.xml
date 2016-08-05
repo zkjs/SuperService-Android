@@ -5,18 +5,19 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="55dp">
+        android:layout_height="wrap_content"
+        android:padding="20dp">
 
         <TextView
             android:id="@+id/tv_coverage_name"
             android:layout_width="wrap_content"
-            android:layout_height="48dp"
+            android:layout_height="wrap_content"
             android:singleLine="true"
             android:layout_centerVertical="true"
             android:layout_marginLeft="20dp"
             android:gravity="left|center_vertical"
             android:textColor="#101010"
-            android:textSize="16sp" />
+            android:textSize="@dimen/normal_text_size" />
 
         <ImageView
             android:id="@+id/iv_select_coverage"

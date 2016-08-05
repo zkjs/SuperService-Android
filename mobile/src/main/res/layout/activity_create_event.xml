@@ -25,14 +25,14 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="96dp"
+                android:layout_height="100dp"
                 android:background="@android:color/white">
 
                 <TextView
                     android:id="@+id/create_event_tv_event_name_tips"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="14sp"
+                    android:textSize="@dimen/normal_text_size"
                     android:layout_marginLeft="15dp"
                     android:layout_marginTop="15dp"
                     android:layout_marginRight="10dp"
@@ -51,7 +51,7 @@
                 <EditText
                     android:id="@+id/create_event_etv_event_name"
                     android:layout_width="match_parent"
-                    android:layout_height="48dp"
+                    android:layout_height="wrap_content"
                     android:background="@android:color/white"
                     android:layout_alignParentBottom="true"
                     android:textColorHint="#d1d1d1"
@@ -60,21 +60,22 @@
                     android:layout_marginRight="15dp"
                     android:textColor="#101010"
                     android:hint="请输入活动名称"
-                    android:textSize="14sp"/>
+                    android:textSize="@dimen/normal_text_size"/>
 
             </RelativeLayout>
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="96dp"
+                android:layout_height="100dp"
                 android:layout_marginTop="10dp"
                 android:background="@android:color/white">
 
                 <TextView
                     android:id="@+id/create_event_tv_event_date_tips"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:textSize="14sp"
+                    android:layout_weight="1"
+                    android:textSize="@dimen/normal_text_size"
                     android:layout_marginLeft="15dp"
                     android:clickable="true"
                     android:layout_marginTop="15dp"
@@ -94,14 +95,14 @@
                 <TextView
                     android:id="@+id/create_event_tv_event_start_date"
                     android:layout_width="wrap_content"
-                    android:layout_height="48dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginLeft="25dp"
                     android:text="请选择活动开始日期"
                     android:gravity="center"
                     android:clickable="true"
                     android:layout_alignParentBottom="true"
                     android:textColor="#d1d1d1"
-                    android:textSize="14sp"/>
+                    android:textSize="@dimen/normal_text_size"/>
 
                 <TextView
                     android:id="@+id/create_event_tv_event_start_middle"
@@ -112,7 +113,7 @@
                     android:gravity="center"
                     android:layout_alignParentBottom="true"
                     android:textColor="#101010"
-                    android:textSize="16sp"/>
+                    android:textSize="@dimen/normal_text_size"/>
 
                 <TextView
                     android:id="@+id/create_event_tv_event_over_date"
@@ -125,7 +126,7 @@
                     android:gravity="center"
                     android:layout_alignParentBottom="true"
                     android:textColor="#d1d1d1"
-                    android:textSize="14sp"/>
+                    android:textSize="@dimen/normal_text_size"/>
 
             </RelativeLayout>
 
@@ -140,7 +141,7 @@
                     android:id="@+id/create_event_tv_event_content_tips"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="14sp"
+                    android:textSize="@dimen/normal_text_size"
                     android:layout_marginLeft="15dp"
                     android:layout_marginTop="15dp"
                     android:layout_marginRight="10dp"
@@ -168,7 +169,7 @@
                     android:padding="5dp"
                     android:textColor="#101010"
                     android:gravity="left"
-                    android:textSize="14sp"
+                    android:textSize="@dimen/normal_text_size"
                     android:maxLength="100"
                     android:hint="请输入活动内容（100字以内）"
                     android:clickable="true" />
@@ -185,7 +186,7 @@
                     android:id="@+id/create_event_tv_event_logo_tips"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="14sp"
+                    android:textSize="@dimen/normal_text_size"
                     android:layout_marginLeft="15dp"
                     android:layout_marginTop="15dp"
                     android:layout_marginRight="10dp"
@@ -218,7 +219,7 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
+                android:layout_height="70dp"
                 android:layout_marginTop="10dp"
                 android:background="@android:color/white">
 
@@ -226,7 +227,7 @@
                     android:id="@+id/create_event_tv_carry_tips"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="14sp"
+                    android:textSize="@dimen/normal_text_size"
                     android:layout_marginLeft="15dp"
                     android:layout_marginTop="15dp"
                     android:layout_marginRight="10dp"
@@ -265,14 +266,14 @@
             <RelativeLayout
                 android:id="@+id/create_event_tv_carry_input_layout"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
+                android:layout_height="70dp"
                 android:visibility="gone"
                 android:background="@android:color/white">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="14sp"
+                    android:textSize="@dimen/normal_text_size"
                     android:layout_marginLeft="15dp"
                     android:layout_marginTop="15dp"
                     android:layout_marginRight="10dp"
@@ -288,7 +289,7 @@
                     android:layout_alignParentRight="true"
                     android:hint="请输入最多可携带人数"
                     android:layout_centerVertical="true"
-                    android:textSize="14sp"
+                    android:textSize="@dimen/normal_text_size"
                     android:inputType="number"
                     android:textColor="#101010"
                     android:textColorHint="#d1d1d1"
@@ -299,14 +300,15 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="96dp"
+                android:layout_height="100dp"
                 android:layout_marginTop="10dp"
+                android:layout_marginBottom="20dp"
                 android:background="@android:color/white">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="14sp"
+                    android:textSize="@dimen/normal_text_size"
                     android:layout_marginLeft="15dp"
                     android:layout_marginTop="15dp"
                     android:layout_marginRight="10dp"
@@ -326,7 +328,7 @@
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="15dp"
                     android:layout_marginRight="15dp"
-                    android:textSize="14sp"
+                    android:textSize="@dimen/normal_text_size"
                     android:textColor="#101010"
                     android:hint="请输入链接地址"/>
 

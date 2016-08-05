@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:padding="15dp">
 
     <ImageView
         android:id="@+id/role_name_choose_cb"
@@ -22,7 +23,7 @@
         android:gravity="center"
         android:text="@null"
         android:layout_centerVertical="true"
-        android:textSize="14sp"
+        android:textSize="@dimen/normal_text_size"
         android:layout_marginLeft="20dp"
         android:textColor="#101010"
         />
@@ -43,11 +44,11 @@
         android:id="@+id/role_stat_tv"
         android:layout_toLeftOf="@id/role_right_arrow_iv"
         android:layout_width="wrap_content"
-        android:layout_height="48dp"
+        android:layout_height="wrap_content"
         android:gravity="center"
         android:text="@null"
         android:layout_centerVertical="true"
-        android:textSize="10sp"
+        android:textSize="@dimen/normal_text_size_medium"
         android:layout_marginRight="15dp"
         android:textColor="#888888"
         />

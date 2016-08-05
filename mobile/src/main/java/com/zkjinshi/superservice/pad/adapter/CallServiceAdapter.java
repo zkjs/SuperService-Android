@@ -77,7 +77,7 @@ public class CallServiceAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         if(null != serviceTaskVo){
 
             String userImage = serviceTaskVo.getUserimage();
-            int width = (int)context.getResources().getDimension(R.dimen.user_photo_width);
+            int width = (int)context.getResources().getDimension(R.dimen.list_user_photo_size);
             String imageUrl = ProtocolUtil.getImageUrlByWidth(context,userImage,width);
             if(!TextUtils.isEmpty(imageUrl)){
                 ((CallServiceViewHolder)holder).userPhotoSdv.setImageURI(Uri.parse(imageUrl));

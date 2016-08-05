@@ -46,4 +46,17 @@
 
     <dimen name="tab_title_textsize">24sp</dimen>
 
+    <!--会员列表页面-->
+    <dimen name="user_photo_width">50dp</dimen>
+    <dimen name="event_logo_height">175dp</dimen>
+    <dimen name="contact_logo_height">120dp</dimen>
+
+    <dimen name="list_user_photo_size">160dp</dimen>
+    <dimen name="list_user_photo_size_medium">120dp</dimen>
+    <dimen name="list_user_photo_size_small">80dp</dimen>
+    <dimen name="normal_text_size">26sp</dimen>
+    <dimen name="normal_text_size_medium">20sp</dimen>
+    <dimen name="normal_text_size_small">16sp</dimen>
+    <dimen name="timestamp_text_size">22sp</dimen>
+
 </resources>

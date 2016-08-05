@@ -13,12 +13,12 @@
         android:layout_gravity="center_vertical"
         android:gravity="center"
         android:textColor="#101010"
-        android:textSize="16sp"
+        android:textSize="@dimen/normal_text_size_medium"
         />
 
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="80dp"
+        android:layout_height="match_parent"
         android:layout_marginRight="15dp"
         android:orientation="vertical">
 
@@ -50,8 +50,10 @@
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/task_user_icon_sdv"
         android:layout_marginRight="10dp"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_marginBottom="15dp"
+        android:layout_marginTop="15dp"
+        android:layout_width="@dimen/list_user_photo_size_small"
+        android:layout_height="@dimen/list_user_photo_size_small"
         android:layout_gravity="center_vertical"
         fresco:actualImageScaleType="centerInside"
         fresco:roundAsCircle="true"
@@ -70,7 +72,7 @@
         android:layout_gravity="center_vertical"
         android:layout_height="wrap_content"
         android:text="@null"
-        android:textSize="14sp"
+        android:textSize="@dimen/normal_text_size_medium"
         android:textColor="#101010"/>
 
 

@@ -42,7 +42,7 @@
                 android:textColor="#101010"
                 android:singleLine="true"
                 android:ellipsize="end"
-                android:textSize="32sp"
+                android:textSize="@dimen/normal_text_size"
                 android:text="@null"
                 android:layout_height="wrap_content" />
 
@@ -52,7 +52,7 @@
                 android:layout_below="@id/message_notice_title"
                 android:layout_marginTop="20dp"
                 android:textColor="#666666"
-                android:textSize="28sp"
+                android:textSize="@dimen/normal_text_size"
                 android:singleLine="true"
                 android:ellipsize="end"
                 android:text=""
@@ -84,7 +84,7 @@
         android:textColor="#FFFFFF"
         android:layout_alignParentRight="true"
         android:background="@drawable/blue_round_select"
-        android:textSize="32sp"
+        android:textSize="@dimen/timestamp_text_size"
         android:visibility="visible"
         />
 
