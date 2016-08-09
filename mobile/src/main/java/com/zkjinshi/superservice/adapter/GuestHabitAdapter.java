@@ -70,7 +70,7 @@ public class GuestHabitAdapter extends ArrayAdapter<ItemTagVo> {
         } else {
             holder.title.setText("");
         }
-        holder.roundProgressBar.anim();
+        //holder.roundProgressBar.anim();
 
         return convertView;
     }

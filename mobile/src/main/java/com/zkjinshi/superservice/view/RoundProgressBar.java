@@ -267,10 +267,12 @@ public class RoundProgressBar extends View {
     public void setSweepValue(float sweepValue) {
         if (sweepValue > 0) {
             this.sweepValue = sweepValue;
-        }else if(sweepValue > 100){
+        } else if(sweepValue > 100){
             this.sweepValue = 100;
+        } else {
+            this.sweepValue = 0;
         }
-        sweepAngle = value2Angle(sweepValue);
+        sweepAngle = value2Angle(this.sweepValue);
         this.invalidate();
     }
 

@@ -35,9 +35,9 @@
     <uses-permission android:name="android.permission.READ_SYNC_SETTINGS"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.BROADCAST_STICKY" />
-    <permission android:name="com.easemob.chatuidemo.permission.C2D_MESSAGE"
+    <permission android:name="com.zkjinshi.superservice.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
-    <uses-permission android:name="com.easemob.chatuidemo.permission.C2D_MESSAGE" />
+    <uses-permission android:name="com.zkjinshi.superservice.permission.C2D_MESSAGE" />
 
     <application
         android:largeHeap="true"

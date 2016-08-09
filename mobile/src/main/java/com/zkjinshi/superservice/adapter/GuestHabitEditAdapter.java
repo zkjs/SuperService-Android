@@ -71,7 +71,7 @@ public class GuestHabitEditAdapter extends ArrayAdapter<ItemTagVo> {
         holder.roundProgressBar.setAnimDuration(50);
         holder.roundProgressBar.setInterpolator(new AccelerateDecelerateInterpolator());
         holder.roundProgressBar.setSweepValue(value);
-        holder.roundProgressBar.anim();
+        //holder.roundProgressBar.anim();
         if(!TextUtils.isEmpty(tagName)){
             //holder.roundProgressBar.setValueText(tagName);
             holder.title.setText(item.getTagname());

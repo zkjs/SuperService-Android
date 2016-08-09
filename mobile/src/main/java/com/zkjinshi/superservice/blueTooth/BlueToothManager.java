@@ -100,13 +100,13 @@ public class BlueToothManager {
         public void intoRegion(IBeaconVo iBeaconVo) {
             LogUtil.getInstance().info(LogLevel.DEBUG,"进入："+iBeaconVo.getMajor());
 //            //保存收款台区域信息
-//            CheckoutInnerManager.getInstance().saveBeaconCache(true,iBeaconVo);
-//            Bundle bundle = new Bundle();
-//            bundle.putSerializable("iBeaconVo",iBeaconVo);
-//            Message msg = new Message();
-//            msg.what = BEACON_NOTICE;
-//            msg.setData(bundle);
-//            handler.sendMessage(msg);
+            CheckoutInnerManager.getInstance().saveBeaconCache(true,iBeaconVo);
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("iBeaconVo",iBeaconVo);
+            Message msg = new Message();
+            msg.what = BEACON_NOTICE;
+            msg.setData(bundle);
+            handler.sendMessage(msg);
             BeaconsPushManager.getInstance().setPushable(true);
             BeaconsPushManager.getInstance().add(iBeaconVo);
         }
