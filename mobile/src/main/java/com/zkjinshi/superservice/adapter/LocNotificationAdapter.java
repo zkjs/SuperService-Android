@@ -10,10 +10,12 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -30,8 +32,11 @@ import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.view.CircleImageView;
+import com.zkjinshi.superservice.vo.Loclist;
 import com.zkjinshi.superservice.vo.NoticeVo;
 import com.zkjinshi.superservice.vo.OrderVo;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -72,7 +77,7 @@ public class LocNotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
 
        // holder.setIsRecyclable(false);
 
@@ -92,14 +97,43 @@ public class LocNotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             }
         }
 
-        String locid = noticeVo.getLocid();
+        String locid = noticeVo.getFirstLocid();
         if(!TextUtils.isEmpty(locid)){
-            String locName = noticeVo.getLocdesc();
+            String locName = noticeVo.getFirstLocdesc();
             if(TextUtils.isEmpty(locName)){
                 locName = context.getString(R.string.location) + locid;
             }
             ((NoticeViewHolder) holder).tvLocationInfo.setText(context.getString(R.string.arrive) + locName);
         }
+
+        //最近到店列表记录
+        if(noticeVo.getLoclist().size() > 2) {
+            String strLoclist = "";
+            for(Loclist loc : noticeVo.getLoclist()) {
+                strLoclist = strLoclist + TimeUtil.getNoticeTime(loc.getArrivetime()) + "    到达" + loc.getLocdesc() + "\n";
+            }
+            ((NoticeViewHolder) holder).loclist.setText(strLoclist);
+            ((NoticeViewHolder) holder).llLoclist.setVisibility(View.VISIBLE);
+        } else {
+            ((NoticeViewHolder) holder).loclist.setText("");
+            ((NoticeViewHolder) holder).loclist.setVisibility(View.GONE);
+            ((NoticeViewHolder) holder).llLoclist.setVisibility(View.GONE);
+        }
+        if(noticeVo.getLoclistVisiable()) {
+            ((NoticeViewHolder) holder).loclist.setVisibility(View.VISIBLE);
+            ((NoticeViewHolder) holder).btnShowLoclist.setImageResource(R.mipmap.ic_up);
+        } else {
+            ((NoticeViewHolder) holder).loclist.setVisibility(View.GONE);
+            ((NoticeViewHolder) holder).btnShowLoclist.setImageResource(R.mipmap.ic_down);
+        }
+
+        ((NoticeViewHolder) holder).btnShowLoclist.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                noticeList.get(position).toggleLoclistVisiable();
+                notifyDataSetChanged();
+            }
+        });
 
         //获取订单信息并显示基本信息
         ArrayList<OrderVo> orderList = noticeVo.getOrders();
@@ -122,7 +156,7 @@ public class LocNotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             ((NoticeViewHolder) holder).ivOrderInfo.setVisibility(View.GONE);
         }
 
-        String timeCreated = noticeVo.getArrivetime();
+        String timeCreated = noticeVo.getFirstArrivetime();
         if(!TextUtils.isEmpty(timeCreated)){
             ((NoticeViewHolder) holder).tvTimeInfo.setText(TimeUtil.getNoticeTime(timeCreated));
         }
@@ -193,6 +227,9 @@ public class LocNotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         LinearLayout    llChat;
         LinearLayout    llPhoneCall;
         LinearLayout    contentLayout;
+        TextView        loclist;
+        LinearLayout    llLoclist;
+        ImageButton     btnShowLoclist;
 
         public NoticeViewHolder(View view) {
             super(view);
@@ -205,7 +242,10 @@ public class LocNotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             tvTimeInfo      = (TextView)  view.findViewById(R.id.tv_time_info);
             llPhoneCall     = (LinearLayout)view.findViewById(R.id.ll_phone_call);
             llChat          = (LinearLayout)view.findViewById(R.id.ll_chat);
-            contentLayout = (LinearLayout)view.findViewById(R.id.content_layout);
+            contentLayout   = (LinearLayout)view.findViewById(R.id.content_layout);
+            loclist         = (TextView) view.findViewById(R.id.loclist);
+            llLoclist       = (LinearLayout)view.findViewById(R.id.ll_loclist);
+            btnShowLoclist  = (ImageButton)view.findViewById(R.id.btn_show_loclist);
             view.setOnClickListener(this);
         }
 

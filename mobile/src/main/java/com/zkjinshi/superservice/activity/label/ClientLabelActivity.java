@@ -422,7 +422,7 @@ public class ClientLabelActivity extends BaseAppCompatActivity {
             }
             JSONObject jsonObject = new JSONObject();
             StringEntity stringEntity = new StringEntity(jsonObject.toString());
-            String url = ProtocolUtil.getAddLabelUrl(labelName);
+            String url = ProtocolUtil.getAddLabelUrl(labelName, clientId);
             client.post(this,url, stringEntity, "application/json", new JsonHttpResponseHandler(){
                 public void onStart(){
                     super.onStart();

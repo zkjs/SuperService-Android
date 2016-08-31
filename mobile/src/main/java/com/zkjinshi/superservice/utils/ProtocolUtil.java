@@ -191,6 +191,7 @@ public class ProtocolUtil {
 
     /**
      * 获得到店通知URL
+     * V2 : updated by yejun at 2016-08-30
      * @param shopId
      * @param locId
      * @param lastid
@@ -199,7 +200,7 @@ public class ProtocolUtil {
      * @return
      */
     public static String getNoticeUrl(String shopId,String locId,String lastid,String page, String pageSize){
-        return  ConfigUtil.getInst().getForDomain()+"lbs/v1/loc/beacon/"+shopId+"/"+locId+"?roles=USER&lastid="+lastid+"&page="+page+"&page_size="+pageSize;
+        return  ConfigUtil.getInst().getForDomain()+"lbs/v2/loc/beacon/"+shopId+"/"+locId+"?roles=USER&lastid="+lastid+"&page="+page+"&page_size="+pageSize;
     }
 
     /**
@@ -674,8 +675,8 @@ public class ProtocolUtil {
      * @param labelName
      * @return
      */
-    public static String getAddLabelUrl(String labelName){
-        return ConfigUtil.getInst().getForDomain()+"/res/v1/update/user/add/tags/"+labelName;
+    public static String getAddLabelUrl(String labelName, String userID){
+        return ConfigUtil.getInst().getForDomain()+"/res/v1/update/user/add/tags/"+labelName + "?u=" + userID;
     }
 
 }

@@ -124,13 +124,13 @@ public class VipUserAdapter extends BaseAdapter {
             viewHolder.visitTv.setText("无记录");
         }
         String userId = userVo.getUserid();
-        if (selectMap != null
-                && selectMap.containsKey(userId)
-                && selectMap.get(userId)) {
+//        if (selectMap != null
+//                && selectMap.containsKey(userId)
+//                && selectMap.get(userId)) {
             viewHolder.remarkLayout.setVisibility(View.VISIBLE);
-        } else {
-            viewHolder.remarkLayout.setVisibility(View.GONE);
-        }
+//        } else {
+//            viewHolder.remarkLayout.setVisibility(View.GONE);
+//        }
         return convertView;
     }
 

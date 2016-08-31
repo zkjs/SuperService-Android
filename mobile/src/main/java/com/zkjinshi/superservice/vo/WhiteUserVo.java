@@ -30,6 +30,7 @@ public class WhiteUserVo implements Serializable {
     private int loginstatus;
     private String lastvisit;
     private String rmk;
+    private int sex;
 
     public String getUserid() {
         return userid;
@@ -85,5 +86,13 @@ public class WhiteUserVo implements Serializable {
 
     public void setRmk(String rmk) {
         this.rmk = rmk;
+    }
+
+    public int getSex() {
+        return sex;
+    }
+
+    public void setSex(int sex) {
+        this.sex = sex;
     }
 }

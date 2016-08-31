@@ -51,6 +51,7 @@ import com.zkjinshi.superservice.vo.ClientPaymentVo;
 import com.zkjinshi.superservice.vo.ClientTagVo;
 import com.zkjinshi.superservice.vo.ItemTagVo;
 import com.zkjinshi.superservice.vo.NoticeVo;
+import com.zkjinshi.superservice.vo.WhiteUserVo;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -219,6 +220,34 @@ public class GuestInfoActivity extends BaseActivity {
                 }
             }
         }
+
+        if(null != getIntent() && null != getIntent().getSerializableExtra("whiteUserVo")) {
+            WhiteUserVo whiteUserVo = (WhiteUserVo) getIntent().getSerializableExtra("whiteUserVo");
+            if(null != whiteUserVo){
+                clientId = whiteUserVo.getUserid();
+                //sureBtn.setTag(clientId);
+                String userImg = whiteUserVo.getUserimage();
+                if(!TextUtils.isEmpty(userImg)){
+                    Uri userImgUri = Uri.parse(ProtocolUtil.getImageUrlByScale(GuestInfoActivity.this,userImg,90,90));
+                    clientPhotoView.setImageURI(userImgUri);
+                }
+                String userName = whiteUserVo.getUsername();
+                if(!TextUtils.isEmpty(userName)){
+                    tvName.setText(userName);
+                }
+                int sexId = whiteUserVo.getSex();
+                if(-1 == sexId){
+                    tvGender.setVisibility(View.GONE);
+                }else {
+                    tvGender.setVisibility(View.VISIBLE);
+                    if(0 == sexId){
+                        tvGender.setText("女");
+                    }else {
+                        tvGender.setText("男");
+                    }
+                }
+            }
+        }
     }
 
     private void initListeners(){
@@ -246,7 +275,7 @@ public class GuestInfoActivity extends BaseActivity {
             public void onClick(View v) {
                 if(currentTab == PAY_POS) {
                     Intent intent = new Intent(GuestInfoActivity.this, GuestPaymentAddActivity.class);
-                    intent.putExtra("noticeVo", noticeVo);
+                    intent.putExtra("clientId", clientId);
                     startActivityForResult(intent, ADD_PAYMENT_REQUEST);
                 } else if (currentTab == HABIT_POS) {
                     showAddLabelDialog();
@@ -262,7 +291,7 @@ public class GuestInfoActivity extends BaseActivity {
                 //ItemTagVo item = ((ItemTagVo)adapterView.getAdapter().getItem(i));
 
                 Intent intent = new Intent(GuestInfoActivity.this, GuestLabelEditActivity.class);
-                intent.putExtra("noticeVo",noticeVo);
+                intent.putExtra("clientId",clientId);
                 intent.putExtra(GuestLabelEditActivity.EXTRA_CANOPT_COUNT, canoptcnt);
                 intent.putExtra(GuestLabelEditActivity.EXTRA_HABITS, habitList);
                 startActivityForResult(intent, ADD_HABIT_REQUEST);
@@ -456,12 +485,14 @@ public class GuestInfoActivity extends BaseActivity {
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
                 EditText inputEt = customBuilder.inputEt;
-                String inputStr = inputEt.getText().toString();
+                String inputStr = inputEt.getText().toString().trim();
                 if(!TextUtils.isEmpty(inputStr)){
-                    if(inputStr.length() <= 8){
-                        requestAddLabelTask(inputStr);
-                    }else {
+                    if(inputStr.length() > 8){
                         DialogUtil.getInstance().showCustomToast(GuestInfoActivity.this,"标签不能超过8个字",Gravity.CENTER);
+                    } else if (tagExist(inputStr)) {
+                        DialogUtil.getInstance().showCustomToast(GuestInfoActivity.this,"标签已经存在",Gravity.CENTER);
+                    } else {
+                        requestAddLabelTask(inputStr);
                     }
                 }else {
                     DialogUtil.getInstance().showCustomToast(GuestInfoActivity.this,"标签不能为空",Gravity.CENTER);
@@ -469,6 +500,15 @@ public class GuestInfoActivity extends BaseActivity {
             }
         });
         customBuilder.create().show();
+    }
+
+    private Boolean tagExist(String tagName) {
+        for(ItemTagVo tag : habitList) {
+            if(tag.getTagname().equals(tagName)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     // 添加标签请求
@@ -482,7 +522,7 @@ public class GuestInfoActivity extends BaseActivity {
             }
             JSONObject jsonObject = new JSONObject();
             StringEntity stringEntity = new StringEntity(jsonObject.toString());
-            String url = ProtocolUtil.getAddLabelUrl(labelName);
+            String url = ProtocolUtil.getAddLabelUrl(labelName, clientId);
             client.post(this,url, stringEntity, "application/json", new JsonHttpResponseHandler(){
                 public void onStart(){
                     super.onStart();

@@ -50,6 +50,7 @@ public class NoticeFragment extends Fragment {
 
     public static final String TAG = "NoticeFragment";
     public static String LAST_ID = "0";
+    public static String LAST_PAGE = "0";
     public static int PAGE_NO = 0;
     public static final int PAGE_SIZE = 10;
     private Activity activity;
@@ -107,6 +108,7 @@ public class NoticeFragment extends Fragment {
                 noticeList = new ArrayList<NoticeVo>();
 				PAGE_NO = 0;
                 LAST_ID = "0";
+                LAST_PAGE = "0";
                 requestNoticesTask(true);
             }
         });
@@ -224,6 +226,7 @@ public class NoticeFragment extends Fragment {
             notificationAdapter.setNoticeList(noticeList);
         }else {
             LAST_ID = "0";
+            LAST_PAGE = "0";
 			PAGE_NO = 0;
             requestNoticesTask(true);
         }
@@ -235,7 +238,8 @@ public class NoticeFragment extends Fragment {
     public void requestNoticesTask(final boolean isRefresh) {
         String locIds = CacheUtil.getInstance().getAreaInfo();
         String shopId = CacheUtil.getInstance().getShopID();
-        String noticesUrl = ProtocolUtil.getNoticeUrl(shopId,locIds,""+LAST_ID,""+PAGE_NO,""+PAGE_SIZE);
+        String noticesUrl = ProtocolUtil.getNoticeUrl(shopId,locIds,""+LAST_ID,LAST_PAGE,""+PAGE_SIZE);
+        Log.i(TAG,noticesUrl);
         NetRequest netRequest = new NetRequest(noticesUrl);
         NetRequestTask netRequestTask = new NetRequestTask(getActivity(), netRequest, NetResponse.class);
         netRequestTask.methodType = MethodType.GET;
@@ -276,7 +280,8 @@ public class NoticeFragment extends Fragment {
                             }
                             if(null != requestNoticeList && !requestNoticeList.isEmpty()){
                                 LAST_ID = noticeResponse.getLastid();
-								PAGE_NO++;
+                                LAST_PAGE = noticeResponse.getLastpage();
+                                PAGE_NO++;
                             }else {
                                 if(!isRefresh){
                                     DialogUtil.getInstance().showCustomToast(getActivity(),"再无更多数据",Gravity.CENTER);
@@ -317,6 +322,7 @@ public class NoticeFragment extends Fragment {
                 if(!TextUtils.isEmpty(action) && action.equals(Constants.ACTION_NOTICE)){
                     noticeList = new ArrayList<NoticeVo>();
                     LAST_ID = "0";
+                    LAST_PAGE = "0";
 					PAGE_NO = 0;
                     requestNoticesTask(true);
                 }

@@ -24,7 +24,6 @@ import com.zkjinshi.superservice.net.NetResponse;
 import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
 import com.zkjinshi.superservice.utils.StringUtil;
-import com.zkjinshi.superservice.vo.NoticeVo;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -37,7 +36,6 @@ import java.util.HashMap;
 public class GuestPaymentAddActivity  extends BaseActivity {
     public static final String TAG = "GuestPaymentAddActivity";
 
-    private NoticeVo noticeVo;
     private String clientId = "";
 
     private ImageButton backIBtn;
@@ -70,11 +68,8 @@ public class GuestPaymentAddActivity  extends BaseActivity {
         backIBtn.setVisibility(View.VISIBLE);
         titleTv.setText("新增消费记录");
 
-        if(null != getIntent() && null != getIntent().getSerializableExtra("noticeVo")) {
-            noticeVo = (NoticeVo) getIntent().getSerializableExtra("noticeVo");
-            if (null != noticeVo) {
-                clientId = noticeVo.getUserid();
-            }
+        if(null != getIntent() && null != getIntent().getSerializableExtra("clientId")) {
+            clientId = (String) getIntent().getSerializableExtra("clientId");
         }
     }
 
@@ -92,7 +87,6 @@ public class GuestPaymentAddActivity  extends BaseActivity {
         mBtnConfirm.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                if (null == noticeVo) { return; }
                 if (null == clientId) { return; }
                 if (StringUtil.isEmpty(etAmount.getText().toString())) {
                     DialogUtil.getInstance().showCustomToast(GuestPaymentAddActivity.this,"金额不能为空", Gravity.CENTER);

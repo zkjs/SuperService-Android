@@ -22,6 +22,7 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.zkjinshi.base.util.DialogUtil;
 import com.zkjinshi.base.util.DisplayUtil;
 import com.zkjinshi.superservice.R;
+import com.zkjinshi.superservice.activity.label.GuestInfoActivity;
 import com.zkjinshi.superservice.adapter.VipUserAdapter;
 import com.zkjinshi.superservice.base.BaseAppCompatActivity;
 import com.zkjinshi.superservice.listener.OnRefreshListener;
@@ -183,7 +184,7 @@ public class ClientActivity extends BaseAppCompatActivity {
                 Boolean isSelect = true;
                 WhiteUserVo userVo = (WhiteUserVo) vipUserAdapter.getItem(position-1);
                 String userId = userVo.getUserid();
-                if (selectMap != null
+                /*if (selectMap != null
                         && selectMap.containsKey(userId)){
                     isSelect = !selectMap.get(userId);
                 }
@@ -192,7 +193,10 @@ public class ClientActivity extends BaseAppCompatActivity {
                 if(null != whiteUserList && !whiteUserList.isEmpty() && position == whiteUserList.size()){
                     swipeRefreshListView.setSelection(parent.getCount()-1);
 
-                }
+                }*/
+                Intent intent = new Intent(ClientActivity.this,GuestInfoActivity.class);
+                intent.putExtra("whiteUserVo",userVo);
+                startActivity(intent);
             }
         });
 

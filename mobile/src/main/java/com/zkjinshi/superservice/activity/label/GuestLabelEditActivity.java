@@ -52,7 +52,6 @@ public class GuestLabelEditActivity extends BaseActivity {
     public static String EXTRA_CANOPT_COUNT = "superservice.canoptcnt";
     public static final String TAG = "GuestInfoActivity";
 
-    private NoticeVo noticeVo;
     private String clientId = "";
 
     private Button backBtn;
@@ -95,11 +94,8 @@ public class GuestLabelEditActivity extends BaseActivity {
         //labelGridView.setAdapter(clientLabelAdapter);
         //clientLabelAdapter.setSelectMap(mSelectMap);
         //labelGridView.setTag(tagList);
-        if(null != getIntent() && null != getIntent().getSerializableExtra("noticeVo")){
-            noticeVo = (NoticeVo) getIntent().getSerializableExtra("noticeVo");
-            if(null != noticeVo){
-                clientId = noticeVo.getUserid();
-            }
+        if(null != getIntent() && null != getIntent().getSerializableExtra("clientId")){
+            clientId = (String) getIntent().getSerializableExtra("clientId");
         }
 
         if(null != getIntent() && null != getIntent().getSerializableExtra(EXTRA_CANOPT_COUNT)){

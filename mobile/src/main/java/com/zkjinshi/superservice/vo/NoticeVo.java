@@ -33,8 +33,6 @@ public class NoticeVo implements Serializable {
      ]
      */
 
-    private String locid;
-    private String locdesc;
     private String userid;
     private String userimage;
     private String username;
@@ -44,16 +42,9 @@ public class NoticeVo implements Serializable {
     private String city;
     private String shopid;
     private String shopname;
-    private String arrivetime;
     private ArrayList<OrderVo> orders;
-
-    public String getLocid() {
-        return locid;
-    }
-
-    public void setLocid(String locid) {
-        this.locid = locid;
-    }
+    private ArrayList<Loclist> loclist = new ArrayList<>();
+    private Boolean loclistVisiable = false;
 
     public String getUserid() {
         return userid;
@@ -111,28 +102,12 @@ public class NoticeVo implements Serializable {
         this.shopname = shopname;
     }
 
-    public String getArrivetime() {
-        return arrivetime;
-    }
-
-    public void setArrivetime(String arrivetime) {
-        this.arrivetime = arrivetime;
-    }
-
     public ArrayList<OrderVo> getOrders() {
         return orders;
     }
 
     public void setOrders(ArrayList<OrderVo> orders) {
         this.orders = orders;
-    }
-
-    public String getLocdesc() {
-        return locdesc;
-    }
-
-    public void setLocdesc(String locdesc) {
-        this.locdesc = locdesc;
     }
 
     public String getUserimage() {
@@ -150,4 +125,20 @@ public class NoticeVo implements Serializable {
     public void setSex(int sex) {
         this.sex = sex;
     }
+
+    public ArrayList<Loclist> getLoclist() { return loclist;}
+
+    public void setLoclist(ArrayList<Loclist> loclist) { this.loclist = loclist; }
+
+    public String getFirstLocid() { return this.loclist.isEmpty() ? "" : this.loclist.get(0).getLocid();}
+
+    public String getFirstLocdesc() { return this.loclist.isEmpty() ? "" : this.loclist.get(0).getLocdesc();}
+
+    public String getFirstArrivetime() { return this.loclist.isEmpty() ? "" : this.loclist.get(0).getArrivetime();}
+
+    public Boolean getLoclistVisiable() { return this.loclistVisiable; }
+
+    public void setLoclistVisiable(Boolean loclistVisiable) { this.loclistVisiable =  loclistVisiable; }
+
+    public void toggleLoclistVisiable() { this.loclistVisiable = !this.loclistVisiable; }
 }

@@ -15,7 +15,7 @@ import java.util.ArrayList;
 public class NoticeResponse extends BaseResponse {
 
     private String lastid;
-
+    private String lastpage;
     private ArrayList<NoticeVo> data;
 
     public ArrayList<NoticeVo> getData() {
@@ -26,12 +26,13 @@ public class NoticeResponse extends BaseResponse {
         this.data = data;
     }
 
-    public String getLastid() {
-        return lastid;
-    }
+    public String getLastid() { return lastid; }
 
     public void setLastid(String lastid) {
         this.lastid = lastid;
     }
 
+    public String getLastpage() { return lastpage; }
+
+    public void setLastpage(String lastpage) { this.lastpage = lastpage; }
 }
