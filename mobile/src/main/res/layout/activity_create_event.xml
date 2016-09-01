@@ -234,14 +234,6 @@
                     android:text="携带人员"
                     />
 
-                <TextView
-                    android:layout_toRightOf="@id/create_event_tv_carry_tips"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="*"
-                    android:textColor="#e51c23"/>
-
                 <CheckBox
                     android:id="@+id/create_event_cb_carry"
                     android:layout_width="wrap_content"
@@ -270,6 +262,7 @@
                 android:background="@android:color/white">
 
                 <TextView
+                    android:id="@+id/create_event_tv_carry_cnt"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="14sp"
@@ -279,6 +272,14 @@
                     android:textColor="#101010"
                     android:text="携带人数"
                     />
+
+                <TextView
+                    android:layout_toRightOf="@id/create_event_tv_carry_cnt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="*"
+                    android:textColor="#e51c23"/>
 
                 <EditText
                     android:id="@+id/create_event_etv_carry_count"

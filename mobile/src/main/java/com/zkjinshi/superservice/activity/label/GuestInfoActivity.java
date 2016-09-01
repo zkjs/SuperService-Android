@@ -540,7 +540,7 @@ public class GuestInfoActivity extends BaseActivity {
                         BaseResponse baseResponse = new Gson().fromJson(response.toString(),BaseResponse.class);
                         if(null != baseResponse){
                             if(baseResponse.getRes() == 0){
-                                DialogUtil.getInstance().showCustomToast(GuestInfoActivity.this,"添加一级标签成功", Gravity.CENTER);
+                                DialogUtil.getInstance().showCustomToast(GuestInfoActivity.this,"添加成功", Gravity.CENTER);
                                 if(!TextUtils.isEmpty(clientId)){
                                     loadHabits(0);
                                 }

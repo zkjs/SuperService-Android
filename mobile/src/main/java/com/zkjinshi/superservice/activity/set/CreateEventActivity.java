@@ -41,6 +41,7 @@ import com.zkjinshi.superservice.utils.CacheUtil;
 import com.zkjinshi.superservice.utils.Constants;
 import com.zkjinshi.superservice.utils.FileUtil;
 import com.zkjinshi.superservice.utils.ProtocolUtil;
+import com.zkjinshi.superservice.utils.StringUtil;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -117,13 +118,19 @@ public class CreateEventActivity extends BaseAppCompatActivity {
             public boolean onMenuItemClick(android.view.MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.menu_create_event_next://新增事件
-                        String actNameStr = eventNameEtv.getText().toString();
-                        String actContentStr = eventContentEtv.getText().toString();
-                        String maxTakeStr = carryCountEtv.getText().toString();
-                        String actUrlStr = eventUrlEtv.getText().toString();
+                        String actNameStr = eventNameEtv.getText().toString().trim();
+                        String actContentStr = eventContentEtv.getText().toString().trim();
+                        String maxTakeStr = carryCountEtv.getText().toString().trim();
+                        String actUrlStr = eventUrlEtv.getText().toString().trim();
                         boolean isCarry = isCarryCb.isChecked();
+                        Date now = new Date();
+
                         if(TextUtils.isEmpty(actNameStr)){
                             DialogUtil.getInstance().showCustomToast(CreateEventActivity.this,"活动名称不能为空",Gravity.CENTER);
+                            return true;
+                        }
+                        if(actNameStr.length() > 50){
+                            DialogUtil.getInstance().showCustomToast(CreateEventActivity.this,"活动名称不能超过50字",Gravity.CENTER);
                             return true;
                         }
                         if(TextUtils.isEmpty(actContentStr)){
@@ -138,9 +145,31 @@ public class CreateEventActivity extends BaseAppCompatActivity {
                             DialogUtil.getInstance().showCustomToast(CreateEventActivity.this,"活动结束时间还没有选",Gravity.CENTER);
                             return true;
                         }
+                        if(startDate.before(now)){
+                            DialogUtil.getInstance().showCustomToast(CreateEventActivity.this,"活动开始时间必须晚于当前时间",Gravity.CENTER);
+                            return true;
+                        }
+                        if(endDate.before(startDate)){
+                            DialogUtil.getInstance().showCustomToast(CreateEventActivity.this,"活动结束时间必须晚于开始时间",Gravity.CENTER);
+                            return true;
+                        }
                         if(TextUtils.isEmpty(actImagePath)){
                             DialogUtil.getInstance().showCustomToast(CreateEventActivity.this,"活动图片没有上传",Gravity.CENTER);
                             return true;
+                        }
+                        if(isCarry) {
+                            if(TextUtils.isEmpty(maxTakeStr)) {
+                                DialogUtil.getInstance().showCustomToast(CreateEventActivity.this,"请输入携带人数",Gravity.CENTER);
+                                return true;
+                            }
+                            if(!StringUtil.isNumeric(maxTakeStr)) {
+                                DialogUtil.getInstance().showCustomToast(CreateEventActivity.this,"携带人数必须为整数",Gravity.CENTER);
+                                return true;
+                            }
+                            if(Integer.parseInt(maxTakeStr) < 1) {
+                                DialogUtil.getInstance().showCustomToast(CreateEventActivity.this,"携带人数必须大于0",Gravity.CENTER);
+                                return true;
+                            }
                         }
                         Intent intent = new Intent(CreateEventActivity.this,AddInviteActivity.class);
                         intent.putExtra("actName",actNameStr);
