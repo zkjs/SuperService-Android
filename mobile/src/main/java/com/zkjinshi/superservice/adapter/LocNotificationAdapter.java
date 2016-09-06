@@ -107,7 +107,7 @@ public class LocNotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         }
 
         //最近到店列表记录
-        if(noticeVo.getLoclist().size() > 2) {
+        if(noticeVo.getLoclist().size() >= 2) {
             String strLoclist = "";
             for(Loclist loc : noticeVo.getLoclist()) {
                 strLoclist = strLoclist + TimeUtil.getNoticeTime(loc.getArrivetime()) + "    到达" + loc.getLocdesc() + "\n";
